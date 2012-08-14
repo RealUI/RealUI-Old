@@ -56,23 +56,6 @@ L.MSG_INVALID_ITEM_NAME				= "Nom de l'item incorrect."
 
 
 ------------------------------
--- Class Names.
-------------------------------
-
-local obj = L.CLASS_NAMES
-obj["DEATHKNIGHT"]	= "Chevalier de la mort"
-obj["DRUID"]		= "Druide"
-obj["HUNTER"]		= "Chasseur"
-obj["MAGE"]			= "Mage"
-obj["PALADIN"]		= "Paladin"
-obj["PRIEST"]		= "Prêtre"
-obj["ROGUE"]		= "Voleur"
-obj["SHAMAN"]		= "Chaman"
-obj["WARLOCK"]		= "Démoniste"
-obj["WARRIOR"]		= "Guerrier"
-
-
-------------------------------
 -- Interface tabs
 ------------------------------
 
@@ -118,6 +101,8 @@ obj["enableTrigger"]		= { tooltip="Activer le déclencheur."}
 obj["allPowerGains"]		= { label="Tous les gains d'énergie", tooltip="Affiche tous les gains d'énergie même ceux qui ne sont pas affichés dans le journal ce combat.\n\nATTENTION: Cette option est source de spam et ignorera les réglages de seuil de spam et de son contrôle.\n\nNON RECOMMANDE."}
 obj["abbreviateSkills"]		= { label="Compétences Abrégées", tooltip="Nom des compétences abrégées (client anglais seulement).\n\nCela peut être contourné pour chaque évènement en utilisant le code %sl."}
 --obj["mergeSwings"]				= { label="Merge Swings", tooltip="Merge regular melee swings that hit within a short time span."}
+--obj["shortenNumbers"]			= { label="Shorten Numbers", tooltip="Display numbers in an abbreviated format (example: 32765 -> 33k)."}
+--obj["groupNumbers"]				= { label="Group By Thousands", tooltip="Display numbers grouped by thousands (example: 32765 -> 32,765)."}
 obj["hideSkills"]			= { label="Cacher les Noms des Compétences", tooltip="Ne pas afficher les noms de compétences pour les évènements entrants et sortants.\n\nVous abandonnerez quelques possibilités de personnalisation de l'évènement si vous utilisez cette option car le code %s sera ignoré."}
 obj["hideNames"]			= { label="Cacher les Noms des Unités", tooltip="Ne pas afficher les noms des unités pour les évènements entrants et sortants.\n\nVous abandonnerez quelques possibilités de personnalisation de l'évènement si vous utilisez cette option car le code %n sera ignoré."}
 obj["hideFullOverheals"]	= { label="Cacher les Soins en Excès Total", tooltip="Ne pas afficher les soins qui ont un soin effectif égal à zéro."}
@@ -239,6 +224,7 @@ obj["skillName"]		= { label="Nom de la compétence:", tooltip="Le nom de la comp
 obj["substitutionText"]	= { label="Texte de substitution:", tooltip="Le texte à substituer pour le nom de la compétence."}
 obj["itemName"]			= { label="Nom de l'item:", tooltip="Le nom de l'item à ajouter."}
 
+
 ------------------------------
 -- Interface sliders
 ------------------------------
@@ -260,6 +246,7 @@ obj["hotThrottleTime"]		= { label="Temps de spam des HoT", tooltip="Le nombre de
 obj["powerThrottleTime"]	= { label="Temps de spam des Gains", tooltip="Le nombre de secondes à prendre en compte pour afficher les gains de puissance."}
 obj["skillThrottleTime"]	= { label="Contrôle du temps", tooltip="Le nombre de secondes à prendre en compte pour afficher la compétence."}
 obj["cooldownThreshold"]	= { label="Contrôle du cooldown", tooltip="Les compétences avec un cooldown inférieur au nombre de secondes spécifié ne seront pas affichées."}
+
 
 ------------------------------
 -- Event categories
@@ -284,6 +271,7 @@ obj["HEALING_DONE"]			= "%a - Quantité de soins.\n"
 obj["ABSORBED_AMOUNT"]		= "%a - Quantité de dommages absorbés.\n"
 obj["AURA_AMOUNT"]			= "%a - Nombre de la pile pour cet aura.\n"
 obj["ENERGY_AMOUNT"]		= "%a - Quantité de pouvoir.\n"
+--obj["CHI_AMOUNT"]			= "%a - Amount of chi you have.\n"
 obj["CP_AMOUNT"]			= "%a - Nombre de points de combo.\n"
 obj["HOLY_POWER_AMOUNT"]	= "%a - Amount of holy power you have.\n"
 obj["HONOR_AMOUNT"]			= "%a - Quantité d'honneur.\n"
@@ -472,10 +460,14 @@ obj["NOTIFICATION_COMBAT_ENTER"]		= { label="Début combat", tooltip="Afficher l
 obj["NOTIFICATION_COMBAT_LEAVE"]		= { label="Sortie combat", tooltip="Afficher la fin du combat."}
 obj["NOTIFICATION_POWER_GAIN"]			= { label="Gains de puissance", tooltip="Afficher les gains de mana, rage et énergie."}
 obj["NOTIFICATION_POWER_LOSS"]			= { label="Pertes de puissance", tooltip="Afficher les pertes de mana, rage et énergie par des drains."}
+--obj["NOTIFICATION_ALT_POWER_GAIN"]		= { label="Alternate Power Gains", tooltip="Enable when you gain alternate power such as sound level on Atramedes."}
+--obj["NOTIFICATION_ALT_POWER_LOSS"]		= { label="Alternate Power Losses", tooltip="Enable when you lose alternate power from drains."}
+--obj["NOTIFICATION_CHI_CHANGE"]			= { label="Chi Changes", tooltip="Enable when you change chi."}
+--obj["NOTIFICATION_CHI_FULL"]			= { label="Chi Full", tooltip="Enable when you attain full chi."}
 obj["NOTIFICATION_CP_GAIN"]				= { label="Gain de points de combo", tooltip="Afficher les points de combo."}
 obj["NOTIFICATION_CP_FULL"]				= { label="5 points de combo", tooltip="Afficher quand vous avez atteint 5 points de combo."}
-obj["NOTIFICATION_HOLY_POWER_CHANGE"]	= { label="Holy Power Changes", tooltip="Enable when you change holy power."}
-obj["NOTIFICATION_HOLY_POWER_FULL"]		= { label="Holy Power Full", tooltip="Enable when you attain full holy power."}
+--obj["NOTIFICATION_HOLY_POWER_CHANGE"]	= { label="Holy Power Changes", tooltip="Enable when you change holy power."}
+--obj["NOTIFICATION_HOLY_POWER_FULL"]		= { label="Holy Power Full", tooltip="Enable when you attain full holy power."}
 obj["NOTIFICATION_HONOR_GAIN"]			= { label="Gains d'honneur", tooltip="Afficher les gains d'honneur."}
 obj["NOTIFICATION_REP_GAIN"]			= { label="Gains de réputation", tooltip="Afficher les gains de réputation."}
 obj["NOTIFICATION_REP_LOSS"]			= { label="Pertes de réputation", tooltip="Afficher les pertes de réputation."}

@@ -32,6 +32,8 @@ local GetTime = GetTime
 local GetSpellInfo = GetSpellInfo
 local EraseTable = MikSBT.EraseTable
 local GetSkillName = MikSBT.GetSkillName
+local ShortenNumber = MikSBT.ShortenNumber
+local SeparateNumber = MikSBT.SeparateNumber
 local DisplayEvent = MSBTAnimations.DisplayEvent
 local IsScrollAreaActive = MSBTAnimations.IsScrollAreaActive
 local IsScrollAreaIconShown = MSBTAnimations.IsScrollAreaIconShown
@@ -114,9 +116,12 @@ local SPELL_RAIN_OF_FIRE			= GetSkillName(5740)
 -- Private variables.
 -------------------------------------------------------------------------------
 
+-- Prevent tainting global _.
+local _
+
 -- Dynamically created frames for receiving events.
-local eventFrame
-local throttleFrame
+local eventFrame = CreateFrame("Frame")
+local throttleFrame = CreateFrame("Frame")
 
 -- Player's class.
 local playerClass
@@ -250,8 +255,16 @@ local function FormatPartialEffects(absorbAmount, blockAmount, resistAmount, isG
  -- Set the partial effect text if there are settings for it, it's enabled, and it's valid.
  local trailer = effectSettings and effectSettings.trailer
  if (trailer and not effectSettings.disabled) then
+  -- Shorten amount with SI suffixes or separate into digit groups depending on options.
+  local formattedAmount = amount
+  if (currentProfile.shortenNumbers) then
+   formattedAmount = ShortenNumber(formattedAmount, currentProfile.shortenNumberPrecision)
+  elseif (currentProfile.groupNumbers) then
+   formattedAmount = SeparateNumber(formattedAmount)
+  end
+
   -- Substitute the amount into the trailer.
-  trailer = string_gsub(trailer, "%%a", amount)
+  trailer = string_gsub(trailer, "%%a", formattedAmount)
   
   -- Color the text if coloring isn't disabled.
   if (not currentProfile.partialColoringDisabled) then
@@ -306,9 +319,17 @@ local function FormatEvent(message, amount, damageType, overhealAmount, overkill
    -- Deduct the overheal amount from the total amount healed.
    amount = amount - overhealAmount
 
+   -- Shorten overheal amount with SI suffixes or separate into digit groups depending on options.
+   partialAmount = overhealAmount
+   if (currentProfile.shortenNumbers) then
+    partialAmount = ShortenNumber(partialAmount, currentProfile.shortenNumberPrecision)
+   elseif (currentProfile.groupNumbers) then
+    partialAmount = SeparateNumber(partialAmount)
+   end
+
    -- Color it with the correct color if coloring is enabled.
    local overhealSettings = currentProfile.overheal
-   partialAmount = string_gsub(overhealSettings.trailer, "%%a", overhealAmount)
+   partialAmount = string_gsub(overhealSettings.trailer, "%%a", partialAmount)
    if (not currentProfile.partialColoringDisabled) then
     partialAmount = string_format("|cFF%02x%02x%02x%s|r", overhealSettings.colorR * 255, overhealSettings.colorG * 255, overhealSettings.colorB * 255, partialAmount)
    end
@@ -317,6 +338,14 @@ local function FormatEvent(message, amount, damageType, overhealAmount, overkill
   elseif (overkillAmount and overkillAmount > 0 and not currentProfile.overkill.disabled) then
    -- Deduct the overkill amount from the total amount of damage done.
    amount = amount - overkillAmount
+
+   -- Shorten overkill amount with SI suffixes or separate into digit groups depending on options.
+   partialAmount = overkillAmount
+   if (currentProfile.shortenNumbers) then
+    partialAmount = ShortenNumber(partialAmount, currentProfile.shortenNumberPrecision)
+   elseif (currentProfile.groupNumbers) then
+    partialAmount = SeparateNumber(partialAmount)
+   end
 
    -- Color it with the correct color if coloring is enabled.
    local overkillSettings = currentProfile.overkill
@@ -331,12 +360,19 @@ local function FormatEvent(message, amount, damageType, overhealAmount, overkill
   local formattedAmount = amount
   if (powerType == powerTypes["ECLIPSE"]) then formattedAmount = math_abs(amount) end
 
+  -- Shorten amount with SI suffixes or separate into digit groups depending on options.
+  if (currentProfile.shortenNumbers) then
+   formattedAmount = ShortenNumber(formattedAmount, currentProfile.shortenNumberPrecision)
+  elseif (currentProfile.groupNumbers) then
+   formattedAmount = SeparateNumber(formattedAmount)
+  end
+
   -- Get the hex color for the damage type if there is one and coloring is enabled.
   if (damageType and not ignoreDamageColoring and not currentProfile.damageColoringDisabled) then
    -- Color the amount according to the damage type if there is one and it's enabled.
    local damageSettings = currentProfile[damageColorProfileEntries[damageType]]
    if (damageSettings and not damageSettings.disabled) then
-    formattedAmount = string_format("|cFF%02x%02x%02x%d|r", damageSettings.colorR * 255, damageSettings.colorG * 255, damageSettings.colorB * 255, amount)
+    formattedAmount = string_format("|cFF%02x%02x%02x%s|r", damageSettings.colorR * 255, damageSettings.colorG * 255, damageSettings.colorB * 255, formattedAmount)
    end
   end -- Damage type and damage coloring is enabled.
 
@@ -500,19 +536,30 @@ end
 
 
 -- ****************************************************************************
+-- Handle light force changes.
+-- ****************************************************************************
+local function HandleChi(numChi, powerType)
+ -- Get the correct event settings.
+ local eventSettings = MSBTProfiles.currentProfile.events.NOTIFICATION_CHI_CHANGE
+ local maxChi = UnitPowerMax("player", powerType)
+ if (numChi == maxChi) then eventSettings = MSBTProfiles.currentProfile.events.NOTIFICATION_CHI_FULL end
+
+ -- Don't do anything if the event is disabled.
+ if (eventSettings.disabled) then return end
+
+ -- Display the event.
+ DisplayEvent(eventSettings, FormatEvent(eventSettings.message, numChi))
+end
+
+
+-- ****************************************************************************
 -- Handle holy power changes.
 -- ****************************************************************************
-local function HandleHolyPower(numHolyPower)
+local function HandleHolyPower(numHolyPower, powerType)
  -- Get the correct event settings.
  local eventSettings = MSBTProfiles.currentProfile.events.NOTIFICATION_HOLY_POWER_CHANGE
- if (numHolyPower == MAX_HOLY_POWER) then
-  -- Prevent the full holy power event from showing more than once.
-  if (finisherShown) then return end
-  eventSettings = MSBTProfiles.currentProfile.events.NOTIFICATION_HOLY_POWER_FULL
-  finisherShown = true
- else
-  finisherShown = false
- end
+ local maxHolyPower = UnitPowerMax("player", powerType)
+ if (numHolyPower == maxHolyPower) then eventSettings = MSBTProfiles.currentProfile.events.NOTIFICATION_HOLY_POWER_FULL end
 
  -- Don't do anything if the event is disabled.
  if (eventSettings.disabled) then return end
@@ -769,7 +816,7 @@ local function EnvironmentalHandler(parserEvent, currentProfile)
  -- Ignore the event if it isn't the player.
  if (parserEvent.recipientUnit ~= "player") then return end
  
- return "INCOMING_ENVIRONMENTAL", _G["STRING_ENVIRONMENTAL_DAMAGE_" .. parserEvent.hazardType]
+ return "INCOMING_ENVIRONMENTAL", parserEvent.hazardType
 end
 
 
@@ -871,12 +918,12 @@ end
 -- Handles power parser events.
 -- ****************************************************************************
 local function PowerHandler(parserEvent, currentProfile)
- -- Handle holy power uniquely.
- if (parserEvent.powerType == powerTypes["HOLY_POWER"]) then return end
+ -- Handle holy power and chi uniquely.
+ if (parserEvent.powerType == powerTypes["HOLY_POWER"] or parserEvent.powerType == powerTypes["LIGHT_FORCE"]) then return end
 
  -- Ignore the event if all power gains are being shown.
  if (currentProfile.showAllPowerGains) then return end
-   
+
  -- Ignore the event it doesn't affect the player and set the correct amount.
  local amount
  if (parserEvent.isLeech) then
@@ -891,8 +938,12 @@ local function PowerHandler(parserEvent, currentProfile)
  -- Take the absolute value to ensure negative power amounts such as Lunar Energy are handled correctly.
  if (amount and math_abs(amount) < currentProfile.powerThreshold) then return end
 
+ -- Use a different event for alternate power.
+ local eventTypePrefix = "NOTIFICATION_POWER_"
+ if (parserEvent.powerType == powerTypes["ALTERNATE_POWER"]) then eventTypePrefix = "NOTIFICATION_ALT_POWER_" end
+
  -- Append gain or loss suffix. 
- local eventTypeString = "NOTIFICATION_POWER_" .. (parserEvent.isDrain and "LOSS" or "GAIN")
+ local eventTypeString = eventTypePrefix .. (parserEvent.isDrain and "LOSS" or "GAIN")
  
  return eventTypeString, parserEvent.skillName, nil, nil, true
 end
@@ -1024,7 +1075,6 @@ local function ParserEventsHandler(parserEvent)
 
  -- Set the damage type to the school of the fully absorbed skills.
  if (eventType == "miss" and parserEvent.missType == "ABSORB") then damageType = parserEvent.skillSchool or DAMAGETYPE_PHYSICAL end
-
 
  -- Get the formatted partial effects if it's a damage or environmental event. 
  local partialEffects
@@ -1241,53 +1291,77 @@ end
 
 
 -- ****************************************************************************
--- Called when the registered events occur.
+-- Called when a unit's power changes.
 -- ****************************************************************************
-local function OnEvent(this, event, arg1, arg2)
- -- Power changes.
- if (event == "UNIT_POWER") then
-  -- Ignore the event if it isn't for the player.
-  if (arg1 ~= "player") then return end
+function eventFrame:UNIT_POWER(unitID, powerToken)
+ -- Ignore the event if it isn't for the player.
+ if (unitID ~= "player") then return end
  
-  -- Ignore the event if it isn't for a known power type.
-  local powerType = powerTypes[arg2]
-  if (not powerType) then return end
+ -- Ignore the event if it isn't for a known power type.
+ local powerType = powerTypes[powerToken]
+ if (not powerType) then return end
+ 
+ -- Get the current power amount for the power type that changed.
+ local powerAmount = UnitPower("player", powerType)
 
-  -- Get the current power amount for the power type that changed.
-  local powerAmount = UnitPower("player", powerType)
-  
-  -- Handle holy power uniquely.
-  if (arg2 == "HOLY_POWER" and playerClass == "PALADIN") then HandleHolyPower(powerAmount) return end
-  
-  -- Detect power gains if show all power gains is enabled.
-  if (MSBTProfiles.currentProfile.showAllPowerGains) then DetectPowerGain(powerAmount, powerType) end
-  lastPowerAmounts[powerType] = powerAmount
+ local doFullDetect = true
+ local lastPowerAmount = lastPowerAmounts[powerType]
 
- -- Leave Combat.
- elseif (event == "PLAYER_REGEN_ENABLED") then
-  -- Get the event settings for leaving combat and display it if it isn't disabled.
-  local eventSettings = MSBTProfiles.currentProfile.events.NOTIFICATION_COMBAT_LEAVE
-  if (not eventSettings.disabled) then DisplayEvent(eventSettings, eventSettings.message) end
-  
- -- Enter Combat.
- elseif (event == "PLAYER_REGEN_DISABLED") then
-  -- Get the event settings for entering combat and display it if it isn't disabled.
-  local eventSettings = MSBTProfiles.currentProfile.events.NOTIFICATION_COMBAT_ENTER
-  if (not eventSettings.disabled) then DisplayEvent(eventSettings, eventSettings.message) end
-  
- -- Combo points.
- elseif (event == "UNIT_COMBO_POINTS") then
-  -- Ignore the event if it's not for the player.
-  if (arg1 ~= "player") then return end
-  local numCP = GetComboPoints("player")
-  if (numCP ~= 0) then HandleComboPoints(numCP) end
+ -- Handle chi uniquely.
+ if (powerToken == "LIGHT_FORCE" and playerClass == "MONK") then
+  if (powerAmount ~= lastPowerAmount) then HandleChi(powerAmount, powerType) end
+  doFullDetect = false
 
- -- Monster emotes.
- elseif (event == "CHAT_MSG_MONSTER_EMOTE") then
-  -- Ignore the event if it's not the current target.
-  if (arg2 ~= UnitName("target")) then return end
-  HandleMonsterEmotes(string_gsub(arg1, "%%s", arg2))
+ -- Handle holy power uniquely.
+ elseif (powerToken == "HOLY_POWER" and playerClass == "PALADIN") then
+  if (powerAmount ~= lastPowerAmount) then HandleHolyPower(powerAmount, powerType) end
+  doFullDetect = false
  end
+
+ -- Detect power gains if show all power gains is enabled.
+ if (doFullDetect and MSBTProfiles.currentProfile.showAllPowerGains) then DetectPowerGain(powerAmount, powerType) end
+ lastPowerAmounts[powerType] = powerAmount
+end
+
+
+-- ****************************************************************************
+-- Called when the player leaves combat.
+-- ****************************************************************************
+function eventFrame:PLAYER_REGEN_ENABLED()
+ -- Get the event settings for leaving combat and display it if it isn't disabled.
+ local eventSettings = MSBTProfiles.currentProfile.events.NOTIFICATION_COMBAT_LEAVE
+ if (not eventSettings.disabled) then DisplayEvent(eventSettings, eventSettings.message) end
+end
+
+
+-- ****************************************************************************
+-- Called when the player enters combat.
+-- ****************************************************************************
+function eventFrame:PLAYER_REGEN_DISABLED()
+ -- Get the event settings for entering combat and display it if it isn't disabled.
+ local eventSettings = MSBTProfiles.currentProfile.events.NOTIFICATION_COMBAT_ENTER
+ if (not eventSettings.disabled) then DisplayEvent(eventSettings, eventSettings.message) end
+end
+
+
+-- ****************************************************************************
+-- Called when a unit's combo points change.
+-- ****************************************************************************
+function eventFrame:UNIT_COMBO_POINTS(unitID)
+ -- Ignore the event if it's not for the player.
+ if (arg1 ~= "player") then return end
+ local numCP = GetComboPoints("player")
+ if (numCP ~= 0) then HandleComboPoints(numCP) end
+end
+
+
+-- ****************************************************************************
+-- Called when a unit's combo points change.
+-- ****************************************************************************
+function eventFrame:CHAT_MSG_MONSTER_EMOTE(message, sourceName)
+ -- Ignore the event if it's not the current target.
+ if (sourceName ~= UnitName("target")) then return end
+ HandleMonsterEmotes(string_gsub(message, "%%s", sourceName))
 end
 
 
@@ -1324,14 +1398,12 @@ end
 -- Initialization.
 -------------------------------------------------------------------------------
 
--- Create a frame to receive events.
-eventFrame = CreateFrame("Frame")
+-- Setup event frame.
 eventFrame:Hide()
-eventFrame:SetScript("OnEvent", OnEvent)
+eventFrame:SetScript("OnEvent", function (self, event, ...) if (self[event]) then self[event](self, ...) end end)
 eventFrame:SetScript("OnUpdate", OnUpdateEventFrame)
  
--- Create a frame to receive throttle update events.
-throttleFrame = CreateFrame("Frame")
+-- Setup throttle frame.
 throttleFrame:Hide()
 throttleFrame:SetScript("OnUpdate", OnUpdateThrottleFrame)
 

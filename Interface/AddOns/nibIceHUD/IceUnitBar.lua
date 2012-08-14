@@ -54,6 +54,7 @@ function IceUnitBar.prototype:Enable()
 	self:RegisterEvent("PLAYER_UNGHOST", "Alive")
 	self:RegisterEvent("PLAYER_ALIVE", "Alive")
 	self:RegisterEvent("PLAYER_DEAD", "Dead")
+	self:RegisterEvent("PLAYER_TALENT_UPDATE", "checkRole")
 
 	self.alive = not UnitIsDeadOrGhost(self.unit)
 	self.combat = UnitAffectingCombat(self.unit)
@@ -111,4 +112,18 @@ function IceUnitBar.prototype:MyOnUpdate()
 	IceUnitBar.super.prototype.MyOnUpdate(self)
 end
 
+function IceUnitBar.prototype:checkRole()
+	-- IceUnitBar.super.prototype.checkRole(self)
+	
+	local spec = GetSpecialization()
+	--print("spec: "..tostring(spec))
+	local role
+	if spec and UnitLevel("player") >= 10 then 
+		role = GetSpecializationRole(spec)
+	else
+		print(ERR_SPEC_WIPE_ERROR)
+	end
+	--print("role: "..tostring(role))
+	return role
+end
 

@@ -4,15 +4,21 @@ local AceTab = LibStub("AceTab-3.0")
 
 mod.modName = L["Player Names"]
 
-local local_names = {}
-local leftBracket, rightBracket, separator
-local colorSelfInText, emphasizeSelfInText
+local WoW5 = select(4, GetBuildInfo()) >= 50000
+
+local format = _G.string.format
 local gsub = _G.string.gsub
+local strlower = _G.string.lower
 local strmatch = _G.string.match
-local find = _G.string.find
+local strsub = _G.string.sub
+
 local pairs = _G.pairs
+local tinsert = _G.tinsert
 local wipe = _G.wipe
-local string_format = _G.string.format
+
+local select = _G.select
+local type = _G.type
+
 local GetQuestDifficultyColor = _G.GetQuestDifficultyColor
 local GetChannelName = _G.GetChannelName
 local GetFriendInfo = _G.GetFriendInfo
@@ -21,8 +27,9 @@ local GetGuildRosterSelection = _G.GetGuildRosterSelection
 local GetGuildRosterShowOffline = _G.GetGuildRosterShowOffline
 local GetNumFriends = _G.GetNumFriends
 local GetNumGuildMembers = _G.GetNumGuildMembers
-local GetNumPartyMembers = _G.GetNumPartyMembers
-local GetNumRaidMembers = _G.GetNumRaidMembers
+local GetNumGroupMembers = WoW5 and _G.GetNumGroupMembers
+local GetNumPartyMembers = not WoW5 and _G.GetNumPartyMembers
+local GetNumRaidMembers = not WoW5 and _G.GetNumRaidMembers
 local GetNumWhoResults = _G.GetNumWhoResults
 local GetWhoInfo = _G.GetWhoInfo
 local GuildRoster = _G.GuildRoster
@@ -35,15 +42,11 @@ local UnitIsPlayer = _G.UnitIsPlayer
 local UnitLevel = _G.UnitLevel
 local UnitName = _G.UnitName
 
-local floor = _G.math.floor
-local select = _G.select
-local setmetatable = _G.setmetatable
-local sqrt = _G.sqrt
-local tinsert = _G.tinsert
-local type = _G.type
+local local_names = {}
+local leftBracket, rightBracket, separator
+local colorSelfInText, emphasizeSelfInText
 
-local player = UnitName("player")
-
+local player
 
 local channels = {
 	GUILD = {},
@@ -73,53 +76,35 @@ local defaults = {
 		emphasizeSelfInText = true,
 		noRealNames = false,
 	},
-	global = {
-		classes = {		-- yeah this should be localized by translators but ... they dont. so we also autodiscover on UnitClass() calls
-			DRUID = L["Druid"],
-			MAGE = L["Mage"],
-			PALADIN = L["Paladin"],
-			PRIEST = L["Priest"],
-			ROGUE = L["Rogue"],
-			HUNTER = L["Hunter"],
-			SHAMAN = L["Shaman"],
-			WARLOCK = L["Warlock"],
-			WARRIOR = L["Warrior"],
-			DEATHKNIGHT = L["Death Knight"],
-		}
-	}
 }
 local default_nick_color = { ["r"] = 0.627, ["g"] = 0.627, ["b"] = 0.627 }
 
-local localizedToSystemClass = {} -- gets initialized in OnInit
-
-local origUnitClass = UnitClass
-local function UnitClass(unit)	-- Hook UnitClass for calls below so that we can autodiscover
-	local loc,sys = origUnitClass(unit)
-	if sys and mod.db.global.classes[sys] then
-		mod.db.global.classes[sys] = loc
-		localizedToSystemClass = sys
-	end
-	return loc,sys
+local localizedToSystemClass = {}
+for sys, loc in pairs(LOCALIZED_CLASS_NAMES_MALE) do
+	localizedToSystemClass[loc] = sys
 end
-
+for sys, loc in pairs(LOCALIZED_CLASS_NAMES_FEMALE) do
+	localizedToSystemClass[loc] = sys
+end
 
 local tabComplete
 do
 	function tabComplete(t, text, pos)
-		local word = text:sub(pos)
+		local word = strsub(text, pos)
 		if #word == 0 then return end
 		local cf = ChatEdit_GetActiveWindow()
 		local channel = cf:GetAttribute("chatType")
 		if channel == "CHANNEL" then
-			channel = select(2, GetChannelName(cf:GetAttribute("channelTarget"))):lower()
+			channel = strlower(select(2, GetChannelName(cf:GetAttribute("channelTarget"))))
 		elseif channel == "OFFICER" then
 			channel = "GUILD"
 		elseif channel == "RAID_WARNING" or channel == "RAID_LEADER" or channel == "BATTLEGROUND" or channel == "BATTLEGROUND_LEADER" then
 			channel = "RAID"
 		end
 		if channels[channel] then
+			local searchword = "^"..strlower(word)
 			for k, v in pairs(channels[channel]) do
-				if k:lower():match("^" .. word:lower()) then
+				if strmatch(strlower(k), searchword) then
 					tinsert(t, k)
 				end
 			end
@@ -131,17 +116,17 @@ end
 local getNameColor
 do
 	local sq2 = sqrt(2)
-	local pi = _G.math.pi
 	local cos = _G.math.cos
+	local floor = _G.math.floor
 	local fmod = _G.math.fmod
+	local pi = _G.math.pi
 	local strbyte = _G.strbyte
 	local t = {}
 
 	-- http://www.tecgraf.puc-rio.br/~mgattass/color/HSVtoRGB.htm
 
-
 	local function HSVtoRGB(h, s, v)
-	   if ( s == 0 ) then
+	   if s == 0 then
 		  --achromatic=fail
 		  t.r = v
 		  t.g = v
@@ -149,7 +134,7 @@ do
 		  if not t.r then t.r = 0 end
 		  if not t.g then t.g = 0 end
 		  if not t.b then t.b = 0 end
-		  return t.r,t.g,t.b
+		  return t.r, t.g, t.b
 	   end
 	   h = h/60
 	   local i = floor(h)
@@ -192,7 +177,7 @@ do
 	   if not t.r then t.r = 0 end
 	   if not t.g then t.g = 0 end
 	   if not t.b then t.b = 0 end
-	   return t.r,t.g,t.b
+	   return t.r, t.g, t.b
 	end
 
 	function getNameColor(name)
@@ -227,9 +212,7 @@ local function updateSaveData(v)
 	end
 end
 
-
 function mod:OnInitialize()
-
 	self.db = Chatter.db:RegisterNamespace("PlayerNames", defaults)
 	for k, v in pairs(self.db.realm.names) do
 		if type(v) == "string" then
@@ -239,11 +222,6 @@ function mod:OnInitialize()
 
 	if self.db.global and self.db.global.names then
 		self.db.global.names = nil	-- get rid of old data
-	end
-
-	-- create reverse map of classes (localized -> system)
-	for sys,loc in pairs(self.db.global.classes) do
-		localizedToSystemClass[loc]=sys
 	end
 end
 
@@ -256,8 +234,12 @@ end
 local storedName = nil
 
 function mod:OnEnable()
-	self:RegisterEvent("RAID_ROSTER_UPDATE")
-	self:RegisterEvent("PARTY_MEMBERS_CHANGED")
+	if WoW5 then
+		self:RegisterEvent("GROUP_ROSTER_UPDATE")
+	else
+		self:RegisterEvent("PARTY_MEMBERS_CHANGED")
+		self:RegisterEvent("RAID_ROSTER_UPDATE")
+	end
 	self:RegisterEvent("WHO_LIST_UPDATE")
 	self:RegisterEvent("PLAYER_TARGET_CHANGED")
 	self:RegisterEvent("CHAT_MSG_SYSTEM", "WHO_LIST_UPDATE")
@@ -272,8 +254,16 @@ function mod:OnEnable()
 	if IsInGuild() then
 		GuildRoster()
 	end
-	self:RAID_ROSTER_UPDATE()
-	self:PARTY_MEMBERS_CHANGED()
+
+	player = UnitName("player") -- can be UNKNOWN when main chunk loads, so do it here.
+	self:AddPlayer(player, (select(2, UnitClass("player"))), UnitLevel("player"))
+
+	if WoW5 then
+		self:GROUP_ROSTER_UPDATE()
+	else
+		self:PARTY_MEMBERS_CHANGED()
+		self:RAID_ROSTER_UPDATE()
+	end
 
 	for i = 1, NUM_CHAT_WINDOWS do
 		local cf = _G["ChatFrame" .. i]
@@ -292,6 +282,7 @@ function mod:OnEnable()
 	if CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS.RegisterCallback then
 		CUSTOM_CLASS_COLORS:RegisterCallback(wipeCache)
 	end
+
 	if self.db.profile.noRealNames then
 		storedName = {}
 		local _, n = BNGetNumFriends()
@@ -345,7 +336,7 @@ end
 
 function mod:GUILD_ROSTER_UPDATE(evt)
 	if not IsInGuild() then return end
-	wipe( channels.GUILD )
+	wipe(channels.GUILD)
 	for i = 1, GetNumGuildMembers() do
 		local name, _, _, level, _, _, _, _, online, _, class = GetGuildRosterInfo(i)
 		if online then
@@ -355,19 +346,31 @@ function mod:GUILD_ROSTER_UPDATE(evt)
 	end
 end
 
-function mod:RAID_ROSTER_UPDATE(evt)
+function mod:GROUP_ROSTER_UPDATE(evt) -- WoW5 only
+	wipe(channels.PARTY)
 	wipe(channels.RAID)
 
-	for i = 1, GetNumRaidMembers() do
-		local n, _, _, l, _, c = GetRaidRosterInfo(i)
-		if n and c and l then
-			channels.RAID[n] = true
+	if IsInRaid() then
+		for i = 1, GetNumGroupMembers() do
+			local n, _, _, l, _, c = GetRaidRosterInfo(i)
+			if n and c and l then
+				channels.RAID[n] = true
+				self:AddPlayer(n, c, l, self.db.profile.saveParty)
+			end
+		end
+	elseif IsInGroup() then
+		for i = 1, GetNumGroupMembers() do
+			local u = "party" .. i
+			local n = UnitName(u)
+			local _, c = UnitClass(u)
+			local l = UnitLevel(u)
+			channels.PARTY[n] = true
 			self:AddPlayer(n, c, l, self.db.profile.saveParty)
 		end
 	end
 end
 
-function mod:PARTY_MEMBERS_CHANGED(evt)
+function mod:PARTY_MEMBERS_CHANGED(evt) -- delete when WoW5 goes live
 	wipe(channels.PARTY)
 
 	for i = 1, GetNumPartyMembers() do
@@ -376,6 +379,18 @@ function mod:PARTY_MEMBERS_CHANGED(evt)
 		local l = UnitLevel("party" .. i)
 		channels.PARTY[n] = true
 		self:AddPlayer(n, c, l, self.db.profile.saveParty)
+	end
+end
+
+function mod:RAID_ROSTER_UPDATE(evt) -- delete when WoW5 goes live
+	wipe(channels.RAID)
+
+	for i = 1, GetNumRaidMembers() do
+		local n, _, _, l, _, c = GetRaidRosterInfo(i)
+		if n and c and l then
+			channels.RAID[n] = true
+			self:AddPlayer(n, c, l, self.db.profile.saveParty)
+		end
 	end
 end
 
@@ -405,30 +420,23 @@ function mod:WHO_LIST_UPDATE(evt)
 end
 
 function mod:CHAT_MSG_CHANNEL_JOIN(evt, _, name, _, _, _, _, _, _, chan)
-	channels[chan:lower()] = channels[chan:lower()] or {}
-	channels[chan:lower()][name] = true
+	local chanlower = strlower(chan)
+	channels[chanlower] = channels[chanlower] or {}
+	channels[chanlower][name] = true
 end
 
 function mod:CHAT_MSG_CHANNEL_LEAVE(evt, _, name, _, _, _, _, _, _, chan)
-	if not channels[chan:lower()] then return end
-	channels[chan:lower()][name] = nil
+	local chanlower = strlower(chan)
+	if not channels[chanlower] then return end
+	channels[chanlower][name] = nil
 end
 
 function mod:GetColor(className, isLocal)
 	if isLocal then
-		local found
-		for k,v in pairs(LOCALIZED_CLASS_NAMES_FEMALE) do
-			if v == className then className = k found = true break end
-		end
-		if not found then
-			for k,v in pairs(LOCALIZED_CLASS_NAMES_MALE) do
-				if v == className then className = k break end
-			end
-		end
+		className = localizedToSystemClass[className]
 	end
 	local tbl = CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[className] or RAID_CLASS_COLORS[className]
-	local color = ("%02x%02x%02x"):format(tbl.r*255, tbl.g*255, tbl.b*255)
-	return color
+	return format("%02x%02x%02x", tbl.r*255, tbl.g*255, tbl.b*255)
 end
 
 
@@ -465,19 +473,17 @@ local function changeBNetName(misc, id, moreMisc, fakeName, tag, colon)
 	bleftBracket = ""
 	brightBracket = ""
 
-
 	if strmatch(moreMisc,"BN_INLINE_TOAST_ALERT") then
 		-- We got an alert strip the colon out of the misc its the last char
-		misc = misc:sub(1, -2)
+		misc = strsub(misc, 1, -2)
 	end
-
 
 	if not mod.db.profile.bnetBrackets then
 		bleftBracket = leftBracket
 		brightBracket = rightBracket
 	end
 	if englishClass ~= "" then --Friend logging off/Starcraft 2
-		if not strmatch( fakeName, "|cff" ) then
+		if not strmatch(fakeName, "|cff") then
 			-- Handle coloring here
 			if mod.db.profile.nameColoring == "CLASS" then
 				fakeName = "|cFF"..mod:GetColor(englishClass, true)..fakeName.."|r"
@@ -492,15 +498,15 @@ end
 local function changeName(msgHeader, name, extra, msgCnt,displayName, msgBody)
 	if name ~= player then
 		if emphasizeSelfInText then
-			msgBody = msgBody:gsub("("..player..")" , "|cffffff00>|r%1|cffffff00<|r"):gsub("("..player:lower()..")" , "|cffffff00>|r%1|cffffff00<|r")
+			msgBody = gsub(gsub(msgBody, "("..player..")" , "|cffffff00>|r%1|cffffff00<|r"), "("..player:lower()..")" , "|cffffff00>|r%1|cffffff00<|r")
 		end
 		if colorSelfInText then
-			msgBody = msgBody:gsub("("..player..")" , "|cffff0000%1|r"):gsub("("..player:lower()..")" , "|cffff0000%1|r")
+			msgBody = gsub(gsub(msgBody, "("..player..")" , "|cffff0000%1|r"), "("..player:lower()..")" , "|cffff0000%1|r")
 		end
 	end
 
-	if not strmatch( displayName, "|cff" ) then
-		displayName = mod:ColorName( name )
+	if not strmatch(displayName, "|cff") then
+		displayName = mod:ColorName(name)
 	end
 
 	cache[name] = displayName
@@ -514,24 +520,24 @@ local function changeName(msgHeader, name, extra, msgCnt,displayName, msgBody)
 	if level and (level ~= MAX_PLAYER_LEVEL or not mod.db.profile.excludeMaxLevel) then
 		if mod.db.profile.levelByDiff then
 			local c = GetQuestDifficultyColor(level)
-			level = ("|cff%02x%02x%02x%s|r"):format(c.r * 255, c.g * 255, c.b * 255, level)
-			displayName = ("%s%s%s"):format( displayName, separator, level )
+			level = format("|cff%02x%02x%02x%s|r", c.r * 255, c.g * 255, c.b * 255, level)
+			displayName = format("%s%s%s", displayName, separator, level)
 		else
 			-- If we already have a color -- steal it and use it to color the level
-			if strmatch( displayName, "|cff......" ) then
+			if strmatch(displayName, "|cff......") then
 				-- This will seriously fuck up the string if there is already more than 1 color ... FIXME
 				level = gsub(displayName, "((|cff......).-|r)", function (string, color)
-					return ("%s%s|r"):format( color, level )
-				end )
+					return format("%s%s|r")
+				end)
 			end
-			displayName = ("%s%s%s"):format( displayName, separator, level )
+			displayName = format("%s%s%s", displayName, separator, level)
 		end
 	end
 
-	return ("|Hplayer:%s%s%s|h%s%s%s|h%s"):format(name, extra, msgCnt, leftBracket, displayName, rightBracket, msgBody)
+	return format("|Hplayer:%s%s%s|h%s%s%s|h%s", name, extra, msgCnt, leftBracket, displayName, rightBracket, msgBody)
 end
 
-function mod:ColorName( name )
+function mod:ColorName(name)
 	local class
 	local tab = mod.db.realm.names[name] or local_names[name]
 	if tab then class = tab.class end
@@ -551,7 +557,7 @@ function mod:ColorName( name )
 				c = getNameColor(name)
 			end
 
-			name = ("|cff%02x%02x%02x%s|r"):format(c.r * 255, c.g * 255, c.b * 255, name )
+			name = format("|cff%02x%02x%02x%s|r", c.r * 255, c.g * 255, c.b * 255, name)
 		end
 	end
 
@@ -560,9 +566,9 @@ end
 
 function mod:AddMessage(frame, text, ...)
 	if text and type(text) == "string" then
-		text = text:gsub("(|Hplayer:([^|:]+)([:%d+]*)([^|]*)|h%[([^%]]+)%]|h)(.-)$", changeName)
-		text = text:gsub("(|HBNplayer:%S-|k:)(%d-)(:%S-|h)%[(%S-)%](|?h?)(:?)", changeBNetName)
-		text = text:gsub("(|HBNplayer%S-|k)(%d-)(:%S-BN_INLINE_TOAST_ALERT%S-|h)%[(%S-)%](|?h?)(:?)",fixLogin)
+		text = gsub(text, "(|Hplayer:([^|:]+)([:%d+]*)([^|]*)|h%[([^%]]+)%]|h)(.-)$", changeName)
+		text = gsub(text, "(|HBNplayer:%S-|k:)(%d-)(:%S-|h)%[(%S-)%](|?h?)(:?)", changeBNetName)
+		text = gsub(text, "(|HBNplayer%S-|k)(%d-)(:%S-BN_INLINE_TOAST_ALERT%S-|h)%[(%S-)%](|?h?)(:?)",fixLogin)
 	end
 	return self.hooks[frame].AddMessage(frame, text, ...)
 end
@@ -572,7 +578,6 @@ function mod:Info()
 end
 
 local options
-
 function mod:GetOptions()
 	if not options then	-- save RAM / load time
 		options = {
@@ -659,7 +664,7 @@ function mod:GetOptions()
 						type = "execute",
 						name = L["Reset Data"],
 						desc = L["Destroys all your saved class/level data"],
-						func = function() wipe( mod.db.realm.names ) end,
+						func = function() wipe(mod.db.realm.names) end,
 						order = 101,
 						confirm = function() return L["Are you sure you want to delete all your saved class/level data?"] end
 					}

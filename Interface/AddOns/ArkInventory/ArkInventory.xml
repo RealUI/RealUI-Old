@@ -358,6 +358,63 @@
 
 	</Button>
 
+	<Button virtual="true" name="ARKINV_TemplateButtonItemTainted" inherits="ContainerFrameItemButtonTemplate" hidden="true">
+		
+		<NormalTexture name="$parentNormalTexture" urgency="5" file="" />
+		
+		<Frames>
+			
+			<Frame name="$parentArkBorder" inherits="ARKINV_Border" />
+			
+			<Frame name="$parentArkHighlight">
+			
+				<Anchors>
+					<Anchor point="TOPLEFT" />
+					<Anchor point="BOTTOMRIGHT" />
+				</Anchors>
+				
+				<Layers>
+					<Layer level="OVERLAY">
+						<Texture name="$parentTainted" hidden="false">
+							<Color r="0.7" g="0.1" b="1.0" a="0.4" />
+						</Texture>
+					</Layer>
+				</Layers>
+				
+			</Frame>
+			
+		</Frames>
+		
+		<Scripts>
+			
+			<OnLoad>
+				ArkInventory.Frame_Item_Tainted_OnLoad( self )
+			</OnLoad>
+			
+			<OnEnter>
+				ArkInventory.Frame_Tainted_OnEnter( self )
+			</OnEnter>
+			
+			<OnClick>
+				-- do nothing
+			</OnClick>
+			
+			<OnDragStart>
+				-- do nothing
+			</OnDragStart>
+			
+			<OnReceiveDrag>
+				-- do nothing
+			</OnReceiveDrag>
+			
+			<OnMouseUp>
+				-- do nothing
+			</OnMouseUp>
+			
+		</Scripts>
+		
+	</Button>
+	
 	<Button virtual="true" name="ARKINV_TemplateButtonBarEdit" inherits="ARKINV_TemplateButtonItem" hidden="true">
 
 		<Size x="20" y="20" />
@@ -552,9 +609,9 @@
 	</Button>
 	
 	<Button virtual="true" name="ArkInventory_ChangerGenericExtraTemplate" inherits="ArkInventory_ChangerPlayerMainTemplate">
-	
-		<Scripts>
 		
+		<Scripts>
+			
 			<OnLoad>
 				ArkInventory.Frame_Changer_Secondary_OnLoad( self )
 			</OnLoad>
@@ -574,7 +631,7 @@
 			<OnEnter>
 				ArkInventory.Frame_Changer_Secondary_OnEnter( self )
 			</OnEnter>
-		
+			
 		</Scripts>
 		
 	</Button>
@@ -1542,7 +1599,15 @@
 
 	
 <!-- ADDON FRAME STARTS HERE -->
-
+	
+	<Frame hidden="true">
+		<Scripts>
+			<OnLoad>
+				ArkInventory.OnLoad( )
+			</OnLoad>
+		</Scripts>
+	</Frame>
+	
 	<Frame name="ARKINV_Frame1" inherits="ARKINV_TemplateFrameMain" id="1" /> <!-- bag -->
 	
 	<Frame parent="ARKINV_Frame1Changer" name="$parentWindow" hidden="false">
@@ -1563,7 +1628,7 @@
 					</Anchor>
 				</Anchors>
 			</CheckButton>
-
+			
 			<CheckButton name="$parentBag2" inherits="ArkInventory_ChangerGenericExtraTemplate">
 				<Anchors>
 					<Anchor point="LEFT" relativeTo="$parentBag1" relativePoint="RIGHT">
@@ -1571,7 +1636,7 @@
 					</Anchor>
 				</Anchors>
 			</CheckButton>
-
+			
 			<CheckButton name="$parentBag3" inherits="ArkInventory_ChangerGenericExtraTemplate">
 				<Anchors>
 					<Anchor point="LEFT" relativeTo="$parentBag2" relativePoint="RIGHT">

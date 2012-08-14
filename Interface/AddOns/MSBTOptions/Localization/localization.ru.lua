@@ -56,23 +56,6 @@ L.MSG_INVALID_ITEM_NAME			    = "Неверное название предме�
 
 
 ------------------------------
--- Class Names.
-------------------------------
-
-local obj = L.CLASS_NAMES
-obj["DEATHKNIGHT"]	= "Рыцарь смерти"
-obj["DRUID"]		= "Друид"
-obj["HUNTER"]		= "Охотник"
-obj["MAGE"]			= "Маг"
-obj["PALADIN"]		= "паладин"
-obj["PRIEST"]		= "Жрец"
-obj["ROGUE"]		= "Разбойник"
-obj["SHAMAN"]		= "Шаман"
-obj["WARLOCK"]		= "Чернокнижник"
-obj["WARRIOR"]		= "Воин"
-
-
-------------------------------
 -- Interface tabs
 ------------------------------
 
@@ -118,6 +101,8 @@ obj["enableTrigger"]			= { tooltip="Вкл/Выкл триггер."}
 obj["allPowerGains"]			= { label="Получ. ВСЕХ энергий", tooltip="Отображение всех получении энергии включая даже те что не отображаются в списке боя.\n\nПРЕДУПРЕЖДЕНИЕ: Эта опция очень спамит и игнорирует все пороги энергии и механику регуляторов.\n\nНЕ РЕКОМЕНДУЕТСЯ."}
 obj["abbreviateSkills"]			= { label="Cокращать навыки", tooltip="Cокращать названия навыков (Только английские).\n\nThis can be overriden by each event with the %sl event code."}
 obj["mergeSwings"]				= { label="Объединить удары", tooltip="Объединить регулярные удары в ближнем бою, которые ударяют в течение короткого промежутка времени."}
+--obj["shortenNumbers"]			= { label="Shorten Numbers", tooltip="Display numbers in an abbreviated format (example: 32765 -> 33k)."}
+--obj["groupNumbers"]				= { label="Group By Thousands", tooltip="Display numbers grouped by thousands (example: 32765 -> 32,765)."}
 obj["hideSkills"]				= { label="Скрыть навыки", tooltip="Не отображать названия навыков в входящих и исходящих событиях.\n\nYou will give up some customization capability at the event level if you choose to use this option since it causes the %s event code to be ignored."}
 obj["hideNames"]				= { label="Скрыть имена", tooltip="Не отображать названия юнитов в входящих и исходящих событиях.\n\nYou will give up some customization capability at the event level if you choose to use this option since it causes the %n event code to be ignored."}
 obj["hideFullOverheals"]		= { label="Скрыть избыточное исц.", tooltip="Не показывать исцеление которого эффективное значение лечения равно нулю."}
@@ -286,6 +271,7 @@ obj["HEALING_DONE"]			= "%a - Значение нанесённого лечен
 obj["ABSORBED_AMOUNT"]		= "%a - Значение поглот. урона.\n"
 obj["AURA_AMOUNT"]			= "%a - Значение стеков ауры.\n"
 obj["ENERGY_AMOUNT"]		= "%a - Значение энергии.\n"
+--obj["CHI_AMOUNT"]			= "%a - Amount of chi you have.\n"
 obj["CP_AMOUNT"]			= "%a - Значение сколько приёмов в серии.\n"
 obj["HOLY_POWER_AMOUNT"]	= "%a - Значение вашей энергии Света.\n"
 obj["HONOR_AMOUNT"]			= "%a - Значение чести.\n"
@@ -474,6 +460,10 @@ obj["NOTIFICATION_COMBAT_ENTER"]		= { label="Начало боя", tooltip="Вк
 obj["NOTIFICATION_COMBAT_LEAVE"]		= { label="Выход из боя", tooltip="Вкл/Выкл оповещение о том когда вы выходите из бой."}
 obj["NOTIFICATION_POWER_GAIN"]			= { label="Получ. энергии", tooltip="Вкл/Выкл оповещение когда вы получаете дополнительную ману, ярость, или энергию."}
 obj["NOTIFICATION_POWER_LOSS"]			= { label="Потеря энергии", tooltip="Вкл/Выкл оповещение когда теряете ману, ярость, или энергию от похищения."}
+--obj["NOTIFICATION_ALT_POWER_GAIN"]		= { label="Alternate Power Gains", tooltip="Enable when you gain alternate power such as sound level on Atramedes."}
+--obj["NOTIFICATION_ALT_POWER_LOSS"]		= { label="Alternate Power Losses", tooltip="Enable when you lose alternate power from drains."}
+--obj["NOTIFICATION_CHI_CHANGE"]			= { label="Chi Changes", tooltip="Enable when you change chi."}
+--obj["NOTIFICATION_CHI_FULL"]			= { label="Chi Full", tooltip="Enable when you attain full chi."}
 obj["NOTIFICATION_CP_GAIN"]				= { label="Получ. Приёма в Серии", tooltip="Вкл/Выкл оповещение когда вы получаете приём в серии."}
 obj["NOTIFICATION_CP_FULL"]				= { label="Макс. Приёмов в Серии", tooltip="Вкл/Выкл оповещение когда вы достигаете максимального количества приемов в серии."}
 obj["NOTIFICATION_HOLY_POWER_CHANGE"]	= { label="Изменение энергии Света", tooltip="Вкл/Выкл оповещение изменения вашей энергии Света."}

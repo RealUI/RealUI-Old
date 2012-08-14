@@ -42,7 +42,7 @@ L["|cffff0000WARNING|cffffffff: Pressing the button will reset your complete pro
 L["|cffffff00Click|r to toggle bar lock"] = "|cffffff00Click|r para fijar/liberar las barras"
 L["|cffffff00Right-click|r to open the options menu"] = "|cffffff00Click-Derecho|r para abrir el menú de opciones"
 L["Change the current anchor point of the bar."] = "Cambia el punto de anclaje actual de la barra."
-L["Choose between the classic WoW layout and two variations"] = "Elija entre la disposiocón del WoW clásico y dos variaciones"
+L["Choose between the classic WoW layout and two variations"] = "Elija entre la disposición del WoW clásico y dos variaciones" -- Needs review
 L["Choose the ending to the left"] = "Elija el acabado a la izquierda"
 L["Choose the ending to the right"] = "Elija el acabado a la derecha"
 L["Classic"] = "Clásico"

@@ -81,6 +81,7 @@ L.MSG_STATIC			= "정적 메시지"
 
 L.MSG_COMBAT					= "전투 상태"
 L.MSG_DISPEL					= "해제"
+--L.MSG_CHI_FULL					= "Full Chi"
 L.MSG_CP						= "연계 점수"
 L.MSG_CP_FULL					= "마무리 공격"
 L.MSG_HOLY_POWER_FULL			= "최대 신성한 힘"

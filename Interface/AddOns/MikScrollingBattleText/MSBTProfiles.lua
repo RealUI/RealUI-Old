@@ -44,83 +44,74 @@ local PET_SPACE = PET .. " "
 -- Flags used by the combat log.
 local FLAG_YOU 			= 0xF0000000
 local TARGET_TARGET		= 0x00010000
-local REACTION_HOSTILE	= 0x00000040
+local REACTION_HOSTILE		= 0x00000040
 
 
 -- Spell IDs.
 local SPELLID_BERSERK			= 93622
-local SPELLID_COUNTER_ATTACK	= 19306
+local SPELLID_ELUSIVE_BREW		= 126453 -- Activated ability
 local SPELLID_EXECUTE			= 5308
 local SPELLID_FIRST_AID			= 3273
 local SPELLID_HAMMER_OF_WRATH	= 24275
 local SPELLID_KILL_SHOT			= 53351
 local SPELLID_LAVA_SURGE		= 77762
 local SPELLID_REVENGE			= 6572
-local SPELLID_RIPOSTE			= 14251
 local SPELLID_RUNE_STRIKE		= 56815
 local SPELLID_OVERPOWER			= 7384
 local SPELLID_VICTORY_RUSH		= 34428
 local SPELLID_SHADOW_ORB		= 77487
 
 -- Trigger spell names.
-local SPELL_BACKLASH			= GetSkillName(34935)
-local SPELL_BERSERK             = GetSkillName(SPELLID_BERSERK)
-local SPELL_BLOODSURGE			= GetSkillName(46913)
-local SPELL_BLOODSURGE_SLAM		= GetSkillName(46916)
-local SPELL_BLOOD_SWARM			= GetSkillName(81141)
-local SPELL_BRAIN_FREEZE		= GetSkillName(44546)
-local SPELL_BF_FIREBALL			= GetSkillName(57761)
-local SPELL_CLEARCASTING		= GetSkillName(12536)
-local SPELL_COUNTER_ATTACK		= GetSkillName(SPELLID_COUNTER_ATTACK)
-local SPELL_DECIMATION			= GetSkillName(63165)
-local SPELL_ECLIPSE_SOLAR		= GetSkillName(48517)
-local SPELL_ECLIPSE_LUNAR		= GetSkillName(48518)
-local SPELL_ERADICATION			= GetSkillName(47195)
-local SPELL_EXECUTE				= GetSkillName(SPELLID_EXECUTE)
-local SPELL_FINGERS_OF_FROST	= GetSkillName(44544)
-local SPELL_FREEZING_FOG       	= GetSkillName(59052)
-local SPELL_HAMMER_OF_WRATH		= GetSkillName(SPELLID_HAMMER_OF_WRATH)
-local SPELL_HOT_STREAK			= GetSkillName(44445)
-local SPELL_IMPACT				= GetSkillName(11103)
-local SPELL_KILL_SHOT			= GetSkillName(SPELLID_KILL_SHOT)
-local SPELL_KILLING_MACHINE		= GetSkillName(51124)
-local SPELL_LAVA_SURGE			= GetSkillName(SPELLID_LAVA_SURGE)
-local SPELL_LOCK_AND_LOAD		= GetSkillName(56453)
-local SPELL_MAELSTROM_WEAPON	= GetSkillName(53817)
-local SPELL_MISSILE_BARRAGE		= GetSkillName(62401)
-local SPELL_MOLTEN_CORE			= GetSkillName(47383)
-local SPELL_NIGHTFALL			= GetSkillName(18094)
-local SPELL_OWLKIN_FRENZY		= GetSkillName(48391)
-local SPELL_PREDATORS_SWIFTNESS	= GetSkillName(69369)
-local SPELL_PVP_TRINKET			= GetSkillName(42292)
-local SPELL_REVENGE				= GetSkillName(SPELLID_REVENGE)
-local SPELL_RIME 				= GetSkillName(49188)
-local SPELL_RIPOSTE				= GetSkillName(SPELLID_RIPOSTE)
-local SPELL_RUNE_STRIKE			= GetSkillName(SPELLID_RUNE_STRIKE)
-local SPELL_OVERPOWER			= GetSkillName(SPELLID_OVERPOWER)
-local SPELL_SHADOW_TRANCE		= GetSkillName(17941)
-local SPELL_SHIELD_SLAM			= GetSkillName(23922)
-local SPELL_SHADOW_INFUSION		= GetSkillName(91342)
-local SPELL_SHADOW_ORB			= GetSkillName(SPELLID_SHADOW_ORB)
-local SPELL_SHOOTING_STARS		= GetSkillName(93400)
-local SPELL_SUDDEN_DEATH		= GetSkillName(52437)
-local SPELL_SUDDEN_DOOM			= GetSkillName(49018)
-local SPELL_SWORD_AND_BOARD		= GetSkillName(50227)
-local SPELL_TASTE_FOR_BLOOD		= GetSkillName(60503)
-local SPELL_THE_ART_OF_WAR		= GetSkillName(59578)
-local SPELL_TIDAL_WAVES			= GetSkillName(53390)
-local SPELL_VICTORY_RUSH		= GetSkillName(SPELLID_VICTORY_RUSH)
-local SPELL_VIPER_STING			= GetSkillName(67993)
+local SPELL_BACKLASH				= GetSkillName(34936)
+local SPELL_BERSERK					= GetSkillName(SPELLID_BERSERK)
+local SPELL_BLOODSURGE				= GetSkillName(46916)
+local SPELL_BRAIN_FREEZE			= GetSkillName(44549)
+local SPELL_BF_FIREBALL				= GetSkillName(57761)
+local SPELL_CLEARCASTING			= GetSkillName(16870)
+local SPELL_DECIMATION				= GetSkillName(108869)
+local SPELL_ECLIPSE_SOLAR			= GetSkillName(48517)
+local SPELL_ECLIPSE_LUNAR			= GetSkillName(48518)
+local SPELL_ELUSIVE_BREW			= GetSkillName(128939)
+local SPELL_EXECUTE					= GetSkillName(SPELLID_EXECUTE)
+local SPELL_FINGERS_OF_FROST		= GetSkillName(112965)
+local SPELL_FREEZING_FOG			= GetSkillName(59052)
+local SPELL_HAMMER_OF_WRATH			= GetSkillName(SPELLID_HAMMER_OF_WRATH)
+local SPELL_KILL_SHOT				= GetSkillName(SPELLID_KILL_SHOT)
+local SPELL_KILLING_MACHINE			= GetSkillName(51124)
+local SPELL_LAVA_SURGE				= GetSkillName(SPELLID_LAVA_SURGE)
+local SPELL_LOCK_AND_LOAD			= GetSkillName(56453)
+local SPELL_MAELSTROM_WEAPON		= GetSkillName(53817)
+local SPELL_MANA_TEA				= GetSkillName(115867)
+local SPELL_MISSILE_BARRAGE			= GetSkillName(62401)
+local SPELL_MOLTEN_CORE				= GetSkillName(122351)
+local SPELL_NIGHTFALL				= GetSkillName(108558)
+local SPELL_OWLKIN_FRENZY			= GetSkillName(48391)
+local SPELL_POWER_GUARD				= GetSkillName(118636)
+local SPELL_PREDATORS_SWIFTNESS		= GetSkillName(69369)
+local SPELL_PVP_TRINKET				= GetSkillName(42292)
+local SPELL_REVENGE					= GetSkillName(SPELLID_REVENGE)
+local SPELL_RIME 					= GetSkillName(59057)
+local SPELL_RUNE_STRIKE				= GetSkillName(SPELLID_RUNE_STRIKE)
+local SPELL_OVERPOWER				= GetSkillName(SPELLID_OVERPOWER)
+local SPELL_SHADOW_TRANCE			= GetSkillName(17941)
+local SPELL_SHIELD_SLAM				= GetSkillName(23922)
+local SPELL_SHADOW_INFUSION			= GetSkillName(91342)
+local SPELL_SHADOW_ORB				= GetSkillName(SPELLID_SHADOW_ORB)
+local SPELL_SHOOTING_STARS			= GetSkillName(93400)
+local SPELL_SUDDEN_DEATH			= GetSkillName(52437)
+local SPELL_SUDDEN_DOOM				= GetSkillName(81340)	-- XXX: No trigger atm - DK
+local SPELL_SWORD_AND_BOARD			= GetSkillName(50227)
+local SPELL_TASTE_FOR_BLOOD			= GetSkillName(56638)
+local SPELL_THE_ART_OF_WAR			= GetSkillName(59578)
+local SPELL_TIDAL_WAVES				= GetSkillName(53390)
+local SPELL_VICTORY_RUSH			= GetSkillName(SPELLID_VICTORY_RUSH)  -- XXX: Update for buff
+local SPELL_VITAL_MISTS			= GetSkillName(122107)
 
 -- Throttle, suppression, and other spell names.
-local SPELL_ARCANE_EMPOWERMENT		= GetSkillName(31579)
 local SPELL_BLOOD_PRESENCE			= GetSkillName(48266)
-local SPELL_DESECRATION				= GetSkillName(55741)
 local SPELL_DRAIN_LIFE				= GetSkillName(689)
-local SPELL_FEROCIOUS_INSPIRATION	= GetSkillName(34460)
-local SPELL_MANA_SPRING				= GetSkillName(5677)
 local SPELL_SHADOWMEND				= GetSkillName(39373)
-local SPELL_REFLECTIVE_SHIELD		= GetSkillName(33201)
+local SPELL_REFLECTIVE_SHIELD		= GetSkillName(58252)
 local SPELL_UNDYING_RESOLVE			= GetSkillName(51915)
 local SPELL_VAMPIRIC_EMBRACE		= GetSkillName(15286)
 local SPELL_VAMPIRIC_TOUCH			= GetSkillName(34914)
@@ -130,6 +121,9 @@ local SPELL_VAMPIRIC_TOUCH			= GetSkillName(34914)
 -------------------------------------------------------------------------------
 -- Private variables.
 -------------------------------------------------------------------------------
+
+--- Prevent tainting global _.
+local _
 
 -- Dynamically created frame for receiving events.
 local eventFrame
@@ -994,6 +988,30 @@ local masterProfile = {
    colorB		= 0,
    message		= "-%a %p",
   },
+  NOTIFICATION_ALT_POWER_GAIN = {
+   colorR		= 0,
+   colorG		= 0.5,
+   colorB		= 0.5,
+   message		= "+%a %p",
+  },
+  NOTIFICATION_ALT_POWER_LOSS = {
+   colorR		= 0,
+   colorG		= 0.5,
+   colorB		= 0.5,
+   message		= "-%a %p",
+  },
+  NOTIFICATION_CHI_CHANGE = {
+   colorG		= 0.5,
+   colorB		= 0,
+   message		= "%a " .. LIGHT_FORCE,
+  },
+  NOTIFICATION_CHI_FULL = {
+   colorG		= 0.5,
+   colorB		= 0,
+   message		= L.MSG_CHI_FULL .. "!",
+   alwaysSticky	= true,
+   fontSize		= 26,
+  },
   NOTIFICATION_CP_GAIN = {
    colorG		= 0.5,
    colorB		= 0,
@@ -1155,17 +1173,7 @@ local masterProfile = {
    alwaysSticky		= true,
    fontSize			= 26,
    classes			= "WARRIOR",
-   mainEvents		= "SPELL_AURA_APPLIED{skillName;;eq;;" .. SPELL_BLOODSURGE_SLAM .. ";;recipientAffiliation;;eq;;" .. FLAG_YOU .. "}"
-  },
-  MSBT_TRIGGER_BLOOD_SWARM = {
-   colorR			= 0.8,
-   colorG			= 0.5,
-   colorB			= 0.5,
-   message			= SPELL_BLOOD_SWARM .. "!",
-   alwaysSticky		= true,
-   fontSize			= 26,
-   classes			= "DEATHKNIGHT",
-   mainEvents		= "SPELL_AURA_APPLIED{skillName;;eq;;" .. SPELL_BLOOD_SWARM .. ";;recipientAffiliation;;eq;;" .. FLAG_YOU .. "}"
+   mainEvents		= "SPELL_AURA_APPLIED{skillName;;eq;;" .. SPELL_BLOODSURGE .. ";;recipientAffiliation;;eq;;" .. FLAG_YOU .. "}"
   },
   MSBT_TRIGGER_BRAIN_FREEZE = {
    colorG			= 0.627,
@@ -1183,16 +1191,6 @@ local masterProfile = {
    fontSize			= 26,
    classes			= "DRUID,MAGE,PRIEST,SHAMAN",
    mainEvents		= "SPELL_AURA_APPLIED{skillName;;eq;;" .. SPELL_CLEARCASTING .. ";;recipientAffiliation;;eq;;" .. FLAG_YOU .. "}",
-  },
-  MSBT_TRIGGER_COUNTER_ATTACK = {
-   colorB			= 0,
-   message			= SPELL_COUNTER_ATTACK .. "!",
-   alwaysSticky		= true,
-   fontSize			= 26,
-   classes			= "HUNTER",
-   mainEvents		= "GENERIC_MISSED{recipientAffiliation;;eq;;" .. FLAG_YOU .. ";;missType;;eq;;PARRY}",
-   exceptions		= "unavailableSkill;;eq;;" .. SPELL_COUNTER_ATTACK,
-   iconSkill		= SPELLID_COUNTER_ATTACK,
   },
   MSBT_TRIGGER_DECIMATION = {
    colorG			= 0.627,
@@ -1220,14 +1218,15 @@ local masterProfile = {
    classes			= "DRUID",
    mainEvents		= "SPELL_AURA_APPLIED{skillName;;eq;;" .. SPELL_ECLIPSE_LUNAR .. ";;recipientAffiliation;;eq;;" .. FLAG_YOU .. "}",
   },
-  MSBT_TRIGGER_ERADICATION = {
-   colorR			= 0.118,
-   colorG			= 0.882,
-   message			= SPELL_ERADICATION .. "!",
+  MSBT_TRIGGER_ELUSIVE_BREW = {
+   colorB			= 0,
+   message			= SPELL_ELUSIVE_BREW .. " x%a!",
    alwaysSticky		= true,
    fontSize			= 26,
-   classes			= "WARLOCK",
-   mainEvents		= "SPELL_AURA_APPLIED{skillName;;eq;;" .. SPELL_ERADICATION .. ";;recipientAffiliation;;eq;;" .. FLAG_YOU .. "}",
+   classes			= "MONK",
+   mainEvents		= "SPELL_AURA_APPLIED{skillName;;eq;;" .. SPELL_ELUSIVE_BREW .. ";;amount;;eq;;5;;recipientAffiliation;;eq;;" .. FLAG_YOU .. "}&&" ..
+					  "SPELL_AURA_APPLIED{skillName;;eq;;" .. SPELL_ELUSIVE_BREW .. ";;amount;;eq;;10;;recipientAffiliation;;eq;;" .. FLAG_YOU .. "}&&" ..
+					  "SPELL_AURA_APPLIED{skillName;;eq;;" .. SPELL_ELUSIVE_BREW .. ";;amount;;eq;;15;;recipientAffiliation;;eq;;" .. FLAG_YOU .. "}",
   },
   MSBT_TRIGGER_EXECUTE = {
    colorB			= 0,
@@ -1258,24 +1257,6 @@ local masterProfile = {
    mainEvents		= "UNIT_HEALTH{unitID;;eq;;target;;threshold;;lt;;20;;unitReaction;;eq;;" .. REACTION_HOSTILE .. "}",
    exceptions		= "unavailableSkill;;eq;;" .. SPELL_HAMMER_OF_WRATH,
    iconSkill		= SPELLID_HAMMER_OF_WRATH,
-  },
-  MSBT_TRIGGER_HOT_STREAK = {
-   colorG			= 0.627,
-   colorB			= 0.627,
-   message			= SPELL_HOT_STREAK .. "!",
-   alwaysSticky		= true,
-   fontSize			= 26,
-   classes			= "MAGE",
-   mainEvents		= "SPELL_AURA_APPLIED{skillName;;eq;;" .. SPELL_HOT_STREAK .. ";;recipientAffiliation;;eq;;" .. FLAG_YOU .. "}",
-  },
-  MSBT_TRIGGER_IMPACT = {
-   colorG			= 0.25,
-   colorB			= 0.25,
-   message			= SPELL_IMPACT .. "!",
-   alwaysSticky		= true,
-   fontSize			= 26,
-   classes			= "MAGE",
-   mainEvents		= "SPELL_AURA_APPLIED{skillName;;eq;;" .. SPELL_IMPACT .. ";;recipientAffiliation;;eq;;" .. FLAG_YOU .. "}"
   },
   MSBT_TRIGGER_KILL_SHOT = {
    colorG			= 0.25,
@@ -1356,6 +1337,15 @@ local masterProfile = {
    classes			= "SHAMAN",
    mainEvents		= "SPELL_AURA_APPLIED{skillName;;eq;;" .. SPELL_MAELSTROM_WEAPON .. ";;amount;;eq;;5;;recipientAffiliation;;eq;;" .. FLAG_YOU .. "}",
   },
+  MSBT_TRIGGER_MANA_TEA = {
+   colorR			= 0,
+   colorG			= 0.5,
+   message			= SPELL_MANA_TEA .. " x%a!",
+   alwaysSticky		= true,
+   fontSize			= 26,
+   classes			= "MONK",
+   mainEvents		= "SPELL_AURA_APPLIED{skillName;;eq;;" .. SPELL_MANA_TEA .. ";;amount;;eq;;20;;recipientAffiliation;;eq;;" .. FLAG_YOU .. "}"
+  },
   MSBT_TRIGGER_MISSILE_BARRAGE = {
    colorG			= 0.725,
    message			= SPELL_MISSILE_BARRAGE .. "!",
@@ -1392,6 +1382,15 @@ local masterProfile = {
    mainEvents		= "GENERIC_MISSED{sourceAffiliation;;eq;;" .. FLAG_YOU .. ";;missType;;eq;;DODGE}",
    exceptions		= "unavailableSkill;;eq;;" .. SPELL_OVERPOWER,
    iconSkill		= SPELLID_OVERPOWER,
+  },
+  MSBT_TRIGGER_POWER_GUARD = {
+   colorR			= 0.5,
+   colorB			= 0.5,
+   message			= SPELL_POWER_GUARD .. " x3!",
+   alwaysSticky		= true,
+   fontSize			= 26,
+   classes			= "MONK",
+   mainEvents		= "SPELL_AURA_APPLIED{skillName;;eq;;" .. SPELL_POWER_GUARD .. ";;amount;;eq;;3;;recipientAffiliation;;eq;;" .. FLAG_YOU .. "}",
   },
   MSBT_TRIGGER_PVP_TRINKET = {
    colorB			= 0,
@@ -1449,16 +1448,6 @@ local masterProfile = {
    mainEvents		= "GENERIC_MISSED{recipientAffiliation;;eq;;" .. FLAG_YOU .. ";;missType;;eq;;DODGE}&&GENERIC_MISSED{recipientAffiliation;;eq;;" .. FLAG_YOU .. ";;missType;;eq;;PARRY}",
    exceptions		= "unavailableSkill;;eq;;" .. SPELL_RUNE_STRIKE .. ";;recentlyFired;;lt;;5",
    iconSkill		= SPELLID_RUNE_STRIKE,
-  },
-  MSBT_TRIGGER_RIPOSTE = {
-   colorB			= 0,
-   message			= SPELL_RIPOSTE .. "!",
-   alwaysSticky		= true,
-   fontSize			= 26,
-   classes			= "ROGUE",
-   mainEvents		= "GENERIC_MISSED{recipientAffiliation;;eq;;" .. FLAG_YOU .. ";;missType;;eq;;PARRY}",
-   exceptions		= "unavailableSkill;;eq;;" .. SPELL_RIPOSTE,
-   iconSkill		= SPELLID_RIPOSTE,
   },
   MSBT_TRIGGER_SHADOW_INFUSION = {
    colorR			= 0.709,
@@ -1546,14 +1535,14 @@ local masterProfile = {
    exceptions		= "unavailableSkill;;eq;;" .. SPELL_VICTORY_RUSH .. ";;trivialTarget;;eq;;true;;recentlyFired;;lt;;2",
    iconSkill		= SPELLID_VICTORY_RUSH,
   },
-  MSBT_TRIGGER_VIPER_STING = {
-   colorR			= 0,
-   colorG			= 0,
-   message			= SPELL_VIPER_STING .. "!",
+  MSBT_TRIGGER_VITAL_MISTS = {
+   colorR			= 0.5,
+   colorB			= 0.5,
+   message			= SPELL_VITAL_MISTS .. " x%a!",
    alwaysSticky		= true,
    fontSize			= 26,
-   classes			= "DRUID,MAGE,PALADIN,PRIEST,SHAMAN,WARLOCK",
-   mainEvents		= "SPELL_AURA_APPLIED{skillName;;eq;;" .. SPELL_VIPER_STING .. ";;recipientAffiliation;;eq;;" .. FLAG_YOU .. "}",
+   classes			= "MONK",
+   mainEvents		= "SPELL_AURA_APPLIED{skillName;;eq;;" .. SPELL_VITAL_MISTS .. ";;amount;;eq;;5;;recipientAffiliation;;eq;;" .. FLAG_YOU .. "}"
   },
  }, -- End triggers
 
@@ -1600,6 +1589,7 @@ local masterProfile = {
  DRUID			= CreateClassSettingsTable("DRUID"),
  HUNTER			= CreateClassSettingsTable("HUNTER"),
  MAGE			= CreateClassSettingsTable("MAGE"),
+ MONK			= CreateClassSettingsTable("MONK"),
  PALADIN		= CreateClassSettingsTable("PALADIN"),
  PRIEST			= CreateClassSettingsTable("PRIEST"),
  ROGUE			= CreateClassSettingsTable("ROGUE"),
@@ -1615,7 +1605,6 @@ local masterProfile = {
  throttleList = {
   [SPELL_BLOOD_PRESENCE]	= 5,
   [SPELL_DRAIN_LIFE]		= 3,
-  [SPELL_MANA_SPRING]		= 5,
   [SPELL_SHADOWMEND]		= 5,
   [SPELL_REFLECTIVE_SHIELD]	= 5,
   [SPELL_VAMPIRIC_EMBRACE]	= 5,
@@ -1627,15 +1616,15 @@ local masterProfile = {
  mergeExclusions		= {},
  abilitySubstitutions	= {},
  abilitySuppressions	= {
-  [SPELL_ARCANE_EMPOWERMENT]	= true,
-  [SPELL_DESECRATION]			= true,
-  [SPELL_FEROCIOUS_INSPIRATION]	= true,
   [SPELL_UNDYING_RESOLVE]		= true,
  },
  damageThreshold		= 0,
  healThreshold			= 0,
  powerThreshold			= 0,
  hideFullHoTOverheals	= true,
+ shortenNumbers			= false,
+ shortenNumberPrecision	= 0,
+ groupNumbers			= false,
 
 
  -- Cooldown settings.

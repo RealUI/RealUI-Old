@@ -1,11 +1,16 @@
 ﻿-- (c) 2009-2010, all rights reserved.
--- $Revision: 745 $
--- $Date: 2011-11-04 02:15:23 +1100 (Fri, 04 Nov 2011) $
+-- $Revision: 911 $
+-- $Date: 2012-07-04 20:52:51 +1000 (Wed, 04 Jul 2012) $
 
 ArkInventoryRules = LibStub( "AceAddon-3.0" ):NewAddon( "ArkInventoryRules" )
 
 ArkInventoryRules.Object = nil
 ArkInventoryRules.System = { } -- system rules
+
+
+function ArkInventoryRules.ItemCacheClear( )
+	ArkInventory.ItemCacheClear( )
+end
 
 function ArkInventoryRules.OnInitialize( )
 	
@@ -16,9 +21,9 @@ function ArkInventoryRules.OnInitialize( )
 	-- outfitter: 
 	if IsAddOnLoaded( "Outfitter" ) then
 		ArkInventory.Output( "enabling Outfitter support" )
-		Outfitter:RegisterOutfitEvent( "ADD_OUTFIT", ArkInventory.ItemCacheClear )
-		Outfitter:RegisterOutfitEvent( "DELETE_OUTFIT", ArkInventory.ItemCacheClear )
-		Outfitter:RegisterOutfitEvent( "EDIT_OUTFIT", ArkInventory.ItemCacheClear )
+		Outfitter:RegisterOutfitEvent( "ADD_OUTFIT", ArkInventoryRules.ItemCacheClear )
+		Outfitter:RegisterOutfitEvent( "DELETE_OUTFIT", ArkInventoryRules.ItemCacheClear )
+		Outfitter:RegisterOutfitEvent( "EDIT_OUTFIT", ArkInventoryRules.ItemCacheClear )
 	end
 	
 	-- scrap: http://wow.curse.com/downloads/wow-addons/details/scrap.aspx
@@ -28,7 +33,7 @@ function ArkInventoryRules.OnInitialize( )
 		
 		if IsAddOnLoaded( "Scrap_Merchant" ) then
 			ArkInventory.Output( "enabling Scrap Merchant support" )
-			ArkInventory.MySecureHook( Scrap, "ToggleJunk", ArkInventory.ItemCacheClear )
+			ArkInventory.MySecureHook( Scrap, "ToggleJunk", ArkInventoryRules.ItemCacheClear )
 		end
 		
 	end
@@ -37,8 +42,8 @@ function ArkInventoryRules.OnInitialize( )
 	if IsAddOnLoaded( "SellJunk" ) then
 		if SellJunk.Add and SellJunk.Rem then
 			ArkInventory.Output( "enabling SellJunk support" )
-			ArkInventory.MySecureHook( SellJunk, "Add", ArkInventory.ItemCacheClear )
-			ArkInventory.MySecureHook( SellJunk, "Rem", ArkInventory.ItemCacheClear )
+			ArkInventory.MySecureHook( SellJunk, "Add", ArkInventoryRules.ItemCacheClear )
+			ArkInventory.MySecureHook( SellJunk, "Rem", ArkInventoryRules.ItemCacheClear )
 		end
 	end
 	
@@ -46,8 +51,8 @@ function ArkInventoryRules.OnInitialize( )
 	if IsAddOnLoaded( "ReagentRestocker" ) then
 		if ReagentRestocker.addItemToSellingList and ReagentRestocker.deleteItem then
 			ArkInventory.Output( "enabling ReagentRestocker support" )
-			ArkInventory.MySecureHook( ReagentRestocker, "addItemToSellingList", ArkInventory.ItemCacheClear )
-			ArkInventory.MySecureHook( ReagentRestocker, "deleteItem", ArkInventory.ItemCacheClear )
+			ArkInventory.MySecureHook( ReagentRestocker, "addItemToSellingList", ArkInventoryRules.ItemCacheClear )
+			ArkInventory.MySecureHook( ReagentRestocker, "deleteItem", ArkInventoryRules.ItemCacheClear )
 		end
 	end
 	
@@ -67,7 +72,7 @@ function ArkInventoryRules.OnEnable( )
 		end
 	end
 	
-	ArkInventory.MediaSetFontFrame( ARKINV_Rules, fontName )
+	ArkInventory.MediaSetFontFrame( ARKINV_Rules )
 	
 	ArkInventory.ItemCacheClear( )
 	ArkInventory.Frame_Main_Generate( nil, ArkInventory.Const.Window.Draw.Recalculate )
@@ -131,13 +136,7 @@ function ArkInventoryRules.AppliesToItem( rid, i )
 end
 
 function ArkInventoryRules.System.soulbound( )
-	
-	if ArkInventoryRules.Object.sb then
-		return true
-	end
-	
-	return false
-	
+	return not not ArkInventoryRules.Object.sb
 end
 
 function ArkInventoryRules.System.id( ... )
@@ -1027,7 +1026,6 @@ function ArkInventoryRules.System.characterlevelrange( ... )
 	
 end
 
---[[
 function ArkInventoryRules.System.bag( ... )
 	
 	-- note, this rule is now just which *internal* bag an item is in, ie its just a number from 1 to x
@@ -1061,7 +1059,6 @@ function ArkInventoryRules.System.bag( ... )
 	return false
 	
 end
-]]--
 
 function ArkInventoryRules.System.location( ... )
 	
@@ -1248,7 +1245,7 @@ ArkInventoryRules.Environment = {
 	
 	vpo = ArkInventoryRules.System.vendorpriceover,
 	
-	--bag = ArkInventoryRules.System.bag,
+	bag = ArkInventoryRules.System.bag,
 	
 	location = ArkInventoryRules.System.location,
 	loc = ArkInventoryRules.System.location,
@@ -1455,13 +1452,13 @@ function ArkInventoryRules.Frame_Rules_Table_Row_OnClick( frame )
 		if id > 0 then
 		
 			if ArkInventory.db.profile.option.rule[id] then
-			
+				
 				ArkInventory.db.profile.option.rule[id] = false
 				ArkInventory.ItemCacheClear( )
 				ArkInventory.Frame_Main_Generate( nil, ArkInventory.Const.Window.Draw.Recalculate )
-			
+				
 			else
-		
+				
 				d = ArkInventory.db.global.option.category[ArkInventory.Const.Category.Type.Rule].data[id]
 				d["enabled"] = true
 				ArkInventoryRules.EntryEdit( id, d )

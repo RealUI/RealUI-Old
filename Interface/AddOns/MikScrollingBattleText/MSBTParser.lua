@@ -77,6 +77,9 @@ local FLAGS_MY_GUARDIAN	= bit_bor(AFFILIATION_MINE, REACTION_FRIENDLY, CONTROL_H
 -- Private variables.
 -------------------------------------------------------------------------------
 
+-- Prevent tainting global _.
+local _
+
 -- Dynamically created frames for receiving events and tooltip info.
 local eventFrame
 
@@ -597,10 +600,10 @@ local function CreateCaptureFuncs()
   DAMAGE_SHIELD = function (p, ...) p.eventType, p.isDamageShield, p.skillID, p.skillName, p.skillSchool, p.amount, p.overkillAmount, p.damageType, p.resistAmount, p.blockAmount, p.absorbAmount, p.isCrit, p.isGlancing, p.isCrushing = "damage", true, ... end,
 
   -- Miss events.
-  SWING_MISSED = function (p, ...) p.eventType, p.missType, p.amount = "miss", ... end,
-  RANGE_MISSED = function (p, ...) p.eventType, p.isRange, p.skillID, p.skillName, p.skillSchool, p.missType, p.amount = "miss", true, ... end,
-  SPELL_MISSED = function (p, ...) p.eventType, p.skillID, p.skillName, p.skillSchool, p.missType, p.amount = "miss", ... end,
-  DAMAGE_SHIELD_MISSED = function (p, ...) p.eventType, p.isDamageShield, p.skillID, p.skillName, p.skillSchool, p.missType, p.amount = "miss", true, ... end,
+  SWING_MISSED = function (p, ...) p.eventType, p.missType, p.isOffHand, p.amount = "miss", ... end,
+  RANGE_MISSED = function (p, ...) p.eventType, p.isRange, p.skillID, p.skillName, p.skillSchool, p.missType, p.isOffHand, p.amount = "miss", true, ... end,
+  SPELL_MISSED = function (p, ...) p.eventType, p.skillID, p.skillName, p.skillSchool, p.missType, p.isOffHand, p.amount = "miss", ... end,
+  DAMAGE_SHIELD_MISSED = function (p, ...) p.eventType, p.isDamageShield, p.skillID, p.skillName, p.skillSchool, p.missType, p.isOffHand, p.amount = "miss", true, ... end,
   SPELL_DISPEL_FAILED = function (p, ...) p.eventType, p.missType, p.skillID, p.skillName, p.skillSchool, p.extraSkillID, p.extraSkillName, p.extraSkillSchool = "miss", "RESIST", ... end,
 
   -- Heal events.
@@ -678,29 +681,19 @@ local function OnUpdateDelayedInfo(this, elapsed)
      classTimes[guid] = now + CLASS_HOLD_TIME
     end
 
-    -- Check if there are raid members.
-    local numRaidMembers = GetNumRaidMembers()
-    if (numRaidMembers > 0) then
-     -- Loop through all of the raid members and add them and their class to the maps.
-     for i = 1, numRaidMembers do
-      local unitID = "raid" .. i
-      local guid = UnitGUID(unitID)
+    -- Loop through all of the group members and add them and their class to the maps.
+    local unitPrefix = IsInRaid() and "raid" or "party"
+    local numGroupMembers = GetNumGroupMembers()
+    for i = 1, numGroupMembers do
+     local unitID = unitPrefix .. i
+     -- XXX: This call is returning nil for party members in certain circumstances - need to debug further.
+     local guid = UnitGUID(unitID)
+     if (guid ~= nil) then
       unitMap[guid] = unitID
       if (not classMap[guid]) then _, classMap[guid] = UnitClass(unitID) end
       classTimes[guid] = nil
-     end -- Loop through raid members
-
-    -- There are not any raid members so look for party members.
-    else
-     -- Loop through all of the party members and add their class to the maps.
-     for i = 1, GetNumPartyMembers() do
-      local unitID = "party" .. i
-      local guid = UnitGUID(unitID)
-      unitMap[guid] = unitID
-      if (not classMap[guid]) then _, classMap[guid] = UnitClass(unitID) end
-      classTimes[guid] = nil
-     end -- Loop through party members
-    end
+     end
+    end -- Loop through group members
 
     -- Add the player and player's class to the maps.
     unitMap[playerGUID] = "player"
@@ -733,33 +726,21 @@ local function OnUpdateDelayedInfo(this, elapsed)
      classTimes[guid] = now + CLASS_HOLD_TIME
     end
 
-    -- Check if there are raid members.
-    local numRaidMembers = GetNumRaidMembers()
-    if (numRaidMembers > 0) then
-     -- Loop through all of the raid members and add their pets and pet's class to the maps.
-     for i = 1, numRaidMembers do
-      local unitID = "raidpet" .. i
-      if (UnitExists(unitID)) then
-       local guid = UnitGUID(unitID)
+     -- Loop through all of the group members and add their pets and pet's class to the maps.
+    local unitPrefix = IsInRaid() and "raidpet" or "partypet"
+    local numGroupMembers = GetNumGroupMembers()
+    for i = 1, numGroupMembers do
+     local unitID = unitPrefix .. i
+     if (UnitExists(unitID)) then
+      -- XXX: This call is returning nil for party members in certain circumstances - need to debug further.
+      local guid = UnitGUID(unitID)
+      if (guid ~= nil) then
        petMap[guid] = unitID
        if (not classMap[guid]) then _, classMap[guid] = UnitClass(unitID) end
        classTimes[guid] = nil
       end
-     end -- Loop through raid members
-
-    -- There are not any raid members so look for party members.
-    else
-     -- Loop through all of the party members and add their pets and pet's class to the maps.
-     for i = 1, GetNumPartyMembers() do
-      local unitID = "partypet" .. i
-      if (UnitExists(unitID)) then
-       local guid = UnitGUID(unitID)
-       petMap[guid] = unitID
-       if (not classMap[guid]) then _, classMap[guid] = UnitClass(unitID) end
-       classTimes[guid] = nil
-      end
-     end -- Loop through party members
-    end
+     end
+    end -- Loop through group members
 
     -- Add the player's pet and its class if there is one.  Treat vehicles as the player instead of a pet.
     if (petName) then
@@ -830,7 +811,7 @@ local function OnEvent(this, event, arg1, arg2, ...)
   end -- Time to clean up class map.
 
  -- Party/Raid changes.
- elseif (event == "PARTY_MEMBERS_CHANGED" or event == "RAID_ROSTER_UPDATE") then
+ elseif (event == "GROUP_ROSTER_UPDATE") then
   -- Set the unit map stale flag and schedule the unit map to be updated after a short delay.
   isUnitMapStale = true
   eventFrame:Show()
@@ -877,8 +858,7 @@ local function Enable()
  end
 
  -- Register additional events for unit and class map processing.
- eventFrame:RegisterEvent("PARTY_MEMBERS_CHANGED")
- eventFrame:RegisterEvent("RAID_ROSTER_UPDATE")
+ eventFrame:RegisterEvent("GROUP_ROSTER_UPDATE")
  eventFrame:RegisterEvent("UNIT_PET") 
  eventFrame:RegisterEvent("ARENA_OPPONENT_UPDATE")
  eventFrame:RegisterEvent("PLAYER_TARGET_CHANGED")

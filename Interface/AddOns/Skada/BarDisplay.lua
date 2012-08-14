@@ -49,6 +49,7 @@ function mod:Create(window)
 	
 	window.bargroup.button:GetFontString():SetPoint("LEFT", window.bargroup.button, "LEFT", 5, 1)
 	window.bargroup.button:GetFontString():SetJustifyH("LEFT")
+	window.bargroup.button:SetHeight(window.db.title.height or 15)
 	
 	-- Register with LibWindow-1.0.
 	libwindow.RegisterConfig(window.bargroup, window.db)
@@ -272,6 +273,11 @@ function mod:Update(win)
 				end
 				bar:SetValue(data.value)
 				
+				if data.class and win.db.classicons and CLASS_ICON_TCOORDS[data.class] then
+					bar:ShowIcon()
+					bar:SetIconWithCoord("Interface\\Glues\\CharacterCreate\\UI-CharacterCreate-Classes", CLASS_ICON_TCOORDS[data.class])
+				end
+				
 				if data.color then
 					-- Explicit color from dataset.
 					bar:SetColorAt(0, data.color.r, data.color.g, data.color.b, data.color.a or 1)
@@ -447,9 +453,10 @@ function mod:ApplySettings(win)
 	local fo = CreateFont("TitleFont"..win.db.name)
 	fo:SetFont(p.title.fontpath or media:Fetch('font', p.title.font), p.title.fontsize, p.title.fontflags)
 	g.button:SetNormalFontObject(fo)
+	
 	local inset = p.title.margin
 	titlebackdrop.bgFile = media:Fetch("statusbar", p.title.texture)
-	if p.title.borderthickness > 0 then
+	if p.title.borderthickness > 0 and p.title.bordertexture ~= "None" then
 		titlebackdrop.edgeFile = media:Fetch("border", p.title.bordertexture)
 	else
 		titlebackdrop.edgeFile = nil
@@ -461,6 +468,7 @@ function mod:ApplySettings(win)
 	g.button:SetBackdrop(titlebackdrop)
 	local color = p.title.color
 	g.button:SetBackdropColor(color.r, color.g, color.b, color.a or 1)
+	g.button:SetHeight(p.title.height or 15)
 	
 	if p.enabletitle then
 		g:ShowAnchor()
@@ -481,7 +489,7 @@ function mod:ApplySettings(win)
 	-- Window
 	local inset = p.background.margin
 	windowbackdrop.bgFile = p.background.texturepath or media:Fetch("background", p.background.texture)
-	if p.background.borderthickness > 0 then
+	if p.background.borderthickness > 0 and p.background.bordertexture ~= "None" then
 		windowbackdrop.edgeFile = media:Fetch("border", p.background.bordertexture)
 	else
 		windowbackdrop.edgeFile = nil
@@ -677,6 +685,18 @@ function mod:AddDisplayOptions(win, options)
 			        	end,
 			},
 			
+			classicons = {
+			        type="toggle",
+			        name=L["Class icons"],
+			        desc=L["Use class icons where applicable."],
+			        order=32,
+			        get=function() return db.classicons end,
+			        set=function() 
+			        		db.classicons = not db.classicons
+		         			Skada:ApplySettings()
+			        	end,
+			},
+			
 			clickthrough = {
 			        type="toggle",
 			        name=L["Clickthrough"],
@@ -711,6 +731,21 @@ function mod:AddDisplayOptions(win, options)
 			        	end,
 			},
 			
+			height = {
+				type="range",
+				name=L["Title height"],
+				desc=L["The height of the title frame."],
+				 order=1,
+				min=10,
+				max=50,
+				step=1,
+				get=function() return db.title.height end,
+				set=function(win, val)
+							db.title.height = val
+		         			Skada:ApplySettings()
+						end,
+			},
+			
 		    font = {
 		         type = 'select',
 		         dialogControl = 'LSM30_Font',
@@ -723,14 +758,13 @@ function mod:AddDisplayOptions(win, options)
 		         			db.title.font = key
 		         			Skada:ApplySettings()
 						end,
-				order=1,
+				order=2,
 		    },
 
 			fontsize = {
 				type="range",
 				name=L["Bar font size"],
 				desc=L["The font size of all bars."],
-				order=3,
 				min=7,
 				max=40,
 				step=1,
@@ -739,7 +773,7 @@ function mod:AddDisplayOptions(win, options)
 							db.title.fontsize = size
 		         			Skada:ApplySettings()
 						end,
-				order=2,
+				order=3,
 			},
 			
 		    fontflags = {
@@ -752,7 +786,7 @@ function mod:AddDisplayOptions(win, options)
 		         			db.title.fontflags = key
 		         			Skada:ApplySettings()
 						end,
-				order=3,
+				order=4,
 		    },
 			
 			texture = {
@@ -767,7 +801,7 @@ function mod:AddDisplayOptions(win, options)
 	         				db.title.texture = key
 		         			Skada:ApplySettings()
 						end,
-				order=4,
+				order=5,
 		    },						    
 		    
 		    bordertexture = {
@@ -782,7 +816,7 @@ function mod:AddDisplayOptions(win, options)
 	         				db.title.bordertexture = key
 		         			Skada:ApplySettings()
 						end,
-				order=5,
+				order=6,
 		    },					
 	
 			thickness = {
@@ -798,7 +832,7 @@ function mod:AddDisplayOptions(win, options)
 							db.title.borderthickness = val
 		         			Skada:ApplySettings()
 						end,
-				order=6,
+				order=7,
 			},
 
 			margin = {
@@ -814,7 +848,7 @@ function mod:AddDisplayOptions(win, options)
 							db.title.margin = val
 		         			Skada:ApplySettings()
 						end,
-				order=7,
+				order=8,
 			},	
 										
 			color = {
@@ -831,7 +865,7 @@ function mod:AddDisplayOptions(win, options)
 						db.title.color = {["r"] = r, ["g"] = g, ["b"] = b, ["a"] = a}
 						Skada:ApplySettings()
 					end,
-				order=8,
+				order=9,
 			},
 			
 			buttons = {

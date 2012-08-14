@@ -6,7 +6,7 @@
 -- Unit Frames
 -----------------------------
 
-cfg.size = "small"		-- Chose between small and large layouts
+cfg.size = "large"		-- Chose between small and large layouts
 						-- nibRealUI will control the size if it's installed
 
 cfg.focus = true 		-- Set/Clear focus with focuskey + left click

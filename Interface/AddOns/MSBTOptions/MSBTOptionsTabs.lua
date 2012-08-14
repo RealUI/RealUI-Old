@@ -36,6 +36,9 @@ local fonts = MSBTMedia.fonts
 -- Private constants.
 -------------------------------------------------------------------------------
 
+-- Prevent tainting global _.
+local _
+
 local DEFAULT_PROFILE_NAME = "Default"
 local DEFAULT_FONT_NAME = L.DEFAULT_FONT_NAME
 local DEFAULT_SCROLL_AREA = "Notification"
@@ -1546,6 +1549,10 @@ local function EventsTab_SetupEvents()
  EventsTab_AddEvent(category, "NOTIFICATION_COMBAT_LEAVE", "")
  EventsTab_AddEvent(category, "NOTIFICATION_POWER_GAIN", c.ENERGY_AMOUNT .. c.POWER_TYPE .. c.SKILL_NAME .. c.SKILL_LONG)
  EventsTab_AddEvent(category, "NOTIFICATION_POWER_LOSS", c.ENERGY_AMOUNT .. c.POWER_TYPE .. c.SKILL_NAME .. c.SKILL_LONG)
+ EventsTab_AddEvent(category, "NOTIFICATION_ALT_POWER_GAIN", c.ENERGY_AMOUNT .. c.POWER_TYPE .. c.SKILL_NAME .. c.SKILL_LONG)
+ EventsTab_AddEvent(category, "NOTIFICATION_ALT_POWER_LOSS", c.ENERGY_AMOUNT .. c.POWER_TYPE .. c.SKILL_NAME .. c.SKILL_LONG)
+ EventsTab_AddEvent(category, "NOTIFICATION_CHI_CHANGE", c.CHI_AMOUNT)
+ EventsTab_AddEvent(category, "NOTIFICATION_CHI_FULL", c.CHI_AMOUNT)
  EventsTab_AddEvent(category, "NOTIFICATION_CP_GAIN", c.CP_AMOUNT)
  EventsTab_AddEvent(category, "NOTIFICATION_CP_FULL", c.CP_AMOUNT)
  EventsTab_AddEvent(category, "NOTIFICATION_HOLY_POWER_CHANGE", c.HOLY_POWER_AMOUNT)
@@ -2505,7 +2512,31 @@ local function SpamTab_Create()
    end
  )
  controls.mergeSwingsCheckbox = checkbox
- 
+
+ -- Shorten numbers checkbox
+ checkbox = MSBTControls.CreateCheckbox(tabFrame)
+ objLocale = L.CHECKBOXES["shortenNumbers"]
+ checkbox:Configure(28, objLocale.label, objLocale.tooltip)
+ checkbox:SetPoint("TOPLEFT", controls.mergeSwingsCheckbox, "BOTTOMLEFT", 0, 0)
+ checkbox:SetClickHandler(
+   function (this, isChecked)
+    MSBTProfiles.SetOption(nil, "shortenNumbers", isChecked)
+   end
+ )
+ controls.shortenNumbersCheckbox = checkbox
+
+ -- Group numbers by thousands checkbox
+ checkbox = MSBTControls.CreateCheckbox(tabFrame)
+ objLocale = L.CHECKBOXES["groupNumbers"]
+ checkbox:Configure(28, objLocale.label, objLocale.tooltip)
+ checkbox:SetPoint("TOPLEFT", controls.shortenNumbersCheckbox, "BOTTOMLEFT", 0, 0)
+ checkbox:SetClickHandler(
+   function (this, isChecked)
+    MSBTProfiles.SetOption(nil, "groupNumbers", isChecked)
+   end
+ )
+ controls.groupNumbersCheckbox = checkbox
+
  -- Merge exclusions button.
  button = MSBTControls.CreateOptionButton(tabFrame)
  objLocale = L.BUTTONS["mergeExclusions"]
@@ -2630,6 +2661,8 @@ local function SpamTab_OnShow()
  controls.allPowerCheckbox:SetChecked(currentProfile.showAllPowerGains)
  controls.abbreviateCheckbox:SetChecked(currentProfile.abbreviateAbilities)
  controls.mergeSwingsCheckbox:SetChecked(not currentProfile.mergeSwingsDisabled)
+ controls.shortenNumbersCheckbox:SetChecked(currentProfile.shortenNumbers)
+ controls.groupNumbersCheckbox:SetChecked(currentProfile.groupNumbers)
  controls.hideSkillsCheckbox:SetChecked(currentProfile.hideSkills)
  controls.hideNamesCheckbox:SetChecked(currentProfile.hideNames)
  controls.hideFullOverhealsCheckbox:SetChecked(currentProfile.hideFullOverheals)

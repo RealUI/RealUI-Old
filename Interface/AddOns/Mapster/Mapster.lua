@@ -1,5 +1,5 @@
 --[[
-Copyright (c) 2009-2010, Hendrik "Nevcairiel" Leppkes < h.leppkes@gmail.com >
+Copyright (c) 2009-2012, Hendrik "Nevcairiel" Leppkes < h.leppkes@gmail.com >
 All rights reserved.
 ]]
 
@@ -22,6 +22,8 @@ local defaults = {
 		points = "CENTER",
 		scale = 0.75,
 		poiScale = 0.8,
+		ejScale = 0.8,
+		showEJBosses = true,
 		alpha = 1,
 		hideBorder = false,
 		disableMouse = false,
@@ -61,7 +63,7 @@ local db = setmetatable({}, {
 
 local format = string.format
 
-local wmfOnShow, wmfStartMoving, wmfStopMoving, dropdownScaleFix
+local wmfOnShow, wmfOnHide, wmfStartMoving, wmfStopMoving, dropdownScaleFix
 local questObjDropDownInit, questObjDropDownUpdate
 
 function Mapster:OnInitialize()
@@ -138,7 +140,19 @@ function Mapster:OnEnable()
 	WorldMapShowDropDown:SetScript("OnShow", function(f) f:Hide() end)
 
 	WorldMapShowDigSites:ClearAllPoints()
-	WorldMapShowDigSites:SetPoint("LEFT", WorldMapTrackQuestText, "RIGHT", 25, 0)
+	WorldMapShowDigSites:SetPoint("LEFT", WorldMapTrackQuestText, "RIGHT", 25, -1)
+
+	local showEJBoss = CreateFrame("CheckButton", "MapsterShowEJBosses", WorldMapFrame, "OptionsCheckButtonTemplate")
+	showEJBoss:SetWidth(24)
+	showEJBoss:SetHeight(24)
+	MapsterShowEJBossesText:SetText(L["Show Bosses"])
+	showEJBoss:SetPoint("LEFT", WorldMapShowDigSitesText, "RIGHT", 20, -1)
+	showEJBoss:Show()
+	showEJBoss:SetChecked(db.showEJBosses)
+	showEJBoss:SetScript("OnClick", function(self)
+		db.showEJBosses = self:GetChecked()
+		EncounterJournal_AddMapButtons()
+	end)
 
 	local text = questObj:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
 	text:SetText(L["Quest Objectives"])
@@ -176,44 +190,34 @@ function Mapster:OnEnable()
 	self:SecureHook("WorldMapFrame_SetPOIMaxBounds")
 	self:SecureHook("WorldMapLevelDropDown_Update", "UpdateMapElements")
 	WorldMapFrame_SetPOIMaxBounds()
+	self:SecureHook("EncounterJournal_AddMapButtons")
 
 	if vis then
 		ShowUIPanel(WorldMapFrame)
 	end
 end
 
-local blobWasVisible, blobNewScale
-local blobHideFunc = function() blobWasVisible = nil end
-local blobShowFunc = function() blobWasVisible = true end
-local blobScaleFunc = function(self, scale) blobNewScale = scale end
-
-local archBlobWasVisible, archBlobNewScale
-local archBlobHideFunc = function() archBlobWasVisible = nil end
-local archBlobShowFunc = function() archBlobWasVisible = true end
-local archBlobScaleFunc = function(self, scale) archBlobNewScale = scale end
+local secFrameList = {"WorldMapBlobFrame", "WorldMapArchaeologyDigSites", "ScenarioPOIFrame"}
+local secFrameWasVisible, secFrameNewScale = {}, {}
+local secFrameHideFunc = function(self) secFrameWasVisible[self:GetName()] = nil end
+local secFrameShowFunc = function(self) secFrameWasVisible[self:GetName()] = true end
+local secFrameScaleFunc = function(self, scale) secFrameNewScale[self:GetName()] = scale end
 
 function Mapster:PLAYER_REGEN_DISABLED()
-	blobWasVisible = WorldMapBlobFrame:IsShown()
-	blobNewScale = nil
-	WorldMapBlobFrame:SetParent(nil)
-	WorldMapBlobFrame:ClearAllPoints()
-	-- dummy position, off screen, so calculations don't go boom
-	WorldMapBlobFrame:SetPoint("TOP", UIParent, "BOTTOM")
-	WorldMapBlobFrame:Hide()
-	WorldMapBlobFrame.Hide = blobHideFunc
-	WorldMapBlobFrame.Show = blobShowFunc
-	WorldMapBlobFrame.SetScale = blobScaleFunc
-
-	archBlobWasVisible = WorldMapArchaeologyDigSites:IsShown()
-	archBlobNewScale = nil
-	WorldMapArchaeologyDigSites:SetParent(nil)
-	WorldMapArchaeologyDigSites:ClearAllPoints()
-	-- dummy position, off screen, so calculations don't go boom
-	WorldMapArchaeologyDigSites:SetPoint("TOP", UIParent, "BOTTOM")
-	WorldMapArchaeologyDigSites:Hide()
-	WorldMapArchaeologyDigSites.Hide = archBlobHideFunc
-	WorldMapArchaeologyDigSites.Show = archBlobShowFunc
-	WorldMapArchaeologyDigSites.SetScale = archBlobScaleFunc
+	for _,frame in pairs(secFrameList) do
+		local frameRef = _G[frame]
+		if frameRef then
+			secFrameWasVisible[frame] = frameRef:IsShown()
+			secFrameNewScale[frame] = nil
+			frameRef:SetParent(nil)
+			frameRef:ClearAllPoints()
+			frameRef:SetPoint("TOP", UIParent, "BOTTOM")
+			frameRef:Hide()
+			frameRef.Hide = secFrameHideFunc
+			frameRef.Show = secFrameShowFunc
+			frameRef.SetScale = secFrameScaleFunc
+		end
+	end
 end
 
 local updateFrame = CreateFrame("Frame")
@@ -226,37 +230,28 @@ local function restoreBlobs()
 end
 
 function Mapster:PLAYER_REGEN_ENABLED()
-	WorldMapBlobFrame:SetParent(WorldMapFrame)
-	WorldMapBlobFrame:ClearAllPoints()
-	WorldMapBlobFrame:SetPoint("TOPLEFT", WorldMapDetailFrame)
-	WorldMapBlobFrame.Hide = nil
-	WorldMapBlobFrame.Show = nil
-	WorldMapBlobFrame.SetScale = nil
-	if blobWasVisible then
-		WorldMapBlobFrame:Show()
-		updateFrame:SetScript("OnUpdate", restoreBlobs)
+	for _,frame in pairs(secFrameList) do
+		local frameRef = _G[frame]
+		if frameRef then
+			frameRef:SetParent(WorldMapFrame)
+			frameRef:ClearAllPoints()
+			frameRef:SetPoint("TOPLEFT", WorldMapDetailFrame)
+			frameRef.Hide = nil
+			frameRef.Show = nil
+			frameRef.SetScale = nil
+			if secFrameWasVisible[frame] then
+				frameRef:Show()
+				if frame == "WorldMapBlobFrame" then
+					updateFrame:SetScript("OnUpdate", restoreBlobs)
+				end
+			end
+			if secFrameNewScale[frame] then
+				frameRef:SetScale(secFrameNewScale[frame])
+				frameRef.xRatio = nil
+				secFrameNewScale[frame] = nil
+			end
+		end
 	end
-	if blobNewScale then
-		WorldMapBlobFrame:SetScale(blobNewScale)
-		WorldMapBlobFrame.xRatio = nil
-		blobNewScale = nil
-	end
-
-	WorldMapArchaeologyDigSites:SetParent(WorldMapFrame)
-	WorldMapArchaeologyDigSites:ClearAllPoints()
-	WorldMapArchaeologyDigSites:SetPoint("TOPLEFT", WorldMapDetailFrame)
-	WorldMapArchaeologyDigSites.Hide = nil
-	WorldMapArchaeologyDigSites.Show = nil
-	WorldMapArchaeologyDigSites.SetScale = nil
-	if archBlobWasVisible then
-		WorldMapArchaeologyDigSites:Show()
-	end
-	if archBlobNewScale then
-		WorldMapArchaeologyDigSites:SetScale(archBlobNewScale)
-		WorldMapArchaeologyDigSites.xRatio = nil
-		archBlobNewScale = nil
-	end
-
 	if WorldMapQuestScrollChildFrame.selected then
 		WorldMapBlobFrame:DrawBlob(WorldMapQuestScrollChildFrame.selected.questId, false)
 	end
@@ -294,6 +289,37 @@ end
 function Mapster:WorldMapFrame_SetPOIMaxBounds()
 	WORLDMAP_POI_MAX_Y = WorldMapDetailFrame:GetHeight() * -WORLDMAP_SETTINGS.size + 12;
 	WORLDMAP_POI_MAX_X = WorldMapDetailFrame:GetWidth() * WORLDMAP_SETTINGS.size + 12;
+end
+
+function Mapster:EncounterJournal_AddMapButtons()
+	local scale = WorldMapDetailFrame:GetScale();
+	local width = WorldMapDetailFrame:GetWidth() * scale / db.ejScale
+	local height = WorldMapDetailFrame:GetHeight() * scale / db.ejScale
+
+	local index = 1
+	local x, y, instanceID, name, description, encounterID = EJ_GetMapEncounter(index)
+
+	local mini = WORLDMAP_SETTINGS.size == WORLDMAP_WINDOWED_SIZE
+	if name then
+		if not mini then
+			MapsterShowEJBosses:Show()
+		end
+	else
+		MapsterShowEJBosses:Hide()
+	end
+	while name do
+		local bossButton = _G["EJMapButton"..index];
+		if bossButton then
+			if db.showEJBosses then
+				bossButton:SetPoint("CENTER", WorldMapBossButtonFrame, "BOTTOMLEFT", x*width, y*height);
+				bossButton:SetScale(db.ejScale)
+			else
+				bossButton:Hide()
+			end
+		end
+		index = index + 1
+		x, y, instanceID, name, description, encounterID = EJ_GetMapEncounter(index)
+	end
 end
 
 function Mapster:Refresh()
@@ -335,6 +361,7 @@ function Mapster:Refresh()
 	self:UpdateMouseInteractivity()
 	self:UpdateModuleMapsizes()
 	WorldMapFrame_UpdateQuests()
+	EncounterJournal_AddMapButtons()
 end
 
 function Mapster:ToggleMapSize()
@@ -382,6 +409,7 @@ function Mapster:SizeUp()
 	WorldMapFrameAreaFrame:SetScale(WORLDMAP_QUESTLIST_SIZE)
 	WorldMapBlobFrame:SetScale(WORLDMAP_QUESTLIST_SIZE)
 	WorldMapBlobFrame.xRatio = nil		-- force hit recalculations
+	ScenarioPOIFrame:SetScale(WORLDMAP_FULLMAP_SIZE);	--If we ever need to add objectives on the map itself we should adjust this value
 	WorldMapArchaeologyDigSites:SetScale(WORLDMAP_FULLMAP_SIZE)
 	WorldMapArchaeologyDigSites.xRatio = nil		-- force hit recalculations
 	-- show big window elements
@@ -412,6 +440,9 @@ function Mapster:SizeUp()
 	WorldMapFrameTitle:SetPoint("CENTER", 0, 372)
 
 	MapsterQuestObjectivesDropDown:Show()
+	if EJ_GetMapEncounter(1) then
+		MapsterShowEJBosses:Show()
+	end
 	WorldMapShowDigSites:SetScript("OnShow", nil)
 	WorldMapShowDigSites:Show()
 
@@ -435,6 +466,7 @@ function Mapster:SizeDown()
 	WorldMapFrameAreaFrame:SetScale(WORLDMAP_WINDOWED_SIZE)
 	WorldMapBlobFrame:SetScale(WORLDMAP_WINDOWED_SIZE)
 	WorldMapBlobFrame.xRatio = nil		-- force hit recalculations
+	ScenarioPOIFrame:SetScale(WORLDMAP_WINDOWED_SIZE);
 	WorldMapArchaeologyDigSites:SetScale(WORLDMAP_WINDOWED_SIZE)
 	WorldMapArchaeologyDigSites.xRatio = nil		-- force hit recalculations
 	WorldMapFrameMiniBorderLeft:SetPoint("TOPLEFT", 10, -14)
@@ -468,6 +500,7 @@ function Mapster:SizeDown()
 	WorldMapFrameTitle:SetPoint("TOP", WorldMapDetailFrame, 0, 20)
 
 	MapsterQuestObjectivesDropDown:Hide()
+	MapsterShowEJBosses:Hide()
 	WorldMapShowDigSites:Hide()
 	WorldMapShowDigSites:SetScript("OnShow", WorldMapShowDigSites.Hide)
 
@@ -482,22 +515,23 @@ local function getZoneId()
 end
 
 function Mapster:ZONE_CHANGED_NEW_AREA()
-	local curZone = getZoneId()
-	if realZone == curZone or ((curZone % 100) > 0 and (GetPlayerMapPosition("player")) ~= 0) then
-		SetMapToCurrentZone()
-		realZone = getZoneId()
+	if not WorldMapFrame:IsShown() then
+		return
 	end
+	local prevZone = getZoneId()
+	SetMapToCurrentZone()
+	local newRealZone = getZoneId()
+	if prevZone ~= realZone and prevZone ~= newRealZone then
+		local cont, zone = floor(prevZone / 100), mod(prevZone, 100)
+		SetMapZoom(cont, zone)
+	end
+	realZone = newRealZone
 end
 
-local oldBFMOnUpdate
 function wmfOnShow(frame)
 	Mapster:SetStrata()
 	Mapster:SetScale()
 	realZone = getZoneId()
-	if BattlefieldMinimap then
-		oldBFMOnUpdate = BattlefieldMinimap:GetScript("OnUpdate")
-		BattlefieldMinimap:SetScript("OnUpdate", nil)
-	end
 
 	if WORLDMAP_SETTINGS.selectedQuest then
 		WorldMapFrame_SelectQuestFrame(WORLDMAP_SETTINGS.selectedQuest)
@@ -506,9 +540,6 @@ end
 
 function wmfOnHide(frame)
 	SetMapToCurrentZone()
-	if BattlefieldMinimap then
-		BattlefieldMinimap:SetScript("OnUpdate", oldBFMOnUpdate or BattlefieldMinimap_OnUpdate)
-	end
 end
 
 function wmfStartMoving(frame)

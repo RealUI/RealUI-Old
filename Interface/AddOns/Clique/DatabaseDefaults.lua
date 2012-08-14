@@ -17,6 +17,7 @@ addon.defaults = {
             compactparty = true,
             boss = true,
         },
+		stopcastingfix = false,
     },
     profile = {
         bindings = {

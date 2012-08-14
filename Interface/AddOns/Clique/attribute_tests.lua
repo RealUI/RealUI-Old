@@ -468,7 +468,7 @@ button:SetAttribute("spell2", nil)]],
 for idx, test in ipairs(tests) do
 	io.stdout:write("[" .. test.name .. "]")
 	addon.bindings = test.bindings
-	function GetActiveTalentGroup()
+	function GetActiveSpecGroup()
 		return test.talentGroup and test.talentGroup or 1
 	end
 

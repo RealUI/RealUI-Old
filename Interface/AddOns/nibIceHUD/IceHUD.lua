@@ -177,7 +177,7 @@ end
 -- blizzard interface options
 local blizOptionsPanel = CreateFrame("FRAME", "nibIceHUDConfigPanel", UIParent)
 blizOptionsPanel.name = "nibIceHUD"
-blizOptionsPanel.button = CreateFrame("BUTTON", "nibIceHUDOpenConfigButton", blizOptionsPanel, "UIPanelButtonTemplate2")
+blizOptionsPanel.button = CreateFrame("BUTTON", "nibIceHUDOpenConfigButton", blizOptionsPanel, "UIPanelButtonTemplate")
 blizOptionsPanel.button:SetText("Open nibIceHUD configuration")
 blizOptionsPanel.button:SetWidth(240)
 blizOptionsPanel.button:SetHeight(30)

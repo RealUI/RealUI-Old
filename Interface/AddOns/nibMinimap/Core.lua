@@ -425,9 +425,9 @@ function nibMinimap:UpdateMinimapPosition()
 		lfdpoint = "TOPLEFT"
 		lfdrpoint = "TOPRIGHT"
 	end
-	LFGSearchStatus:ClearAllPoints()
-	LFGSearchStatus:SetPoint(lfdpoint, "MiniMapLFGFrame", lfdrpoint)
-	LFGSearchStatus:SetClampedToScreen(true)
+	QueueStatusFrame:ClearAllPoints()
+	QueueStatusFrame:SetPoint(lfdpoint, "QueueStatusMinimapButton", lfdrpoint)
+	QueueStatusFrame:SetClampedToScreen(true)
 	
 	-- Update the rest of the Minimap
 	self:UpdateButtonsPosition()
@@ -693,7 +693,7 @@ end
 
 ---- Queue Time ----
 function nibMinimap:QueueTimeUpdate()
-	local lfgMode = GetLFGMode()
+	local lfgMode = GetLFGMode(LE_LFG_CATEGORY_LFR)
 	if lfgMode == "queued" then
 		local queueStr = ""
 		local hasData, _,_,_,_,_,_,_,_,_,_,_,_,_,_, myWait, queuedTime = GetLFGQueueStats()
@@ -751,8 +751,13 @@ function nibMinimap:DungeonDifficultyUpdate()
 					allowedRaidDifficulty = 1
 				elseif selectedRaidDifficulty == 4 then
 					allowedRaidDifficulty = 2
+				elseif (selectedRaidDifficulty == 5 ) then -- Temporary fix. 5 here means LFR and we don't want to allow any other raid difficulty in that case. It's also not heroic (it's a 25 normal). -Should fix in 5.1.0 cleanup.
+					allowedRaidDifficulty = nil;
+					isHeroic = false;
 				end
-				allowedRaidDifficulty = "RAID_DIFFICULTY"..allowedRaidDifficulty
+				if (allowedRaidDifficulty) then 
+					allowedRaidDifficulty = "RAID_DIFFICULTY"..(allowedRaidDifficulty);
+				end
 			end
 			if difficulty > 2 then
 				isHeroic = true
@@ -1478,17 +1483,17 @@ local function SetUpMinimapFrame()
 	MinimapZoneText:Hide()
 	MinimapZoneTextButton:Hide()
 	
-	MiniMapLFGFrame:ClearAllPoints()
-	MiniMapLFGFrame:SetParent(Minimap)
-	MiniMapLFGFrame:SetPoint('BOTTOMRIGHT', 2, -2)
-	MiniMapLFGFrameBorder:Hide()
+	QueueStatusMinimapButton:ClearAllPoints()
+	QueueStatusMinimapButton:SetParent(Minimap)
+	QueueStatusMinimapButton:SetPoint('BOTTOMRIGHT', 2, -2)
+	QueueStatusMinimapButtonBorder:Hide()
 
-	MiniMapBattlefieldFrame:ClearAllPoints()
-	MiniMapBattlefieldFrame:SetParent(Minimap)
-	MiniMapBattlefieldFrame:SetPoint('TOPRIGHT', 2, -2)
-	MiniMapBattlefieldBorder:SetTexture(nil)
+	--MiniMapBattlefieldFrame:ClearAllPoints()
+	--MiniMapBattlefieldFrame:SetParent(Minimap)
+	--MiniMapBattlefieldFrame:SetPoint('TOPRIGHT', 2, -2)
+	--MiniMapBattlefieldBorder:SetTexture(nil)
 	
-	BattlegroundShine:Hide()
+	--BattlegroundShine:Hide()
 
 	MinimapNorthTag:SetAlpha(0)
 	

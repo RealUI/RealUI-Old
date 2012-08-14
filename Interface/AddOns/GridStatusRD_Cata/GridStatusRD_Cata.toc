@@ -5,7 +5,7 @@
 ## Version: 1.4
 ## Grid Author: Pastamancer & Maia
 ## Dependencies: GridStatusRaidDebuff
-## X-Curse-Packaged-Version: r26
+## X-Curse-Packaged-Version: r28
 ## X-Curse-Project-Name: GridStatusRD_Cata
 ## X-Curse-Project-ID: gridstatusrd_cata
 ## X-Curse-Repository-ID: wow/gridstatusrd_cata/mainline

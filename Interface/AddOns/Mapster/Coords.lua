@@ -1,5 +1,5 @@
 --[[
-Copyright (c) 2009-2010, Hendrik "Nevcairiel" Leppkes < h.leppkes@gmail.com >
+Copyright (c) 2009-2012, Hendrik "Nevcairiel" Leppkes < h.leppkes@gmail.com >
 All rights reserved.
 ]]
 
@@ -125,8 +125,8 @@ function Coords:UpdateMapsize(mini)
 		cursortext:SetPoint("BOTTOMLEFT", WorldMapPositioningGuide, "BOTTOM", 15, -2)
 		playertext:SetPoint("BOTTOMRIGHT", WorldMapPositioningGuide, "BOTTOM", -30, -2)
 	else
-		cursortext:SetPoint("BOTTOMLEFT", WorldMapPositioningGuide, "BOTTOM", 50, 10)
-		playertext:SetPoint("BOTTOMRIGHT", WorldMapPositioningGuide, "BOTTOM", -50, 10)
+		cursortext:SetPoint("BOTTOMLEFT", WorldMapPositioningGuide, "BOTTOM", 40, 10)
+		playertext:SetPoint("BOTTOMRIGHT", WorldMapPositioningGuide, "BOTTOM", -40, 10)
 	end
 end
 

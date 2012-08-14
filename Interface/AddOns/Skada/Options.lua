@@ -21,10 +21,11 @@ Skada.windowdefaults = {
 
 	classcolorbars = true,
 	classcolortext = false,
+	classicons = true,
 	
 	buttons = {menu = true, reset = true, report = true, mode = true, segment = true},
 	
-	title = {font="Accidental Presidency", fontsize=11,margin=0, texture="Aluminium", bordertexture="None", borderthickness=2, color = {r=0.1,g=0.1,b=0.3,a=0.8}, fontflags = ""},
+	title = {height = 15, font="Accidental Presidency", fontsize=11,margin=0, texture="Aluminium", bordertexture="None", borderthickness=2, color = {r=0.1,g=0.1,b=0.3,a=0.8}, fontflags = ""},
 	background = {margin=0, height=200, texture="Solid", bordertexture="None", borderthickness=0, color = {r=0,g=0,b=0.5,a=0.2}},
 
 	reversegrowth=false,

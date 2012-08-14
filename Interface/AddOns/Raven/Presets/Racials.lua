@@ -10,16 +10,19 @@ Raven.racialSpells = {
 		{ "Will of the Forsaken", nil, p.Purple1, cooldown = true, school = "Physical", id = 7744 },
 	},
 	Orc = {
-		{ "Blood Fury", BUFF, p.Red1, cooldown = true, school = "Physical", ids = { 33697, 20572, 33702 } },
+		{ "Blood Fury", BUFF, p.Red1, cooldown = true, school = "Physical", id = 33697 },
 	},
 	Tauren = {
 		{ "War Stomp", DEBUFF, p.Orange1, cooldown = true, school = "Physical", id = 20549 },
+	},
+	Pandaren = {
+		{ "Quaking Palm", DEBUFF, p.Orange1, cooldown = true, school = "Physical", id = 107079 },
 	},
 	Troll = {
 		{ "Berserking", BUFF, p.Red1, cooldown = true, school = "Physical", id = 26297 },
 	},
 	BloodElf = {
-		{ "Arcane Torrent", DEBUFF, p.Blue3, cooldown = true, school = "Arcane", ids = { 28730, 50613, 80483, 25046 } },
+		{ "Arcane Torrent", DEBUFF, p.Blue3, cooldown = true, school = "Arcane", id = 28730 },
 	},
 	NightElf = {
 		{ "Shadowmeld", BUFF, p.Purple3, cooldown = true, school = "Physical", id = 58984 },
@@ -44,6 +47,6 @@ Raven.racialSpells = {
 		{ "Stoneform", BUFF, p.Orange1, cooldown = true, school = "Physical", id = 20594 },
 	},
 	Draenei = {
-		{ "Gift of the Naaru", BUFF, p.Blue3, cooldown = true, school = "Holy", ids = { 59545, 59543, 59548, 59542, 59544, 59547, 28880 } },
+		{ "Gift of the Naaru", BUFF, p.Blue3, cooldown = true, school = "Holy", id = 59545 },
 	},
 }

@@ -1,6 +1,6 @@
 -- (c) 2009-2011, all rights reserved.
--- $Revision: 886 $
--- $Date: 2012-02-11 18:05:22 +1100 (Sat, 11 Feb 2012) $
+-- $Revision: 913 $
+-- $Date: 2012-08-09 20:30:33 +1000 (Thu, 09 Aug 2012) $
 
 
 ArkInventory = LibStub( "AceAddon-3.0" ):NewAddon( "ArkInventory", "AceConsole-3.0", "AceHook-3.0", "AceEvent-3.0", "AceBucket-3.0" )
@@ -32,8 +32,8 @@ ArkInventory.Const = { -- constants
 	
 	Program = {
 		Name = "ArkInventory",
-		Version = 3.0288,
-		UIVersion = "3.2.88",
+		Version = 3.0295,
+		UIVersion = "3.2.95",
 		--Beta = "BETA 11-11-01-50",
 	},
 	
@@ -519,6 +519,10 @@ ArkInventory.Const = { -- constants
 					["id"] = "CLASS_DEATHKNIGHT",
 					["text"] = ArkInventory.Localise["WOW_CLASS_DEATHKNIGHT"],
 				},
+				[211] = {
+					["id"] = "CLASS_MONK",
+					["text"] = ArkInventory.Localise["WOW_CLASS_MONK"],
+				},
 			},
 			Empty = {
 				[300] = {
@@ -974,6 +978,8 @@ ArkInventory.Global = { -- globals
 			canView = true,
 			canOverride = true,
 			
+			template = "ARKINV_TemplateButtonItem",
+			
 			drawState = ArkInventory.Const.Window.Draw.Init,
 		},
 		
@@ -996,6 +1002,8 @@ ArkInventory.Global = { -- globals
 			canOverride = true,
 			canPurge = true,
 			
+			template = "ARKINV_TemplateButtonItem",
+			
 			drawState = ArkInventory.Const.Window.Draw.Init,
 		},
 		
@@ -1017,6 +1025,8 @@ ArkInventory.Global = { -- globals
 			canView = true,
 			canOverride = true,
 			canPurge = true,
+			
+			template = "ARKINV_TemplateButtonVaultItem",
 			
 			drawState = ArkInventory.Const.Window.Draw.Init,
 			
@@ -1085,6 +1095,8 @@ ArkInventory.Global = { -- globals
 			canView = true,
 			canOverride = nil,
 			
+			template = "ARKINV_TemplateButtonCompanionItem",
+			
 			drawState = ArkInventory.Const.Window.Draw.Init,
 		},
 		
@@ -1105,6 +1117,8 @@ ArkInventory.Global = { -- globals
 			isOffline = false,
 			canView = true,
 			canOverride = nil,
+			
+			template = "ARKINV_TemplateButtonCompanionItem",
 			
 			drawState = ArkInventory.Const.Window.Draw.Init,
 		},
@@ -1222,8 +1236,8 @@ ArkInventory.Global = { -- globals
 	Cache = {
 		ItemCountRaw = { }, -- key generated via ObjectIDTooltip( h )
 		ItemCount = { }, -- key generated via ObjectIDTooltip( h )
-		Default = { }, -- key generated via ObjectIDCacheCategory( i )
-		Rule = { }, -- key generated via ObjectIDCacheRule( i )
+		Default = { }, -- key generated via ObjectIDCacheCategory( )
+		Rule = { }, -- key generated via ObjectIDCacheRule( )
 	},
 	
 	BAG_SLOT_SIZE = 32,
@@ -1818,46 +1832,7 @@ ArkInventory.Const.DatabaseDefaults.profile = {
 	},
 }
 
-function ArkInventory.OnInitialize( )
-	
-	--ArkInventory.Output( "OnInitialize" )
-	
-	ArkInventory.Global.Version = string.format( "v%s", ArkInventory.Const.Program.UIVersion )
-	if ArkInventory.Const.Program.Beta then
-		ArkInventory.Global.Version = string.format( "%s %s(%s)%s", ArkInventory.Global.Version, RED_FONT_COLOR_CODE, ArkInventory.Const.Program.Beta or "unknown beta version", FONT_COLOR_CODE_CLOSE )
-	end
-	
-	-- pre acedb load, the database is just a table
-	
-	-- erase old factionrealm data
-	if ArkInventory.Const.Program.Version >= 3.0227 then
-		if ARKINVDB and ARKINVDB.factionrealm then
-			ARKINVDB.factionrealm = nil
-		end
-	end
-	
-	
-	-- load database, use default profile, metatables now active so dont play with the table structure
-	ArkInventory.db = LibStub( "AceDB-3.0" ):New( "ARKINVDB", ArkInventory.Const.DatabaseDefaults, true )
-	
-	ArkInventory.StartupChecks( )
-	
-	-- config menu (internal)
-	ArkInventory.Lib.Config:RegisterOptionsTable( ArkInventory.Const.Frame.Config.Internal, ArkInventory.Config.Internal )
-	ArkInventory.Lib.Dialog:SetDefaultSize( ArkInventory.Const.Frame.Config.Internal, 1000, 600 )
-	
-	-- config menu (blizzard)
-	ArkInventory.ConfigBlizzard( )
-	ArkInventory.Lib.Config:RegisterOptionsTable( ArkInventory.Const.Frame.Config.Blizzard, ArkInventory.Config.Blizzard, { "arkinventory", "arkinv", "ai" } )
-	ArkInventory.Lib.Dialog:AddToBlizOptions( ArkInventory.Const.Frame.Config.Blizzard, ArkInventory.Const.Program.Name )
-	
-	
-	-- tooltips
-	ArkInventory.Global.Tooltip.Scan = ArkInventory.TooltipInit( "ARKINV_ScanTooltip" )	
-	--ArkInventory.Global.Tooltip.Vendor = ArkInventory.TooltipInit( "ARKINV_VendorTooltip" )
-	ArkInventory.Global.Tooltip.Vendor = ArkInventory.Global.Tooltip.Scan
-	--ArkInventory.Global.Tooltip.Mount = ArkInventory.TooltipInit( "ARKINV_MountTooltip" )
-	ArkInventory.Global.Tooltip.Mount = ArkInventory.Global.Tooltip.Scan
+function ArkInventory.OnLoad( )
 	
 	local loc_id
 	
@@ -1920,7 +1895,54 @@ function ArkInventory.OnInitialize( )
 	-- void storage
 	table.insert( ArkInventory.Global.Location[ArkInventory.Const.Location.Void].Bags, ArkInventory.Const.Offset.Void + 1 )
 	
+end
 
+function ArkInventory.OnInitialize( )
+	
+	--ArkInventory.Output( "OnInitialize" )
+	
+	if ArkInventory.Const.TOC > 50000 then
+		-- mop has no ranged slot
+		ArkInventory.Const.InventorySlotName = { "HeadSlot", "NeckSlot", "ShoulderSlot", "BackSlot", "ChestSlot", "ShirtSlot", "TabardSlot", "WristSlot", "HandsSlot", "WaistSlot", "LegsSlot", "FeetSlot", "Finger0Slot", "Finger1Slot", "Trinket0Slot", "Trinket1Slot", "MainHandSlot", "SecondaryHandSlot" }
+	end
+	
+	ArkInventory.Global.Version = string.format( "v%s", ArkInventory.Const.Program.UIVersion )
+	if ArkInventory.Const.Program.Beta then
+		ArkInventory.Global.Version = string.format( "%s %s(%s)%s", ArkInventory.Global.Version, RED_FONT_COLOR_CODE, ArkInventory.Const.Program.Beta or "unknown beta version", FONT_COLOR_CODE_CLOSE )
+	end
+	
+	-- pre acedb load, the database is just a table
+	
+	-- erase old factionrealm data
+	if ArkInventory.Const.Program.Version >= 3.0227 then
+		if ARKINVDB and ARKINVDB.factionrealm then
+			ARKINVDB.factionrealm = nil
+		end
+	end
+	
+	
+	-- load database, use default profile, metatables now active so dont play with the table structure
+	ArkInventory.db = LibStub( "AceDB-3.0" ):New( "ARKINVDB", ArkInventory.Const.DatabaseDefaults, true )
+	
+	ArkInventory.StartupChecks( )
+	
+	-- config menu (internal)
+	ArkInventory.Lib.Config:RegisterOptionsTable( ArkInventory.Const.Frame.Config.Internal, ArkInventory.Config.Internal )
+	ArkInventory.Lib.Dialog:SetDefaultSize( ArkInventory.Const.Frame.Config.Internal, 1000, 600 )
+	
+	-- config menu (blizzard)
+	ArkInventory.ConfigBlizzard( )
+	ArkInventory.Lib.Config:RegisterOptionsTable( ArkInventory.Const.Frame.Config.Blizzard, ArkInventory.Config.Blizzard, { "arkinventory", "arkinv", "ai" } )
+	ArkInventory.Lib.Dialog:AddToBlizOptions( ArkInventory.Const.Frame.Config.Blizzard, ArkInventory.Const.Program.Name )
+	
+	
+	-- tooltips
+	ArkInventory.Global.Tooltip.Scan = ArkInventory.TooltipInit( "ARKINV_ScanTooltip" )	
+	--ArkInventory.Global.Tooltip.Vendor = ArkInventory.TooltipInit( "ARKINV_VendorTooltip" )
+	ArkInventory.Global.Tooltip.Vendor = ArkInventory.Global.Tooltip.Scan
+	--ArkInventory.Global.Tooltip.Mount = ArkInventory.TooltipInit( "ARKINV_MountTooltip" )
+	ArkInventory.Global.Tooltip.Mount = ArkInventory.Global.Tooltip.Scan
+	
 	ArkInventory.PlayerInfoSet( )
 	ArkInventory.MediaRegister( )
 	
@@ -3424,7 +3446,7 @@ end
 function ArkInventory.ItemCategoryGetDefault( i )
 	
 	-- items cache id
-	local id = ArkInventory.ObjectIDCacheCategory( i )
+	local id = ArkInventory.ObjectIDCacheCategory( i.loc_id, i.bag_id, i.sb, i.h )
 	
 	-- if the value has not been cached yet then get it and cache it
 	if ArkInventory.TranslationsLoaded and not ArkInventory.Global.Cache.Default[id] then
@@ -3490,7 +3512,7 @@ function ArkInventory.ItemCategoryGetPrimary( i )
 	if i.h then -- only items can have a category, empty slots can oly be used by rules
 		
 		-- items category cache id
-		id = ArkInventory.ObjectIDCacheCategory( i )
+		id = ArkInventory.ObjectIDCacheCategory( i.loc_id, i.bag_id, i.sb, i.h )
 		
 		-- manually assigned item to a category?
 		if ArkInventory.db.profile.option.category[id] then
@@ -3501,7 +3523,7 @@ function ArkInventory.ItemCategoryGetPrimary( i )
 	end
 	
 	-- items rule cache id
-	id = ArkInventory.ObjectIDCacheRule( i )
+	id = ArkInventory.ObjectIDCacheRule( i.loc_id, i.bag_id, i.sb, i.h )
 	
 	-- if the value has already been cached then use it
 	if ArkInventory.Global.Cache.Rule[id] then
@@ -3524,7 +3546,7 @@ function ArkInventory.ItemCategorySet( i, cat_id )
 
 	-- set cat_id to nil to reset back to default
 	
-	local id = ArkInventory.ObjectIDCacheCategory( i )
+	local id = ArkInventory.ObjectIDCacheCategory( i.loc_id, i.bag_id, i.sb, i.h )
 	ArkInventory.db.profile.option.category[id] = cat_id
 	
 	--i["cat"] = cat_id
@@ -3598,13 +3620,39 @@ function ArkInventory.ReverseName( n )
 
 end
 
-function ArkInventory.ItemCacheClear( )
+function ArkInventory.ItemCacheClear( h )
 	
 	--ArkInventory.Output( "ItemCacheClear( )" )
 	
-	-- clear all rule information
-	ArkInventory.Table.Clean( ArkInventory.Global.Cache.Rule )
-	ArkInventory.Table.Clean( ArkInventory.Global.Cache.Default )
+	if not h then
+		
+		--ArkInventory.Output( "clearing cache - all" )
+		
+		ArkInventory.Table.Clean( ArkInventory.Global.Cache.Rule )
+		ArkInventory.Table.Clean( ArkInventory.Global.Cache.Default )
+		
+	else
+		
+		local id
+		
+		--ArkInventory.Output( "clearing cache - ", h )
+		
+		for loc_id in pairs( ArkInventory.Global.Location ) do
+			for bag_id in pairs( ArkInventory.Global.Location[loc_id].Bags ) do
+				for sb = 0, 1 do
+					
+					id = ArkInventory.ObjectIDCacheRule( loc_id, bag_id, sb, h )
+					ArkInventory.Global.Cache.Rule[id] = nil
+				
+					id = ArkInventory.ObjectIDCacheCategory( loc_id, bag_id, sb, h )
+					ArkInventory.Global.Cache.Default[id] = nil
+					
+				end
+			end
+		end
+			
+	end
+	
 	
 	ArkInventory.CategoryGenerate( )
 	ArkInventory.LocationSetValue( nil, "resort", true )
@@ -4132,9 +4180,9 @@ function ArkInventory.Frame_Main_Paint( frame )
 end
 
 function ArkInventory.Frame_Main_Paint_All( )
-
+	
 	for loc_id, loc_data in pairs( ArkInventory.Global.Location ) do
-		frame = ArkInventory.Frame_Main_Get( loc_id )
+		local frame = ArkInventory.Frame_Main_Get( loc_id )
 		ArkInventory.Frame_Main_Paint( frame )
 	end
 	
@@ -5090,7 +5138,7 @@ function ArkInventory.Frame_Container_Draw( frame )
 				--ArkInventory.Output( "creating bag frame [", bagframename, "]" )
 				bagframe = CreateFrame( "Frame", bagframename, placeframe, "ARKINV_TemplateFrameBag" )
 			end
-
+			
 			-- remember the maximum number of slots used for each bag
 			local b = cp.location[loc_id].bag[bag_id]
 			
@@ -5107,18 +5155,49 @@ function ArkInventory.Frame_Container_Draw( frame )
 				
 				local itemframename = ArkInventory.ContainerItemNameGet( loc_id, bag_id, j )
 				local itemframe = _G[itemframename]
+				
+				local tainteditemframename = itemframename .. "T"
+				local tainteditemframe = _G[tainteditemframename]
+				
 				if not itemframe then
-					--ArkInventory.Output( "creating item frame [", itemframename, "]" )
-					if loc_id == ArkInventory.Const.Location.Vault then
-						itemframe = CreateFrame( "Button", itemframename, bagframe, "ARKINV_TemplateButtonVaultItem" )
-					elseif loc_id == ArkInventory.Const.Location.Pet or loc_id == ArkInventory.Const.Location.Mount then
-						itemframe = CreateFrame( "Button", itemframename, bagframe, "ARKINV_TemplateButtonCompanionItem" )
-					elseif loc_id == ArkInventory.Const.Location.Wearing or loc_id == ArkInventory.Const.Location.Mail or loc_id == ArkInventory.Const.Location.Token or loc_id == ArkInventory.Const.Location.Auction or loc_id == ArkInventory.Const.Location.Spellbook or loc_id == ArkInventory.Const.Location.Tradeskill or loc_id == ArkInventory.Const.Location.Void then
-						itemframe = CreateFrame( "Button", itemframename, bagframe, "ARKINV_TemplateButtonViewOnlyItem" )
+					
+					if InCombatLockdown( ) then
+						
+						itemframe = CreateFrame( "Button", tainteditemframename, bagframe, "ARKINV_TemplateButtonItemTainted" )
+						
+						ArkInventory.Global.Location[loc_id].tainted = true
+						
+						_G[itemframename] = itemframe
+						
+						--ArkInventory.Output( "tainted ", tainteditemframename )
+						
 					else
-						itemframe = CreateFrame( "Button", itemframename, bagframe, "ARKINV_TemplateButtonItem" )
+						
+						itemframe = CreateFrame( "Button", itemframename, bagframe, ArkInventory.Global.Location[loc_id].template or "ARKINV_TemplateButtonViewOnlyItem" )
+						
+						ArkInventory.Global.Location[loc_id].tainted = false
+						
+						--ArkInventory.Output( "secure ", itemframename )
+						
 					end
-				end	
+					
+				else
+					
+					if itemframe.ARK_Data.tainted and not InCombatLockdown( ) then
+						
+						tainteditemframe:Hide( )
+						tainteditemframe:SetParent( nil )
+						_G[itemframename] = nil
+						
+						itemframe = CreateFrame( "Button", itemframename, bagframe, ArkInventory.Global.Location[loc_id].template or "ARKINV_TemplateButtonViewOnlyItem" )
+						
+						ArkInventory.Global.Location[loc_id].tainted = false
+						
+						--ArkInventory.Output( "secure replace ", itemframename )
+						
+					end
+					
+				end
 				
 				if j == 1 then
 					ArkInventory.Global.BAG_SLOT_SIZE = itemframe:GetWidth( )
@@ -5283,6 +5362,34 @@ function ArkInventory.Frame_Container_OnLoad( frame )
 	frame.ARK_Data = {
 		["loc_id"] = tonumber( loc_id ),
 	}
+	
+	
+	
+	loc_id = frame.ARK_Data.loc_id
+	
+	if ( loc_id == ArkInventory.Const.Location.Bag ) then
+		
+		local placeframename = string.format( "%s%s", frame:GetName( ), "Bag" )
+		local placeframe = _G[placeframename]
+		
+		for bag_id = 1, ( NUM_BAG_SLOTS + 1 ) do
+			
+			local bagframename = string.format( "%s%s", placeframename, bag_id )
+			local bagframe = CreateFrame( "Frame", bagframename, placeframe, "ARKINV_TemplateFrameBag" )
+			
+			for j = 1, 50 do
+				
+				local itemframename = ArkInventory.ContainerItemNameGet( loc_id, bag_id, j )
+				local itemframe = CreateFrame( "Button", itemframename, bagframe, ArkInventory.Global.Location[loc_id].template or "ARKINV_TemplateButtonItem" )
+				
+				ArkInventory.Frame_Item_Update_Clickable( itemframe )
+				itemframe:Hide( )
+				
+			end
+			
+		end
+		
+	end
 	
 end
 
@@ -6087,7 +6194,7 @@ function ArkInventory.Frame_Item_Update_NewIndicator( frame )
 	
 	local obj_name = "ArkNewText"
 	local obj = _G[string.format( "%s%s", framename, obj_name )]
-	assert( obj, string.format( "xml element '%s' is missing the sub element %s", framename, obj_name ) )
+	if not obj then return end
 	
 	local loc_id = frame.ARK_Data.loc_id
 	local i = ArkInventory.Frame_Item_GetDB( frame )
@@ -6265,6 +6372,20 @@ function ArkInventory.Frame_Item_OnEnter( frame )
 	if not usedmycode then
 		ContainerFrameItemButton_OnEnter( frame )
 	end
+
+end
+
+function ArkInventory.Frame_Tainted_OnEnter( frame )
+
+	if ArkInventory.ValidFrame( frame, true ) == false then
+		return
+	end
+
+	if not ArkInventory.db.global.option.tooltip.show then
+		return
+	end
+	
+	ArkInventory.GameTooltipSetText( frame, ArkInventory.Localise["BUGFIX_TAINTED_ALERT_MOUSEOVER_TEXT"], 1.0, 0.1, 0.1 )
 
 end
 
@@ -6468,7 +6589,6 @@ end
 function ArkInventory.Frame_Item_OnLoad( frame )
 
 	local framename = frame:GetName( )
-	--ArkInventory.Output( "OnLoad( ", framename, " ]" )
 	
 	local loc_id, bag_id, slot_id = string.match( framename, "^.-(%d+)ContainerBag(%d+)Item(%d+)" )
 	
@@ -6482,13 +6602,11 @@ function ArkInventory.Frame_Item_OnLoad( frame )
 
 	frame:SetID( slot_id )
 	
-	--local bag_id = ArkInventory.BagID_Blizzard( loc_id, bag_id )
-	--ArkInventory.Output( "loc=[", loc_id, "], int=[", bag_id, "], slot=[", slot_id, "], bag=[", bag_id, "]" )
-	
 	frame.ARK_Data = {
 		["loc_id"] = loc_id,
 		["bag_id"] = bag_id,
 		["slot_id"] = slot_id,
+		["tainted"] = false,
 	}
 	
 	ContainerFrameItemButton_OnLoad( frame )
@@ -6513,6 +6631,44 @@ function ArkInventory.Frame_Item_OnLoad( frame )
 		end
 		
 	end
+	
+	--ArkInventory.MediaSetFontFrame( frame )
+	
+end
+
+function ArkInventory.Frame_Item_Tainted_OnLoad( frame )
+
+	local framename = frame:GetName( )
+	local loc_id, bag_id, slot_id = string.match( framename, "^.-(%d+)ContainerBag(%d+)Item(%d+)" )
+	
+	assert( loc_id, string.format( "xml element '%s' is not an %s frame", framename, ArkInventory.Const.Program.Name ) )
+	assert( bag_id, string.format( "xml element '%s' is not an %s frame", framename, ArkInventory.Const.Program.Name ) )
+	assert( slot_id, string.format( "xml element '%s' is not an %s frame", framename, ArkInventory.Const.Program.Name ) )
+	
+	loc_id = tonumber( loc_id )
+	bag_id = tonumber( bag_id )
+	slot_id = tonumber( slot_id )
+
+	frame:SetID( slot_id )
+	
+	frame.ARK_Data = {
+		["loc_id"] = loc_id,
+		["bag_id"] = bag_id,
+		["slot_id"] = slot_id,
+		["tainted"] = true,
+	}
+	
+	ContainerFrameItemButton_OnLoad( frame )
+	
+	local obj = _G[string.format("%sCount", framename )]
+	if obj ~= nil then
+		obj:SetPoint( "BOTTOMRIGHT", frame, "BOTTOMRIGHT", 0, 2 )
+		obj:SetPoint( "LEFT", frame, "LEFT", 0, 0 )
+	end
+	
+	frame.UpdateTooltip = ArkInventory.Frame_Tainted_OnEnter
+	
+	frame.locked = true
 	
 	ArkInventory.MediaSetFontFrame( frame )
 	
@@ -7318,7 +7474,7 @@ function ArkInventory.Frame_Changer_Secondary_OnClick( frame, button )
 		local bag = cp.location[loc_id].bag[bag_id]
 	
 		if not bag or bag.count == 0 then
-		
+			
 			-- empty slot, do nothing for the chatlink
 			
 		else
@@ -7339,6 +7495,8 @@ function ArkInventory.Frame_Changer_Secondary_OnClick( frame, button )
 			
 			if button == nil then
 				
+				-- do nothing
+				
 			elseif button == "RightButton" then
 				
 				ArkInventory.MenuBagOpen( frame )
@@ -7353,13 +7511,13 @@ function ArkInventory.Frame_Changer_Secondary_OnClick( frame, button )
 				local inv_id = ArkInventory.InventoryIDGet( loc_id, bag_id )
 				
 				if CursorHasItem( ) then
-				
+					
 					if PutItemInBag( inv_id ) then
 						return
 					end
 					
 				else
-				
+					
 					ArkInventory.Frame_Changer_Secondary_OnDragStart( frame )
 					
 				end
@@ -7373,25 +7531,21 @@ function ArkInventory.Frame_Changer_Secondary_OnClick( frame, button )
 end
 
 function ArkInventory.Frame_Changer_Secondary_OnDragStart( frame )
-
+	
 	if ArkInventory.ValidFrame( frame, true ) == false then
 		return
 	end
-
+	
 	local loc_id = frame.ARK_Data.loc_id
 	
-	if ArkInventory.Global.Location[loc_id].isOffline then
-		return
-	end
-	
-	if loc_id == ArkInventory.Const.Location.Vault then
+	if InCombatLockdown( ) or ArkInventory.Global.Location[loc_id].isOffline or loc_id == ArkInventory.Const.Location.Vault then
 		return
 	end
 	
 	local bag_id = frame.ARK_Data.bag_id
 	local inv_id = ArkInventory.InventoryIDGet( loc_id, bag_id )
+	
 	PickupBagFromSlot( inv_id )
-	PlaySound( "BAGMENUBUTTONPRESS" )
 	
 end
 
@@ -8111,35 +8265,6 @@ function ArkInventory.ContainerItemNameGet( loc_id, bag_id, slot_id )
 	end
 end
 
-function ArkInventory.LocationOptionGet_old2( loc_id, opt )
-	local loc_id = ArkInventory.db.profile.option.use[loc_id] or loc_id
-	return ArkInventory.LocationOptionGetReal( loc_id, opt )
-end
-
-function ArkInventory.LocationOptionGetReal_old2( loc_id, opt )
-
-	assert( loc_id ~= nil, "location id is nil" )
-	assert( type( opt ) == "table", "opt is not a table" )
-
-	local p = ArkInventory.db.profile.option.location[loc_id]
-	local s = string.format( "db.profile.option.location.%s", loc_id )
-	
-	for i = 1, #opt do
-		
-		assert( p ~= nil, string.format( "code error: encountered nil at %s - please reload ui to reset database or report to author if it continues", s ) )
-		
-		local k = opt[i]
-		assert( k ~= nil, string.format( "code error: encountered a nil parameter at position %s", i ) )
-		
-		s = string.format( "%s.%s", s, k )
-		p = p[k]
-		
-	end
-	
-	return p
-
-end
-
 function ArkInventory.LocationOptionGet( loc_id, ... )
 	local loc_id = ArkInventory.db.profile.option.use[loc_id] or loc_id
 	return ArkInventory.LocationOptionGetReal( loc_id, ... )
@@ -8161,6 +8286,7 @@ function ArkInventory.LocationOptionGetReal( loc_id, ... )
 		
 		local k = select( i, ... )
 		assert( k ~= nil, string.format( "bad code: parameter %s is nil", i ) )
+		assert( type( k ) ~= "boolean", string.format( "bad code: parameter %s is boolean", i ) )
 		
 		s = string.format( "%s.%s", s, k )
 		p = p[k]
@@ -8168,39 +8294,6 @@ function ArkInventory.LocationOptionGetReal( loc_id, ... )
 	end
 	
 	return p
-	
-end
-
-function ArkInventory.LocationOptionSet_old2( loc_id, opt, n )
-	local loc_id = ArkInventory.db.profile.option.use[loc_id] or loc_id
-	return ArkInventory.LocationOptionSetReal( loc_id, opt, n )
-end
-
-function ArkInventory.LocationOptionSetReal_old2( loc_id, opt, n )
-
-	assert( loc_id ~= nil, "location id is nil" )
-	assert( type( opt ) == "table", "opt is not a table" )
-
-	local p = ArkInventory.db.profile.option.location[loc_id]
-	local s = string.format( "db.profile.option.location.%s", loc_id )
-	
-	for i = 1, #opt - 1 do
-		
-		assert( p ~= nil, string.format( "code error: encountered nil at %s - please reload ui to reset database or report to author if it continues", s ) )
-		
-		local k = opt[i]
-		assert( k ~= nil, string.format( "code error: encountered a nil parameter at position %s", i ) )
-		
-		s = string.format( "%s.%s", s, k )
-		p = p[k]
-		
-	end
-	
-	k = opt[#opt]
-	assert( k ~= nil, string.format( "code error: encountered a nil parameter at position %s", #opt ) )
-	
-	--ArkInventory.Output( "set ", s, "[", v, "], old=[", p[v], "], new=[", n, "]" )
-	p[k] = n
 	
 end
 
@@ -8225,6 +8318,7 @@ function ArkInventory.LocationOptionSetReal( loc_id, ... )
 		
 		local k = select( i, ... )
 		assert( k ~= nil, string.format( "bad code: parameter %s is nil", i ) )
+		assert( type( k ) ~= "boolean", string.format( "bad code: parameter %s is boolean", i ) )
 		
 		s = string.format( "%s.%s", s, k )
 		p = p[k]

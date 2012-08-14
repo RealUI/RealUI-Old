@@ -56,23 +56,6 @@ L.MSG_INVALID_ITEM_NAME				= "Ungültiger Gegenstandsname."
 
 
 ------------------------------
--- Class Names.
-------------------------------
-
-local obj = L.CLASS_NAMES
-obj["DEATHKNIGHT"]	= "Todesritter"
-obj["DRUID"]		= "Druide"
-obj["HUNTER"]		= "Jäger"
-obj["MAGE"]			= "Magier"
-obj["PALADIN"]		= "Paladin"
-obj["PRIEST"]		= "Priester"
-obj["ROGUE"]		= "Schurke"
-obj["SHAMAN"]		= "Schamane"
-obj["WARLOCK"]		= "Hexenmeister"
-obj["WARRIOR"]		= "Krieger"
-
-
-------------------------------
 -- Interface tabs
 ------------------------------
 
@@ -118,6 +101,8 @@ obj["enableTrigger"]			= { tooltip="Auslöser aktivieren."}
 obj["allPowerGains"]			= { label="ALLE Regenerationen", tooltip="Zeigt alle Ressourcenregenerationen einschließlich derjenigen, die nicht im Kampflog gemeldet werden.\n\nWARNUNG: Diese Einstellung führt zu viel Spam, da sie alle Grenzwerte und Drosselfunktionen ignoriert.\n\nNICHT EMPFOHLEN."}
 obj["abbreviateSkills"]			= { label="Fähigkeiten abkürzen", tooltip="Fähigkeiten abkürzen (nur Englisch).\n\nDies kann von jedem Ereignis mit dem %sl Code überschrieben werden."}
 obj["mergeSwings"]				= { label="Schwünge verbinden", tooltip="Verbindet normale Meleetreffer, die in einer kurzen Zeitspanne erfolgen."}
+--obj["shortenNumbers"]			= { label="Shorten Numbers", tooltip="Display numbers in an abbreviated format (example: 32765 -> 33k)."}
+--obj["groupNumbers"]				= { label="Group By Thousands", tooltip="Display numbers grouped by thousands (example: 32765 -> 32,765)."}
 obj["hideSkills"]				= { label="Fähigkeiten verstecken", tooltip="Keine Fähigkeitsnamen für eingehende und ausgehende Ereignisse anzeigen.\n\nDu gibst ein wenig Anpassungsmöglichkeit auf Ereignisebene auf, da der Ereigniscode %s nun ignoriert wird."}
 obj["hideNames"]				= { label="Namen verstecken", tooltip="Keine Namen für eingehende und ausgehende Ereignisse anzeigen.\n\nDu gibst ein wenig Anpassungsmöglichkeit auf Ereignisebene auf, da der Ereigniscode %n nun ignoriert wird."}
 obj["hideFullOverheals"]		= { label="Überheilungen verstecken", tooltip="Heilungen, die eine effektive Heilung von null haben, werden nicht angezeigt."}
@@ -285,6 +270,7 @@ obj["HEALING_DONE"]			= "%a - Geheilte Menge.\n"
 obj["ABSORBED_AMOUNT"]		= "%a - Menge des absobierten Schadens.\n"
 obj["AURA_AMOUNT"]			= "%a - Menge der Stapel für eine Aura.\n"
 obj["ENERGY_AMOUNT"]		= "%a - Menge der Energie.\n"
+--obj["CHI_AMOUNT"]			= "%a - Amount of chi you have.\n"
 obj["CP_AMOUNT"]			= "%a - Menge der momentanen Combo-Punkte.\n"
 obj["HOLY_POWER_AMOUNT"]	= "%a - Menge der heiligen Kraft.\n"
 obj["HONOR_AMOUNT"]			= "%a - Menge der Ehre.\n"
@@ -473,6 +459,10 @@ obj["NOTIFICATION_COMBAT_ENTER"]		= { label="Kampfeintritt", tooltip="Aktiviert,
 obj["NOTIFICATION_COMBAT_LEAVE"]		= { label="Kampfaustritt", tooltip="Aktiviert, wenn du in den Kampf verlässt."}
 obj["NOTIFICATION_POWER_GAIN"]			= { label="Energie erhalten", tooltip="Aktiviert, wenn du zusätzliches Mana, Wut oder Energie erhälst."}
 obj["NOTIFICATION_POWER_LOSS"]			= { label="Energie verloren", tooltip="Aktiviert, wenn du durch Abzug Mana, Wut oder Energie verlierst."}
+--obj["NOTIFICATION_ALT_POWER_GAIN"]		= { label="Alternate Power Gains", tooltip="Enable when you gain alternate power such as sound level on Atramedes."}
+--obj["NOTIFICATION_ALT_POWER_LOSS"]		= { label="Alternate Power Losses", tooltip="Enable when you lose alternate power from drains."}
+--obj["NOTIFICATION_CHI_CHANGE"]			= { label="Chi Changes", tooltip="Enable when you change chi."}
+--obj["NOTIFICATION_CHI_FULL"]			= { label="Chi Full", tooltip="Enable when you attain full chi."}
 obj["NOTIFICATION_CP_GAIN"]				= { label="Combo-Punkte erhalten", tooltip="Aktiviert, wenn du Combo-Punkte bekommst."}
 obj["NOTIFICATION_CP_FULL"]				= { label="Combo-Punkte komplett", tooltip="Aktiviert, wenn du alle Combo-Punkte erreicht hast."}
 obj["NOTIFICATION_HOLY_POWER_CHANGE"]	= { label="Heilige Kraft verändert", tooltip="Aktiviert, wenn sich deine Heilige Kraft verändert."}

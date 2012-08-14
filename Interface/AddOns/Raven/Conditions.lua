@@ -29,7 +29,7 @@ local function IsOn(value) return value ~= nil and value ~= Off end -- return tr
 MOD.conditionTests = {
 	["Player Status"] = { enable = false, inCombat = nil, isResting = nil, hasPet = nil, isStealthed = nil, isMounted = nil,
 		isFishing = nil, inGroup = nil, inParty = nil, inRaid = nil, isPvP = nil, inInstance = nil, inArena = nil, inBattleground = nil,
-		hasMainHand = nil, levelMainHand = 1, hasOffHand = nil, levelOffHand = 1, hasRanged = nil, levelRanged = 1,
+		hasMainHand = nil, levelMainHand = 1, hasOffHand = nil, levelOffHand = 1,
 		checkTalent = nil, talent = nil, checkLevel = nil, level = 80, checkStance = nil, stance = nil,
 		checkHealth = nil, minHealth = 100, checkPower = nil, minPower = 100, checkHolyPower = nil, minHolyPower = 1, checkShards = nil, minShards = 1,
 		checkEclipsePower = nil, minEclipsePower = 0, checkEclipse = nil, checkSolar = nil, checkLunar = nil, checkSun = nil, checkMoon = nil,
@@ -444,7 +444,6 @@ local function CheckTestAND(ttype, t)
 		if IsOn(t.checkTalent) and IsOn(t.talent) and not RavenCheckTalent(t.talent) then return false end
 		if IsOn(t.hasMainHand) and not CheckWeapon("MainHandSlot", t.levelMainHand) then return false end
 		if IsOn(t.hasOffHand) and not CheckWeapon("SecondaryHandSlot", t.levelOffHand) then return false end
-		if IsOn(t.hasRanged) and not CheckWeapon("RangedSlot", t.levelRanged) then return false end
 	elseif ttype == "Pet Status" then -- pet must exist for these tests to be true
 		if IsOn(t.exists) and (t.exists == stat.noPet) then return false end
 		if IsOn(t.inCombat) and (t.inCombat ~= stat.petCombat) then return false end
@@ -544,7 +543,6 @@ local function CheckTestOR(ttype, t)
 		if IsOn(t.checkTalent) and IsOn(t.talent) and RavenCheckTalent(t.talent) then return true end
 		if IsOn(t.hasMainHand) and CheckWeapon("MainHandSlot", t.levelMainHand) then return true end
 		if IsOn(t.hasOffHand) and CheckWeapon("SecondaryHandSlot", t.levelOffHand) then return true end
-		if IsOn(t.hasRanged) and CheckWeapon("RangedSlot", t.levelRanged) then return true end
 	elseif ttype == "Pet Status" then -- pet must exist for these tests to be true
 		if IsOn(t.exists) and (t.exists ~= stat.noPet) then return true end
 		if IsOn(t.inCombat) and (t.inCombat == stat.petCombat) then return true end
@@ -631,10 +629,9 @@ function MOD:UpdateConditions()
 	-- update globally useful conditions
 	local stat = MOD.status
 	stat.inCombat = (UnitAffectingCombat("player") ~= nil)
-	stat.inParty = (GetNumPartyMembers() > 0)
-	stat.inRaid = (GetNumRaidMembers() > 1)
-	stat.inGroup = stat.inParty or stat.inRaid
-	stat.inParty = stat.inParty and not stat.inRaid
+	stat.inRaid = UnitInRaid("player")
+	stat.inGroup = GetNumGroupMembers() > 0
+	stat.inParty = stat.inGroup and not stat.inRaid
 	local instance, it = IsInInstance()
 	if instance ~= nil then stat.inInstance = (it == "party") or (it == "raid"); stat.inArena = (it == "arena"); stat.inBattleground = (it == "pvp") else
 		stat.inInstance = false; stat.inArena = false; stat.inBattleground = false end
@@ -644,7 +641,7 @@ function MOD:UpdateConditions()
 	stat.inVehicle = (UnitUsingVehicle("player") ~= nil)
 	stat.isPvP = (UnitIsPVP("player") ~= nil)
 	stat.isStealthed = (IsStealthed() ~= nil)
-	stat.talentGroup = GetActiveTalentGroup(false, false)
+	stat.talentGroup = GetActiveSpecGroup(false, false)
 	stat.level = UnitLevel("player")
 	local m = UnitHealthMax("player"); if m > 0 then stat.health = (100 * UnitHealth("player") / m) else stat.health = 0 end
 	m = UnitPowerMax("player"); if m > 0 then stat.power = (100 * UnitPower("player") / m) else stat.power = 0 end
@@ -866,7 +863,6 @@ function MOD:GetConditionText(name)
 					end
 					if IsOn(t.hasMainHand) and IsOn(t.levelMainHand) then a = a .. d .. L["Mainhand String"](t.levelMainHand); d = ", " end
 					if IsOn(t.hasOffHand) and IsOn(t.levelOffHand) then a = a .. d .. L["Offhand String"](t.levelOffHand); d = ", " end
-					if IsOn(t.hasRanged) and IsOn(t.levelRanged) then a = a .. d .. L["Ranged String"](t.levelRanged); d = ", " end
 				elseif tt == "Pet Status" then
 					if IsOn(t.exists) then if t.exists then a = a .. d .. L["Exists"] else a = a .. d .. L["Not Exists"] end; d = ", " end
 					if IsOn(t.inCombat) then if t.inCombat then a = a .. d .. L["In Combat"] else a = a .. d .. L["Out Of Combat"] end; d = ", " end

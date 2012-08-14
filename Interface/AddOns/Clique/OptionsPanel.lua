@@ -89,9 +89,14 @@ function panel:CreateOptions()
     self.profiledd = make_dropdown("CliqueOptionsProfileMgmt", self)
     UIDropDownMenu_SetWidth(self.profiledd, 200)
 
+	self.stopcastingfix = make_checkbox("CliqueOptionsStopCastingFix", self)
+    self.stopcastingfix.text:SetText(L["Attempt to fix the issue introduced in 4.3 with casting on dead targets"])
+
+
     -- Collect and anchor the bits together
     table.insert(bits, self.updown)
     table.insert(bits, self.fastooc)
+	table.insert(bits, self.stopcastingfix)
     table.insert(bits, self.specswap)
     table.insert(bits, self.prispeclabel)
     table.insert(bits, self.prispec)
@@ -370,6 +375,7 @@ function panel.refresh()
 
     panel.updown:SetChecked(settings.downclick)
     panel.fastooc:SetChecked(settings.fastooc)
+	panel.stopcastingfix:SetChecked(settings.stopcastingfix)
     panel.specswap:SetChecked(settings.specswap)
     panel.specswap.EnableDisable()
 end
@@ -378,8 +384,11 @@ function panel.okay()
     local settings = addon.settings
     local currentProfile = addon.db:GetCurrentProfile()
 
+	local changed = (not not panel.stopcastingfix:GetChecked()) ~= settings.stopcastingfix
+
     -- Update the saved variables
     settings.downclick = not not panel.updown:GetChecked()
+	settings.stopcastingfix = not not panel.stopcastingfix:GetChecked()
     settings.fastooc = not not panel.fastooc:GetChecked()
     settings.specswap = not not panel.specswap:GetChecked()
     settings.pri_profileKey = UIDropDownMenu_GetSelectedValue(panel.prispec)
@@ -389,6 +398,10 @@ function panel.okay()
         addon.db:SetProfile(newProfile)
     end
     addon:UpdateCombatWatch()
+
+	if changed then
+		addon:FireMessage("BINDINGS_CHANGED")
+	end
 end
 
 panel.cancel = panel.refresh

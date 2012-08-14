@@ -48,6 +48,9 @@ local MIN_HORIZONTAL_SPACING = 10
 -- Private variables.
 -------------------------------------------------------------------------------
 
+-- Prevent tainting global _.
+local _
+
 -- Values used for previous events.
 local lastAngledFinishPositionY = {}
 local lastAngledDirection = {}

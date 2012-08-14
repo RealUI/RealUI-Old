@@ -7,6 +7,10 @@ local media = LibStub("LibSharedMedia-3.0")
 -- This mode is a bit special.
 local mod = Skada:NewModule(L["Threat"])
 
+local CLIENT_VERSION = tonumber((select(4, GetBuildInfo())))
+
+local WoW5 = CLIENT_VERSION > 50000
+
 local opts = {
 	options = {
 		type="group",
@@ -225,41 +229,23 @@ function mod:Update(win, set)
 		
 		-- Reset out max threat value.
 		maxthreat = 0
-			
-		if GetNumRaidMembers() > 0 then
-			-- We are in a raid.
-			for i = 1, 40, 1 do
-				local name, rank, subgroup, level, class, fileName, zone, online, isDead, role, isML = GetRaidRosterInfo(i);
+
+		local type, count = Skada:GetGroupTypeAndCount()
+		if count > 0 then
+			for i = 1, count, 1 do
+				local name = (UnitName(type..tostring(i)))
 				if name then
 					add_to_threattable(win, name, target)
 					
-					if UnitExists("raid"..i.."pet") then
-						add_to_threattable(win, select(1, UnitName("raid"..i.."pet")), target)
+					if UnitExists(type..i.."pet") then
+						add_to_threattable(win, select(1, UnitName(type..i.."pet")), target)
 					end
 				end
 			end
-		elseif GetNumPartyMembers() > 0 then
-			-- We are in a party.
-			for i = 1, 5, 1 do
-				local name = (UnitName("party"..tostring(i)))
-				if name then
-					add_to_threattable(win, name, target)
-	
-					if UnitExists("party"..i.."pet") then
-						add_to_threattable(win, select(1, UnitName("party"..i.."pet")), target)
-					end
-				end
-			end
-			
-			-- Don't forget ourselves.
-			add_to_threattable(win, UnitName("player"), target)
-			
-			-- Maybe we have a pet?
-			if UnitExists("pet") then
-				add_to_threattable(win, UnitName("pet"), target)
-			end
-		else
-			-- We are all alone.
+		end
+
+		if type ~= "raid" then
+			-- Add ourself because we're in a party or alone.
 			add_to_threattable(win, UnitName("player"), target)
 			
 			-- Maybe we have a pet?

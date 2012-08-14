@@ -2,6 +2,7 @@
  <Script file="localization.lua" />
  <Script file="localization.de.lua" />
  <Script file="localization.fr.lua" />
+ <Script file="localization.it.lua" />
  <Script file="localization.zhcn.lua" />
  <Script file="localization.zhtw.lua" />
  <Script file="localization.ru.lua" />

@@ -63,10 +63,10 @@ function CliqueConfig:SetupGUI()
         self.rows[i]:SetPoint("RIGHT", CliqueConfigPage1Column2, "RIGHT", 0, 0)
     end
 
-    _G[self:GetName() .. "TitleText"]:SetText(L["Clique Binding Configuration"])
+	self.TitleText:SetText(L["Clique Binding Configuration"])
 
     self.dialog = _G["CliqueDialog"]
-    self.dialog.title = _G["CliqueDialogTitleText"]
+    self.dialog.title = self.dialog.TitleText
     self.dialog:SetUserPlaced(false)
     self.dialog:ClearAllPoints()
     self.dialog:SetPoint("CENTER", self, "CENTER", 30, 0)

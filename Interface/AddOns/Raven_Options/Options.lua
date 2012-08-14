@@ -7,7 +7,6 @@
 local MOD = Raven
 local acereg = LibStub("AceConfigRegistry-3.0")
 local acedia = LibStub("AceConfigDialog-3.0")
-local LBF = LibStub("LibButtonFacade", true)
 local L = LibStub("AceLocale-3.0"):GetLocale("Raven")
 local initialized = false -- set when options are first accessed
 
@@ -37,7 +36,7 @@ local conditions = { -- settings used to enter conditions
 	select = nil, enter = false, toggle = false, dependency = nil, profiles = {}, name = nil, buff = nil
 }
 
-local weaponBuffs = { [L["Mainhand Weapon"]] = true, [L["Offhand Weapon"]] = true, [L["Ranged Weapon"]] = true }
+local weaponBuffs = { [L["Mainhand Weapon"]] = true, [L["Offhand Weapon"]] = true }
 
 local anchorTips = { BOTTOMLEFT = "BOTTOMLEFT", CURSOR = "CURSOR", DEFAULT = "DEFAULT", LEFT = "LEFT", RIGHT = "RIGHT",
 	TOPLEFT = "TOPLEFT", TOPRIGHT = "TOPRIGHT" }
@@ -500,10 +499,10 @@ local function DeleteBar()
 end
 
 -- Default bar information tables
-local barSources = { "Death Knight", "Druid", "Hunter", "Mage", "Paladin", "Priest", "Rogue", "Shaman", "Warlock", "Warrior", "Racial", "Spell" }
-local classIndex = { DEATHKNIGHT = 1, DRUID = 2, HUNTER = 3, MAGE = 4, PALADIN = 5, PRIEST = 6, ROGUE = 7, SHAMAN = 8, WARLOCK = 9, WARRIOR = 10 }
-local classList = { "DEATHKNIGHT", "DRUID", "HUNTER", "MAGE", "PALADIN", "PRIEST", "ROGUE", "SHAMAN", "WARLOCK", "WARRIOR" }
-local petClassList = { true, false, true, false, false, false, false, false, true, false }
+local barSources = { "Death Knight", "Druid", "Hunter", "Mage", "Paladin", "Priest", "Rogue", "Shaman", "Warlock", "Warrior", "Monk", "Racial", "Spell" }
+local classIndex = { DEATHKNIGHT = 1, DRUID = 2, HUNTER = 3, MAGE = 4, PALADIN = 5, PRIEST = 6, ROGUE = 7, SHAMAN = 8, WARLOCK = 9, WARRIOR = 10, MONK = 11 }
+local classList = { "DEATHKNIGHT", "DRUID", "HUNTER", "MAGE", "PALADIN", "PRIEST", "ROGUE", "SHAMAN", "WARLOCK", "WARRIOR", "MONK" }
+local petClassList = { true, false, true, false, false, false, false, false, true, false, false }
 local unitList = { player = "Player", pet = "Pet", target = "Target", focus = "Focus",
 	mouseover = "Mouseover", pettarget = "Pet's Target", targettarget = "Target's Target", focustarget = "Focus's Target" }
 local castList = { player = "Player", pet = "Pet", other = "Other", anyone = "Anyone" }
@@ -1814,7 +1813,7 @@ MOD.OptionsTable = {
 					},
 				},
 				AnchorGroup = {
-					type = "group", order = 50, name = L["Bar Group Anchors"], inline = true,
+					type = "group", order = 50, name = L["Bar Group Anchors and Test Mode"], inline = true,
 					args = {
 						Anchors = {
 							type = "description", order = 10,
@@ -1829,6 +1828,11 @@ MOD.OptionsTable = {
 							type = "execute", order = 12, name = L["Unlock All Anchors"],
 							desc = L["Unlock and show the anchors for all bar groups."],
 							func = function(info) MOD:LockBarGroups(false) end,
+						},
+						TestBars = {
+							type = "execute", order = 13, name = L["Toggle Test Mode"],
+							desc = L["Toggle test mode for all bar groups."],
+							func = function(info) MOD:TestBarGroups() end,
 						},
 					},
 				},
@@ -2579,8 +2583,8 @@ MOD.OptionsTable = {
 					},
 				},
 				ButtonFacadeGroup = {
-					type = "group", order = 40, name = L["Masque/Button Facade"], inline = true,
-					hidden = function(info) return not LBF end,
+					type = "group", order = 40, name = L["Masque"], inline = true,
+					hidden = function(info) return not MOD.MSQ end,
 					args = {
 						Enable = {
 							type = "toggle", order = 1, name = L["Enable"], width = "half",
@@ -2604,7 +2608,6 @@ MOD.OptionsTable = {
 				},
 				SoundGroup = {
 					type = "group", order = 50, name = L["Sound Channel"], inline = true,
-					hidden = function(info) return not LBF end,
 					args = {
 						Master = {
 							type = "toggle", order = 10, name = L["Master"], width = "half",
@@ -2821,7 +2824,7 @@ MOD.OptionsTable = {
 					},
 				},
 				InternalCooldowns = {
-					type = "group", order = 30, name = L["Internal Cooldowns Triggered By Buffs/Debuffs"], inline = true,
+					type = "group", order = 30, name = L["Internal Cooldowns Triggered By Buffs/Debuffs/Heals"], inline = true,
 					args = {
 						EnableCooldowns = {
 							type = "toggle", order = 1, name = L["Enable"],
@@ -2840,13 +2843,13 @@ MOD.OptionsTable = {
 						},
 						NewCooldown = {
 							type = "execute", order = 15, name = L["New Cooldown"],
-							desc = L["Enter a new internal cooldown triggered by a buff or debuff."],
+							desc = L["Enter a new internal cooldown triggered by a buff, debuff or heal spell."],
 							hidden = function(info) return cooldowns.enter end,
 							func = function(info) cooldowns.enter, cooldowns.toggle = true, true end,
 						},
 						NewCooldownSpell = {
 							type = "input", order = 20, name = L["Enter Spell Name or ID"],
-							desc = L["Enter buff or debuff spell name or numeric identifier for new internal cooldown."],
+							desc = L["Enter spell name or numeric identifier for new internal cooldown."],
 							hidden = function(info) return not cooldowns.enter end,
 							validate = function(info, n) if not n or (n == "") or not (tonumber(n) or MOD:GetSpellID(n)) then return L["Invalid name."] else return true end end,
 							get = function(info)
@@ -2893,20 +2896,20 @@ MOD.OptionsTable = {
 								},
 								SpellList = {
 									type = "input", order = 40, name = L["Reset List"], width = "double",
-									desc = L["Enter comma-separated list of buffs or debuffs (either spell names or numeric identifiers) that reset the internal cooldown."],
+									desc = L["Enter comma-separated list of buff, debuff or heal spell names (or numeric identifiers) that reset the internal cooldown."],
 									get = function(info) return GetListString(cooldowns.cancel) end,
 									set = function(info, v) cooldowns.cancel = GetListTable(v, "spells"); SetInternalCooldownSettings() end,
 								},
 								Space = { type = "description", name = "", order = 50 },
 								DoPlayer = {
 									type = "toggle", order = 55, name = L["Cast By Player"],
-									desc = L["If checked, test if buffs/debuffs were cast by the player."],
+									desc = L["If checked, test if buff, debuff or heal spell was cast by the player."],
 									get = function(info) return not cooldowns.caster end,
 									set = function(info, value) cooldowns.caster = nil; SetInternalCooldownSettings() end,
 								},
 								DoOther = {
 									type = "toggle", order = 60, name = L["Cast On Player"],
-									desc = L["If checked, test if buffs/debuffs are on the player and cast by anyone other than the player."],
+									desc = L["If checked, test if buff, debuff or heal spell is on player and cast by anyone other than the player."],
 									get = function(info) return cooldowns.caster end,
 									set = function(info, value) cooldowns.caster = true; SetInternalCooldownSettings() end,
 								},
@@ -3068,13 +3071,19 @@ MOD.OptionsTable = {
 											get = function(info) return effects.caster == "focus" end,
 											set = function(info, value) effects.caster = "focus"; SetSpellEffectSettings() end,
 										},
+										OurBuff = {
+											type = "toggle", order = 27, name = L["Player Or Pet"],
+											desc = L["If checked, spell must be cast by the player or pet to trigger the spell effect."],
+											get = function(info) return effects.caster == "ours" end,
+											set = function(info, value) effects.caster = "ours"; SetSpellEffectSettings() end,
+										},
 										YourBuff = {
 											type = "toggle", order = 30, name = L["Other"],
 											desc = L["If checked, spell must be cast by anyone other than the player or pet to trigger the spell effect."],
 											get = function(info) return effects.caster == "other" end,
 											set = function(info, value) effects.caster = "other"; SetSpellEffectSettings() end,
 										},
-										OurBuff = {
+										AnyBuff = {
 											type = "toggle", order = 35, name = L["Anyone"],
 											desc = L["If checked, trigger the spell effect if the spell is cast by anyone, including player."],
 											get = function(info) return effects.caster == "anyone" end,
@@ -3461,6 +3470,14 @@ MOD.OptionsTable = {
 												if not t then SetBarGroupField("showClasses", { MAGE = not value } ) else t.MAGE = not value end
 											end
 										},
+										Monk = {
+											type = "toggle", order = 22, name = L["Monk"], width = "half",
+											get = function(info) local t = GetBarGroupField("showClasses"); return not t or not t.MONK end,
+											set = function(info, value)
+												local t = GetBarGroupField("showClasses")
+												if not t then SetBarGroupField("showClasses", { MONK = not value } ) else t.MONK = not value end
+											end
+										},
 										Paladin = {
 											type = "toggle", order = 25, name = L["Paladin"], width = "half",
 											get = function(info) local t = GetBarGroupField("showClasses"); return not t or not t.PALADIN end,
@@ -3593,7 +3610,7 @@ MOD.OptionsTable = {
 									set = function(info, value) SetBarGroupField("fade", value) end,
 								},
 								FadeDelay = {
-									type = "range", order = 45, name = L["Delay"], min = 1, max = 300, step = 1,
+									type = "range", order = 45, name = L["Delay"], min = 0, max = 300, step = 1,
 									desc = L["Set number of seconds before bar will hide or fade."],
 									disabled = function(info) return not GetBarGroupField("fade") and not GetBarGroupField("hide") end,
 									get = function(info) return GetBarGroupField("delayTime") or 5 end,
@@ -4000,13 +4017,19 @@ MOD.OptionsTable = {
 									get = function(info) return GetBarGroupField("detectBuffsCastBy") == "focus" end,
 									set = function(info, value) SetBarGroupField("detectBuffsCastBy", "focus") end,
 								},
+								OurBuff = {
+									type = "toggle", order = 27, name = L["Player Or Pet"],
+									desc = L["If checked, only add bars for buffs if cast by player or pet."],
+									get = function(info) return GetBarGroupField("detectBuffsCastBy") == "ours" end,
+									set = function(info, value) SetBarGroupField("detectBuffsCastBy", "ours") end,
+								},
 								YourBuff = {
 									type = "toggle", order = 30, name = L["Other"],
 									desc = L["If checked, only add bars for buffs if cast by anyone other than the player or pet."],
 									get = function(info) return GetBarGroupField("detectBuffsCastBy") == "other" end,
 									set = function(info, value) SetBarGroupField("detectBuffsCastBy", "other") end,
 								},
-								OurBuff = {
+								AnyBuff = {
 									type = "toggle", order = 35, name = L["Anyone"],
 									desc = L["If checked, add bars for buffs if cast by anyone, including player."],
 									get = function(info) return GetBarGroupField("detectBuffsCastBy") == "anyone" end,
@@ -4344,13 +4367,19 @@ MOD.OptionsTable = {
 									get = function(info) return GetBarGroupField("detectDebuffsCastBy") == "focus" end,
 									set = function(info, value) SetBarGroupField("detectDebuffsCastBy", "focus") end,
 								},
+								OurBuff = {
+									type = "toggle", order = 27, name = L["Player Or Pet"],
+									desc = L["If checked, only add bars for debuffs if cast by player or pet."],
+									get = function(info) return GetBarGroupField("detectDebuffsCastBy") == "ours" end,
+									set = function(info, value) SetBarGroupField("detectDebuffsCastBy", "ours") end,
+								},
 								YourBuff = {
 									type = "toggle", order = 30, name = L["Other"],
 									desc = L["If checked, only add bars for debuffs if cast by anyone other than the player or pet."],
 									get = function(info) return GetBarGroupField("detectDebuffsCastBy") == "other" end,
 									set = function(info, value) SetBarGroupField("detectDebuffsCastBy", "other") end,
 								},
-								OurBuff = {
+								AnyBuff = {
 									type = "toggle", order = 35, name = L["Anyone"],
 									desc = L["If checked, add bars for debuffs if cast by anyone, including player."],
 									get = function(info) return GetBarGroupField("detectDebuffsCastBy") == "anyone" end,
@@ -4834,6 +4863,34 @@ MOD.OptionsTable = {
 									values = function(info) return GetBarGroupList() end,
 									style = "dropdown",
 								},
+								TestGroup = {
+									type = "group", order = 95, name = L["Test Mode"], inline = true,
+									args = {
+										StaticBars = {
+											type = "range", order = 10, name = L["Unlimited Duration"], min = 0, max = 100, step = 1,
+											desc = L["Set the number of unlimited duration bars/icons to generate in test mode."],
+											get = function(info) return GetBarGroupField("testStatic") end,
+											set = function(info, value) SetBarGroupField("testStatic", value) end,
+										},
+										TimerBars = {
+											type = "range", order = 20, name = L["Timers"], min = 0, max = 100, step = 1,
+											desc = L["Set the number of timer bars/icons to generate in test mode."],
+											get = function(info) return GetBarGroupField("testTimers") end,
+											set = function(info, value) SetBarGroupField("testTimers", value) end,
+										},
+										LoopTimers = {
+											type = "toggle", order = 30, name = L["Refresh Timers"],
+											desc = L["If checked, timers are refreshed when they expire, otherwise they disappear."],
+											get = function(info) return GetBarGroupField("testLoop") end,
+											set = function(info, value) SetBarGroupField("testLoop", value) end,
+										},
+										TestToggle = {
+											type = "execute", order = 40, name = L["Toggle Test Mode"],
+											desc = L["Toggle display of test bars/icons."],
+											func = function(info) MOD:TestBarGroup(GetBarGroupEntry()); MOD:UpdateAllBarGroups() end,
+										},
+									},
+								},
 								TimelineGroup = {
 									type = "group", order = 100, name = L["Timeline"], inline = true,
 									hidden = function() local t = Nest_SupportedConfigurations[GetBarGroupField("configuration")]; return t.bars ~= "timeline" end,
@@ -4877,7 +4934,7 @@ MOD.OptionsTable = {
 											set = function(info, value) SetBarGroupField("timelineAlpha", value) end,
 										},
 										Color = {
-											type = "color", order = 27, name = L["Timeline Color"], hasAlpha = false,
+											type = "color", order = 27, name = L["Timeline Color"], hasAlpha = true,
 											desc = L["Set color for timeline background."],
 											get = function(info)
 												local t = GetBarGroupField("timelineColor"); if t then return t.r, t.g, t.b, t.a else return 0.5, 0.5, 0.5, 1 end
@@ -7088,22 +7145,6 @@ MOD.OptionsTable = {
 											end,
 											set = function(info, value) SetTestField("Player Status", "levelOffHand", value) end,
 										},
-										CheckRangedEnable = {
-											type = "toggle", order = 5, name = L["Ranged"], width = "half",
-											desc = L["If checked, test if the player has an ranged weapon equipped with at least the specified item level."],
-											get = function(info) return IsTestFieldOn("Player Status", "hasRanged") end,
-											set = function(info, value) local v = Off if value then v = true end SetTestField("Player Status", "hasRanged", v) end,
-										},
-										RangedLevel = {
-											type = "range", order = 6, name = "", min = 1, max = 500, step = 1,
-											disabled = function(info) return IsTestFieldOff("Player Status", "hasRanged") end,
-											get = function(info)
-												local level = GetTestField("Player Status", "levelRanged")
-												if not level then level = 1; SetTestField("Player Status", "levelRanged", level) end
-												return level
-											end,
-											set = function(info, value) SetTestField("Player Status", "levelRanged", value) end,
-										},
 									},
 								},
 								CheckStanceGroup = {
@@ -8296,13 +8337,6 @@ MOD.OptionsTable = {
 											get = function(info) return GetTestField("Buff Type", "hasBuff") == "Offhand" end,
 											set = function(info, value) if value then SetTestField("Buff Type", "hasBuff", "Offhand") end end,
 										},
-										CheckRanged = {
-											type = "toggle", order = 4, name = L["Ranged"],
-											desc = L["If checked, player must have a ranged buff."],
-											disabled = function(info) return IsTestFieldOff("Buff Type", "hasBuff") end,
-											get = function(info) return GetTestField("Buff Type", "hasBuff") == "Ranged" end,
-											set = function(info, value) if value then SetTestField("Buff Type", "hasBuff", "Ranged") end end,
-										},
 									},
 								},
 								ToggleGroup = {
@@ -9421,9 +9455,9 @@ MOD.OptionsTable = {
 							set = function(info, value) MOD.db.global.HighlightsEnabled = value end,
 						},
 						ButtonFacade = {
-							type = "toggle", order = 20, name = L["Use ButtonFacade"],
-							desc = L["Enable setting highlights through ButtonFacade if it is loaded. This is not ideal for every BF skin which is why it can be disabled. Try both enabled and disabled settings and see which works best."],
-							disabled = function(info) return not MOD.db.global.HighlightsEnabled or not LBF end,
+							type = "toggle", order = 20, name = L["Use Masque"],
+							desc = L["Enable setting highlights through Masque if it is loaded. This is not ideal for every skin which is why it can be disabled. Try both enabled and disabled settings and see which works best."],
+							disabled = function(info) return not MOD.db.global.HighlightsEnabled or not MOD.MSQ end,
 							get = function(info) return MOD.db.global.ButtonFacade end,
 							set = function(info, value) MOD.db.global.ButtonFacade = value end,
 						},
@@ -9899,7 +9933,7 @@ MOD.barOptions = {
 				set = function(info, value) SetBarField(info, "fade", value) end,
 			},
 			FadeDelay = {
-				type = "range", order = 45, name = L["Delay"], min = 1, max = 300, step = 1,
+				type = "range", order = 45, name = L["Delay"], min = 0, max = 300, step = 1,
 				desc = L["Set number of seconds before bar will hide or fade."],
 				disabled = function(info) return not GetBarField(info, "fade") and not GetBarField(info, "hide") end,
 				get = function(info) return GetBarField(info, "delayTime") or 5 end,
@@ -10273,6 +10307,13 @@ MOD.barOptions = {
 						hidden = function(info) return bars.template.barSource == "Pet" end,
 						get = function(info) return bars.template.barClass == 4 end,
 						set = function(info, value) SetSelectedBarClass(4) end,
+					},
+					Monk = {
+						type = "toggle", order = 22, name = L["Monk"], width = "half",
+						desc = L["If checked, select monk actions."],
+						hidden = function(info) return bars.template.barSource == "Pet" end,
+						get = function(info) return bars.template.barClass == 11 end,
+						set = function(info, value) SetSelectedBarClass(11) end,
 					},
 					Paladin = {
 						type = "toggle", order = 25, name = L["Paladin"], width = "half",

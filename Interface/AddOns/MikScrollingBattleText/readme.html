@@ -37,9 +37,9 @@
  <body>
   <h1>Mik's Scrolling Battle Text</h1>
   <div id="HeaderBlock">
-   Version: 5.6<br />
+   Version: 5.7<br />
    Author: Mikord<br />
-   Updated: July 22, 2011<br />
+   Updated: July 21, 2012<br />
    Official Site: <a href="http://mikord.wowinterface.com">http://mikord.wowinterface.com</a><br /><br />
    <a href="#Credits">See Credits</a>
   </div>
@@ -183,10 +183,10 @@
       <li>Item Buffs / Item Buff Fades</li>
       <li>Enter/Leave Combat</li>
       <li>Power Gains and Losses</li>
-      <li>Combo Point Gains</li>
-      <li>Combo Points Full</li>
-      <li>Holy Power Changes</li>
-      <li>Holy Power Full</li>
+      <li>Alternate Power Gains and Losses</li>
+      <li>Chi Gains and Chi Full</li>
+      <li>Combo Point Gains and Combo Points Full</li>
+      <li>Holy Power Changes and Holy Power Full</li>
       <li>Honor Gains</li>
       <li>Reputation Gains and Losses</li>
       <li>Skill Gains</li>
@@ -209,17 +209,18 @@
      <br />
      <li>Default Triggers:</li>
      <ul>
-      <li>All Relevant Classes - Low Health, Low Mana, Low Pet Health, Viper Sting</li>
-      <li>Death Knight - Blood Swarm, Killing Machine, Rime, Rune Strike, Shadow Infusion x5</li>
+      <li>All Relevant Classes - Low Health, Low Mana, Low Pet Health</li>
+      <li>Death Knight - Killing Machine, Rime, Rune Strike, Shadow Infusion x5</li>
       <li>Druid - Berserk, Clearcasting, Eclipse (Lunar), Eclipse (Solar), Owlkin Frenzy, Predator's Swiftness, Shooting Stars</li> 
-      <li>Hunter - Counterattack, Kill Shot, Lock and Load</li>
-      <li>Mage - Brain Freeze, Clearcasting, Fingers of Frost, Hot Streak, Impact, Missile Barrage</li>
+      <li>Hunter - Kill Shot, Lock and Load</li>
+      <li>Mage - Brain Freeze, Clearcasting, Fingers of Frost, Missile Barrage</li>
+      <li>Monk- Elusive Brew x5, x10, x15, Power Guard x3</li>
       <li>Paladin - Hammer of Wrath, The Art of War</li>
       <li>Priest - Clearcasting, Shadow Orb x3</li>
       <li>Rogue - Riposte</li>
       <li>Shaman - Clearcasting, Lava Surge, Maelstrom Weapon x5, Tidal Waves</li>
-      <li>Warlock - Backlash, Decimation, Eradication, Molten Core, Nightfall</li>
-      <li>Warrior - Bloodsurge, Execute, Overpower, Rampage, Revenge, Sudden Death, Taste for Blood, Victory Rush</li>
+      <li>Warlock - Backlash, Decimation, Molten Core, Nightfall</li>
+      <li>Warrior - Bloodsurge, Execute, Overpower, Revenge, Sudden Death, Taste for Blood, Victory Rush</li>
      </ul>
     </ul>
    </div>
@@ -1212,6 +1213,89 @@
      <td class="ParameterName" nowrap="nowrap"><a name="WhatsNew"></a>Latest</td>
      <td class="ParameterDesc">
       <ul>
+       <li>Added new option to shorten large numbers using si suffixes (32765 displays as 33k).</li>
+       <li>Added new option to separate large numbers into digit groups (32765 dispays as 32,765).</li>
+       <li>Added default trigger for Vital Mists x5.</li>
+       <li>Added default trigger for Mana Tea x20.</li>
+      </ul>
+     </td>
+    </tr>
+    <tr>
+     <td class="ParameterName" nowrap="nowrap">5.7.3</td>
+     <td class="ParameterDesc">
+      <ul>
+       <li>Fixed taint issues cause by the _ global variable.</li>
+       <li>Added default trigger for Elusive Brew at 5, 10, and 15 stacks.</li>
+       <li>Added default trigger for Power Guard x3.</li>
+       <li>Added new events for Alternate Power Gains and Losses so they may be customized.</li>
+       <li>Removed old temporary workaround for raid flags added in Patch 4.2.</li>
+       <li>Added Italian localization from Kelhar@Runetotem-EU.</li>
+      </ul>
+     </td>
+    </tr>
+    <tr>
+     <td class="ParameterName" nowrap="nowrap">5.7.2</td>
+     <td class="ParameterDesc">
+      <ul>
+       <li>Added temporary workaround for UnitGUID bug when in a group.  Triggers that involve party/raid members will not work currently due to this.</li>
+       <li>Monk is now an available class for triggers and class coloring.</li>
+       <li>Added new Chi Change and Chi Full events that act similar to combo points.</li>
+       <li>Removed chi from standard power gains (e.g. +1 Chi) since it is now treated similar to combo points.</li>
+       <li>Added support for dynamic max chi and holy power.</li>
+       <li>Updated environmental damage handler for environmental type changes.</li>
+       <li>Converted class names to use Blizzard provided localizations.</li>
+      </ul>
+     </td>
+    </tr>
+    <tr>
+     <td class="ParameterName" nowrap="nowrap">5.7.1</td>
+     <td class="ParameterDesc">
+      <ul>
+       <li>Updated for Patch 5.0.1 / Mists of Pandaria Beta
+        <ul>
+         <li>Removed the following triggers since they no longer apply: Counterattack, Eradication, Hot Streak, Impact, Riposte, Viper Sting</li>
+         <li>Removed the following skills from default suppressions and throttling since they no longer apply: Arcane Empowerment, Desecration, Ferocious Inspiration, Mana Spring</li>
+         <li>Updated supported power types to include alternate, dark force, chi (light force), shadow orbs, burning embers, and demonic fury.</li>
+         <li>Rewrote code that deals with party and raid members to use the new Blizzard APIs.</li>
+         <li>Updated "Active Talents" trigger condition to use the new Blizzard API.</li>
+         <li>Modified remaining existing triggers to work with their new values.</li>
+         <li>Modified several skill IDs to reflect their new values.</li>
+         <li>Updated TOC for Patch 5.0.1.</li>
+        </ul>
+       </li>
+      </ul>
+     </td>
+    </tr>
+    <tr>
+     <td class="ParameterName" nowrap="nowrap">5.6.117</td>
+     <td class="ParameterDesc">
+      <ul>
+       <li>Money strings will now show properly on all supported languages.</li>
+       <li>Updated Simplified and Traditional Chinese translations from yleaf.</li>
+      </ul>
+     </td>
+    </tr>
+    <tr>
+     <td class="ParameterName" nowrap="nowrap">5.6.113</td>
+     <td class="ParameterDesc">
+      <ul>
+       <li>Converted all sounds to .ogg from .mp3.</li>
+      </ul>
+     </td>
+    </tr>
+    <tr>
+     <td class="ParameterName" nowrap="nowrap">5.6.112</td>
+     <td class="ParameterDesc">
+      <ul>
+       <li>Modified combat event log parser to work with the absorb changes in Patch 4.3.</li>
+      </ul>
+     </td>
+    </tr>
+    <tr>
+     <td class="ParameterName" nowrap="nowrap">5.6.111</td>
+     <td class="ParameterDesc">
+      <ul>
+       <li>Updated German translations from mojosdojo.</li>
        <li>Updated Simplified and Traditional Chinese translations from yleaf.</li>
        <li>Updated TOC for Patch 4.3.</li>
       </ul>
@@ -1367,8 +1451,8 @@
        <li>Fixed an issue that caused an error when moving scroll areas with the mouse.</li>
        <li>Modified the cooldown tracking system to further support dynamic cooldown resets.</li>
        <li>Updated the cooldown tracking system to support abilities with the same name that have different cooldown lengths such as Feral Charge.</li>
-       <li>Added new Holy Power Change and Holy Power Full events that act similar to combat points.</li>
-       <li>Removed holy power from standard power gains (e.g. +1 Holy Power) since it is now treated similar to combat points.</li>
+       <li>Added new Holy Power Change and Holy Power Full events that act similar to combo points.</li>
+       <li>Removed holy power from standard power gains (e.g. +1 Holy Power) since it is now treated similar to combo points.</li>
        <li>Updated supported power types to include generic eclipse energy.</li>
        <li>Added additional logic for detecting Lunar and Solar Eclipse energy gains (e.g. +13 Lunar Energy or +20 Solar Energy).</li>
        <li>Added default trigger for Shooting Stars.</li>
@@ -2405,6 +2489,7 @@
     <li>Whitepaw and yleaf for the Traditional Chinese localizations.</li>
     <li>StingerSoft for the Russian localizations.</li>
     <li>Slowhand, Fenlis, and chkid for the Korean localizations.</li>
+    <li>Kelhar@Runetotem-EU for the Italian localizations.</li>
    </ul>
   </div>
  </body>

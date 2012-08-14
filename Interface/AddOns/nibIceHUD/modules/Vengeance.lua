@@ -153,6 +153,6 @@ end
 
 -- Load for tanks only
 local _, unitClass = UnitClass("player")
-if (unitClass == "DEATHKNIGHT" or unitClass == "DRUID" or unitClass == "PALADIN" or unitClass == "WARRIOR") then
+if (unitClass == "DEATHKNIGHT" or unitClass == "DRUID" or unitClass == "PALADIN" or unitClass == "WARRIOR" or unitClass == "MONK") then
 	nibIceHUD.Vengeance = Vengeance:new()
 end

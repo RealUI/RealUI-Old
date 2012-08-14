@@ -45,7 +45,6 @@ ArkInventory.Const.CompanionTranslationData = { -- temporary table for item to s
 [73905] = { id = 103549 }, -- Darkmoon Zeppelin
 [74611] = { id = 104049 }, -- Festival Lantern
 [76062] = { id = 105633 }, -- Fetish Shaman's Spear / Fetish Shaman
-[73905] = { id = 103549 }, -- Darkmoon Zeppelin
 [72134] = { id = 102317 }, -- Grell Moss / Gregarious Grell
 [73797] = { id = 103125 }, -- Lump of Coal / Lumpy
 [74610] = { id = 104047 }, -- Lunar Lantern
@@ -68,6 +67,7 @@ ArkInventory.Const.CompanionTranslationData = { -- temporary table for item to s
 [72146] = { id = 102350, sg = true }, -- Swift Lovebird
 [73839] = { id = 103196, sg = true }, -- Swift Mountain Horse
 [71718] = { id = 101573, sg = true }, -- Swift Shorestrider
+[72145] = { id = 102349, sg = true }, -- Swift Springstrider
 [77068] = { id = 107844, sf = true }, -- Reins of the Twilight Harbinger / Twilight Harbinger
 [76755] = { id = 107203, sf = true }, -- Tyrael's Charger
 [72575] = { id = 102488, sg = true }, -- White Riding Camel

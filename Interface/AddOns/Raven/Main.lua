@@ -11,6 +11,14 @@
 -- Raven:UnitHasBuff(unit, type) returns true and table with detailed info if unit has an active buff of the specified type (e.g., "Mainhand")
 -- Raven:UnitHasDebuff(unit, type) returns true and table with detailed info if unit has an active debuff of the specified type (e.g., "Poison")
 
+-- Mists of Pandaria (WoW 5.0) changes
+-- Talent changes: rewrite talent tracking, change talent condition checking, fix special cases that check talents (e.g., dispels)
+-- Party/raid changes: rewrite code that tests if in party or raid, change party/raid-related condition checking
+-- Presets: update all class presets with new spell ids and cooldown info
+-- UI: change UIPanelButtonTemplate2 to UIPanelButtonTemplate
+-- Buff consolidation: figure out how to work with new raid buff interface
+-- Ranged slot: remove from buff and cooldown tracking, no ranged slot-related conditions
+
 Raven = LibStub("AceAddon-3.0"):NewAddon("Raven", "AceConsole-3.0", "AceEvent-3.0")
 local L = LibStub("AceLocale-3.0"):GetLocale("Raven")
 local MOD = Raven
@@ -56,7 +64,7 @@ local refreshUnits = {} -- unit id cache used to optimize refresh
 local tablePool = {} -- pool of available tables
 local activeCooldowns = {} -- spells/items that are currently on cooldown
 local internalCooldowns = {} -- tracking entries for internal cooldowns
-local spellEffects = {} -- tracking entries for internal cooldowns
+local spellEffects = {} -- tracking entries for spell effects
 local elapsedTime = 0 -- time in seconds since last update
 local refreshTime = 0 -- time since last animation refresh
 local refreshThrottle = 0.04 -- max of around 25 times per second
@@ -66,7 +74,6 @@ local bufftooltip = nil -- used to store tooltip for scanning weapon buffs
 local bufftooltipline = {} -- caches lines in weapon tooltips
 local mhLastBuff = nil -- saves name of most recent main hand weapon buff
 local ohLastBuff = nil -- saves name of most recent off hand weapon buff
-local rhLastBuff = nil -- saves name of most recent ranged weapon buff
 local iconGCD = nil -- icon for global cooldown
 local iconPotion = nil -- icon for shared potions cooldown
 local iconElixir = nil -- icon for shared elixirs cooldown
@@ -93,6 +100,7 @@ function MOD:OnInitialize()
 	LoadAddOn("LibDataBroker-1.1")
 	LoadAddOn("LibDBIcon-1.0")
 	LoadAddOn("LibBossIDs-1.0", true)
+	MOD.MSQ = LibStub("Masque", true)
 end
 
 -- Functions called to trigger updates
@@ -105,7 +113,7 @@ function MOD:ForceUpdate() doUpdate = true; forceUpdate = true end
 local function CheckGCD(event, unit, spell)
 	if unit == "player" then
 		local start, duration = GetSpellCooldown(spell)
-		if duration and (duration > 0) and (duration <= 1.5) then startGCD = start; durationGCD = duration; TriggerCooldownUpdate() end
+		if start and duration and (duration > 0) and (duration <= 1.5) then startGCD = start; durationGCD = duration; TriggerCooldownUpdate() end
 	end
 end
 
@@ -198,8 +206,12 @@ local function RefreshTrackers()
 	ValidateUnitIDs()
 	table.wipe(refreshUnits) -- table of guids to prevent refreshing multiple times
 	MOD:AddTrackers("player"); MOD:AddTrackers("target");  MOD:AddTrackers("focus")
-	for i = 1, GetNumPartyMembers() do MOD:AddTrackers("party"..i); MOD:AddTrackers("partypet"..i); MOD:AddTrackers("party"..i.."target") end
-	for i = 1, GetNumRaidMembers() do MOD:AddTrackers("raid"..i); MOD:AddTrackers("raidpet"..i); MOD:AddTrackers("raid"..i.."target") end
+	local inRaid = UnitInRaid("player")
+	if inRaid then
+		for i = 1, GetNumGroupMembers() do MOD:AddTrackers("raid"..i); MOD:AddTrackers("raidpet"..i); MOD:AddTrackers("raid"..i.."target") end
+	else
+		for i = 1, GetNumGroupMembers() do MOD:AddTrackers("party"..i); MOD:AddTrackers("partypet"..i); MOD:AddTrackers("party"..i.."target") end
+	end
 	local pgid = UnitGUID("pet")
 	if petGUID and (petGUID ~= pgid) then MOD:RemoveTrackers(petGUID) end
 	petGUID = pgid; if pgid then MOD:AddTrackers("pet") end
@@ -210,15 +222,16 @@ local function GetUnitIDFromGUID(guid)
 	local uid = cacheUnits[guid] -- look up the guid in the cache and if it is there make sure it is still valid and then return it
 	if uid then if guid == UnitGUID(uid) then return uid else uid = nil end end
 	for _, unit in pairs(units) do uid = CheckUnitIDs(unit, guid); if uid then break end end -- first check primary units
-	if not uid then -- check party, party pet, and party target units
-		for i = 1, GetNumPartyMembers() do
+	local inRaid = UnitInRaid("player")
+	if not uid and not inRaid then -- check party, party pet, and party target units
+		for i = 1, GetNumGroupMembers() do
 			uid = CheckUnitIDs("party"..i, guid); if uid then break end
 			uid = CheckUnitIDs("partypet"..i, guid); if uid then break end
 			uid = CheckUnitIDs("party"..i.."target", guid); if uid then break end
 		end
 	end
-	if not uid then -- check raid, raid pet, and raid target units
-		for i = 1, GetNumRaidMembers() do
+	if not uid and inRaid then -- check raid, raid pet, and raid target units
+		for i = 1, GetNumGroupMembers() do
 			uid = CheckUnitIDs("raid"..i, guid); if uid then break end
 			uid = CheckUnitIDs("raidpet"..i, guid); if uid then break end
 			uid = CheckUnitIDs("raid"..i.."target", guid); if uid then break end
@@ -258,7 +271,7 @@ local function CombatLogTracker(event, timeStamp, e, hc, srcGUID, srcName, sf1, 
 				if name then MOD:SetDuration(name, duration) end
 			end
 			if not spellID then spellID = MOD:GetSpellID(spellName) end
-			if not icon then icon = MOD:GetIcon(spellName) end
+			if spellID and not icon then icon = MOD:GetIcon(spellName, spellID) end
 			if not name then
 				name = spellName; rank = ""; count = 1; bType = nil; duration = MOD:GetDuration(name)
 				if hasSerpentSpread and (spellID == 1978) or (spellID == 88466) then spellID = 88466; duration = 9 end -- special case aoe serpent spread
@@ -287,15 +300,17 @@ local function CombatLogTracker(event, timeStamp, e, hc, srcGUID, srcName, sf1, 
 				if t then tracker[spellName] = ReleaseTable(t) end -- release the tracker entry
 				if not next(tracker) then unitDebuffs[dstGUID] = ReleaseTable(tracker) end -- release table when no more entries for this GUID
 			end
+--[[
 		elseif e == "SPELL_DAMAGE" and MOD.myClass == "SHAMAN" and spellID == 8349 then -- special case for shaman Fire Nova
 			local tracker = unitDebuffs[dstGUID] -- table of debuffs currently applied to this GUID
 			if tracker then
-				local t = tracker[LSPELL["Flame Shock"]] -- get tracker entry for active Flame Shock, if one exists
+				local t = tracker[ LSPELL["Flame Shock"] ] -- get tracker entry for active Flame Shock, if one exists
 				if t then -- extend duration by 3 or 6 seconds if Call of Flame talent
 					local pts = RavenCheckTalent(16160)
 					if pts then pts = pts * 3; t[5] = t[5] + pts; t[10] = t[10] + pts; t[2] = t[2] + pts end
 				end
-			end		
+			end	
+]]--
 		elseif e == "SPELL_SUMMON" and MOD.myClass == "MAGE" and spellID == 99063 then -- special case for mage T12 2-piece
 			local name = GetSpellInfo(99061) -- T12 bonus spell name
 			if name then
@@ -328,8 +343,12 @@ end
 local function CheckRaidTargets()
 	doUpdate = true
 	for _, unit in pairs(units) do CheckRaidTarget(unit) end -- first check primary units
-	for i = 1, GetNumPartyMembers() do CheckRaidTarget("party"..i); CheckRaidTarget("partypet"..i); CheckRaidTarget("party"..i.."target") end
-	for i = 1, GetNumRaidMembers() do CheckRaidTarget("raid"..i); CheckRaidTarget("raidpet"..i); CheckRaidTarget("raid"..i.."target") end
+	local inRaid = UnitInRaid("player")
+	if inRaid then
+		for i = 1, GetNumGroupMembers() do CheckRaidTarget("raid"..i); CheckRaidTarget("raidpet"..i); CheckRaidTarget("raid"..i.."target") end
+	else
+		for i = 1, GetNumGroupMembers() do CheckRaidTarget("party"..i); CheckRaidTarget("partypet"..i); CheckRaidTarget("party"..i.."target") end
+	end
 end
 
 -- Check raid target on mouseover unit
@@ -343,7 +362,8 @@ function MOD:OnEnable()
 	MOD:InitializeProfile() -- initialize the profile database
 	MOD:InitializeLDB() -- initialize the data broker
 	MOD:RegisterChatCommand("raven", function() MOD:OptionsPanel() end)
-	
+	Nest_Initialize() -- initialize the graphics module
+
 	-- Create a frame so that updates can be registered
 	MOD.frame = CreateFrame('Frame')
 	-- Set frame level high so visible above other addons
@@ -380,7 +400,7 @@ function MOD:OnEnable()
 	MOD:InitializeBars() -- initialize routine that manages the bar library
 	MOD:InitializeSounds() -- add sounds to LibSharedMedia
 	MOD.LibBossIDs = LibStub("LibBossIDs-1.0", true)
-	MOD.db.global.Version = "5" -- version number for database validation
+	MOD.db.global.Version = "6" -- version number for database validation
 end
 
 -- Event called when addon is disabled but this is probably never called
@@ -476,11 +496,11 @@ function MOD:SPELLS_CHANGED() MOD:SetIconDefaults(); MOD:SetCooldownDefaults(); 
 
 -- Create cache of talent tab info
 local function InitializeTalents()	
-	local tabs = GetNumTalentTabs(false, false)
-	if tabs == 0 then return end
+	-- local tabs = GetNumTalentTabs(false, false)
+	-- if tabs == 0 then return end
 	talentsInitialized = true; doUpdate = true
 	MOD.talents = {}; MOD.talentList = {}
-
+--[[
 	local select = 1
 	for i = 1, tabs do
 		local ts = GetNumTalents(i, false, false)
@@ -494,6 +514,7 @@ local function InitializeTalents()
 			end
 		end
 	end
+]]--
 	table.sort(MOD.talentList)
 	for i, t in pairs(MOD.talentList) do
 		MOD.talents[t].select = i
@@ -518,7 +539,7 @@ end
 
 -- If the options panel is loaded then update it so it reflects any changes made thru anchors, etc.
 function MOD:UpdateOptionsPanel()
-    if optionsLoaded and not optionsFailed and not IsMouseButtonDown("LeftButton") then MOD:UpdateOptions(); MOD.updateOptions = false end
+	if optionsLoaded and not optionsFailed and not IsMouseButtonDown("LeftButton") then MOD:UpdateOptions(); MOD.updateOptions = false end
 	doUpdate = true
 end
 
@@ -806,10 +827,9 @@ local function GetWeaponBuffs()
 	-- old weapons buffs are now out-of-date so release them before regenerating		
 	if mhLastBuff then ReleasePlayerBuff(mhLastBuff) end
 	if ohLastBuff then ReleasePlayerBuff(ohLastBuff) end 
-	if rhLastBuff then ReleasePlayerBuff(rhLastBuff) end 
 	
 	-- first check if there are weapon auras then, only if necessary, use tooltip to scan for the buff names
-	local mh, mhms, mhc, oh, ohms, ohc, rh, rhms, rhc = GetWeaponEnchantInfo()
+	local mh, mhms, mhc, oh, ohms, ohc = GetWeaponEnchantInfo()
 	if mh then -- add the mainhand buff, if any, to the table
 		local islot = GetInventorySlotInfo("MainHandSlot")
 		local mhbuff = GetWeaponBuffName(islot)
@@ -841,22 +861,6 @@ local function GetWeaponBuffs()
 		AddAura("player", ohbuff, true, nil, ohc, "Offhand", duration, "player", nil, nil, 1, icon, nil, expire, "weapon", "SecondaryHandSlot")
 		ohLastBuff = ohbuff -- caches the name of the weapon buff so can clear it later
 	elseif ohLastBuff then ResetWeaponBuffDuration(ohLastBuff); ohLastBuff = nil end
-	
-	if rh then -- add the ranged weapon buff, if any, to the table
-		local islot = GetInventorySlotInfo("RangedSlot")
-		local rhbuff = GetWeaponBuffName(islot)
-		if not rhbuff then -- if tooltip scan fails then use fallback of weapon name or slot name
-			local weaponLink = GetInventoryItemLink("player", islot)
-			if weaponLink then rhbuff = GetItemInfo(weaponLink) end
-			if not rhbuff then rhbuff = L["Ranged Weapon"] end
-		end
-		local icon = GetInventoryItemTexture("player", islot)
-		local timeLeft = rhms / 1000
-		local expire = GetTime() + timeLeft
-		local duration = GetWeaponBuffDuration(rhbuff, timeLeft)
-		AddAura("player", rhbuff, true, nil, rhc, "Ranged", duration, "player", nil, nil, 1, icon, nil, expire, "weapon", "RangedSlot")
-		rhLastBuff = rhbuff -- caches the name of the weapon buff so can clear it later
-	elseif rhLastBuff then ResetWeaponBuffDuration(rhLastBuff); rhLastBuff = nil end
 end
 
 -- See if totems have changed since last update, can't count on events, and save for future checks
@@ -1063,7 +1067,7 @@ local function CheckInventoryCooldown(slot)
 	local id = GetInventorySlotInfo(slot)
 	if id then
 		local start, duration, enable = GetInventoryItemCooldown("player", id)
-		if start > 0 and enable == 1 and duration > 1.5 then
+		if start and (start > 0) and (enable == 1) and (duration > 1.5) then
 			local name, _, _, _, _, _, _, _, _, icon = GetItemInfo(GetInventoryItemLink("player", id))
 			AddCooldown(name, id, icon, start, duration, "inventory", slot, "player")
 		end
@@ -1196,6 +1200,7 @@ end
 
 -- Check for new and expiring cooldowns associated with all action bar slots plus trinkets (might want to add inventory slots someday)
 function MOD:UpdateCooldowns()
+	local _
 	if updateCooldowns then
 		ReleaseCooldowns() -- mark all cooldowns as not active
 		if MOD.myClass == "DEATHKNIGHT" then CheckRunes() end
@@ -1204,38 +1209,38 @@ function MOD:UpdateCooldowns()
 			if not lockouts[ls.school] then lockouts[ls.school] = 0 end -- initialize when school seen for first time
 			if ls.index and (lockouts[ls.school] == 0) then
 				local start, duration = GetSpellCooldown(ls.index, "spell")
-				if (start > 0) and (duration > 1.5) then -- locked out!
+				if start and (start > 0) and (duration > 1.5) then -- locked out!
 					lockouts[ls.school] = duration
 					AddCooldown(ls.label, nil, iconGCD, start, duration, "spell", ls.text, "player")
 				end
 			end
 		end
 		for _, cd in pairs(MOD.cdSpells) do
-			local start, duration, enable, spellID = 0, 0, 0, nil
-			if cd.id then
-				start, duration, enable = GetSpellCooldown(cd.id)
-				spellID = cd.id
-			elseif cd.index then
+			local start, duration, enable = 0, 0, 0
+			if cd.index then -- prefer spell book detection since works with spells like Mangle that have multiple variants
 				start, duration, enable = GetSpellCooldown(cd.index, "spell")
+			elseif cd.id then
+				start, duration, enable = GetSpellCooldown(cd.id)
 			elseif cd.name then
 				start, duration, enable = GetSpellCooldown(cd.name)
 			end
-			if (start > 0) and (enable == 1) and (duration > 1.5) then
+			if start and (start > 0) and (enable == 1) and (duration > 1.5) then
 				if ((lockouts[cd.school] == nil) or (duration > lockouts[cd.school])) and -- not locked out or on longer cooldown
 						((MOD.myClass ~= "DEATHKNIGHT") or CheckRuneCooldown(cd.name, duration)) then -- death knight rune check
-					AddCooldown(cd.name, spellID, cd.icon, start, duration, "spell link", cd.link, "player")
+					AddCooldown(cd.name, cd.id, cd.icon, start, duration, "spell link", cd.link, "player")
 				end
 			end
 		end
-		local numSpells = HasPetSpells()
+		local numSpells = HasPetSpells() -- returns the number of pet spells
 		if numSpells and UnitExists("pet") then
 			for i = 1, numSpells do
 				local start, duration, enable = GetSpellCooldown(i, "pet")
-				if (start > 0) and (enable == 1) and (duration > 1.5) then -- don't include global cooldowns
+				if start and (start > 0) and (enable == 1) and (duration > 1.5) then -- don't include global cooldowns
 					local name, _, icon = GetSpellInfo(i, "pet")
 					if name then
 						local hyperlink = GetSpellLink(i, "pet")
-						AddCooldown(name, nil, icon, start, duration, "spell link", hyperlink, "pet")
+						local _, spellID = GetSpellBookItemInfo(i, "pet")
+						AddCooldown(name, spellID, icon, start, duration, "spell link", hyperlink, "pet")
 					end
 				end
 			end
@@ -1245,7 +1250,7 @@ function MOD:UpdateCooldowns()
 				local actionType, spellID = GetActionInfo(slot)
 				if actionType == "spell" then
 					local start, duration, enable = GetSpellCooldown(spellID)
-					if (start > 0) and (enable == 1) and (duration > 1.5) then -- don't include global cooldowns
+					if start and (start > 0) and (enable == 1) and (duration > 1.5) then -- don't include global cooldowns
 						local name, _, icon = GetSpellInfo(spellID)
 						if name then AddCooldown(name, spellID, icon, start, duration, "spell id", spellID, "player") end
 					end
@@ -1277,7 +1282,6 @@ function MOD:UpdateCooldowns()
 		CheckInventoryCooldown("Trinket1Slot")
 		CheckInventoryCooldown("MainHandSlot")
 		CheckInventoryCooldown("SecondaryHandSlot")
-		CheckInventoryCooldown("RangedSlot")
 
 		if startGCD and durationGCD then -- detect global cooldowns
 			local timeLeft = startGCD + durationGCD - GetTime() -- calculate timeLeft from start and duration

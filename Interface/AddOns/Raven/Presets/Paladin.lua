@@ -45,7 +45,7 @@ Raven.classSpells.PALADIN = {
 	{ "Hand of Salvation", BUFF, p.Green1, cooldown = true, school = "Holy", id = 1038 },
 	{ "Holy Light", nil, p.Yellow1, school = "Holy", lockout = true, id = 635 },
 	{ "Holy Power", BUFF, p.Green3, school = "Holy", id = 85247 },
-	{ "Holy Radiance", BUFF, p.Yellow3, cooldown = true, school = "Holy", id = 82327 }, -- Cataclysm level 83
+	{ "Holy Radiance", BUFF, p.Yellow3, school = "Holy", id = 82327 }, -- Cataclysm level 83
 	{ "Holy Shield", BUFF, p.Yellow2, cooldown = true, school = "Holy", id = 20925 },
 	{ "Holy Shock", nil, p.Yellow1, cooldown = true, school = "Holy", id = 20473 },
 	{ "Holy Wrath", DEBUFF, p.Orange3, cooldown = true, school = "Holy", id = 2812 },

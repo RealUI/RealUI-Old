@@ -429,7 +429,7 @@ function Bar:InitVisibilityDriver(returnOnly)
 				if key == "always" then
 					table_insert(self.hidedriver, "hide")
 				elseif key == "possess" then
-					table_insert(self.hidedriver, "[bonusbar:5]hide")
+					table_insert(self.hidedriver, "[possessbar]hide")
 				elseif key == "vehicleui" then
 					table_insert(self.hidedriver, "[vehicleui]hide")
 				elseif key == "vehicle" then
@@ -450,6 +450,9 @@ function Bar:InitVisibilityDriver(returnOnly)
 			end
 		end
 	end
+	-- always hide in petbattles
+	table_insert(self.hidedriver, 1, "[petbattle]hide")
+	-- add fallback at the end
 	table_insert(self.hidedriver, self.config.fadeout and "fade" or "show")
 
 	if not returnOnly then

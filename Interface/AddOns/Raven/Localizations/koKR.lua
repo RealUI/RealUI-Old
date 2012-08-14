@@ -1,4 +1,5 @@
-﻿local AceLocale = LibStub:GetLibrary("AceLocale-3.0")
+﻿-- 한글화 작업 : 달라란@삼이공
+local AceLocale = LibStub:GetLibrary("AceLocale-3.0")
 local L = AceLocale:NewLocale("Raven", "koKR")
 if not L then return end
 
@@ -852,7 +853,7 @@ L["Spark"] = "불꽃"
 L["Show spark that moves across bars to indicate remaining time."] = "남은 시간을 나타내는 바의 불꽃 보기"
 L["Label"] = "라벨"
 L["Show label text on bars."] = "바의 라벨 문자 보기"
-L["Count"] = "개수"
+L["Count"] = "중첩"
 L["Show stack count in parentheses after label (it is also displayed as overlay on icon)."] = "라벨 뒤에 괄호에 중첩 개수를 표시합니다.(그것도 아이콘 오버레이로 표시됩니다)"
 L["Time"] = "시간"
 L["Show time left on bars that have a duration."] = "지속시간을 가지는 바의 남은 시간 보기"

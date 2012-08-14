@@ -27,6 +27,8 @@ local Print = MikSBT.Print
 local EraseTable = MikSBT.EraseTable
 local DisplayEvent = MikSBT.Animations.DisplayEvent
 local TestFlagsAny = MSBTParser.TestFlagsAny
+local ShortenNumber = MikSBT.ShortenNumber
+local SeparateNumber = MikSBT.SeparateNumber
 
 -- Local reference to various variables for faster access.
 local REACTION_HOSTILE = MSBTParser.REACTION_HOSTILE
@@ -50,6 +52,9 @@ local MAX_RAID_MEMBERS = 40
 -------------------------------------------------------------------------------
 -- Private variables.
 -------------------------------------------------------------------------------
+
+-- Prevent tainting global _.
+local _
 
 -- Holds dynamically created frame for receiving events.
 local eventFrame
@@ -206,7 +211,7 @@ local function CreateConditionFuncs()
 
  -- Exception conditions.
  exceptionConditionFuncs = {
-  activeTalents = function (f, t, v) return f(GetActiveTalentGroup(), v) end,
+  activeTalents = function (f, t, v) return f(GetActiveSpecGroup(), v) end,
   buffActive = function (f, t, v) return UnitBuff("player", v) and true or false end,
   buffInactive = function (f, t, v) return not UnitBuff("player", v) and true or false end,
   currentCP = function (f, t, v) return f(GetComboPoints("player"), v) end,
@@ -543,7 +548,16 @@ local function DisplayTrigger(triggerSettings, sourceName, sourceClass, recipien
  if (extraSkillName and string_find(message, "%e", 1, true)) then message = string_gsub(message, "%%e", extraSkillName) end 
 
  -- Substitute amount.
- if (amount and string_find(message, "%a", 1, true)) then message = string_gsub(message, "%%a", amount) end
+ if (amount and string_find(message, "%a", 1, true)) then
+  -- Shorten amount with SI suffixes or separate into digit groups depending on options.
+  local formattedAmount = amount
+  if (currentProfile.shortenNumbers) then
+   formattedAmount = ShortenNumber(formattedAmount, currentProfile.shortenNumberPrecision)
+  elseif (currentProfile.separateNumbers) then
+   formattedAmount = SeparateNumber(formattedAmount)
+  end
+  message = string_gsub(message, "%%a", formattedAmount)
+ end
 
  -- Override the texture if there is an icon skill for the trigger.
  if (iconSkill) then
@@ -710,7 +724,7 @@ end
 -- ****************************************************************************
 -- Handles triggers for combat log events.
 -- ****************************************************************************
-local function HandleCombatLogTriggers(timestamp, event, hideCaster, sourceGUID, sourceName, sourceFlags, recipientGUID, recipientName, recipientFlags, ...)
+local function HandleCombatLogTriggers(timestamp, event, hideCaster, sourceGUID, sourceName, sourceFlags, sourceRaidFlags, recipientGUID, recipientName, recipientFlags, recipientRaidFlags, ...)
  -- Ignore the event if there are no triggers to search for it.
  if (not categorizedTriggers[event]) then return end
  
@@ -860,15 +874,12 @@ powerTypes["RUNIC_POWER"] = SPELL_POWER_RUNIC_POWER
 powerTypes["SOUL_SHARDS"] = SPELL_POWER_SOUL_SHARDS
 powerTypes["ECLIPSE"] = SPELL_POWER_ECLIPSE
 powerTypes["HOLY_POWER"] = SPELL_POWER_HOLY_POWER
-
--- XXX: Temporary workaround for new arguments coming in Patch 4.2.  The main handler should be
--- updated appropriately for Patch 4.2 to remove the extra indirection.
-if MikSBT.CLIENT_VERSION >= 40200 then
- local HandlePatch41CombatLogTriggers = HandleCombatLogTriggers
- HandleCombatLogTriggers = function(timestamp, event, hideCaster, sourceGUID, sourceName, sourceFlags, sourceRaidFlags, recipientGUID, recipientName, recipientFlags, recipientRaidFlags, ...)
-  HandlePatch41CombatLogTriggers(timestamp, event, hideCaster, sourceGUID, sourceName, sourceFlags, recipientGUID, recipientName, recipientFlags, ...)
- end
-end
+powerTypes["ALTERNATE_POWER"] = SPELL_POWER_ALTERNATE_POWER
+powerTypes["DARK_FORCE"] = SPELL_POWER_DARK_FORCE -- XXX: No localization token
+powerTypes["LIGHT_FORCE"] = SPELL_POWER_LIGHT_FORCE
+powerTypes["SHADOW_ORBS"] = SPELL_POWER_SHADOW_ORBS
+powerTypes["BURNING_EMBERS"] = SPELL_POWER_BURNING_EMBERS
+powerTypes["DEMONIC_FURY"] = SPELL_POWER_DEMONIC_FURY
 
 
 

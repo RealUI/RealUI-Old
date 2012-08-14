@@ -124,21 +124,21 @@ end
 local function ProcessSpellInfo(p, pet, class, race, special)
 	local c = p[3]
 	local name = nil
-	if p.id then name = GetSpellInfo(p.id) elseif p.ids then name = GetSpellInfo(p.ids[1]) end -- get localized name
+	if p.id then name = GetSpellInfo(p.id) end -- get localized name
 	if not name then name = p[1] end -- if no id specified then use the non-localized name
 	MOD.DefaultProfile.global.SpellColors[name] = c -- sets default color in the shared color table
 	if p.cooldown and (not MOD.CooldownTable[name] or (class == MOD.myClass)) then -- add to the cooldown table, indexed by name
-		MOD.CooldownTable[name] = { pet = pet, class = class, race = race, school = p.school, id = p.id, ids = p.ids }
+		MOD.CooldownTable[name] = { pet = pet, class = class, race = race, school = p.school, id = p.id }
 	end
 	if not pet and ((class == MOD.myClass) or (race == MOD.myRace) or special) then
 		if p.lockout and p.school then MOD.lockSpells[name] = { school = p.school, id = p.id } end
 		if p.cooldown and (not cooldownSpells[name] or (class == MOD.myClass)) then -- prefer player's class
-			cooldownSpells[name] = { school = p.school, id = p.id, ids = p.ids, refer = p.refer, profession = p.profession }
+			cooldownSpells[name] = { school = p.school, id = p.id, profession = p.profession }
 		end
 	end
 	if p[2] ~= nil then -- add to the buff or debuff table, prefer player's class if already present
 		local bt = p[2] and MOD.BuffTable or MOD.DebuffTable
-		if not bt[name] or (class == MOD.myClass) then bt[name] = { pet = pet, class = class, race = race, school = p.school, id = p.id, ids = p.ids } end
+		if not bt[name] or (class == MOD.myClass) then bt[name] = { pet = pet, class = class, race = race, school = p.school, id = p.id } end
 	end	
 end
 	
@@ -173,34 +173,23 @@ end
 -- Initialize cooldown info from spellbook, should be called whenever spell book changes
 function MOD:SetCooldownDefaults()
 	table.wipe(MOD.cdSpells)
-	local k, numTabs, numSpells = 1, GetNumSpellTabs(), 0
+	
 	local name, _, icon
-	for i = 1, numTabs do local _, _, _, n = GetSpellTabInfo(i); numSpells = numSpells + n end
 	for spell, p in pairs(cooldownSpells) do
-		if p.id and IsSpellKnown(p.refer or p.id) then -- only include known spells in the cooldown list
+		if p.id and IsSpellKnown(p.id) then -- only include known spells in the cooldown list
 			name, _, icon = GetSpellInfo(p.id)
-			MOD.cdSpells[k] = { name = name, id = p.id, school = p.school, icon = icon, link = GetSpellLink(p.id) }
-			k = k + 1
-		end
-		if p.ids then
-			for _, id in pairs(p.ids) do
-				if IsSpellKnown(p.refer or id) then
-					name, _, icon = GetSpellInfo(id)
-					MOD.cdSpells[k] = { name = name, id = id, school = p.school, icon = icon, link = GetSpellLink(id) }
-					k = k + 1
-				end
-			end
+			MOD.cdSpells[name] = { name = name, id = p.id, school = p.school, icon = icon, link = GetSpellLink(p.id) }
 		end
 	end
 	
-	if numSpells then
-		for i = 1, numSpells do
-			name, _, icon = GetSpellInfo(i, "spell")
-			local cd = cooldownSpells[name]
-			if cd and not cd.id and not cd.ids then
-				MOD.cdSpells[k] = { name = name, index = i, school = cd.school, icon = icon, link = GetSpellLink(i, "spell") }
-				k = k + 1
-			end
+	local numSpells = 0
+	for i = 1, 2 do local _, _, _, n = GetSpellTabInfo(i); numSpells = numSpells + n end
+	
+	for i = 1, numSpells do
+		name, _, icon = GetSpellInfo(i, "spell")
+		if name then
+			local cd = MOD.cdSpells[name]
+			if cd then cd.index = i; cd.link = GetSpellLink(i, "spell") end -- annotate cooldown list with spellbook index
 			local ls = MOD.lockSpells[name]
 			if ls then
 				ls.index = i
@@ -384,15 +373,15 @@ end
 function MOD:GetSpellID(name)
 	if not name then return nil end -- prevent parameter errors
 	local b = MOD.BuffTable[name] or MOD.DebuffTable[name] -- check if in either buff or debuff preset table
-	if b then if b.id then return b.id end; if b.ids then return b.ids[1] end end
+	if b and b.id then return b.id end
 	
 	local id = MOD.db.global.SpellIDs[name]
 	if id == 0 then return nil end -- only scan invalid ones once in a session
 	if id and (name ~= GetSpellInfo(id)) then id = nil end -- verify it is still valid
 
-	if not id then
+	if not id and not InCombatLockdown() then -- disallow the search when in combat due to script time limit (MoP)
 		id = 0
-		while id < 120000 do
+		while id < 135000 do -- increased to 135000 for MoP (there may be issue on slower computers with this causing an error in the client)
 			id = id + 1
 			local n = GetSpellInfo(id)
 			if n == name then
@@ -413,7 +402,7 @@ end
 
 -- Get a texture from the icons cache, if not there try to get by spell name and cache if found.
 -- If not found then look up spell identifier and use it to locate a texture.
-function MOD:GetIcon(name)
+function MOD:GetIcon(name, spellID)
 	if not name or (name == "none") or (name == "") then return nil end
 	if string.find(name, "^#%d+") then local id = tonumber(string.sub(name, 2)); if id then name = GetSpellInfo(id) end if not name then return nil end end
 	local tex = iconCache[name] -- this is initialized from the player's spell book
@@ -423,7 +412,7 @@ function MOD:GetIcon(name)
 		if n and tex then
 			iconCache[name] = tex -- only cache textures found by looking up the name
 		else
-			local id = MOD:GetSpellID(name)
+			local id = spellID or MOD:GetSpellID(name)
 			if id then _, _, tex = GetSpellInfo(id) end -- then try based on id
 		end
 	end

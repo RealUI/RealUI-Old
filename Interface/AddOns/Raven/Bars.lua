@@ -7,7 +7,6 @@
 local MOD = Raven
 local L = LibStub("AceLocale-3.0"):GetLocale("Raven")
 local LSPELL = MOD.LocalSpellNames
-local LBF = LibStub("LibButtonFacade", true)
 local media = LibStub("LibSharedMedia-3.0")
 local rc = { r = 1, g = 0, b = 0, a = 1 }
 local vc = { r = 1, g = 0, b = 0, a = 0 }
@@ -28,7 +27,7 @@ local function IsOff(value) return value == nil or value == Off end -- return tr
 local function IsOn(value) return value ~= nil and value ~= Off end -- return true if option is turned on
 
 local classNames = { DEATHKNIGHT = "Death Knight", DRUID = "Druid", HUNTER = "Hunter", MAGE = "Mage", PALADIN = "Paladin",
-	PRIEST = "Priest", ROGUE = "Rogue", SHAMAN = "Shaman", WARLOCK = "Warlock", WARRIOR = "Warrior" }
+	PRIEST = "Priest", ROGUE = "Rogue", SHAMAN = "Shaman", WARLOCK = "Warlock", WARRIOR = "Warrior", MONK = "Monk" }
 	
 local colorTemplate = { timeColor = 0, iconColor = 0, labelColor = 0, colorMSBT = 0, }
 local defaultWhite = { r = 1, g = 1, b = 1, a = 1 }
@@ -42,7 +41,7 @@ MOD.BarGroupTemplate = { -- default bar group settings
 	useDefaultDimensions = true, useDefaultFontsAndTextures = true, useDefaultColors = true, sor = "A", reverseSort = false, timeSort = true, playerSort = false,
 	configuration = 1, anchor = false, anchorX = 0, anchorY = 0, anchorLastBar = false, anchorRow = false, anchorColumn = true, anchorEmpty = false, growDirection = true,
 	pulseStart = false, pulseEnd = false, flashExpiring = false, flashTime = 5, hide = false, fade = false, delayTime = 5,
-	bgNormalAlpha = 1, bgCombatAlpha = 1, mouseAlpha = 1, fadeAlpha = 1,
+	bgNormalAlpha = 1, bgCombatAlpha = 1, mouseAlpha = 1, fadeAlpha = 1, testTimers = 10, testStatic = 0, testLoop = false,
 	soundSpellStart = false, soundSpellEnd = false, soundSpellExpire = false, soundAltStart = "None", soundAltEnd = "None", soundAltExpire = "None",
 	wrap = 0, wrapDirection = false, snapCenter = false, maxBars = 0, labelOffset = 0, labelInset = 0, labelWrap = false, labelAlign = "MIDDLE",
 	timeOffset = 0, timeInset = 0, timeAlign = "normal", timeIcon = false, iconOffset = 0, iconInset = 0, iconHide = false, iconAlign = "CENTER",
@@ -94,10 +93,6 @@ function MOD:InitializeBars()
 			if not bg.auto then for _, bar in pairs(bg.bars) do bar.startReady = nil end end -- remove extra settings in custom bars
 		end
 	end
-	if LBF then -- restore ButtonFacade skin information from the profile
-		local lbf = MOD.db.profile.ButtonFacadeSkin -- table containing saved skin data
-		if lbf then Nest_SetButtonFacadeData(lbf.SkinID, lbf.Gloss, lbf.Backdrop, lbf.Colors) end
-	end
 	MOD:UpdateAllBarGroups() -- this is done last to get all positions updated correctly
 end
 
@@ -112,11 +107,6 @@ function MOD:FinalizeBars()
 		else
 			MOD.db.profile.BarGroups[bn] = nil -- okay to delete these since no default bar groups
 		end
-	end
-	if LBF then -- save ButtonFacade skin information in the profile
-		local lbf = MOD.db.profile.ButtonFacadeSkin -- table containing saved skin data
-		if not lbf then lbf = {}; MOD.db.profile.ButtonFacadeSkin = lbf end
-		lbf.SkinID, lbf.Gloss, lbf.Backdrop, lbf.Colors = Nest_GetButtonFacadeData()
 	end
 end
 
@@ -150,25 +140,37 @@ function MOD:InitializeSettings()
 end
 
 -- Fire off test bars for this bar group, remove if any already exist
-local function TestBarGroup(bp)
+function MOD:TestBarGroup(bp)
 	local bg = Nest_GetBarGroup(bp.name)
 	if bg then
 		local found = false
 		local icon = "Interface\\Icons\\INV_Drink_20"
-		for i = 1, 10 do
+		local timers = bp.testTimers or 0; if timers == 0 then timers = 10 end
+		local static = bp.testStatic or 0
+		for i = 1, timers do
+			local bar = Nest_GetBar(bg, ">>Timer<<" .. string.format("%02d", i))
+			if bar then found = true; Nest_DeleteBar(bg, bar) end
+		end
+		for i = 1, static do
 			local bar = Nest_GetBar(bg, ">>Test<<" .. string.format("%02d", i))
 			if bar then found = true; Nest_DeleteBar(bg, bar) end
 		end
 		if not found then
-			for i = 1, 10 do			
+			for i = 1, timers do			
+				local bar = Nest_CreateBar(bg, ">>Timer<<" .. string.format("%02d", i))
+				if bar then
+					local c = MOD.ColorPalette[testColors[(i % 10) + 1]]
+					Nest_SetColors(bar, c.r, c.g, c.b, 1, c.r, c.g, c.b, 1, c.r, c.g, c.b, 1)
+					Nest_SetLabel(bar, L["Timer Bar"] .. " " .. i); Nest_SetIcon(bar, icon); Nest_SetCount(bar, i)
+					Nest_StartTimer(bar, i * 5, 60, 60); Nest_SetAttribute(bar, "updated", true)
+				end
+			end
+			for i = 1, static do			
 				local bar = Nest_CreateBar(bg, ">>Test<<" .. string.format("%02d", i))
 				if bar then
-					local c = MOD.ColorPalette[testColors[i]]
+					local c = MOD.ColorPalette[testColors[(i % 10) + 1]]
 					Nest_SetColors(bar, c.r, c.g, c.b, 1, c.r, c.g, c.b, 1, c.r, c.g, c.b, 1)
-					Nest_SetLabel(bar, L["Test Bar"] .. " " .. i)
-					Nest_SetIcon(bar, icon)
-					Nest_SetCount(bar, i)
-					Nest_StartTimer(bar, i*5, 60, 60)
+					Nest_SetLabel(bar, L["Test Bar"] .. " " .. i); Nest_SetIcon(bar, icon); Nest_SetCount(bar, i)
 					Nest_SetAttribute(bar, "updated", true)
 				end
 			end
@@ -177,13 +179,23 @@ local function TestBarGroup(bp)
 end
 
 -- Make sure not to delete any unexpired test bars
-local function UpdateTestBars(bg)
-	for i = 1, 10 do
-		local bar = Nest_GetBar(bg, ">>Test<<" .. string.format("%02d", i))
+local function UpdateTestBars(bp, bg)
+	local timers = bp.testTimers or 0; if timers == 0 then timers = 10 end
+	local static = bp.testStatic or 0
+	for i = 1, timers do
+		local bar = Nest_GetBar(bg, ">>Timer<<" .. string.format("%02d", i))
 		if bar then
 			local timeLeft = Nest_GetTimes(bar)
-			if timeLeft and (timeLeft > 0) then Nest_SetAttribute(bar, "updated", true) end
+			if timeLeft and (timeLeft > 0) then
+				Nest_SetAttribute(bar, "updated", true)
+			elseif bp.testLoop then
+				Nest_StartTimer(bar, i * 5, 60, 60); Nest_SetAttribute(bar, "updated", true)
+			end
 		end
+	end
+	for i = 1, static do
+		local bar = Nest_GetBar(bg, ">>Test<<" .. string.format("%02d", i))
+		if bar then Nest_SetAttribute(bar, "updated", true) end
 	end
 end
 
@@ -253,7 +265,7 @@ local function Anchor_Clicked(anchor, bgName, button)
 	local bp = MOD.db.profile.BarGroups[bgName]
 	if IsOn(bp) then
 		if shiftLeftClick then -- test bars
-			TestBarGroup(bp)
+			MOD:TestBarGroup(bp)
 		elseif shiftRightClick then -- toggle grow up/down
 			bp.growDirection = not bp.growDirection
 		elseif altLeftClick then -- toggle options menu
@@ -491,9 +503,10 @@ end
 
 -- Returns whether solo, party or raid
 local function PartyInfo()
-	if GetNumRaidMembers() > 0 then return "raid" end
-	if GetNumPartyMembers() > 0 then return "party" end
-	return "solo"
+	if GetNumGroupMembers() == 0 then return "solo" end
+	local inRaid = UnitInRaid("player")
+	if inRaid then return "raid" end
+	return "party"
 end
 
 -- Set an entry in a bar group cache block
@@ -637,6 +650,12 @@ function MOD:LockBarGroups(lock)
 	MOD:UpdateAllBarGroups()
 end
 
+-- Toggle test mode for all bar groups
+function MOD:TestBarGroups(lock)
+	for _, bp in pairs(MOD.db.profile.BarGroups) do MOD:TestBarGroup(bp) end
+	MOD:UpdateAllBarGroups()
+end
+
 -- Toggle locking of bar groups 
 function MOD:ToggleBarGroupLocks()
 	-- Look in the profile table to determine current state
@@ -762,7 +781,7 @@ end
 local function UpdateBar(bp, vbp, bg, b, icon, timeLeft, duration, count, btype, ttType, ttID, ttUnit, ttCaster, isMine)
 	if duration > 0 then -- check if timer bar
 		local elapsed = duration - timeLeft
-		if (b.hide and (elapsed > (b.delayTime or 5))) or (bp.hide and (elapsed > (bp.delayTime or 5))) then return end
+		if (b.hide and (elapsed >= (b.delayTime or 5))) or (bp.hide and (elapsed >= (bp.delayTime or 5))) then return end
 	end
 	
 	local bar, barname, label, src, classSort = nil, b.barLabel .. b.uniqueID, b.barLabel, b.barSource, nil
@@ -895,12 +914,12 @@ local function UpdateBar(bp, vbp, bg, b, icon, timeLeft, duration, count, btype,
 			Nest_SetFlash(bar, true)
 		elseif IsOn(b.fadeBar) then -- conditional fade for bars is higher priority than bar group setting for delayed fade
 			if (b.fadeBar == MOD:CheckCondition(b.fadeCondition)) and b.fadeAlpha then alpha = alpha * b.fadeAlpha; faded = true end
-		elseif b.fade and b.fadeAlpha then
+		elseif b.fade and b.fadeAlpha and not b.startReady then
 			local _, _, _, startTime = Nest_GetTimes(bar) -- get time bar was created
-			if ((GetTime() - startTime) > (b.delayTime or 5)) then alpha = alpha * b.fadeAlpha; faded = true end
-		elseif vbp.fade and vbp.fadeAlpha then
+			if ((GetTime() - startTime) >= (b.delayTime or 5)) then alpha = alpha * b.fadeAlpha; faded = true end
+		elseif vbp.fade and vbp.fadeAlpha and not b.startReady then
 			local _, _, _, startTime = Nest_GetTimes(bar) -- get time bar was created
-			if ((GetTime() - startTime) > (vbp.delayTime or 5)) then alpha = alpha * vbp.fadeAlpha; faded = true end
+			if ((GetTime() - startTime) >= (vbp.delayTime or 5)) then alpha = alpha * vbp.fadeAlpha; faded = true end
 		else
 			Nest_SetFlash(bar, false)
 		end
@@ -915,9 +934,9 @@ end
 -- Compare caster to enforce "cast by" restrictions
 function MOD:CheckCastBy(caster, cb)
 	local isMine, isPet = (caster == "player"), (caster == "pet")
-	local isOther = not (isMine or isPet)
+	local isOurs = isMine or isPet
 	if not cb then cb = "player" else cb = string.lower(cb) end -- for backward compatibility
-	return ((cb == "player") and isMine) or (cb == "anyone") or ((cb == "pet") and isPet) or ((cb == "other") and isOther) or
+	return ((cb == "player") and isMine) or (cb == "anyone") or ((cb == "pet") and isPet) or ((cb == "other") and not isOurs) or ((cb == "ours") and isOurs) or
 		((cb == "target") and (caster ~= "unknown") and UnitIsUnit("target", caster)) or
 		((cb == "focus") and (caster ~= "unknown") and UnitIsUnit("focus", caster))
 end
@@ -1300,7 +1319,7 @@ function MOD:UpdateBars()
 						end
 						Nest_SetBarGroupAlpha(bg, MOD.status.inCombat and bp.bgCombatAlpha or bp.bgNormalAlpha, bp.mouseAlpha)
 					end				
-					UpdateTestBars(bg) -- update any unexpired test bars in this bar group
+					UpdateTestBars(bp, bg) -- update any unexpired test bars in this bar group
 					Nest_DeleteBarsWithAttribute(bg, "updated", false) -- then, remove any bars in the group that weren't updated
 				else -- if not then hide any bars that might be around
 					Nest_DeleteAllBars(bg)

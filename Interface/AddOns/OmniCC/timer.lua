@@ -1,5 +1,5 @@
 --[[
-	cc.lua
+	timer.lua
 		Displays text for cooldowns on widgets
 
 	cases when font size should be updated:

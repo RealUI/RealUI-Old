@@ -1,4 +1,8 @@
 ﻿## Interface: 40300
+## X-Curse-Packaged-Version: 3.02.95
+## X-Curse-Project-Name: ArkInventory
+## X-Curse-Project-ID: ark-inventory
+## X-Curse-Repository-ID: wow/ark-inventory/mainline
 
 ## Title: ArkInventory [Rules]
 ## Notes: Rules for ArkInventory

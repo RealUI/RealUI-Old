@@ -372,3 +372,8 @@ L["Outline"] = "Outline"
 L["Thick outline"] = "Thick outline"
 L["Monochrome"] = "Monochrome"
 L["Outlined monochrome"] = "Outlined monochrome"
+
+L["The height of the title frame."] = "The height of the title frame."
+L["Title height"] = "Title height"
+L["Use class icons where applicable."] = "Use class icons where applicable."
+L["Class icons"] = "Class icons"

@@ -248,6 +248,8 @@ if not L then return end
 	L["CONFIG_SYSTEM_BUGFIX_ZEROSIZEBAG"] = "Zero Size Bag"
 	L["CONFIG_SYSTEM_BUGFIX_ZEROSIZEBAG_TEXT"] = "A potential bug where zero or nil is returned for the size of a bag instead of it's correct size."
 	L["CONFIG_SYSTEM_BUGFIX_ZEROSIZEBAG_ALERT_TEXT"] = "display alerts for this bug"
+	L["BUGFIX_TAINTED_ALERT_MOUSEOVER_TEXT"] = "this item frame was created while you\nwere in combat which has caused\nit to be tainted and cannot\nbe used until you leave combat"
+	L["BUGFIX_TAINTED_ALERT_OPEN_TEXT"] = "some of the item frames for this window were created while you were in combat which has caused them to be tainted and cannot be used until you leave combat"
 	
 	L["CONFIG_SYSTEM_MESSAGES"] = "Messages / Alerts"
 	L["CONFIG_SYSTEM_MESSAGES_TRANSLATION"] = "Translation"

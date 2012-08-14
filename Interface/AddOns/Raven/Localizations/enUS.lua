@@ -128,7 +128,6 @@ L["Rune"] = true
 L["Runes"] = true
 L["Mainhand String"] = function(level) return string.format("Weapon Mainhand >= %d", level) end
 L["Offhand String"] = function(level) return string.format("Weapon Offhand >= %d", level) end
-L["Ranged String"] = function(level) return string.format("Weapon Ranged >= %d", level) end
 L["Exists"] = true
 L["Not Exists"] = true
 L["Is Player"] = true
@@ -279,7 +278,6 @@ L["Link"] = true
 L["Link settings string"] = "Toggle linking selected bar groups to bar groups in other profiles with the same names. Linked bar groups share position, layout, appearance and timer options. This can be helpful when setting up multiple characters."
 L["Delete the selected bar groups."] = true
 L["Delete standard string"] = "DELETE BAR GROUPS\nAre you sure you want to delete the selected bar groups?"
-L["Bar Group Anchors"] = true
 L["Bar group anchor string"] = "Bar groups have anchors that show where bars will be displayed. " ..
 	"Anchor tooltips list helpful shortcuts (e.g., change direction bars grow from the anchor, cycle through configuration choices, show test bars). " ..
 	"You can left-click and drag anchors. " ..
@@ -406,7 +404,6 @@ L["RESET DEBUFF COLORS\nAre you sure you want to reset debuff colors back to def
 L["OmniCC"] = true
 L["Hide OmniCC"] = true
 L["If checked, OmniCC counts are hidden on icons in all bar groups (requires /reloadui)."] = true
-L["Masque/Button Facade"] = true
 L["If checked, icons are skinned with Masque (formerly known as Button Facade)."] = true
 L["Color Normal Texture"] = true
 L["If checked, icon border color is applied to the normal texture."] = true
@@ -447,25 +444,19 @@ L["RESET SPELL LABELS\nAre you sure you want to reset all spell labels back to d
 L["Reset Spell Sounds"] = true
 L["Reset spell sounds back to defaults."] = true
 L["RESET SPELL SOUNDS\nAre you sure you want to reset all spell sounds back to defaults?"] = true
-L["Internal Cooldowns Triggered By Buffs/Debuffs"] = true
 L["Internal Cooldowns"] = true
 L["Enable detecting internal cooldowns."] = true
 L["Cooldown List"] = true
 L["New Cooldown"] = true
-L["Enter a new internal cooldown triggered by a buff or debuff."] = true
 L["Enter Spell Name or ID"] = true
-L["Enter buff or debuff spell name or numeric identifier for new internal cooldown."] = true
 L["Cancel creating a new internal cooldown."] = true
 L["Delete Cooldown"] = true
 L["Delete the selected internal cooldown."] = true
 L["Delete cooldown string"] = "DELETE COOLDOWN\nAre you sure you want to delete the selected internal cooldown?"
 L["Enter duration in seconds."] = true
 L["Enable detecting this internal cooldown."] = true
-L["If checked, test if buffs/debuffs were cast by the player."] = true
 L["Cast On Player"] = true
-L["If checked, test if buffs/debuffs are on the player and cast by anyone other than the player."] = true
 L["Reset List"] = true
-L["Enter comma-separated list of buffs or debuffs (either spell names or numeric identifiers) that reset the internal cooldown."] = true
 L["Reset Cooldowns"] = true
 L["Reset all internal cooldowns back to defaults."] = true
 L["RESET COOLDOWNS\nAre you sure you want to reset all internal cooldowns back to defaults?"] = true
@@ -1140,14 +1131,12 @@ L[">> Moon"] = true
 L["Combo Points"] = true
 L["If checked, test if the player has a mainhand weapon equipped with at least the specified item level."] = true
 L["If checked, test if the player has an offhand weapon equipped with at least the specified item level."] = true
-L["If checked, test if the player has an ranged weapon equipped with at least the specified item level."] = true
 L["If checked, test if the player is in a stance."] = true
 L['Enter the stance to check for (enter "none" to check for no stance).'] = true
 L["If checked, test if points have been spent in one of the player's talents."] = true
 L["Weapons"] = true
 L["Mainhand"] = true
 L["Offhand"] = true
-L["Ranged"] = true
 L["Stance"] = true
 L["Talent"] = true
 
@@ -1281,7 +1270,6 @@ L["Comparison"] = true
 L["Player Has Buff"] = true
 L["If checked, player must have a mainhand buff."] = true
 L["If checked, player must have an offhand buff."] = true
-L["If checked, player must have a ranged buff."] = true
 L["If checked, true if player has a buff of the specified type."] = true
 L["If checked, true if player does not have a buff of the specified type."] = true
 L["Result"] = true
@@ -1415,7 +1403,6 @@ L["Set scale factor for the bar."] = true
 L["Set opacity for the bar."] = true
 L["Mainhand Weapon"] = true
 L["Offhand Weapon"] = true
-L["Ranged Weapon"] = true
 L["Enter name of anchor frame to attach to (leave blank to enable manual positioning)."] = true
 
 -- Highlights tab
@@ -1426,8 +1413,6 @@ L["Highlights string"] = "If you are using Bartender4, Dominos or Macaroon then 
 	"You can also show cooldown counters on buttons for spells and items (disabled by default if OmniCC is loaded).\n"
 L["Enable Highlights"] = true
 L["If checked, enable Raven's support for button highlights and cooldown counts."] = true
-L["Use ButtonFacade"] = true
-L["Enable setting highlights through ButtonFacade if it is loaded. This is not ideal for every BF skin which is why it can be disabled. Try both enabled and disabled settings and see which works best."] = true
 L["Highlight Buffs"] = true
 L["Enable player buff highlights on buttons."] = true
 L["Buff Color"] = true
@@ -1530,6 +1515,8 @@ L["Hunter"] = true
 L["If checked, select hunter actions."] = true
 L["Mage"] = true
 L["If checked, select mage actions."] = true
+L["Monk"] = true
+L["If checked, select monk actions."] = true
 L["Paladin"] = true
 L["If checked, select paladin actions."] = true
 L["Priest"] = true
@@ -1608,3 +1595,33 @@ L["Clock Direction"] = true
 L["Set empty/fill direction for clock animations on icons."] = true
 L["Clock Edge"] = true
 L["If checked, show a bright line on the moving edge of clock animations."] = true
+------- New Entries December 4, 2011
+L["Test Mode"] = true
+L["Unlimited Duration"] = true
+L["Set the number of unlimited duration bars/icons to generate in test mode."] = true
+L["Timers"] = true
+L["Set the number of timer bars/icons to generate in test mode."] = true
+L["Refresh Timers"] = true
+L["If checked, timers are refreshed when they expire, otherwise they disappear."] = true
+L["Toggle Test Mode"] = true
+L["Toggle display of test bars/icons."] = true
+L["Timer Bar"] = true
+L["Player Or Pet"] = true
+L["If checked, only add bars for buffs if cast by player or pet."] = true
+L["If checked, only add bars for debuffs if cast by player or pet."] = true
+L["If checked, spell must be cast by the player or pet to trigger the spell effect."] = true
+-- The following entries are modified from the previous ones related to internal cooldowns
+L["Internal Cooldowns Triggered By Buffs/Debuffs/Heals"] = true
+L["Enter a new internal cooldown triggered by a buff, debuff or heal spell."] = true
+L["Enter spell name or numeric identifier for new internal cooldown."] = true
+L["Enter comma-separated list of buff, debuff or heal spell names (or numeric identifiers) that reset the internal cooldown."] = true
+L["If checked, test if buff, debuff or heal spell was cast by the player."] = true
+L["If checked, test if buff, debuff or heal spell is on player and cast by anyone other than the player."] = true
+-- Changed entries for December 10, 2011 related to Masque replacing ButtonFacade
+L["Use Masque"] = true
+L["Masque"] = true
+L["Enable setting highlights through Masque if it is loaded. This is not ideal for every skin which is why it can be disabled. Try both enabled and disabled settings and see which works best."] = true
+-- Added entry for December 25, 2011
+L["Bar Group Anchors and Test Mode"] = true
+L["Toggle test mode for all bar groups."] = true
+

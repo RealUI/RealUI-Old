@@ -59,23 +59,6 @@ L.MSG_INVALID_ITEM_NAME				= "无效物品名."
 
 
 ------------------------------
--- Class Names.
-------------------------------
-
-local obj = L.CLASS_NAMES
-obj["DEATHKNIGHT"]	= "死亡骑士"
-obj["DRUID"]		= "德鲁伊"
-obj["HUNTER"]		= "猎人"
-obj["MAGE"]			= "法师"
-obj["PALADIN"]		= "圣骑士"
-obj["PRIEST"]		= "牧师"
-obj["ROGUE"]		= "潜行者"
-obj["SHAMAN"]		= "萨满祭司"
-obj["WARLOCK"]		= "术士"
-obj["WARRIOR"]		= "战士"
-
-
-------------------------------
 -- Interface tabs
 ------------------------------
 
@@ -121,6 +104,8 @@ obj["enableTrigger"]			= { tooltip="启用触发器"}
 obj["allPowerGains"]			= { label="所有能量获取", tooltip="显示所有获取的能量包括那些战斗日志中不显示的。警告：这个选项将会大量刷屏同时无视能量阈值和抑制显示设置\n不推荐"}
 obj["abbreviateSkills"]			= { label="技能简称", tooltip="简缩技能名字（仅适用于英文版）。若事件描述中加入“%sl”代码，此选项即失效"}
 obj["mergeSwings"]				= { label="合并普通攻击", tooltip="合并极短时间内的普通攻击伤害"}
+--obj["shortenNumbers"]			= { label="Shorten Numbers", tooltip="Display numbers in an abbreviated format (example: 32765 -> 33k)."}
+--obj["groupNumbers"]				= { label="Group By Thousands", tooltip="Display numbers grouped by thousands (example: 32765 -> 32,765)."}
 obj["hideSkills"]				= { label="隐藏技能", tooltip="在承受伤害和输出伤害中不显示技能名字。开启此选项将使你失去某些事件自定义功能，因为它会忽略“%s”代码"}
 obj["hideNames"]				= { label="隐藏名字", tooltip="在承受伤害和输出伤害中不显示单位名字。开启此选项将使你失去某些事件自定义功能，因为它会忽略“%n”代码"}
 obj["hideFullOverheals"]		= { label="隐藏全部过量的治疗", tooltip="不显示全部过量的治疗."}
@@ -289,6 +274,7 @@ obj["HEALING_DONE"]			= "%a - 输出治疗总数.\n"
 obj["ABSORBED_AMOUNT"]		= "%a - 吸收伤害总数.\n"
 obj["AURA_AMOUNT"]			= "%a - 光环的堆叠数量.\n"
 obj["ENERGY_AMOUNT"]		= "%a - 能量总数.\n"
+--obj["CHI_AMOUNT"]			= "%a - Amount of chi you have.\n"
 obj["CP_AMOUNT"]			= "%a - 你的连击点总数.\n"
 obj["HOLY_POWER_AMOUNT"]	= "%a - Amount of holy power you have.\n"
 obj["HONOR_AMOUNT"]			= "%a - 荣誉总数.\n"
@@ -477,6 +463,10 @@ obj["NOTIFICATION_COMBAT_ENTER"]		= { label="战斗开始", tooltip="显示你�
 obj["NOTIFICATION_COMBAT_LEAVE"]		= { label="战斗结束", tooltip="显示你已经结束了战斗"}
 obj["NOTIFICATION_POWER_GAIN"]			= { label="能量获得", tooltip="显示你额外获得的法力，怒气或者能量"}
 obj["NOTIFICATION_POWER_LOSS"]			= { label="能量行动", tooltip="显示你失去的法力，怒气或者能量"}
+--obj["NOTIFICATION_ALT_POWER_GAIN"]		= { label="Alternate Power Gains", tooltip="Enable when you gain alternate power such as sound level on Atramedes."}
+--obj["NOTIFICATION_ALT_POWER_LOSS"]		= { label="Alternate Power Losses", tooltip="Enable when you lose alternate power from drains."}
+--obj["NOTIFICATION_CHI_CHANGE"]			= { label="Chi Changes", tooltip="Enable when you change chi."}
+--obj["NOTIFICATION_CHI_FULL"]			= { label="Chi Full", tooltip="Enable when you attain full chi."}
 obj["NOTIFICATION_CP_GAIN"]				= { label="连击点获得", tooltip="显示你获得的连击点"}
 obj["NOTIFICATION_CP_FULL"]				= { label="连击点已满", tooltip="显示你的连击点已满"}
 obj["NOTIFICATION_HOLY_POWER_CHANGE"]	= { label="神圣能量变化", tooltip="显示你的神圣能量变化"}

@@ -83,7 +83,11 @@ GridStatusRaidDebuff:Debuff(zone, 110214, 67, 6, 6) -- Consuming Shroud
 GridStatusRaidDebuff:BossName(zone, 70, "Spine of Deathwing")
 GridStatusRaidDebuff:Debuff(zone, 105563, 71, 3, 3) --Grasping Tendrils
 GridStatusRaidDebuff:Debuff(zone, 105479, 72, 6, 6) --Searing Plasma
-GridStatusRaidDebuff:Debuff(zone, 105490, 73, 5, 5) --Fiery Grip
+GridStatusRaidDebuff:Debuff(zone, 105490, 73, 4, 4) --Fiery Grip
+-- Heroic
+GridStatusRaidDebuff:Debuff(zone, 106005, 74, 1, 1, false, false, 0, true) --Degradation (disabled)
+GridStatusRaidDebuff:Debuff(zone, 106200, 75, 5, 5) --Blood Corruption: Earth
+GridStatusRaidDebuff:Debuff(zone, 106199, 76, 7, 7) --Blood Corruption: Death
 
 --Madness of Deathwing
 GridStatusRaidDebuff:BossName(zone, 80, "Madness of Deathwing")
@@ -93,4 +97,6 @@ GridStatusRaidDebuff:Debuff(zone, 106385, 83, 5, 5, true, true) --Crush
 GridStatusRaidDebuff:Debuff(zone, 106730, 84, 5, 5, true, true) --Tetanus
 GridStatusRaidDebuff:Debuff(zone, 106444, 85, 5, 5, true, true) --Impale
 GridStatusRaidDebuff:Debuff(zone, 106794, 86, 6, 6) --Shrapnel (target)
+-- Heroic
+GridStatusRaidDebuff:Debuff(zone, 108649, 87, 6, 6) --Corrupting Parasite
 

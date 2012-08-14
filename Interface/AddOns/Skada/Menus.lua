@@ -3,6 +3,7 @@ local AceGUI = LibStub("AceGUI-3.0")
 
 if not StaticPopupDialogs["ResetSkadaDialog"] then
 	StaticPopupDialogs["ResetSkadaDialog"] = {
+		preferredIndex = 3,
 		text = L["Do you want to reset Skada?"], 
 		button1 = ACCEPT, 
 		button2 = CANCEL,

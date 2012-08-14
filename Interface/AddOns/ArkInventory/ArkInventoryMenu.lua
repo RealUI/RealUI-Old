@@ -881,7 +881,7 @@ function ArkInventory.MenuItemOpen( frame )
 							"editBoxText", id
 						)
 						
-						local cid = ArkInventory.ObjectIDCacheCategory( i )
+						local cid = ArkInventory.ObjectIDCacheCategory( i.loc_id, i.bag_id, i.sb, i.h )
 						ArkInventory.Lib.Dewdrop:AddLine( "text", string.format( "%s: %s%s", ArkInventory.Localise["MENU_ITEM_DEBUG_AI_ID_CACHE"], LIGHTYELLOW_FONT_COLOR_CODE, cid ) )
 						
 						ArkInventory.Lib.Dewdrop:AddLine( "text", string.format( "%s: %s%s", ArkInventory.Localise["MENU_ITEM_DEBUG_AI_ID_CATEGORY"], LIGHTYELLOW_FONT_COLOR_CODE, cat0.id ) )

@@ -232,7 +232,7 @@
                     </OnHide>
                 </Scripts>
             </Button>
-            <Button name="$parentButtonBinding" parentKey="button_binding" inherits="UIPanelButtonTemplate2">
+            <Button name="$parentButtonBinding" parentKey="button_binding" inherits="UIPanelButtonTemplate">
                 <Size x="160" y="22"/>
                 <Anchors>
                     <Anchor point="TOP" relativeTo="$parentDesc" relativePoint="BOTTOM" x="0" y="0"/>
@@ -419,7 +419,7 @@
                     </Layer>
                 </Layers>
                 <Frames>
-                    <Button name="$parentButtonBinding" parentKey="button_binding" inherits="UIPanelButtonTemplate2">
+                    <Button name="$parentButtonBinding" parentKey="button_binding" inherits="UIPanelButtonTemplate">
                         <Size x="160" y="22"/>
                         <Anchors>
                             <Anchor point="CENTER" relativeTo="$parent" x="0" y="0"/>

@@ -854,7 +854,7 @@ function barListPrototype:UpdateOrientationLayout()
 	barListPrototype.super.SetWidth(self, length)
 --		barListPrototype.super.SetHeight(self, thickness)
 	self.button:SetWidth(length)
-	self.button:SetHeight(thickness)
+--	self.button:SetHeight(thickness)
 	
 --	self.button:SetText(self.name)
 	self:ReverseGrowth(self.growup)
@@ -1235,6 +1235,22 @@ function barPrototype.OnUpdate(f, t)
 			func(f, t)
 		end
 	end
+end
+
+function barPrototype:SetIconWithCoord(icon, coord)
+	if icon then
+		if type(icon) == "number" then
+			icon = select(3, GetSpellInfo(icon))
+		end
+		self.icon:SetTexture(icon)
+		self.icon:SetTexCoord(unpack(coord))
+		if self.showIcon then
+			self.icon:Show()
+		end
+	else
+		self.icon:Hide()
+	end
+	self.iconTexture = icon or nil
 end
 
 function barPrototype:SetIcon(icon)

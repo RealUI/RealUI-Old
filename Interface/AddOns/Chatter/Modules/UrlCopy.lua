@@ -144,6 +144,7 @@ StaticPopupDialogs["ChatterUrlCopyDialog"] = {
 	button2 = CLOSE,
 	hasEditBox = 1,
 	editBoxWidth = 400,
+    preferredIndex = 3,
 	OnShow = function(frame)
 		local editBox = _G[frame:GetName().."EditBox"]
 		if editBox then

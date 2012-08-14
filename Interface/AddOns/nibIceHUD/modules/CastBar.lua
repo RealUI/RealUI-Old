@@ -272,7 +272,7 @@ function CastBar.prototype:Enable(core)
 	self:RegisterEvent("UNIT_ENTERED_VEHICLE", "EnteringVehicle")
 	self:RegisterEvent("UNIT_EXITED_VEHICLE", "ExitingVehicle")
 	self:RegisterEvent("PLAYER_ENTERING_WORLD", "CheckVehicle")
-	self:RegisterEvent("PLAYER_TALENT_UPDATE", "CheckTalents")
+	--self:RegisterEvent("PLAYER_TALENT_UPDATE", "CheckTalents")
 
 	if self.moduleSettings.enabled and not self.moduleSettings.showBlizzCast then
 		self:ToggleBlizzCast(false)
@@ -363,7 +363,7 @@ local channelingTicks = {
 	[GetSpellInfo(16914)] = 10,	-- Hurricane
 	[GetSpellInfo(740)] = 4,	-- Tranquility
 	-- Mage
-	[GetSpellInfo(5143)] = TicksAM,	-- Arcane Missiles
+	[GetSpellInfo(5143)] = 5,	-- Arcane Missiles
 	[GetSpellInfo(10)] = 5,		-- Blizzard
 	[GetSpellInfo(12051)] = 4,	-- Evocation
 	-- Priest
@@ -377,7 +377,7 @@ local channelingTicks = {
 	[GetSpellInfo(689)] = 3,	-- Drain Life
 	[GetSpellInfo(755)] = 3,	-- Health Funnel
 	[GetSpellInfo(4629)] = 4,	-- Rain of Fire
-	[GetSpellInfo(79268)] = 3,	-- Soul Harvest
+	--[GetSpellInfo(79268)] = 3,	-- Soul Harvest
 }
 
 function CastBar.prototype:getChannelingTicks(spell)

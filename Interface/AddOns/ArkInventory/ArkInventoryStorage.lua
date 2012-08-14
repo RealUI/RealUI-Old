@@ -346,9 +346,19 @@ function ArkInventory:LISTEN_COMBAT_LEAVE( )
 	ArkInventory.Global.Mode.Combat = false
 	
 	for loc_id in pairs( ArkInventory.Global.Location ) do
-		if ArkInventory.LocationOptionGet( loc_id, "slot", "cooldown", "show" ) and not ArkInventory.LocationOptionGet( loc_id, "slot", "cooldown", "combat" )  then
-			ArkInventory.Frame_Main_Generate( loc_id, ArkInventory.Const.Window.Draw.Refresh )
+		
+		if ArkInventory.Global.Location[loc_id].tainted then
+			
+			ArkInventory.Frame_Main_Generate( loc_id, ArkInventory.Const.Window.Draw.Recalculate )
+			
+		else
+			
+			if ArkInventory.LocationOptionGet( loc_id, "slot", "cooldown", "show" ) and not ArkInventory.LocationOptionGet( loc_id, "slot", "cooldown", "combat" )  then
+				ArkInventory.Frame_Main_Generate( loc_id, ArkInventory.Const.Window.Draw.Refresh )
+			end
+			
 		end
+		
 	end
 	
 end
@@ -2465,9 +2475,13 @@ function ArkInventory.ScanChanged( old, h, sb, count )
 		-- slot is empty
 		
 		if old.h then
+			
 			-- previous item was removed
+			ArkInventory.ItemCacheClear( old.h )
+
 			--ArkInventory.Output( "changed, bag=", bag_id, ", slot=", i.slot_id, ", item removed" )
 			return true, ArkInventory.Const.Slot.New.No, true
+			
 		end
 		
 	else
@@ -2475,21 +2489,33 @@ function ArkInventory.ScanChanged( old, h, sb, count )
 		-- slot has an item
 		
 		if not old.h then
+			
 			-- item added to previously empty slot
+			ArkInventory.ItemCacheClear( h )
+			
 			--ArkInventory.Output( "changed, bag=", bag_id, ", slot=", i.slot_id, ", item added" )
 			return true, ArkInventory.Const.Slot.New.Yes, true
+			
 		end
 		
 		if ArkInventory.ObjectIDInternal( h ) ~= ArkInventory.ObjectIDInternal( old.h ) then
+			
 			-- different item
+			ArkInventory.ItemCacheClear( h )
+			
 			--ArkInventory.Output( "changed, bag=", bag_id, ", slot=", i.slot_id, ", item swapped" )
 			return true, ArkInventory.Const.Slot.New.Yes, true
+			
 		end
 		
 		if sb ~= old.sb then
+			
 			-- soulbound changed
+			ArkInventory.ItemCacheClear( old.h )
+			
 			--ArkInventory.Output( "changed, bag=", bag_id, ", slot=", i.slot_id, ", soulbound changed" )
 			return true, ArkInventory.Const.Slot.New.Yes, false
+			
 		end
 		
 		if count ~= old.count then
@@ -3194,21 +3220,17 @@ function ArkInventory.ObjectIDTooltip( h )
 
 end
 
-function ArkInventory.ObjectIDCacheCategory( i )
+function ArkInventory.ObjectIDCacheCategory( loc_id, bag_id, sb, h )
 	
-	local soulbound = 0
+	local soulbound = ( sb and 1 ) or 0
 	
-	if i.h then
-		if i.sb then
-			soulbound = 1
-		end
-	else
+	if not h then
 		-- empty slots
-		local blizzard_id = ArkInventory.BagID_Blizzard( i.loc_id, i.bag_id )
+		local blizzard_id = ArkInventory.BagID_Blizzard( loc_id, bag_id )
 		soulbound = ArkInventory.BagType( blizzard_id ) -- allows for unique codes per bag type
 	end
 	
-	local class, v1, v2 = ArkInventory.ObjectStringDecode( i.h )
+	local class, v1, v2 = ArkInventory.ObjectStringDecode( h )
 	
 	if class == "item" then
 		return string.format( "%s:%s:%s", class, v1, soulbound )
@@ -3224,19 +3246,9 @@ function ArkInventory.ObjectIDCacheCategory( i )
 
 end
 
-function ArkInventory.ObjectIDCacheRule( i )
-
-	assert( i and type( i ) == "table", "code failure: i is not a table" )
+function ArkInventory.ObjectIDCacheRule( loc_id, bag_id, sb, h )
 	
-	local soulbound = 0
-	if i.sb then
-		soulbound = 1
-	end
-	
-	local internalString = ArkInventory.ObjectIDInternal( i.h )
-	
-	--return string.format( "%i:%i:%i:%i:%s", i.loc_id or 0, i.bag_id or 0, i.slot_id or 0, soulbound, internalString )
-	return string.format( "%i:%i:%s", i.loc_id or 0, soulbound, internalString )
+	return string.format( "%i:%i:%i:%s", loc_id or 0, bag_id or 0, ( sb and 1 ) or 0, ArkInventory.ObjectIDInternal( h ) )
 	
 end
 

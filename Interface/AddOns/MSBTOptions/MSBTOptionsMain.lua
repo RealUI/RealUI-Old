@@ -22,12 +22,15 @@ local L = MikSBT.translations;
 -- Constants.
 -------------------------------------------------------------------------------
 
-local WINDOW_TITLE = "Mik's Scrolling Battle Text " .. MikSBT.VERSION_STRING;
+local WINDOW_TITLE = "Mik's Scrolling Battle Text Beta " .. MikSBT.VERSION_STRING;
 
 
 -------------------------------------------------------------------------------
 -- Private variables.
 -------------------------------------------------------------------------------
+
+-- Prevent tainting global _.
+local _
 
 -- The main options frame.
 local mainFrame;

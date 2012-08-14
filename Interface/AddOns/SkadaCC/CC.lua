@@ -4,6 +4,11 @@ local Skada = Skada
 
 local mod = Skada:NewModule(L["CC breakers"])
 
+local CLIENT_VERSION = tonumber((select(4, GetBuildInfo())))
+
+local WoW5 = CLIENT_VERSION > 50000
+local IsInRaid = IsInRaid or function() return GetNumRaidMembers() > 0 end
+
 -- CC spell IDs shamelessly stolen from Recount - thanks!
 local CCId={
     [118]=true, -- Polymorph
@@ -58,7 +63,7 @@ local function SpellAuraBroken(timestamp, eventtype, srcGUID, srcName, srcFlags,
 		
 		-- Optional announce
 		local inInstance, instanceType = IsInInstance()
-		if Skada.db.profile.modules.ccannounce and GetNumRaidMembers() > 0 and UnitInRaid(srcName) and not (instanceType == "pvp") then
+		if Skada.db.profile.modules.ccannounce and IsInRaid() and UnitInRaid(srcName) and not (instanceType == "pvp") then
 
 			-- Ignore main tanks?
 			if Skada.db.profile.modules.ccignoremaintanks then

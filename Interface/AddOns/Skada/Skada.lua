@@ -10,6 +10,39 @@ local dataobj = ldb:NewDataObject("Skada", {label = "Skada", type = "data source
 -- Client version number
 local CLIENT_VERSION = tonumber((select(4, GetBuildInfo())))
 
+local WoW5 = CLIENT_VERSION > 50000
+local IsInRaid = IsInRaid or function() return GetNumRaidMembers() > 0 end
+local IsInGroup = IsInGroup or function() 
+	return GetNumRaidMembers() > 0 or GetNumPartyMembers() > 0
+end
+
+-- Returns the group type (i.e., "party" or "raid") and the size of the group.
+function Skada:GetGroupTypeAndCount()
+	local type, count = "", 0
+	if WoW5 then
+		count = GetNumGroupMembers()
+		if IsInRaid() then
+			type = "raid"
+		elseif IsInGroup() then
+			type = "party"
+			-- To make the counts similar between 4.3 and 5.0, we need
+			-- to subtract one because GetNumPartyMembers() does not
+			-- include the player while GetNumGroupMembers() does.
+			count = count - 1
+		end
+	else
+		if GetNumRaidMembers() > 0 then
+			type = "raid"
+			count = GetNumRaidMembers()
+		elseif GetNumPartyMembers() > 0 then
+			type = "party"
+			count = GetNumPartyMembers()
+		end
+	end
+	
+	return type, count
+end
+
 -- Keybindings
 BINDING_HEADER_Skada = "Skada"
 BINDING_NAME_SKADA_TOGGLE = L["Toggle window"]
@@ -34,7 +67,7 @@ local pets = {}
 -- Flag marking if we need an update.
 local changed = true
 
--- Flag for if we were in a prarty/raid. Set first time in PLAYER_ENTERING_WORLD.
+-- Flag for if we were in a party/raid. Set first time in PLAYER_ENTERING_WORLD.
 local wasinparty = false
 
 -- By default we just use RAID_CLASS_COLORS as class colors.
@@ -654,22 +687,15 @@ local function CheckPet(unit, pet)
 end
 
 function Skada:CheckPets()
-	if GetNumRaidMembers() > 0 then
-		-- In raid.
-		for i = 1, GetNumRaidMembers(), 1 do
-			if UnitExists("raid"..i.."pet") then
-				CheckPet("raid"..i, "raid"..i.."pet")
-			end
-		end
-	elseif GetNumPartyMembers() > 0 then
-		-- In party.
-		for i = 1, GetNumPartyMembers(), 1 do
-			if UnitExists("party"..i.."pet") then
-				CheckPet("party"..i, "party"..i.."pet")
+	local type, count = self:GetGroupTypeAndCount()
+	if count > 0 then
+		for i = 1, count, 1 do
+			if UnitExists(type..i.."pet") then
+				CheckPet(type..i, type..i.."pet")
 			end
 		end
 	end
-	
+
 	-- Solo. Always check.
 	if UnitExists("pet") then
 		CheckPet("player", "pet")
@@ -693,6 +719,7 @@ local wasinpvp
 
 local function ask_for_reset()
 	StaticPopupDialogs["ResetSkadaDialog"] = {
+						preferredIndex = 3,
 						text = L["Do you want to reset Skada?"], 
 						button1 = ACCEPT, 
 						button2 = CANCEL,
@@ -709,11 +736,6 @@ local pvp_zones = {}
 local function is_in_pvp()
 	local pvpType, isFFA = GetZonePVPInfo()
 	return select(2,IsInInstance()) == "pvp" or select(2,IsInInstance()) == "arena" or pvpType == "arena" or pvpType == "combat" or isFFA
-end
-
--- Are we solo?
-local function is_solo()
-	return GetNumRaidMembers() == 0 and GetNumPartyMembers() == 0
 end
 
 -- Fired on entering a zone.
@@ -756,7 +778,7 @@ function Skada:PLAYER_ENTERING_WORLD()
 	end
 
 	-- Mark our last party status. This is done so that the flag is set to correct value on relog/reloadui.
-	wasinparty = (GetNumPartyMembers() > 0 or GetNumRaidMembers() > 0)
+	wasinparty = IsInGroup()
 
 	-- Check for pets.
 	self:CheckPets()
@@ -764,7 +786,7 @@ end
 
 -- Check if we join a party/raid.
 local function check_for_join_and_leave()
-	if GetNumPartyMembers() == 0 and GetNumRaidMembers() == 0 and wasinparty then
+	if not IsInGroup() and wasinparty then
 		-- We left a party.
 		
 		if Skada.db.profile.reset.leave == 3 then
@@ -779,7 +801,7 @@ local function check_for_join_and_leave()
 		end
 	end
 
-	if (GetNumRaidMembers() > 0 or GetNumPartyMembers() > 0) and not wasinparty then
+	if IsInGroup() and not wasinparty then
 		-- We joined a raid.
 		
 		if Skada.db.profile.reset.join == 3 then
@@ -795,7 +817,14 @@ local function check_for_join_and_leave()
 	end
 
 	-- Mark our last party status.
-	wasinparty = (GetNumPartyMembers() > 0 or GetNumRaidMembers() > 0)
+	wasinparty = IsInGroup()
+end
+
+function Skada:GROUP_ROSTER_UPDATE()
+	check_for_join_and_leave()
+	
+	-- Check for new pets.
+	self:CheckPets()
 end
 
 function Skada:PARTY_MEMBERS_CHANGED()
@@ -915,7 +944,7 @@ function Skada:ApplySettings()
 
 	-- Don't show window if we are solo, option.
 	-- Don't show window in a PvP instance, option.
-	if (self.db.profile.hidesolo and is_solo()) or (self.db.profile.hidepvp and is_in_pvp())then
+	if (self.db.profile.hidesolo and not IsInGroup()) or (self.db.profile.hidepvp and is_in_pvp())then
 		self:SetActive(false)
 	else
 		self:SetActive(true)
@@ -958,17 +987,10 @@ function Skada:NewSegment()
 end
 
 local function IsRaidInCombat()
-	if GetNumRaidMembers() > 0 then
-		-- We are in a raid.
-		for i = 1, GetNumRaidMembers(), 1 do
-			if UnitExists("raid"..i) and UnitAffectingCombat("raid"..i) then
-				return true
-			end
-		end
-	elseif GetNumPartyMembers() > 0 then
-		-- In party.
-		for i = 1, GetNumPartyMembers(), 1 do
-			if UnitExists("party"..i) and UnitAffectingCombat("party"..i) then
+	local type, count = Skada:GetGroupTypeAndCount()
+	if count > 0 then
+		for i = 1, count, 1 do
+			if UnitExists(type..i) and UnitAffectingCombat(type..i) then
 				return true
 			end
 		end
@@ -979,17 +1001,10 @@ end
 
 -- Returns true if the party/raid/us are dead/ghost.
 local function IsRaidDead()
-	if GetNumRaidMembers() > 0 then
-		-- We are in a raid.
-		for i = 1, GetNumRaidMembers(), 1 do
-			if UnitExists("raid"..i) and not UnitIsDeadOrGhost("raid"..i) then
-				return false
-			end
-		end
-	elseif GetNumPartyMembers() > 0 then
-		-- In party.
-		for i = 1, GetNumPartyMembers(), 1 do
-			if UnitExists("party"..i) and not UnitIsDeadOrGhost("party"..i) then
+	local type, count = Skada:GetGroupTypeAndCount()
+	if count > 0 then
+		for i = 1, count, 1 do
+			if UnitExists(type..i) and not UnitIsDeadOrGhost(type..i) then
 				return false
 			end
 		end
@@ -2011,8 +2026,12 @@ function Skada:OnEnable()
 	
 	
 	self:RegisterEvent("PLAYER_ENTERING_WORLD")
-	self:RegisterEvent("PARTY_MEMBERS_CHANGED")
-	self:RegisterEvent("RAID_ROSTER_UPDATE")
+	if WoW5 then
+		self:RegisterEvent("GROUP_ROSTER_UPDATE")
+	else
+		self:RegisterEvent("PARTY_MEMBERS_CHANGED")
+		self:RegisterEvent("RAID_ROSTER_UPDATE")
+	end
 	self:RegisterEvent("UNIT_PET")
 	self:RegisterEvent("PLAYER_REGEN_DISABLED")
 	self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED", COMBAT_LOG_EVENT_UNFILTERED)

@@ -11,7 +11,7 @@ local GetTime = _G.GetTime
 
 local validUnits = {"player", "target", "focus", "pet", "vehicle", "targettarget", "main hand weapon", "off hand weapon"}
 local buffOrDebuff = {"buff", "debuff"}
-local customClassSelect = {"ALL", "DEATHKNIGHT", "DRUID", "HUNTER", "MAGE", "PALADIN", "PRIEST", "ROGUE", "SHAMAN", "WARLOCK", "WARRIOR"}
+local customClassSelect = {"ALL", "DEATHKNIGHT", "DRUID", "HUNTER", "MAGE", "MONK", "PALADIN", "PRIEST", "ROGUE", "SHAMAN", "WARLOCK", "WARRIOR"}
 local validBuffTimers = {"none", "seconds", "minutes:seconds", "minutes"}
 
 local _, uClass = UnitClass("player")
@@ -642,7 +642,7 @@ function IceCustomBar.prototype:Show(bShouldShow)
 	end
 	
 	local HideTalent = false
-	local TalentTree = GetPrimaryTalentTree() or 0
+	local TalentTree = GetSpecialization() or 0
 	local TalentGroups = self:RetrieveTableFromBinary(self.moduleSettings.talentGroups)
 	if TalentTree > 0 then
 		if not TalentGroups[TalentTree] then HideTalent = true end

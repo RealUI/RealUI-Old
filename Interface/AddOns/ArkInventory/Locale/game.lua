@@ -15,6 +15,7 @@ L["WOW_CLASS_SHAMAN"] = LOCALIZED_CLASS_NAMES_MALE["SHAMAN"]
 L["WOW_CLASS_WARLOCK"] = LOCALIZED_CLASS_NAMES_MALE["WARLOCK"]
 L["WOW_CLASS_WARRIOR"] = LOCALIZED_CLASS_NAMES_MALE["WARRIOR"]
 L["WOW_CLASS_DEATHKNIGHT"] = LOCALIZED_CLASS_NAMES_MALE["DEATHKNIGHT"]
+L["WOW_CLASS_MONK"] = LOCALIZED_CLASS_NAMES_MALE["MONK"] or "Monk"
 
 
 --	periodictable: set names for default class categories
@@ -28,6 +29,7 @@ L["PT_CLASS_SHAMAN"] = "Misc.Reagent.Class.Shaman"
 L["PT_CLASS_WARLOCK"] = "Misc.Reagent.Class.Warlock"
 L["PT_CLASS_WARRIOR"] = "Misc.Reagent.Class.Warrior"
 L["PT_CLASS_DEATHKNIGHT"] = "Misc.Reagent.Class.DeathKnight"
+L["PT_CLASS_MONK"] = "Misc.Reagent.Class.Monk"
 
 
 --	periodictable3: set names for default skill categories

@@ -79,6 +79,7 @@ L.MSG_STATIC			= "Statisch"
 
 L.MSG_COMBAT					= "Kampf"
 L.MSG_DISPEL					= "Dispel"
+--L.MSG_CHI_FULL					= "Full Chi"
 L.MSG_CP						= "CP"
 L.MSG_CP_FULL					= "Alle CP"
 L.MSG_HOLY_POWER_FULL			= "3x Heilige Kraft"

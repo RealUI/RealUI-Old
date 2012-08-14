@@ -14,7 +14,6 @@ local L = MikSBT.translations
 -- Interface object tables
 ------------------------------
 
-L.CLASS_NAMES = {}
 L.TABS = {}
 L.CHECKBOXES = {}
 L.DROPDOWNS = {}
@@ -81,23 +80,6 @@ L.MSG_INVALID_ITEM_NAME				= "Invalid item name."
 
 
 ------------------------------
--- Class Names.
-------------------------------
-
-local obj = L.CLASS_NAMES
-obj["DEATHKNIGHT"]	= "Death Knight"
-obj["DRUID"]		= "Druid"
-obj["HUNTER"]		= "Hunter"
-obj["MAGE"]			= "Mage"
-obj["PALADIN"]		= "Paladin"
-obj["PRIEST"]		= "Priest"
-obj["ROGUE"]		= "Rogue"
-obj["SHAMAN"]		= "Shaman"
-obj["WARLOCK"]		= "Warlock"
-obj["WARRIOR"]		= "Warrior"
-
-
-------------------------------
 -- Interface tabs
 ------------------------------
 
@@ -143,6 +125,8 @@ obj["enableTrigger"]			= { tooltip="Enable the trigger."}
 obj["allPowerGains"]			= { label="ALL Power Gains", tooltip="Display all power gains including those that are not reported to the combat log.\n\nWARNING: This option is very spammy and will ignore the power threshold and throttling mechanics.\n\nNOT RECOMMENDED."}
 obj["abbreviateSkills"]			= { label="Abbreviate Skills", tooltip="Abbreviates skill names (English only).\n\nThis can be overriden by each event with the %sl event code."}
 obj["mergeSwings"]				= { label="Merge Swings", tooltip="Merge regular melee swings that hit within a short time span."}
+obj["shortenNumbers"]			= { label="Shorten Numbers", tooltip="Display numbers in an abbreviated format (example: 32765 -> 33k)."}
+obj["groupNumbers"]				= { label="Group By Thousands", tooltip="Display numbers grouped by thousands (example: 32765 -> 32,765)."}
 obj["hideSkills"]				= { label="Hide Skills", tooltip="Don't display skill names for incoming and outgoing events.\n\nYou will give up some customization capability at the event level if you choose to use this option since it causes the %s event code to be ignored."}
 obj["hideNames"]				= { label="Hide Names", tooltip="Don't display unit names for incoming and outgoing events.\n\nYou will give up some customization capability at the event level if you choose to use this option since it causes the %n event code to be ignored."}
 obj["hideFullOverheals"]		= { label="Hide Full Overheals", tooltip="Don't display non periodic heals that have an effective heal amount of zero."}
@@ -311,6 +295,7 @@ obj["HEALING_DONE"]			= "%a - Amount of healing done.\n"
 obj["ABSORBED_AMOUNT"]		= "%a - Amount of damage absorbed.\n"
 obj["AURA_AMOUNT"]			= "%a - Amount of stacks for the aura.\n"
 obj["ENERGY_AMOUNT"]		= "%a - Amount of energy.\n"
+obj["CHI_AMOUNT"]			= "%a - Amount of chi you have.\n"
 obj["CP_AMOUNT"]			= "%a - Amount of combo points you have.\n"
 obj["HOLY_POWER_AMOUNT"]	= "%a - Amount of holy power you have.\n"
 obj["HONOR_AMOUNT"]			= "%a - Amount of honor.\n"
@@ -499,6 +484,10 @@ obj["NOTIFICATION_COMBAT_ENTER"]		= { label="Enter Combat", tooltip="Enable when
 obj["NOTIFICATION_COMBAT_LEAVE"]		= { label="Leave Combat", tooltip="Enable when you have left combat."}
 obj["NOTIFICATION_POWER_GAIN"]			= { label="Power Gains", tooltip="Enable when you gain extra mana, rage, or energy."}
 obj["NOTIFICATION_POWER_LOSS"]			= { label="Power Losses", tooltip="Enable when you lose mana, rage, or energy from drains."}
+obj["NOTIFICATION_ALT_POWER_GAIN"]		= { label="Alternate Power Gains", tooltip="Enable when you gain alternate power such as sound level on Atramedes."}
+obj["NOTIFICATION_ALT_POWER_LOSS"]		= { label="Alternate Power Losses", tooltip="Enable when you lose alternate power from drains."}
+obj["NOTIFICATION_CHI_CHANGE"]			= { label="Chi Changes", tooltip="Enable when you change chi."}
+obj["NOTIFICATION_CHI_FULL"]			= { label="Chi Full", tooltip="Enable when you attain full chi."}
 obj["NOTIFICATION_CP_GAIN"]				= { label="Combo Point Gains", tooltip="Enable when you gain combo points."}
 obj["NOTIFICATION_CP_FULL"]				= { label="Combo Points Full", tooltip="Enable when you attain full combo points."}
 obj["NOTIFICATION_HOLY_POWER_CHANGE"]	= { label="Holy Power Changes", tooltip="Enable when you change holy power."}

@@ -1248,7 +1248,7 @@ function Overlay:UpdateStatus(UnitID)
 	elseif not(UnitIsConnected(UnitID)) then
 		S2Status = StatusColors.offline
 		S2 = true
-	elseif (UnitID == PLAYER_ID) and IsPartyLeader() then
+	elseif (UnitID == PLAYER_ID) and UnitIsGroupLeader(UnitID) then
 		S2Status = StatusColors.leader
 		S2 = true
 	else

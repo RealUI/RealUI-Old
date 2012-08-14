@@ -1,6 +1,6 @@
 --[[
 Name: DBIcon-1.0
-Revision: $Rev: 24 $
+Revision: $Rev: 25 $
 Author(s): Rabbit (rabbit.magtheridon@gmail.com)
 Description: Allows addons to register to recieve a lightweight minimap icon as an alternative to more heavy LDB displays.
 Dependencies: LibStub
@@ -33,7 +33,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 --
 
 local DBICON10 = "LibDBIcon-1.0"
-local DBICON10_MINOR = tonumber(("$Rev: 24 $"):match("(%d+)"))
+local DBICON10_MINOR = tonumber(("$Rev: 25 $"):match("(%d+)"))
 if not LibStub then error(DBICON10 .. " requires LibStub.") end
 local ldb = LibStub("LibDataBroker-1.1", true)
 if not ldb then error(DBICON10 .. " requires LibDataBroker-1.1.") end
@@ -90,67 +90,73 @@ end
 
 --------------------------------------------------------------------------------
 
-local minimapShapes = {
-	["ROUND"] = {true, true, true, true},
-	["SQUARE"] = {false, false, false, false},
-	["CORNER-TOPLEFT"] = {false, false, false, true},
-	["CORNER-TOPRIGHT"] = {false, false, true, false},
-	["CORNER-BOTTOMLEFT"] = {false, true, false, false},
-	["CORNER-BOTTOMRIGHT"] = {true, false, false, false},
-	["SIDE-LEFT"] = {false, true, false, true},
-	["SIDE-RIGHT"] = {true, false, true, false},
-	["SIDE-TOP"] = {false, false, true, true},
-	["SIDE-BOTTOM"] = {true, true, false, false},
-	["TRICORNER-TOPLEFT"] = {false, true, true, true},
-	["TRICORNER-TOPRIGHT"] = {true, false, true, true},
-	["TRICORNER-BOTTOMLEFT"] = {true, true, false, true},
-	["TRICORNER-BOTTOMRIGHT"] = {true, true, true, false},
-}
+local onClick, onMouseUp, onMouseDown, onDragStart, onDragEnd, updatePosition
 
-local function updatePosition(button)
-	local angle = math.rad(button.db and button.db.minimapPos or button.minimapPos or 225)
-	local x, y, q = math.cos(angle), math.sin(angle), 1
-	if x < 0 then q = q + 1 end
-	if y > 0 then q = q + 2 end
-	local minimapShape = GetMinimapShape and GetMinimapShape() or "ROUND"
-	local quadTable = minimapShapes[minimapShape]
-	if quadTable[q] then
-		x, y = x*80, y*80
-	else
-		local diagRadius = 103.13708498985 --math.sqrt(2*(80)^2)-10
-		x = math.max(-80, math.min(x*diagRadius, 80))
-		y = math.max(-80, math.min(y*diagRadius, 80))
+do
+	local minimapShapes = {
+		["ROUND"] = {true, true, true, true},
+		["SQUARE"] = {false, false, false, false},
+		["CORNER-TOPLEFT"] = {false, false, false, true},
+		["CORNER-TOPRIGHT"] = {false, false, true, false},
+		["CORNER-BOTTOMLEFT"] = {false, true, false, false},
+		["CORNER-BOTTOMRIGHT"] = {true, false, false, false},
+		["SIDE-LEFT"] = {false, true, false, true},
+		["SIDE-RIGHT"] = {true, false, true, false},
+		["SIDE-TOP"] = {false, false, true, true},
+		["SIDE-BOTTOM"] = {true, true, false, false},
+		["TRICORNER-TOPLEFT"] = {false, true, true, true},
+		["TRICORNER-TOPRIGHT"] = {true, false, true, true},
+		["TRICORNER-BOTTOMLEFT"] = {true, true, false, true},
+		["TRICORNER-BOTTOMRIGHT"] = {true, true, true, false},
+	}
+
+	function updatePosition(button)
+		local angle = math.rad(button.db and button.db.minimapPos or button.minimapPos or 225)
+		local x, y, q = math.cos(angle), math.sin(angle), 1
+		if x < 0 then q = q + 1 end
+		if y > 0 then q = q + 2 end
+		local minimapShape = GetMinimapShape and GetMinimapShape() or "ROUND"
+		local quadTable = minimapShapes[minimapShape]
+		if quadTable[q] then
+			x, y = x*80, y*80
+		else
+			local diagRadius = 103.13708498985 --math.sqrt(2*(80)^2)-10
+			x = math.max(-80, math.min(x*diagRadius, 80))
+			y = math.max(-80, math.min(y*diagRadius, 80))
+		end
+		button:SetPoint("CENTER", Minimap, "CENTER", x, y)
 	end
-	button:SetPoint("CENTER", Minimap, "CENTER", x, y)
 end
 
-local function onClick(self, b) if self.dataObject.OnClick then self.dataObject.OnClick(self, b) end end
-local function onMouseDown(self) self.isMouseDown = true; self.icon:UpdateCoord() end
-local function onMouseUp(self) self.isMouseDown = false; self.icon:UpdateCoord() end
+function onClick(self, b) if self.dataObject.OnClick then self.dataObject.OnClick(self, b) end end
+function onMouseDown(self) self.isMouseDown = true; self.icon:UpdateCoord() end
+function onMouseUp(self) self.isMouseDown = false; self.icon:UpdateCoord() end
 
-local function onUpdate(self)
-	local mx, my = Minimap:GetCenter()
-	local px, py = GetCursorPosition()
-	local scale = Minimap:GetEffectiveScale()
-	px, py = px / scale, py / scale
-	if self.db then
-		self.db.minimapPos = math.deg(math.atan2(py - my, px - mx)) % 360
-	else
-		self.minimapPos = math.deg(math.atan2(py - my, px - mx)) % 360
+do
+	local function onUpdate(self)
+		local mx, my = Minimap:GetCenter()
+		local px, py = GetCursorPosition()
+		local scale = Minimap:GetEffectiveScale()
+		px, py = px / scale, py / scale
+		if self.db then
+			self.db.minimapPos = math.deg(math.atan2(py - my, px - mx)) % 360
+		else
+			self.minimapPos = math.deg(math.atan2(py - my, px - mx)) % 360
+		end
+		updatePosition(self)
 	end
-	updatePosition(self)
+
+	function onDragStart(self)
+		self:LockHighlight()
+		self.isMouseDown = true
+		self.icon:UpdateCoord()
+		self:SetScript("OnUpdate", onUpdate)
+		self.isMoving = true
+		GameTooltip:Hide()
+	end
 end
 
-local function onDragStart(self)
-	self:LockHighlight()
-	self.isMouseDown = true
-	self.icon:UpdateCoord()
-	self:SetScript("OnUpdate", onUpdate)
-	self.isMoving = true
-	GameTooltip:Hide()
-end
-
-local function onDragStop(self)
+function onDragStop(self)
 	self:SetScript("OnUpdate", nil)
 	self.isMouseDown = false
 	self.icon:UpdateCoord()
@@ -200,8 +206,10 @@ local function createButton(name, object, db)
 	button:SetScript("OnEnter", onEnter)
 	button:SetScript("OnLeave", onLeave)
 	button:SetScript("OnClick", onClick)
-	button:SetScript("OnDragStart", onDragStart)
-	button:SetScript("OnDragStop", onDragStop)
+	if not db or not db.lock then
+		button:SetScript("OnDragStart", onDragStart)
+		button:SetScript("OnDragStop", onDragStop)
+	end
 	button:SetScript("OnMouseDown", onMouseDown)
 	button:SetScript("OnMouseUp", onMouseUp)
 
@@ -241,6 +249,10 @@ if not lib.loggedIn then
 	f:RegisterEvent("PLAYER_LOGIN")
 end
 
+local function getDatabase(name)
+	return lib.notCreated[name] and lib.notCreated[name][2] or lib.objects[name].db
+end
+
 function lib:Register(name, object, db)
 	if not object.icon then error("Can't register LDB objects without icons set!") end
 	if lib.objects[name] or lib.notCreated[name] then error("Already registered, nubcake.") end
@@ -249,6 +261,26 @@ function lib:Register(name, object, db)
 	else
 		lib.notCreated[name] = {object, db}
 	end
+end
+
+function lib:Lock(name)
+	if not lib:IsRegistered(name) then return end
+	if lib.objects[name] then
+		lib.objects[name]:SetScript("OnDragStart", nil)
+		lib.objects[name]:SetScript("OnDragStop", nil)
+	end
+	local db = getDatabase(name)
+	if db then db.lock = true end
+end
+
+function lib:Unlock(name)
+	if not lib:IsRegistered(name) then return end
+	if lib.objects[name] then
+		lib.objects[name]:SetScript("OnDragStart", onDragStart)
+		lib.objects[name]:SetScript("OnDragStop", onDragStop)
+	end
+	local db = getDatabase(name)
+	if db then db.lock = nil end
 end
 
 function lib:Hide(name)
@@ -274,6 +306,13 @@ function lib:Refresh(name, db)
 		button:Show()
 	else
 		button:Hide()
+	end
+	if not button.db or not button.db.lock then
+		button:SetScript("OnDragStart", onDragStart)
+		button:SetScript("OnDragStop", onDragStop)
+	else
+		button:SetScript("OnDragStart", nil)
+		button:SetScript("OnDragStop", nil)
 	end
 end
 function lib:GetMinimapButton(name)

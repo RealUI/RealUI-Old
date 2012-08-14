@@ -15,7 +15,7 @@ Raven.generalSpells = {
 	{ "Ghost", DEBUFF, p.Gray, id = 9036 },
 	{ "Basic Campfire", nil, p.Orange2, cooldown = true, id = 818, profession = "Cooking" },
 	{ "Survey", nil, p.Grey, cooldown = true, id = 80451, profession = "Archaeology" },
-	{ "Lifeblood", BUFF, p.Green2, cooldown = true, profession = "Herbalism", ids = { 74497, 81708, 55428, 55480, 55500, 55501, 55502, 55503 } },
+	{ "Lifeblood", BUFF, p.Green2, cooldown = true, profession = "Herbalism", id = 74497 },
 	-- the following cooldowns are internally generated and should not have spell ids
 	{ L["GCD"], nil, p.Gray, cooldown = true },
 	{ L["Potions"], nil, p.Green1, cooldown = true },

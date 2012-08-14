@@ -275,7 +275,7 @@ local function damage_tooltip(win, id, label, tooltip)
 	if player then
 		local activetime = Skada:PlayerActiveTime(set, player)
 		local totaltime = Skada:GetSetTime(set)
-		tooltip:AddDoubleLine(L["Activity"], ("%02.1f%%"):format(activetime/totaltime*100), 255,255,255,255,255,255)
+		tooltip:AddDoubleLine(L["Activity"], ("%02.1f%%"):format(activetime/math.max(1,totaltime)*100), 255,255,255,255,255,255)
 	end
 end
 

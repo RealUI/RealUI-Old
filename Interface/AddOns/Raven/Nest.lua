@@ -33,6 +33,9 @@ local animations = {} -- active animations
 local displayWidth, displayHeight = UIParent:GetWidth(), UIParent:GetHeight()
 local defaultBackdropColor = { r = 1, g = 1, b = 1, a = 1 }
 
+local MSQ = nil -- Masque support
+local MSQ_ButtonData = nil
+
 local anchorDefaults = { -- backdrop initialization for bar group anchors
 	bgFile = "Interface\\Tooltips\\UI-Tooltip-Background", edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
 	tile = true, tileSize = 8, edgeSize = 8, insets = { left = 2, right = 2, top = 2, bottom = 2 }
@@ -65,30 +68,6 @@ function Nest_FlashAlpha(maxAlpha, period)
 	frac = frac - math.floor(frac) -- get fractional part of current period
 	if frac >= 0.5 then frac = 1 - frac end -- now goes from 0 to 0.5 then back to 0
 	return (maxAlpha / 2) + (maxAlpha * frac) -- drops to half of maxAlpha
-end
-
--- Optional ButtonFacade support
-local LBF = LibStub("LibButtonFacade", true)
-local LBF_Skin = {} -- local cache for current skin settings
-local LBF_Group = LBF and LBF:Group("Raven", "NestIcons") or nil -- ButtonFacade group for skinning bar group icons
-local LBF_ButtonData = { AutoCast = false, AutoCastable = false, Border = false, Checked = false, Cooldown= false, Count = false,
-	Disabled = false, Flash = false, Highlight = false, HotKey = false, Icon = false, Name = false, Normal = false, Pushed = false }
-
-local function LBF_SkinCallback(arg, SkinID, Gloss, Backdrop, Group, Button, Colors)
-	LBF_Skin.SkinID = SkinID; LBF_Skin.Gloss = Gloss; LBF_Skin.Backdrop = Backdrop; LBF_Skin.Colors = Colors
-end
-
-do if LBF then LBF:RegisterSkinCallback("Raven", LBF_SkinCallback) end end
-
-function Nest_SetButtonFacadeData(SkinID, Gloss, Backdrop, Colors)
-	if LBF and LBF_Group and SkinID then
-		LBF_Skin.SkinID = SkinID; LBF_Skin.Gloss = Gloss; LBF_Skin.Backdrop = Backdrop; LBF_Skin.Colors = Colors
-		LBF_Group:Skin(LBF_Skin.SkinID, LBF_Skin.Gloss, LBF_Skin.Backdrop, LBF_Skin.Colors)
-	end
-end
-
-function Nest_GetButtonFacadeData(SkinID, Gloss, Backdrop, Colors)
-	return LBF_Skin.SkinID, LBF_Skin.Gloss, LBF_Skin.Backdrop, LBF_Skin.Colors
 end
 
 -- Set and confirm frame level, working around potential bug when raising frame level above internal limits
@@ -327,6 +306,7 @@ function Nest_CreateBarGroup(name)
 	bg.anchor:EnableMouse(true)
 	table.wipe(bg.position)
 	bg.name = name
+	if MSQ then bg.MSQ_Group = MSQ:Group("Raven", name) end
 	bg.update = true
 	barGroups[name] = bg
 	update = true
@@ -357,6 +337,7 @@ function Nest_DeleteBarGroup(bg)
 	bg.sortFunction = SortAlphaUp; bg.sortTime = nil; bg.sortPlayer = nil
 	bg.count = 0
 	bg.locked = false; bg.moving = false
+	if bg.MSQ_Group then bg.MSQ_Group:Delete() end
 	bg.update = false
 	bg.anchor:Hide(); bg.backdrop:Hide(); HideTimeline(bg)
 	barGroups[bg.name] = nil
@@ -596,7 +577,7 @@ function Nest_CreateBar(bg, name)
 		bar.labelText = bar.textFrame:CreateFontString(nil, "OVERLAY")		
 		bar.timeText = bar.textFrame:CreateFontString(nil, "OVERLAY")
 		bar.icon = CreateFrame("Button", bname, bar.frame)
-		bar.iconTexture = bar.icon:CreateTexture(nil, "ARTWORK") -- texture for the bar's icon
+		bar.iconTexture = bar.icon:CreateTexture(bname .. "IconTexture", "ARTWORK") -- texture for the bar's icon
 		bar.cooldown = CreateFrame("Cooldown", bname .. "Cooldown", bar.frame) -- cooldown overlay to animate timer
 		bar.cooldown.noCooldownCount = Raven.db.global.HideOmniCC
 		bar.iconTextFrame = CreateFrame("Frame", bname .. "IconTextFrame", bar.frame)
@@ -611,9 +592,9 @@ function Nest_CreateBar(bg, name)
 		shrink:SetScale(-3, -3); shrink:SetOrigin('CENTER', 0, 0); shrink:SetDuration(0.25); shrink:SetOrder(2)
 		bar.icon.anim = anim
 		
-		if LBF then -- if using ButtonFacade, create and initialize a button data table
+		if MSQ then -- if using ButtonFacade, create and initialize a button data table
 			bar.buttonData = {} -- only initialize once so no garbage collection issues
-			for k, v in pairs(LBF_ButtonData) do bar.buttonData[k] = v end
+			for k, v in pairs(MSQ_ButtonData) do bar.buttonData[k] = v end
 		end
 
 		bar.attributes = {}
@@ -668,6 +649,7 @@ function Nest_DeleteBar(bg, bar)
 	bar.icon.bgName = nil
 	bar.icon.anim:Stop()
 	bar.cooldown:SetCooldown(0, 0)
+	bar.iconPath = nil
 	bar.update = false
 	bar.backdrop:Hide(); bar.fgTexture:Hide(); bar.bgTexture:Hide(); bar.spark:Hide(); bar.icon:Hide(); bar.cooldown:Hide()
 	bar.iconText:Hide(); bar.labelText:Hide(); bar.timeText:Hide(); bar.iconBorder:Hide()
@@ -731,7 +713,7 @@ function Nest_SetLabel(bar, label) bar.label = label end
 function Nest_SetValue(bar, value) bar.value = value end
 
 -- Set the icon texture for a bar
-function Nest_SetIcon(bar, icon) bar.iconTexture:SetTexture(icon) end
+function Nest_SetIcon(bar, icon) bar.iconPath = icon end
 
 -- Set the numeric value to display on the bar's icon
 function Nest_SetCount(bar, iconCount) bar.iconCount = iconCount end
@@ -848,7 +830,7 @@ local function BarGroup_UpdateBackground(bg, config)
 			offX = 0; offY = -dir
 		end
 		back:SetSize(w, h); back:SetAlpha(bg.tlAlpha); back.bar:SetSize(w, h); 
-		back.bar:SetTexture(bg.tlTexture); local t = bg.tlColor; if t then back.bar:SetVertexColor(t.r, t.g, t.b, 1) end
+		back.bar:SetTexture(bg.tlTexture); local t = bg.tlColor; if t then back.bar:SetVertexColor(t.r, t.g, t.b, t.a) end
 		if bg.borderTexture then
 			local offset, edgeSize = bg.borderOffset, bg.borderWidth; if (edgeSize < 0.1) then edgeSize = 0.1 end
 			bg.borderTable.edgeFile = bg.borderTexture; bg.borderTable.edgeSize = edgeSize
@@ -1001,20 +983,20 @@ local function Bar_UpdateLayout(bg, bar, config)
 		bar.iconText:SetPoint("LEFT", bar.icon, "LEFT", bg.iconInset - 10, bg.iconOffset)
 		bar.iconText:SetPoint("RIGHT", bar.icon, "RIGHT", bg.iconInset + 12, bg.iconOffset) -- pad right to center time text better
 		bar.iconText:SetJustifyH(bg.iconAlign); bar.iconText:SetJustifyV("MIDDLE")
-		if LBF and Raven.db.global.ButtonFacadeIcons then -- if using ButtonFacade, set custom fields in button data table and add to skinnning group
+		if MSQ and bg.MSQ_Group and Raven.db.global.ButtonFacadeIcons then -- if using ButtonFacade, set custom fields in button data table and add to skinnning group
 			bar.cooldown:SetSize(bg.iconSize, bg.iconSize); bar.cooldown:SetPoint("CENTER", bar.icon, "CENTER")
 			bar.iconTexture:SetTexCoord(0, 1, 0, 1)
 			bar.iconTexture:SetSize(bg.iconSize, bg.iconSize)
 			bar.iconTexture:SetPoint("CENTER", bar.icon, "CENTER")
-			LBF_Group:RemoveButton(bar.icon, true) -- needed so size changes work when icon is reused
+			bg.MSQ_Group:RemoveButton(bar.icon, true) -- needed so size changes work when icon is reused
 			local bdata = bar.buttonData
 			bdata.Icon = bar.iconTexture
 			bdata.Normal = bar.icon:GetNormalTexture()
 			bdata.Cooldown = bar.cooldown
 			bdata.Border = bar.iconBorder
-			LBF_Group:AddButton(bar.icon, bdata)
+			bg.MSQ_Group:AddButton(bar.icon, bdata)
 		else -- if not then use a default button arrangment
-			if LBF_Group then LBF_Group:RemoveButton(bar.icon, false) end -- remove skin, if any
+			if bg.MSQ_Group then bg.MSQ_Group:RemoveButton(bar.icon, false) end -- remove skin, if any
 			local trim, crop, slice = 0.04, 0.96, 0.92 * bg.iconSize
 			bar.cooldown:SetSize(slice, slice); bar.cooldown:SetPoint("CENTER", bar.icon, "CENTER")
 			bar.iconTexture:SetTexCoord(trim, crop, trim, crop)
@@ -1110,15 +1092,15 @@ local function Bar_UpdateSettings(bg, bar, config)
 	if bg.showIcon and not isHeader then
 		offsetX = bg.iconSize
 		bar.iconTexture:SetDesaturated(bar.attributes.desaturate) -- optionally desaturate the bar's icon
-		if bar.iconTexture:GetTexture() then bar.icon:Show() else bar.icon:Hide() end
+		if bar.iconPath then bar.icon:Show(); bar.iconTexture:SetTexture(bar.iconPath) else bar.icon:Hide() end
 		local pulseStart, pulseEnd = (bg.attributes.pulseStart or bar.attributes.pulseStart), (bg.attributes.pulseEnd or bar.attributes.pulseEnd)
 		if pulseStart and bar.timeLeft and ((bar.duration - bar.timeLeft) < 0.25) and not ba:IsPlaying() then ba:Play() end
 		if pulseEnd and bar.timeLeft and (bar.timeLeft < 0.45) and (bar.timeLeft > 0.1) and not ba:IsPlaying() then ba:Play() end
-		if LBF and Raven.db.global.ButtonFacadeIcons then -- icon border coloring
+		if MSQ and Raven.db.global.ButtonFacadeIcons then -- icon border coloring
 			if Raven.db.global.ButtonFacadeIcons and Raven.db.global.ButtonFacadeBorder and bx and bx.SetVertexColor then
 				bx:SetVertexColor(bar.ibr, bar.ibg, bar.ibb, bar.iba); showBorder = true
 			end
-			local nx = LBF:GetNormalTexture(bar.icon)
+			local nx = MSQ:GetNormal(bar.icon)
 			if Raven.db.global.ButtonFacadeNormal and nx and nx.SetVertexColor then nx:SetVertexColor(bar.ibr, bar.ibg, bar.ibb, bar.iba) end
 		else
 			bx:SetAllPoints(bar.icon); bx:SetVertexColor(bar.ibr, bar.ibg, bar.ibb, bar.iba); showBorder = true
@@ -1128,9 +1110,13 @@ local function Bar_UpdateSettings(bg, bar, config)
 	end
 	if showBorder then bx:Show() else bx:Hide() end
 	if bg.showIcon and not bg.iconHide and not isHeader and bar.iconCount then bi:SetText(tostring(bar.iconCount)); bi:Show() else bi:Hide() end
-	if bg.showIcon and not isHeader and bg.showCooldown and config.bars ~= "timeline" and bar.timeLeft and (bar.timeLeft > 0) and not ba:IsPlaying() then
-		bar.cooldown:SetDrawEdge(bg.attributes.clockEdge); bar.cooldown:SetReverse(bg.attributes.clockReverse)
-		bar.cooldown:SetCooldown(bar.startTime - bar.offsetTime, bar.duration); bar.cooldown:Show() else bar.cooldown:Hide() end
+	if bg.showIcon and not isHeader and bg.showCooldown and config.bars ~= "timeline" and bar.timeLeft and (bar.timeLeft >= 0) and not ba:IsPlaying() then
+		-- missing in MoP??? bar.cooldown:SetDrawEdge(bg.attributes.clockEdge)
+		bar.cooldown:SetReverse(bg.attributes.clockReverse)
+		bar.cooldown:SetCooldown(bar.startTime - bar.offsetTime, bar.duration); bar.cooldown:Show()
+	else
+		bar.cooldown:Hide()
+	end
 	local ct, cm, expiring, ea, ec = bar.attributes.colorTime, bar.attributes.colorMinimum, false, bg.bgAlpha, nil
 	if bar.timeLeft and ct and cm and ct > bar.timeLeft and bar.duration >= cm then
 		ec = bar.attributes.expireLabelColor; if ec and ec.a > 0 then bl:SetTextColor(ec.r, ec.g, ec.b, ec.a) end
@@ -1291,7 +1277,7 @@ local function BarGroup_SortBars(bg, config)
 		end
 		local id = bar.attributes.group; if bg.attributes.targetFirst and id and tid and id == tid then id = "" end -- sorts to front of the list
 		s.group = id or ""; s.gname = bar.attributes.groupName or (bg.reverse and "ZZZZZZZZZZZZ" or "")
-		s.isMine = bar.attributes.isMine; s.class = bar.attributes.class; s.sortPlayer = bg.sortPlayer; s.sortTime = bg.sortTime
+		s.isMine = bar.attributes.isMine; s.class = bar.attributes.class or ""; s.sortPlayer = bg.sortPlayer; s.sortTime = bg.sortTime
 	end
 	local isTimeline = false
 	if config.bars == "timeline" then bg.sortFunction = SortTimeUp; isTimeline = true end
@@ -1306,11 +1292,12 @@ local function BarGroup_SortBars(bg, config)
 	local count, maxBars, cdir = bg.count, bg.maxBars, 0
 	if not maxBars or (maxBars == 0) then maxBars = count end
 	if count > maxBars then count = maxBars end
+	local ac = count -- actual count before wrap adjustment
 	if bg.wrap and not isTimeline then wrap = bg.wrap; if (wrap > 0) and (count > wrap) then count = wrap end end
 	local anchorPoint = "BOTTOMLEFT"
 	if config.iconOnly then -- icons can go any direction from anchor
 		if config.orientation == "vertical" then
-			wx = -dx; dx = 0; bh = count; if count > 0 then bw = math.ceil(bg.count / count) else bw = 1 end
+			wx = -dx; dx = 0; bh = count; if count > 0 then bw = math.ceil(ac / count) else bw = 1 end
 			if not bg.locked then y0 = dy; bh = bh + 1 end
 			if not bg.reverse then anchorPoint = "TOPLEFT"; wx = -wx; cdir = -1 end
 			if not bg.wrapDirection then xoffset = -(bw - 1) * (bg.width + bg.spacingX) end
@@ -1322,7 +1309,7 @@ local function BarGroup_SortBars(bg, config)
 				bg.lastX = x0; bg.lastY = y0 + (dy * count); bg.lastRow = nil; bg.lastColumn = nil
 			end
 		else -- horizontal
-			wy = dy; dy = 0; bw = count; if count > 0 then bh = math.ceil(bg.count / count) else bh = 1 end
+			wy = dy; dy = 0; bw = count; if count > 0 then bh = math.ceil(ac / count) else bh = 1 end
 			if not bg.locked then x0 = dx; bw = bw + 1 end
 			if bg.reverse then anchorPoint = "BOTTOMRIGHT"; wy = -wy; cdir = -1 end
 			if not bg.wrapDirection then yoffset = -(bh - 1) * (bg.height + bg.spacingY) end			
@@ -1340,7 +1327,7 @@ local function BarGroup_SortBars(bg, config)
 			end
 		end
 	else -- bars just go up or down with anchor set to top or bottom
-		wx = -dx; dx = 0; if count > 0 then bw = math.ceil(bg.count / count) else bw = 1 end; bh = count; wadjust = bg.iconOffsetX
+		wx = -dx; dx = 0; if count > 0 then bw = math.ceil(ac / count) else bw = 1 end; bh = count; wadjust = bg.iconOffsetX
 		if bg.wrapDirection then xoffset = bg.iconOffsetX else xoffset = bg.iconOffsetX - (bw - 1) * (bg.width + bg.spacingX) end
 		if not bg.locked then y0 = y0 + dy; bh = bh + 1 end
 		if not bg.reverse then anchorPoint = "TOPLEFT"; wx = -wx end
@@ -1479,6 +1466,15 @@ end
 
 -- Force a global update.
 function Nest_TriggerUpdate() update = true end
+
+-- Initialize the module
+function Nest_Initialize()
+	if Raven.MSQ then
+		MSQ = Raven.MSQ
+		MSQ_ButtonData = { AutoCast = false, AutoCastable = false, Border = false, Checked = false, Cooldown = false, Count = false, Duration = false,
+			Disabled = false, Flash = false, Highlight = false, HotKey = false, Icon = false, Name = false, Normal = false, Pushed = false }
+	end
+end
 
 -- Update routine does all the actual work of setting up and displaying bar groups.
 function Nest_Update()

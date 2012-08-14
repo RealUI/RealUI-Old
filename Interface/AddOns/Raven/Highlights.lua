@@ -8,7 +8,6 @@ local MOD = Raven
 MOD.highlights = false -- set to true if bar mods are loaded that support Raven's highlighting
 
 local media = LibStub("LibSharedMedia-3.0")
-local LBF = LibStub("LibButtonFacade", true)
 local hidden = false
 local buttons = {}
 local highlightOverlays = {}
@@ -118,7 +117,7 @@ local function UpdateActiveButtons()
 	end
 end
 
--- Hide all the overlays in the overlays table or, if using LBF, restore saved vertex colors
+-- Hide all the overlays in the overlays table or, if using Masque, restore saved vertex colors
 local function HideOverlays()
 	-- Overlays are created on demand to minimize performance impact when hiding the overlays at the start of each update
 	if not hidden then
@@ -126,9 +125,10 @@ local function HideOverlays()
 		for _, ol in pairs(highlightOverlays) do ol:Hide() end-- hide highlight overlays, if any
 		for _, ol in pairs(textOverlays) do ol:Hide() end -- hide text overlays, if any
 		
-		if LBF then
+		if MOD.MSQ then
 			for b, c in pairs(buttonFacadeCache) do -- restore the saved color
-				LBF:SetNormalVertexColor(b, c.r, c.g, c.b, c.a)
+				local ntex = MOD.MSQ:GetNormal(b)
+				ntex:SetVertexColor(c.r, c.g, c.b, c.a)
 			end
 			for b, t in pairs(buttons) do if not t[1] then buttonFacadeCache[b] = nil end end -- purge inactive buttons
 			if not MOD.db.global.ButtonFacade then -- purge the button facade cache when switching modes
@@ -141,15 +141,16 @@ end
 -- Set color and alpha for a button overlay
 -- If using button facade then save current color for the button and set to new color
 local function SetOverlayColor(b, alpha, vr, vg, vb, va)
-	if LBF and MOD.db.global.ButtonFacade then
-		local cr, cg, cb, ca = LBF:GetNormalVertexColor(b)
+	if MOD.MSQ and MOD.db.global.ButtonFacade then
+		local ntex = MOD.MSQ:GetNormal(b)
+		local cr, cg, cb, ca = ntex:GetVertexColor()
 		local c = buttonFacadeCache[b]
 		if c then
 			c.r = cr; c.g = cg; c.b = cb; c.a = ca
 		else
 			buttonFacadeCache[b] = { r = cr, g = cg, b = cb, a = ca }
 		end
-		LBF:SetNormalVertexColor(b, vr, vg, vb, va)
+		ntex:SetVertexColor(vr, vg, vb, va)
 	else
 		local olName = b:GetName() .. "RavenHighlight"
 		local ol = _G[olName]
@@ -290,11 +291,11 @@ function MOD:UpdateHighlights()
 			
 	hidden = false -- flag that shows there may be some overlays visible
 	
-	updateButtonThrottle = updateButtonThrottle + 1 -- only update button cache once a second or anytime get actionbar change event 
-	if MOD.updateActions or updateButtonThrottle > 10 then
+	local now = GetTime() -- only update button cache when get actionbar change event plus every second or so just in case
+	if MOD.updateActions or (now > updateButtonThrottle) then
 		UpdateActiveButtons()
 		MOD.updateActions = false
-		updateButtonThrottle = 0
+		updateButtonThrottle = now + 1.5 -- next update time
 	end
 	
 	if p.FlashExpiring then -- check whether flashing buttons should show at this time

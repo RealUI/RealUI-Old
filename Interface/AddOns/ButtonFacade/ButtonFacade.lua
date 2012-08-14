@@ -3,14 +3,14 @@
 	please see the included License.txt file.
 
 	* File.....: ButtonFacade\ButtonFacade.lua
-	* Revision.: 377
+	* Revision.: 381
 	* Author...: StormFX
 
 	ButtonFacade Support
 
 	[ Notes ]
 
-	This file will create a 'ButtonFacade' add-on  object to ensure compability for older add-ons and skins.
+	This package will create a 'ButtonFacade' add-on to ensure compability for older add-ons and skins.
 	The directory that this file is located in MUST be installed as a separate add-on in order for it to work correctly.
 ]]
 

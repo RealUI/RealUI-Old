@@ -58,23 +58,6 @@ L.MSG_INVALID_ITEM_NAME				= "無效物品名."
 
 
 ------------------------------
--- Class Names.
-------------------------------
-
-local obj = L.CLASS_NAMES
-obj["DEATHKNIGHT"]	= "死亡騎士"
-obj["DRUID"]		= "德魯伊"
-obj["HUNTER"]		= "獵人"
-obj["MAGE"]			= "法師"
-obj["PALADIN"]		= "聖騎士"
-obj["PRIEST"]		= "牧師"
-obj["ROGUE"]		= "盜賊"
-obj["SHAMAN"]		= "薩滿"
-obj["WARLOCK"]		= "術士"
-obj["WARRIOR"]		= "戰士"
-
-
-------------------------------
 -- Interface tabs
 ------------------------------
 
@@ -120,6 +103,8 @@ obj["enableTrigger"]			= { tooltip="啟用觸發"}
 obj["allPowerGains"]			= { label="所有能量獲取", tooltip="顯示所有獲取的能量包括那些戰鬥日誌中不顯示的。警告：這個選項將會大量洗頻同時無視能量門檻和抑制顯示設定\n不推薦"}
 obj["abbreviateSkills"]			= { label="技能縮寫", tooltip="縮減技能名稱（僅適用於英文版）。若事件描述中加入「%sl」代碼，此選項即失效"}
 obj["mergeSwings"]				= { label="合併普通攻擊", tooltip="合併極短時間內的普通攻擊傷害"}
+--obj["shortenNumbers"]			= { label="Shorten Numbers", tooltip="Display numbers in an abbreviated format (example: 32765 -> 33k)."}
+--obj["groupNumbers"]				= { label="Group By Thousands", tooltip="Display numbers grouped by thousands (example: 32765 -> 32,765)."}
 obj["hideSkills"]				= { label="隱藏技能", tooltip="在承受傷害和輸出傷害中不顯示技能名稱。開啟此選項將使你失去某些事件自定義功能，因為它會忽略「%s」代碼"}
 obj["hideNames"]				= { label="隱藏名稱", tooltip="在承受傷害和輸出傷害中不顯示單位名稱。開啟此選項將使你失去某些事件自定義功能，因為它會忽略「%n」代碼"}
 obj["hideFullOverheals"]		= { label="隱藏全部過量的治療", tooltip="不顯示全部過量的治療."}
@@ -227,7 +212,7 @@ obj["deleteItem"]				= { tooltip="點擊刪除物品."}
 obj = L.EDITBOXES
 obj["customFontName"]	= { label="字體名:", tooltip="用來確定字體的名字.\n\n例如: 我的字體"}
 obj["customFontPath"]	= { label="字體路徑:", tooltip="字體檔的路徑.\n\n注意: 如果檔在 MikScrollingBattleText\\Fonts 中的話, 只需要輸入檔案名就可以.\n\n例如: myFont.ttf "}
-obj["customSoundName"]	= { label="音效名:", tooltip="用來確定音效的名字.\n\nExample: 我的音效"}
+obj["customSoundName"]	= { label="音效名:", tooltip="用來確定音效的名字.\n\n例如: 我的音效"}
 obj["customSoundPath"]	= { label="音效路徑:", tooltip="音效檔的路徑.\n\n注意: 如果檔在 MikScrollingBattleText\\Sounds 中的話, 只需要輸入檔案名就可以.\n\n例如: mySound.mp3 "}
 obj["copyProfile"]		= { label="新增記錄檔：", tooltip="輸入新增記錄檔的名稱"}
 obj["partialEffect"]	= { tooltip="特效觸發時的提示."}
@@ -288,6 +273,7 @@ obj["HEALING_DONE"]			= "%a - 輸出治療總數.\n"
 obj["ABSORBED_AMOUNT"]		= "%a - 吸收傷害總數.\n"
 obj["AURA_AMOUNT"]			= "%a - 光環的堆疊數量.\n"
 obj["ENERGY_AMOUNT"]		= "%a - 能量總數.\n"
+--obj["CHI_AMOUNT"]			= "%a - Amount of chi you have.\n"
 obj["CP_AMOUNT"]			= "%a - 你的連擊點總數.\n"
 obj["HOLY_POWER_AMOUNT"]	= "%a - Amount of holy power you have.\n"
 obj["HONOR_AMOUNT"]			= "%a - 榮譽總數.\n"
@@ -476,10 +462,14 @@ obj["NOTIFICATION_COMBAT_ENTER"]		= { label="戰鬥開始", tooltip="顯示你�
 obj["NOTIFICATION_COMBAT_LEAVE"]		= { label="戰鬥結束", tooltip="顯示你已經結束了戰鬥"}
 obj["NOTIFICATION_POWER_GAIN"]			= { label="能量獲得", tooltip="顯示你額外獲得的法力，怒氣或者能量"}
 obj["NOTIFICATION_POWER_LOSS"]			= { label="能量失去", tooltip="顯示你失去的法力，怒氣或者能量"}
+--obj["NOTIFICATION_ALT_POWER_GAIN"]		= { label="Alternate Power Gains", tooltip="Enable when you gain alternate power such as sound level on Atramedes."}
+--obj["NOTIFICATION_ALT_POWER_LOSS"]		= { label="Alternate Power Losses", tooltip="Enable when you lose alternate power from drains."}
+--obj["NOTIFICATION_CHI_CHANGE"]			= { label="Chi Changes", tooltip="Enable when you change chi."}
+--obj["NOTIFICATION_CHI_FULL"]			= { label="Chi Full", tooltip="Enable when you attain full chi."}
 obj["NOTIFICATION_CP_GAIN"]				= { label="連擊點獲得", tooltip="顯示你獲得的連擊點"}
 obj["NOTIFICATION_CP_FULL"]				= { label="連擊點全滿", tooltip="顯示你的連擊點已滿"}
-obj["NOTIFICATION_HOLY_POWER_CHANGE"]	= { label="Holy Power Changes", tooltip="Enable when you change holy power."}
-obj["NOTIFICATION_HOLY_POWER_FULL"]		= { label="Holy Power Full", tooltip="Enable when you attain full holy power."}
+obj["NOTIFICATION_HOLY_POWER_CHANGE"]	= { label="神聖能量變化", tooltip="顯示你神聖能量的變化"}
+obj["NOTIFICATION_HOLY_POWER_FULL"]		= { label="神聖能量已滿", tooltip="顯示你神聖能量已滿"}
 obj["NOTIFICATION_HONOR_GAIN"]			= { label="獲得榮譽", tooltip="顯示你獲得榮譽"}
 obj["NOTIFICATION_REP_GAIN"]			= { label="聲望提高", tooltip="顯示你的聲望提高"}
 obj["NOTIFICATION_REP_LOSS"]			= { label="聲望下降", tooltip="顯示你的聲望下降"}

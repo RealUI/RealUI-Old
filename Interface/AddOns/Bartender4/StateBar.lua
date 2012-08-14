@@ -58,9 +58,9 @@ local DefaultStanceMap = setmetatable({}, { __index = function(t,k)
 	local newT = nil
 	if k == "WARRIOR" then
 		newT = {
-			{ id = "battle", name = GetSpellInfo(2457), index = 1},
-			{ id = "def", name = GetSpellInfo(71), index = 2 },
-			{ id = "berserker", name = GetSpellInfo(2458), index = 3 },
+			{ id = "battle", name = GetSpellInfo(2457), index = 1, type = "form"},
+			{ id = "def", name = GetSpellInfo(71), index = 2, type = "form"},
+			{ id = "berserker", name = GetSpellInfo(2458), index = 3, type = "form"},
 		}
 	elseif k == "DRUID" then
 		newT = {
@@ -73,8 +73,7 @@ local DefaultStanceMap = setmetatable({}, { __index = function(t,k)
 		}
 	elseif k == "ROGUE" then
 		newT = {
-			{ id = "stealth", name = GetSpellInfo(1784), index = 1 },
-			{ id = "shadowdance", name = GetSpellInfo(51713), index = 2 },
+			{ id = "stealth", name = ("%s / %s"):format((GetSpellInfo(1784)), (GetSpellInfo(51713))), index = 1 },
 		}
 	elseif k == "PRIEST" then
 		newT = {
@@ -82,7 +81,13 @@ local DefaultStanceMap = setmetatable({}, { __index = function(t,k)
 		}
 	elseif k == "WARLOCK" then
 		newT = {
-			{ id = "metamorphosis", name = GetSpellInfo(59672), index = 2, type = "form"},
+			{ id = "metamorphosis", name = GetSpellInfo(103958), index = 1, type = "form"},
+		}
+	elseif k == "MONK" then
+		newT = {
+			{ id = "tiger", name = GetSpellInfo(103985), index = 1 },
+			{ id = "ox", name = GetSpellInfo(115069), index = 2 },
+			{ id = "serpent", name = GetSpellInfo(115070), index = 3 },
 		}
 	end
 	rawset(t, k, newT)
@@ -109,7 +114,7 @@ function StateBar:UpdateStates(returnOnly)
 
 		-- possessing will always be the most important change, if enabled
 		if self:GetStateOption("possess") then
-			table_insert(statedriver, "[bonusbar:5]11")
+			table_insert(statedriver, "[possessbar]12")
 		end
 
 		-- highest priority have our temporary quick-swap keys
@@ -153,6 +158,8 @@ function StateBar:UpdateStates(returnOnly)
 	else
 		statedriver = self:GetStateOption("custom")
 	end
+
+	statedriver = statedriver:gsub("%[bonusbar:5%]11", "[possessbar]12")
 
 	self:SetAttribute("_onstate-page", [[
 		self:SetAttribute("state", newstate)

@@ -6,14 +6,14 @@
 ## Author: Nevcairiel
 ## SavedVariables: MapsterDB
 ## X-Category: Map
-## Version: 1.4.2-6-g3e9fb03
+## Version: 1.4.3-23-g3b4345f
 ## X-License: All rights reserved.
-## X-Curse-Packaged-Version: 1.4.2-6-g3e9fb03
+## X-Curse-Packaged-Version: 1.4.3-23-g3b4345f
 ## X-Curse-Project-Name: Mapster
 ## X-Curse-Project-ID: mapster
 ## X-Curse-Repository-ID: wow/mapster/mainline
 
-## OptionalDeps: Ace3, LibBabble-Zone-3.0, LibWindow-1.1
+## OptionalDeps: Ace3, LibWindow-1.1
 
 #@no-lib-strip@
 Libs\LibStub\LibStub.lua

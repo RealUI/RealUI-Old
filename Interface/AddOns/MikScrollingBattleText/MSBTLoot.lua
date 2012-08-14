@@ -31,9 +31,9 @@ local DisplayEvent = MikSBT.Animations.DisplayEvent
 -------------------------------------------------------------------------------
 
 -- Money strings.
-local GOLD = string_gsub(GOLD_AMOUNT, "%%d ", "")
-local SILVER = string_gsub(SILVER_AMOUNT, "%%d ", "")
-local COPPER = string_gsub(COPPER_AMOUNT, "%%d ", "")
+local GOLD = string_gsub(GOLD_AMOUNT, "%%d *", "")
+local SILVER = string_gsub(SILVER_AMOUNT, "%%d *", "")
+local COPPER = string_gsub(COPPER_AMOUNT, "%%d *", "")
 
 -- Localized name for item types.
 local ITEM_TYPE_QUEST = select(10, GetAuctionItemClasses())
@@ -42,6 +42,9 @@ local ITEM_TYPE_QUEST = select(10, GetAuctionItemClasses())
 -------------------------------------------------------------------------------
 -- Private variables.
 -------------------------------------------------------------------------------
+
+-- Prevent tainting global _.
+local _
 
 -- Color patterns for item qualities.
 local qualityPatterns = {}

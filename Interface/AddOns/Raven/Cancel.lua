@@ -18,7 +18,7 @@ local inCombatBar = {} -- keep track of current settings for in-combat bar
 local overlayPool = {} -- pool of overlays to use for clicking off buffs
 local overlayCount = 0 -- number of allocated overlays
 local gridLayout = {} -- layout info for overlay grid used for in-combat clicking off buffs
-local weaponSlots = { ["MainHandSlot"] = 16, ["SecondaryHandSlot"] = 17, ["RangedSlot"] = 18 }
+local weaponSlots = { ["MainHandSlot"] = 16, ["SecondaryHandSlot"] = 17 }
 local displayWidth, displayHeight = UIParent:GetWidth(), UIParent:GetHeight()
 
 local overlayDefaults = { -- backdrop initialization for overlay grid
@@ -310,14 +310,12 @@ end
 -- Return a macro to cancel a buff on a weapon with the specified icon
 local function GetTempWeaponCancelMacro(id)
 	TemporaryEnchantFrame_Update(GetWeaponEnchantInfo())
-	local t1, t2, t3 = TempEnchant1:GetID(), TempEnchant2:GetID(), TempEnchant3:GetID()
+	local t1, t2 = TempEnchant1:GetID(), TempEnchant2:GetID()
 	local macro, slot = nil, weaponSlots[id]
 	if slot == t1 then
 		macro = "/click TempEnchant1 RightButton"
 	elseif slot == t2 then
 		macro = "/click TempEnchant2 RightButton"
-	elseif slot == t3 then
-		macro = "/click TempEnchant3 RightButton"
 	end
 	return macro
 end

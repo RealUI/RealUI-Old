@@ -1,5 +1,5 @@
 --[[
-Copyright (c) 2009-2010, Hendrik "Nevcairiel" Leppkes < h.leppkes@gmail.com >
+Copyright (c) 2009-2012, Hendrik "Nevcairiel" Leppkes < h.leppkes@gmail.com >
 All rights reserved.
 ]]
 
@@ -275,6 +275,23 @@ local errata = {
 	},
 	["RuinsofGilneas"] = {
 		["GilneasPuzzle"] = 685034,
+	},
+	["Gilneas"] = {
+		["GilneasCity"] = 225992514842,
+		["StormglenVillage"] = 499831221569,
+		["HammondFarmstead"] = 378132476098,
+		["HaywardFishery"] = 482417536177,
+		["TempestsReach"] = 312069154142,
+		["TheHeadlands"] = 168116552,
+		["Duskhaven"] = 357841422622,
+		["NorthernHeadlands"] = 406120715,
+		["Keelharbor"] = 102318299416,
+		["CrowleyOrchard"] = 458761607378,
+		["EmberstoneMine"] = 46841298201,
+		["Greymanemanor"] = 217043944692,
+		["KorothsDen"] = 414876709086,
+		["TheBlackwald"] = 423582990616,
+		["GilneasCity"] = 225992514842,
 	},
 	["SearingGorge"] = {
 		["ThoriumPoint"] = 41069884845,
@@ -1187,6 +1204,7 @@ local errata = {
 		["Kajamine"] = 331327316322,
 		["FirstbankofKezan"] = 349069204856,
 		["SwindleStreet"] = 249440720040,
+		["KezanMap"] = 4295648234,
 	},
 	["TheLostIsles"] = {
 		["RuinsOfVashelan"] = 485792899284,
@@ -1207,9 +1225,144 @@ local errata = {
 		["OoomlotVillage"] = 370973822173,
 		["landingSite"] = 385868764302,
 	},
+	-- Pandaria
+	["TheWanderingIsle"] = {
+		["RidgeofLaughingWinds"] = 212793099577,
+		["SkyfireCrash-Site"] = 434995731802,
+		["TheSingingPools"] = 13456862580,
+		["TheRows"] = 317282702721,
+		["MorningBreezeVillage"] = 38867889413,
+		["Pei-WuForest"] = 436307499659,
+		["TheDawningValley"] = 341471909,
+		["MandoriVillage"] = 316091521634,
+		["Fe-FangVillage"] = 9804478698,
+		["TempleofFiveDawns"] = 195835672159,
+		["TheWoodofStaves"] = 216909958109,
+	},
+	["TheJadeForest"] = {
+		["EmperorsOmen"] = 22999675082,
+		["DreamersPavillion"] = 558842925274,
+		["ChunTianMonastery"] = 60444317923,
+		["WindlessIsle"] = 46736437499,
+		["TempleOfTheJadeSerpent"] = 317244787976,
+		["HellscreamsHope"] = 80720599236,
+		["GrookinMound"] = 229971825917,
+		["DawnsBlossom"] = 191467047146,
+		["SlingtailPits"] = 447125573811,
+		["WreckOfTheSkyShark"] = 211974354,
+		["JadeMines"] = 157185882348,
+		["NectarbreezeOrchard"] = 354639151323,
+		["Waywardlanding"] = 517906557147,
+		["GlassfinVillage"] = 384950393110,
+		["RuinsOfGanShi"] = 331512004,
+		["SerpentsSpine"] = 321455874239,
+		["TheArboretum"] = 231359072498,
+		["NookaNooka"] = 162333406427,
+	},
+	["Krasarang"] = {
+		["ZhusBastion"] = 641937714,
+		["RuinsOfKorja"] = 94620757203,
+		["NayeliLagoon"] = 400865607926,
+		["TheForbiddenJungle"] = 84825911553,
+		["krasarangCove"] = 21136421150,
+		["UngaIngoo"] = 535069632770,
+		["CradleOfChiJi"] = 403911731472,
+		["TheSouthernIsles"] = 286713505020,
+		["TempleOfTheRedCrane"] = 231169330395,
+		["TheDeepwild"] = 63767474364,
+		["LostDynasty"] = 29608926425,
+		["RedwingRefuge"] = 67978405076,
+		["FallsongRiver"] = 82907112662,
+		["RuinsOfDojan"] = 47710600396,
+		["DojaniRiver"] = 3759433918,
+		["AnglersOutpost"] = 220688746761,
+	},
+	["ValleyoftheFourWinds"] = {
+		["KuzenVillage"] = 79692087495,
+		["CliffsofDispair"] = 434017411582,
+		["Theheartland"] = 80796328222,
+		["ThunderfootFields"] = 652539260,
+		["DustbackGorge"] = 368293761233,
+		["GrandGranery"] = 349316534586,
+		["MudmugsPlace"] = 173460907238,
+		["SingingMarshes"] = 139764993199,
+		["ZhusDecent"] = 123139853615,
+		["PoolsofPurity"] = 62815197397,
+		["SilkenFields"] = 272212692222,
+		["Halfhill"] = 190511830222,
+		["NesingwarySafari"] = 350149236985,
+		["RumblingTerrace"] = 323806811413,
+		["GildedFan"] = 44482990288,
+		["HarvestHome"] = 256629796100,
+		["StormsoutBrewery"] = 408260215041,
+		["PaoquanHollow"] = 112755726609,
+	},
+	["TheHiddenPass"] = {
+		["TheHiddenSteps"] = 512607059234,
+		["TheBlackMarket"] = 188294346207,
+	},
+	["KunLaiSummit"] = {
+		["Mogujia"] = 441792545021,
+		["Kotapeak"] = 386791638268,
+		["GateoftheAugust"] = 543784339717,
+		["PeakOfSerenity"] = 67995194655,
+		["BinanVillage"] = 505295345904,
+		["ValleyOfEmperors"] = 205559940320,
+		["TEMPLEOFTHEWHITETIGER"] = 183151890682,
+		["ZouchinVillage"] = 69246086442,
+		["FireboughNook"] = 532913762528,
+		["Iseoflostsouls"] = 4926448899,
+		["ShadoPanMonastery"] = 98876917121,
+		["TheBurlapTrail"] = 333277581622,
+		["MuskpawRanch"] = 336713750757,
+		["MountNeverset"] = 283707130169,
+	},
+	["TownlongWastes"] = {
+		["Sikvess"] = 465251314949,
+		["SriVess"] = 206255189286,
+		["palewindVillage"] = 389420468506,
+		["ShadoPanGarrison"] = 413823838421,
+		["ShanzeDao"] = 131324204,
+		["KriVess"] = 224852718847,
+		["OsulMesa"] = 199229743342,
+		["TheSumprushes"] = 396782417167,
+		["NiuzaoTemple"] = 258995494184,
+		["MingChiCrossroads"] = 480400078071,
+		["GaoRanBlockade"] = 503083901281,
+	},
+	["ValeofEternalBlossoms"] = {
+		["MistfallVillage"] = 389978309942,
+		["GuoLaiRuins"] = 3312809297,
+		["WhitepetalLake"] = 182827902219,
+		["WhiteMoonShrine"] = 11243100458,
+		["WinterboughGlade"] = 114894910825,
+		["MoguShanPalace"] = 24282269045,
+		["TheGoldenStair"] = 17524062450,
+		["SettingSunTraining"] = 251256026462,
+		["TheTwinMonoliths"] = 104619059472,
+		["TuShenBurialGround"] = 339668685067,
+		["TheStairsAscent"] = 287272443326,
+	},
+	["DreadWastes"] = {
+		["SOGGYSGAMBLE"] = 436411286796,
+		["BRINYMUCK"] = 334158379333,
+		["HORRIDMARCH"] = 240980789571,
+		["BREWGARDEN"] = 368273658,
+		["HEARTOFFEAR"] = 131197080838,
+		["DREADWATERLAKE"] = 336539635010,
+		["CLUTCHESOFSHEKZEER"] = 134575618257,
+		["RIKKITUNVILLAGE"] = 34607392986,
+		["TERRACEOFGURTHAN"] = 99406293201,
+		["KLAXXIVESS"] = 118592059628,
+		["KYPARIVOR"] = 508754245,
+		["ZANVESS"] = 413560761634,
+	},
 	['*'] = {},
 }
 errata.Hyjal_terrain1 = errata.Hyjal
+errata.Uldum_terrain1 = errata.Uldum
+errata.Gilneas_terrain1 = errata.Gilneas
+errata.Gilneas_terrain2 = errata.Gilneas
 
 local db
 local defaults = {
@@ -1395,8 +1548,8 @@ end
 local discoveredOverlays = {}
 local function updateOverlayTextures(frame, frameName, textureCache, scale, alphaMod)
 	local self = FogClear
-	local mapFileName, textureHeight = GetMapInfo()
-	if not mapFileName then
+	local mapFileName, textureHeight, _, isMicroDungeon, microDungeonMapName = GetMapInfo()
+	if not mapFileName or isMicroDungeon then
 		for i = 1, #textureCache do
 			textureCache[i]:Hide()
 		end

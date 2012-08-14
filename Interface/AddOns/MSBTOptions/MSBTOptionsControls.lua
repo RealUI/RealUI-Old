@@ -13,6 +13,9 @@ MSBTOptions[moduleName] = module;
 -- Private variables.
 -------------------------------------------------------------------------------
 
+-- Prevent tainting global _.
+local _
+
 -- Backdrop table to be reused for sliders.
 local sliderBackdrop;
 

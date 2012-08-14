@@ -1,27 +1,11 @@
-## Interface: 40300
+## Interface: 50001
 ## Title: Raven
 ## Notes: Monitors spells, provides timers, cooldowns, action bar highlights, helpful notifications
 ## Author: Tomber
 ## DefaultState: enabled
-## OptionalDependencies: ButtonFacade
+## OptionalDependencies: Masque
 ## SavedVariables: RavenDB
-## X-Curse-Packaged-Version: r112
-## X-Curse-Project-Name: Raven
-## X-Curse-Project-ID: raven
-## X-Curse-Repository-ID: wow/raven/mainline
-## X-Curse-Packaged-Version: r114
-## X-Curse-Project-Name: Raven
-## X-Curse-Project-ID: raven
-## X-Curse-Repository-ID: wow/raven/mainline
-## X-Curse-Packaged-Version: r178
-## X-Curse-Project-Name: Raven
-## X-Curse-Project-ID: raven
-## X-Curse-Repository-ID: wow/raven/mainline
-## X-Curse-Packaged-Version: r217
-## X-Curse-Project-Name: Raven
-## X-Curse-Project-ID: raven
-## X-Curse-Repository-ID: wow/raven/mainline
-## X-Curse-Packaged-Version: r221
+## X-Curse-Packaged-Version: r240
 ## X-Curse-Project-Name: Raven
 ## X-Curse-Project-ID: raven
 ## X-Curse-Repository-ID: wow/raven/mainline
@@ -31,7 +15,7 @@ embeds.xml
 #@end-no-lib-strip@
 
 Localizations\enUS.lua
-Localizations\zhCH.lua
+Localizations\zhCN.lua
 Localizations\zhTW.lua
 Localizations\koKR.lua
 
@@ -47,6 +31,7 @@ Presets\DeathKnight.lua
 Presets\Druid.lua
 Presets\Hunter.lua
 Presets\Mage.lua
+Presets\Monk.lua
 Presets\Paladin.lua
 Presets\Priest.lua
 Presets\Rogue.lua

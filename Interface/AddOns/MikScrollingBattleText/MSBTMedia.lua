@@ -28,9 +28,9 @@ local string_len = string.len
 
 -- The default sound files to use.
 local DEFAULT_SOUND_FILES = {
- ["MSBT Low Health"]	= "Interface\\Addons\\MikScrollingBattleText\\Sounds\\LowHealth.mp3",
- ["MSBT Low Mana"]		= "Interface\\Addons\\MikScrollingBattleText\\Sounds\\LowMana.mp3",
- ["MSBT Cooldown"]		= "Interface\\Addons\\MikScrollingBattleText\\Sounds\\Cooldown.mp3",
+ ["MSBT Low Health"]	= "Interface\\Addons\\MikScrollingBattleText\\Sounds\\LowHealth.ogg",
+ ["MSBT Low Mana"]		= "Interface\\Addons\\MikScrollingBattleText\\Sounds\\LowMana.ogg",
+ ["MSBT Cooldown"]		= "Interface\\Addons\\MikScrollingBattleText\\Sounds\\Cooldown.ogg",
 }
 
 -- Set the default font files to use to the locale specific fonts.

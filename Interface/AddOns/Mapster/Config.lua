@@ -1,5 +1,5 @@
 --[[
-Copyright (c) 2009-2010, Hendrik "Nevcairiel" Leppkes < h.leppkes@gmail.com >
+Copyright (c) 2009-2012, Hendrik "Nevcairiel" Leppkes < h.leppkes@gmail.com >
 All rights reserved.
 ]]
 
@@ -107,6 +107,14 @@ local function getOptions()
 							type = "range",
 							name = L["POI Scale"],
 							desc = L["Scale of the POI Icons on the Map."],
+							min = 0.1, max = 2, bigStep = 0.01,
+							isPercent = true,
+						},
+						ejScale = {
+							order = 13,
+							type = "range",
+							name = L["EJ Icon Scale"],
+							desc = L["Scale of the Encounter Journal Icons on the Map."],
 							min = 0.1, max = 2, bigStep = 0.01,
 							isPercent = true,
 						},
