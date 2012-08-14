@@ -1,0 +1,8 @@
+<Bindings>
+	<Binding name="NIBMINIMAPTOGGLE" header="NIBMINIMAP" >
+		nibMinimap:ToggleBind()
+	</Binding>
+	<Binding name="NIBMINIMAPFARM">
+		nibMinimap:FarmBind()
+	</Binding>
+</Bindings>

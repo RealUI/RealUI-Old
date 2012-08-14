@@ -1,0 +1,37 @@
+## Interface: 40300
+## Author: Parnic (modified by Nibelheim) (originally created by Iceroth)
+## Name: nibIceHUD
+## Title: |cffaaaaaanib|rIceHUD
+## Notes: IceHUD, now with 75% less fat
+## Version: 7.1
+## SavedVariables: IceCoreRealUIDB
+## Dependencies: nibLibs
+
+# Localization
+loc\loc.xml
+
+# IceHUD core functionality
+IceCore.lua
+IceHUD.lua
+IceElement.lua
+IceBarElement.lua
+IceUnitBar.lua
+IceCastBar.lua
+
+# IceHUD modules
+# - Feel free to comment these out if you like
+modules\CastBar.lua
+modules\TargetCast.lua
+modules\MirrorBar.lua
+modules\Rapture.lua
+modules\SavageRoar.lua
+modules\SliceAndDice.lua
+modules\FocusCast.lua
+modules\CustomBar.lua
+modules\TargetOfTargetCast.lua
+modules\CustomCDBar.lua
+modules\EclipseBar.lua
+modules\Vengeance.lua
+modules\RogueExtras1.lua
+modules\RogueExtras2.lua
+modules\RogueLegendary.lua

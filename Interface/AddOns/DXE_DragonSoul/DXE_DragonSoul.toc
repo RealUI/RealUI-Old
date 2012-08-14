@@ -1,0 +1,22 @@
+## Interface: 40300
+## Title: DXE |cff99ff33Dragon Soul|r
+## Notes: Deus Vox Encounters |cff99ff33Dragon Soul|r
+## Author: Harleschorsch
+## LoadOnDemand: 1
+## Dependencies: DXE
+## X-DXE-Category: Dragon Soul
+## X-DXE-Zone: Dragon Soul, The Dragon Wastes
+## X-Curse-Packaged-Version: v635-16-gd049fdb
+## X-Curse-Project-Name: Deus Vox Encounters
+## X-Curse-Project-ID: deus-vox-encounters
+## X-Curse-Repository-ID: wow/deus-vox-encounters/mainline
+
+Locales.lua
+Blackhorn.lua
+Hagara.lua
+MadnessDeathwing.lua
+Morchok.lua
+SpineDeathwing.lua
+Ultraxion.lua
+Yorsahj.lua
+Zonozz.lua

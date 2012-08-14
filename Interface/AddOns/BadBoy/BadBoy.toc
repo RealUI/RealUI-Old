@@ -1,0 +1,26 @@
+## Interface: 40300
+## Version: v8.000
+## Title: BadBoy
+## Notes: A light, automatic spam blocker & reporter.
+## Notes-deDE: A light, automatic spam blocker & reporter.
+## Notes-ruRU: A light, automatic spam blocker & reporter.
+## Notes-zhCN: A light, automatic spam blocker & reporter.
+## Notes-zhTW: A light, automatic spam blocker & reporter.
+## Notes-koKR: A light, automatic spam blocker & reporter.
+## Notes-frFR: Un simple anti-spam & signalement des abus.
+## Notes-esES: Ligero bloqueador y reportador de spam automático.
+## Notes-esMX: A light, automatic spam blocker & reporter.
+## Notes-ptBR: Um leve bloqueador automático de spam e reportador.
+## Author: Funkydude
+## SavedVariables: BADBOY_POPUP, BADBOY_SILENT
+## X-Credits: Shadowed(API hunting), Ellipsis(remembering odd things), Anea(original SpamSentry blacklist in BadBoy v1), WoW Community(for reporting spam)
+## X-Category: Chat/Communication
+## X-License: All Rights Reserved
+## X-Curse-Packaged-Version: v8.000
+## X-Curse-Project-Name: BadBoy: Anti Spam Automatic Reporter
+## X-Curse-Project-ID: bad-boy
+## X-Curse-Repository-ID: wow/bad-boy/mainline
+
+SimpleOptions.lua
+BadBoy.lua
+

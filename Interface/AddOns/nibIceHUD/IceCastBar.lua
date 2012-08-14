@@ -1,0 +1,589 @@
+local L = LibStub("AceLocale-3.0"):GetLocale("nibIceHUD", false)
+IceCastBar = IceCore_CreateClass(IceBarElement)
+
+local nibIceHUD = _G.nibIceHUD
+
+local GetTime = _G.GetTime
+
+IceCastBar.Actions = { None = 0, Cast = 1, Channel = 2, Instant = 3, Success = 4, Failure = 5 }
+
+IceCastBar.prototype.action = nil
+IceCastBar.prototype.actionStartTime = nil
+IceCastBar.prototype.actionDuration = nil
+IceCastBar.prototype.actionMessage = nil
+IceCastBar.prototype.unit = nil
+IceCastBar.prototype.current = nil
+
+local AuraTexCoord = {0.1, 0.9, 0.1, 0.9}
+
+-- Constructor --
+function IceCastBar.prototype:init(name)
+	IceCastBar.super.prototype.init(self, name)
+
+	self:SetDefaultColor("CastCasting", 242, 242, 10)
+	self:SetDefaultColor("CastChanneling", 242, 242, 10)
+	self:SetDefaultColor("CastSuccess", 242, 242, 70)
+	self:SetDefaultColor("CastFail", 1, 0, 0)
+	self.unit = "player"
+
+	self.delay = 0
+	self.action = IceCastBar.Actions.None
+end
+
+
+-- 'Public' methods -----------------------------------------------------------
+
+function IceCastBar.prototype:Enable(core)
+	IceCastBar.super.prototype.Enable(self, core)
+
+	self:RegisterEvent("UNIT_SPELLCAST_SENT", "SpellCastSent") -- "player", spell, rank, target
+	self:RegisterEvent("UNIT_SPELLCAST_START", "SpellCastStart") -- unit, spell, rank
+	self:RegisterEvent("UNIT_SPELLCAST_STOP", "SpellCastStop") -- unit, spell, rank
+
+	self:RegisterEvent("UNIT_SPELLCAST_FAILED", "SpellCastFailed") -- unit, spell, rank
+	self:RegisterEvent("UNIT_SPELLCAST_INTERRUPTED", "SpellCastInterrupted") -- unit, spell, rank
+
+	self:RegisterEvent("UNIT_SPELLCAST_DELAYED", "SpellCastDelayed") -- unit, spell, rank
+	self:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED", "SpellCastSucceeded") -- "player", spell, rank
+
+	self:RegisterEvent("UNIT_SPELLCAST_CHANNEL_START", "SpellCastChannelStart") -- unit, spell, rank
+	self:RegisterEvent("UNIT_SPELLCAST_CHANNEL_UPDATE", "SpellCastChannelUpdate") -- unit, spell, rank
+	self:RegisterEvent("UNIT_SPELLCAST_CHANNEL_STOP", "SpellCastChannelStop") -- unit, spell, rank
+
+	self:Show(false)
+end
+
+function IceCastBar.prototype:GetDefaultSettings()
+	local settings = IceCastBar.super.prototype.GetDefaultSettings(self)
+
+	settings["showSpellRank"] = true
+	settings["showCastTime"] = true
+	settings["reverseChannel"] = true
+	settings["displayAuraIcon"] = false
+	settings["auraIconXOffset"] = 0
+	settings["auraIconYOffset"] = 0
+	settings["auraIconSize"] = 27
+
+	return settings
+end
+
+function IceCastBar.prototype:GetOptions()
+	local opts = IceCastBar.super.prototype.GetOptions(self)
+
+	opts["showCastTime"] =
+	{
+		type = 'toggle',
+		name = L["Show spell cast time"],
+		desc = L["Whether or not to show the remaining cast time of a spell being cast."],
+		get = function()
+			return self.moduleSettings.showCastTime
+		end,
+		set = function(info, value)
+			self.moduleSettings.showCastTime = value
+		end,
+		disabled = function()
+			return not self.moduleSettings.enabled
+		end,
+		order = 39.998
+	}
+
+	opts["showSpellRank"] =
+	{
+		type = 'toggle',
+		name = L["Show spell rank"],
+		desc = L["Whether or not to show the rank of a spell being cast."],
+		get = function()
+			return self.moduleSettings.showSpellRank
+		end,
+		set = function(info, value)
+			self.moduleSettings.showSpellRank = value
+		end,
+		disabled = function()
+			return not self.moduleSettings.enabled
+		end,
+		order = 39.999
+	}
+
+	opts["reverseChannel"] = {
+		type = 'toggle',
+		name = L["Reverse channeling"],
+		desc = L["Whether or not to reverse the direction of the cast bar when a spell is being channeled. For example, if a normal cast causes this bar to fill up, then checking this option will cause a channeled spell to empty the bar instead."],
+		get = function()
+			return self.moduleSettings.reverseChannel
+		end,
+		set = function(info, v)
+			self.moduleSettings.reverseChannel = v
+		end,
+		disabled = function()
+			return not self.moduleSettings.enabled
+		end,
+		order = 32.5,
+	}
+	
+	opts["iconSettings"] = {
+		type = 'group',
+		name = "|c"..self.configColor..L["Icon Settings"].."|r",
+		args = {
+			displayAuraIcon = {
+				type = 'toggle',
+				name = L["Display aura icon"],
+				desc = L["Whether or not to display an icon for the aura that this bar is tracking"],
+				get = function()
+					return self.moduleSettings.displayAuraIcon
+				end,
+				set = function(info, v)
+					self.moduleSettings.displayAuraIcon = v
+					if self.barFrame.icon then
+						if v then
+							self.barFrame.icon:Show()
+						else
+							self.barFrame.icon:Hide()
+						end
+					end
+				end,
+				disabled = function()
+					return not self.moduleSettings.enabled
+				end,
+				order = 51,
+			},
+
+			auraIconXOffset = {
+				type = 'range',
+				min = -250,
+				max = 250,
+				step = 0.5,
+				name = L["Aura icon horizontal offset"],
+				desc = L["Adjust the horizontal position of the aura icon"],
+				get = function()
+					return self.moduleSettings.auraIconXOffset
+				end,
+				set = function(info, v)
+					self.moduleSettings.auraIconXOffset = v
+					self:PositionIcons()
+				end,
+				disabled = function()
+					return not self.moduleSettings.enabled or not self.moduleSettings.displayAuraIcon
+				end,
+				order = 52,
+			},
+
+			auraIconYOffset = {
+				type = 'range',
+				min = -250,
+				max = 250,
+				step = 0.5,
+				name = L["Aura icon vertical offset"],
+				desc = L["Adjust the vertical position of the aura icon"],
+				get = function()
+					return self.moduleSettings.auraIconYOffset
+				end,
+				set = function(info, v)
+					self.moduleSettings.auraIconYOffset = v
+					self:PositionIcons()
+				end,
+				disabled = function()
+					return not self.moduleSettings.enabled or not self.moduleSettings.displayAuraIcon
+				end,
+				order = 53,
+			},
+
+			auraIconSize = {
+				type = 'range',
+				min = 16,
+				max = 32,
+				step = 1,
+				name = "Aura icon size",
+				desc = L["Adjusts the size of the aura icon for this bar"],
+				get = function()
+					return self.moduleSettings.auraIconSize
+				end,
+				set = function(info, v)
+					self.moduleSettings.auraIconSize = v
+					self:PositionIcons()
+				end,
+				disabled = function()
+					return not self.moduleSettings.enabled or not self.moduleSettings.displayAuraIcon
+				end,
+				order = 54,
+			},
+		},
+	}
+
+	return opts
+end
+
+function IceCastBar.prototype:IsFull(scale)
+	local retval = IceCastBar.super.prototype.IsFull(self, scale)
+	if retval then
+		if self.action and self.action ~= IceCastBar.Actions.None then
+			return false
+		end
+	end
+	return retval
+end
+
+-- 'Protected' methods --------------------------------------------------------
+
+-- OVERRIDE
+function IceCastBar.prototype:CreateFrame()
+	IceCastBar.super.prototype.CreateFrame(self)
+
+	self.frame.bottomUpperText:SetWidth(self.settings.gap + 30)
+	
+	if not self.barFrame.icon then
+		self.barFrame.icon = self.frame:CreateTexture(nil, "OVERLAY")
+		self.barFrame.icon:SetTexture("Interface\\Icons\\Spell_Frost_Frost")
+		self.barFrame.icon:SetTexCoord(unpack(AuraTexCoord))
+		
+		self.barFrame.iconborder = CreateFrame("Frame", nil, self.frame)
+	end
+	self:PositionIcons()
+end
+
+function IceCastBar.prototype:PositionIcons()
+	if not self.barFrame or not self.barFrame.icon then
+		return
+	end
+	
+	if not self.moduleSettings.auraIconSize then self.moduleSettings.auraIconSize = 27 end
+	local scaleSize = (1 / self.moduleSettings.scale)
+	local size = self.moduleSettings.auraIconSize * scaleSize
+	local posX = self.moduleSettings.auraIconXOffset * scaleSize
+	local posY = self.moduleSettings.auraIconYOffset * scaleSize
+	
+	self.barFrame.icon:ClearAllPoints()
+	self.barFrame.icon:SetPoint("BOTTOMRIGHT", self.frame, "BOTTOMRIGHT", posX, posY)
+	self.barFrame.icon:SetWidth(size)
+	self.barFrame.icon:SetHeight(size)
+	
+	self.barFrame.iconborder:ClearAllPoints()
+	self.barFrame.iconborder:SetFrameStrata(self.frame:GetFrameStrata())
+	self.barFrame.iconborder:SetFrameLevel(self.frame:GetFrameLevel() + 2)
+	self.barFrame.iconborder:SetPoint("BOTTOMRIGHT", self.frame, "BOTTOMRIGHT", posX, posY)
+	self.barFrame.iconborder:SetWidth(size)
+	self.barFrame.iconborder:SetHeight(size)
+	
+	self.barFrame.iconborder:SetBackdrop({
+		bgFile = [[Interface\AddOns\nibIceHUD\textures\Plain]], 
+		edgeFile = [[Interface\AddOns\nibIceHUD\textures\Plain]], 
+		tile = false, tileSize = 0, edgeSize = scaleSize, 
+		insets = { left = scaleSize, right = scaleSize, top = scaleSize, bottom = scaleSize	}
+	})
+	self.barFrame.iconborder:SetBackdropColor(0, 0, 0, 0)
+	self.barFrame.iconborder:SetBackdropBorderColor(0, 0, 0, 1)
+end
+
+-- OnUpdate handler
+function IceCastBar.prototype:MyOnUpdate()
+	-- safety catch
+	if (self.action == IceCastBar.Actions.None) then
+		self:StopBar()
+		return
+	end
+
+	local time = GetTime()
+
+	self:Update()
+	self:SetTextAlpha()
+
+	-- handle casting and channeling
+	if (self.action == IceCastBar.Actions.Cast or self.action == IceCastBar.Actions.Channel) then
+		local remainingTime = self.actionStartTime + self.actionDuration - time
+		local scale = 1 - (self.actionDuration ~= 0 and remainingTime / self.actionDuration or 0)
+
+		if (self.moduleSettings.reverseChannel and self.action == IceCastBar.Actions.Channel) then
+			scale = self.actionDuration ~= 0 and remainingTime / self.actionDuration or 0
+		end
+
+		self:UpdateBar(nibIceHUD:Clamp(scale, 0, 1), self:GetCurrentCastingColor())
+
+		if (remainingTime <= 0) then
+			self:StopBar()
+		end
+
+		local timeString = self.moduleSettings.showCastTime and string.format("%.1f", remainingTime) or ""
+		if self.moduleSettings.textVisible.lower then
+			self:SetBottomText1(self.actionMessage)
+			self:SetBottomText2(timeString)
+		else
+			self:SetBottomText1(self.actionMessage .. ": " .. timeString)
+		end
+
+		return
+	end
+
+
+	-- stop bar if casting or channeling is done (in theory this should not be needed)
+	if (self.action == IceCastBar.Actions.Cast or self.action == IceCastBar.Actions.Channel) then
+		self:StopBar()
+		return
+	end
+
+
+	-- handle bar flashes
+	if (self.action == IceCastBar.Actions.Instant or
+		self.action == IceCastBar.Actions.Success or
+		self.action == IceCastBar.Actions.Failure)
+	then
+		local scale = time - self.actionStartTime
+
+		if (scale > 1) then
+			self:StopBar()
+			return
+		end
+
+		if (self.action == IceCastBar.Actions.Failure) then
+			self:FlashBar("CastFail", 1-scale, self.actionMessage, "CastFail")
+		else
+			self:FlashBar("CastSuccess", 1-scale, self.actionMessage)
+		end
+		return
+	end
+
+	-- something went wrong
+	nibIceHUD:Debug("OnUpdate error ", self.action, " -- ", self.actionStartTime, self.actionDuration, self.actionMessage)
+	self:StopBar()
+end
+
+function IceCastBar.prototype:GetCurrentCastingColor()
+	local updateColor = "CastCasting"
+	if self.action == IceCastBar.Actions.Channel then
+		updateColor = "CastChanneling"
+	end
+	return updateColor
+end
+
+function IceCastBar.prototype:FlashBar(color, alpha, text, textColor)
+	self.frame:SetAlpha(alpha)
+
+	local r, g, b = self.settings.backgroundColor.r, self.settings.backgroundColor.g, self.settings.backgroundColor.b
+	if (self.settings.backgroundToggle) then
+		r, g, b = self:GetColor(color)
+	end
+
+	self.frame.bg:SetVertexColor(r, g, b, 0.3)
+	self.barFrame.bar:SetVertexColor(self:GetColor(color, 0.8))
+
+	self:SetScale(1)
+	self:SetBottomText1(text, textColor or "Text")
+	self:SetBottomText2()
+end
+
+
+function IceCastBar.prototype:StartBar(action, message)
+	local spell, rank, displayName, icon, startTime, endTime, isTradeSkill = UnitCastingInfo(self.unit)
+	if not (spell) then
+		spell, rank, displayName, icon, startTime, endTime = UnitChannelInfo(self.unit)
+	end
+
+	if not spell then
+		return
+	end
+	
+	if icon ~= nil then
+		self.barFrame.icon:SetTexture(icon)
+	end
+
+	if nibIceHUD.IceCore:IsInConfigMode() or self.moduleSettings.displayAuraIcon then
+		self.barFrame.icon:Show()
+		self.barFrame.iconborder:Show()
+	else
+		self.barFrame.icon:Hide()
+		self.barFrame.iconborder:Hide()
+	end
+
+	self.action = action
+	self.actionStartTime = GetTime()
+	self.actionMessage = message
+
+	if (startTime and endTime) then
+		self.actionDuration = (endTime - startTime) / 1000
+
+		-- set start time here in case we start to monitor a cast that is underway already
+		self.actionStartTime = startTime / 1000
+	else
+		self.actionDuration = 1 -- instants/failures
+	end
+
+	if not (message) then
+		self.actionMessage = spell .. (self.moduleSettings.showSpellRank and self:GetShortRank(rank) or "")
+	end
+
+	self:Show(true)
+	self:ConditionalSetupUpdate()
+end
+
+
+function IceCastBar.prototype:StopBar()
+	self.action = IceCastBar.Actions.None
+	self.actionStartTime = nil
+	self.actionDuration = nil
+
+	self:SetBottomText1()
+	self:SetBottomText2()
+	self:SetScale(0)
+	self:Show(false)
+	
+	nibIceHUD.IceCore:RequestUpdates(self, nil)
+end
+
+function IceCastBar.prototype:GetShortRank(rank)
+	if (rank) then
+		local _, _, sRank = string.find(rank, "(%d+)")
+		if (sRank) then
+			return " (" .. sRank .. ")"
+		end
+	end
+	return ""
+end
+
+
+
+-------------------------------------------------------------------------------
+-- NORMAL SPELLS                                                             --
+-------------------------------------------------------------------------------
+
+function IceCastBar.prototype:SpellCastSent(event, unit, spell, rank, target)
+	if (unit ~= self.unit) then return end
+end
+
+
+function IceCastBar.prototype:SpellCastStart(event, unit, spell, rank)
+	if (unit ~= self.unit) then return end
+	nibIceHUD:Debug("SpellCastStart", unit, spell, rank)
+
+	self:StartBar(IceCastBar.Actions.Cast)
+	self.current = spell
+end
+
+function IceCastBar.prototype:SpellCastStop(event, unit, spell, rank)
+	if (unit ~= self.unit) then return end
+	nibIceHUD:Debug("SpellCastStop", unit, spell, self.current)
+
+	-- ignore if not coming from current spell
+	if (self.current and spell and self.current ~= spell) then
+		return
+	end
+
+	if (self.action ~= IceCastBar.Actions.Success and
+		self.action ~= IceCastBar.Actions.Failure and
+		self.action ~= IceCastBar.Actions.Channel)
+	then
+		self:StopBar()
+		self.current = nil
+	end
+end
+
+
+function IceCastBar.prototype:SpellCastFailed(event, unit, spell, rank)
+	if (unit ~= self.unit) then return end
+	nibIceHUD:Debug("SpellCastFailed", unit, self.current)
+
+	-- ignore if not coming from current spell
+	if (self.current and spell and self.current ~= spell) then
+		return
+	end
+
+	-- channeled spells will call ChannelStop, not cast failed
+	if self.action == IceCastBar.Actions.Channel then
+		return
+	end
+
+	self.current = nil
+
+	-- determine if we want to show failed casts
+	if (self.moduleSettings.flashFailures == "Never") then
+		return
+	elseif (self.moduleSettings.flashFailures == "Caster") then
+		if (UnitPowerType("player") ~= SPELL_POWER_MANA) then
+			return
+		end
+	end
+
+	self:StartBar(IceCastBar.Actions.Failure, "Failed")
+end
+
+function IceCastBar.prototype:SpellCastInterrupted(event, unit, spell, rank)
+	if (unit ~= self.unit) then return end
+	nibIceHUD:Debug("SpellCastInterrupted", unit, self.current)
+
+	-- ignore if not coming from current spell
+	if (self.current and spell and self.current ~= spell) then
+		return
+	end
+
+	self.current = nil
+
+	self:StartBar(IceCastBar.Actions.Failure, "Interrupted")
+end
+
+function IceCastBar.prototype:SpellCastDelayed(event, unit, delay)
+	if (unit ~= self.unit) then return end
+
+	local spell, rank, displayName, icon, startTime, endTime, isTradeSkill = UnitCastingInfo(self.unit)
+
+	if (endTime and self.actionStartTime) then
+		-- apparently this check is needed, got nils during a horrible lag spike
+		self.actionDuration = endTime/1000 - self.actionStartTime
+	end
+end
+
+
+function IceCastBar.prototype:SpellCastSucceeded(event, unit, spell, rank)
+	if (unit ~= self.unit) then return end
+
+	-- never show on channeled (why on earth does this event even fire when channeling starts?)
+	if (self.action == IceCastBar.Actions.Channel) then
+		return
+	end
+
+	-- ignore if not coming from current spell
+	if (self.current and self.current ~= spell) then
+		return
+	end
+
+	-- show after normal successfull cast
+	if (self.action == IceCastBar.Actions.Cast) then
+		self:StartBar(IceCastBar.Actions.Success, spell.. self:GetShortRank(rank))
+		return
+	end
+
+	-- determine if we want to show instant casts
+	if (self.moduleSettings.flashInstants == "Never") then
+		return
+	elseif (self.moduleSettings.flashInstants == "Caster") then
+		if (UnitPowerType("player") ~= SPELL_POWER_MANA) then
+			return
+		end
+	end
+
+	self:StartBar(IceCastBar.Actions.Success, spell.. self:GetShortRank(rank))
+end
+
+
+
+-------------------------------------------------------------------------------
+-- CHANNELING SPELLS                                                         --
+-------------------------------------------------------------------------------
+
+function IceCastBar.prototype:SpellCastChannelStart(event, unit)
+	if (unit ~= self.unit) then return end
+
+	self:StartBar(IceCastBar.Actions.Channel)
+end
+
+function IceCastBar.prototype:SpellCastChannelUpdate(event, unit)
+	if (unit ~= self.unit or not self.actionStartTime) then return end
+
+	local spell, rank, displayName, icon, startTime, endTime = UnitChannelInfo(unit)
+	self.actionDuration = endTime/1000 - self.actionStartTime
+end
+
+function IceCastBar.prototype:SpellCastChannelStop(event, unit)
+	if (unit ~= self.unit) then return end
+
+	self:StopBar()
+end
+
+
+

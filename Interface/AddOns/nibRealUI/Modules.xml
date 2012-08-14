@@ -1,0 +1,38 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\FrameXML\UI.xsd">
+	<!-- Core -->
+	<Script file="Core\Fonts.lua"/>
+	<Script file="Core\MiniPatches.lua"/>
+	<Script file="Core\Settings.lua"/>
+	
+	<!-- Misc -->
+	<Script file="Misc\ColorWindowAdv.lua"/>
+	<Script file="Misc\DragEmAll.lua"/>
+	<Script file="Misc\ItemQuality.lua"/>
+	<Script file="Misc\StopAddonSpam.lua"/>
+	
+	<!-- Features -->
+	<Script file="Modules\ActionBarExtras.lua"/>
+	<Script file="Modules\AltPowerBar.lua"/>
+	<Script file="Modules\AuraWatch.lua"/>
+	<Script file="Modules\Chat.lua"/>
+	<Script file="Modules\CombatFader.lua"/>
+	<Script file="Modules\ErrorHider.lua"/>
+	<Script file="Modules\FrameMover.lua"/>
+	<Script file="Modules\GridLayout.lua"/>
+	<Script file="Modules\InfoLine.lua"/>
+	<Script file="Modules\Loot.lua"/>
+	<Script file="Modules\Nameplates.lua"/>
+	<Script file="Modules\RuneDisplay.lua"/>
+	<Script file="Modules\Tooltip.lua"/>
+	<Script file="Modules\WatchFrameAdv.lua"/>
+	<Script file="Modules\Whisper.lua"/>
+	
+	<!-- Extras -->
+	<Script file="Modules\EJMapButtons.lua"/>
+	<Script file="Modules\JunkSeller.lua"/>
+	<Script file="Modules\Pitch.lua"/>
+	<Script file="Modules\ScreenSaver.lua"/>
+	<Script file="Modules\SpeechBubbles.lua"/>
+</Ui>

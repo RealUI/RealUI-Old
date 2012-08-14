@@ -1,0 +1,180 @@
+
+Omen3DB = {
+	["profileKeys"] = {
+		["Real - Zul'jin"] = "RealUI-HR",
+	},
+	["profiles"] = {
+		["RealUI"] = {
+			["PositionW"] = 131.2870519688163,
+			["NumBars"] = 2,
+			["PositionH"] = 18.00000857521351,
+			["VGrip2"] = 83.47614147156494,
+			["PositionY"] = 348.0000458281903,
+			["ClickThrough"] = true,
+			["minimapPosition"] = 313.590160181572,
+			["Background"] = {
+				["BorderColor"] = {
+					["a"] = 0,
+				},
+				["Color"] = {
+					["a"] = 0,
+				},
+				["BarInset"] = 1,
+				["BorderTexture"] = "None",
+				["Texture"] = "None",
+			},
+			["MinimapIcon"] = {
+				["minimapPos"] = 318.8218167576527,
+				["hide"] = true,
+			},
+			["ShowWith"] = {
+				["HideWhileResting"] = false,
+			},
+			["detachedTooltip"] = {
+			},
+			["hidden"] = true,
+			["VGrip1"] = 87.64355025837733,
+			["Locked"] = true,
+			["GrowUp"] = true,
+			["PositionX"] = 774.3564318424106,
+			["Autocollapse"] = true,
+			["Warnings"] = {
+				["Threshold"] = 95,
+				["Sound"] = false,
+				["Flash"] = false,
+			},
+			["FrameStrata"] = "2-LOW",
+			["TitleBar"] = {
+				["ShowTitleBar"] = false,
+				["FontSize"] = 12,
+				["FontColor"] = {
+					["b"] = 0.7843137254901961,
+					["g"] = 0.7843137254901961,
+					["r"] = 0.7843137254901961,
+				},
+				["Font"] = "ABF",
+			},
+			["Bar"] = {
+				["FontSize"] = 8,
+				["FontColor"] = {
+					["a"] = 0,
+					["r"] = 0.1843137254901961,
+					["g"] = 0.1843137254901961,
+					["b"] = 0.1843137254901961,
+				},
+				["ShowHeadings"] = false,
+				["ShowValue"] = false,
+				["UseClassColors"] = false,
+				["FontOutline"] = "MONOCHROMEOUTLINE",
+				["MyBarColor"] = {
+					["g"] = 1,
+					["r"] = 0,
+				},
+				["ShowAggroBar"] = false,
+				["Texture"] = "Flat",
+				["HeadingBGColor"] = {
+					["a"] = 1,
+					["r"] = 1,
+					["g"] = 1,
+					["b"] = 1,
+				},
+				["ShowTPS"] = false,
+				["InvertColors"] = true,
+				["BarColor"] = {
+					["g"] = 1,
+					["b"] = 1,
+				},
+				["Font"] = "pixel_lr_small",
+				["Height"] = 5,
+				["Spacing"] = 7,
+				["UseMyBarColor"] = true,
+			},
+		},
+		["RealUI-HR"] = {
+			["PositionW"] = 162.2868798354884,
+			["NumBars"] = 2,
+			["PositionH"] = 18.99997386410335,
+			["VGrip2"] = 103.1867838498328,
+			["PositionY"] = 226.5000419842595,
+			["ClickThrough"] = true,
+			["Locked"] = true,
+			["Background"] = {
+				["BorderColor"] = {
+					["a"] = 0,
+				},
+				["Color"] = {
+					["a"] = 0,
+				},
+				["BarInset"] = 1,
+				["BorderTexture"] = "None",
+				["Texture"] = "None",
+			},
+			["Autocollapse"] = true,
+			["MinimapIcon"] = {
+				["minimapPos"] = 318.8218167576527,
+				["hide"] = true,
+			},
+			["ShowWith"] = {
+				["HideWhileResting"] = false,
+			},
+			["detachedTooltip"] = {
+			},
+			["hidden"] = true,
+			["VGrip1"] = 108.3382139724767,
+			["minimapPosition"] = 313.590160181572,
+			["GrowUp"] = true,
+			["PositionX"] = 560.8565367267737,
+			["Warnings"] = {
+				["Threshold"] = 95,
+				["Sound"] = false,
+				["Flash"] = false,
+			},
+			["FrameStrata"] = "2-LOW",
+			["TitleBar"] = {
+				["ShowTitleBar"] = false,
+				["FontSize"] = 12,
+				["FontColor"] = {
+					["b"] = 0.7843137254901961,
+					["g"] = 0.7843137254901961,
+					["r"] = 0.7843137254901961,
+				},
+				["Font"] = "ABF",
+			},
+			["Bar"] = {
+				["FontSize"] = 8,
+				["FontColor"] = {
+					["a"] = 0,
+					["b"] = 0.1843137254901961,
+					["g"] = 0.1843137254901961,
+					["r"] = 0.1843137254901961,
+				},
+				["ShowHeadings"] = false,
+				["ShowValue"] = false,
+				["UseClassColors"] = false,
+				["FontOutline"] = "MONOCHROMEOUTLINE",
+				["MyBarColor"] = {
+					["g"] = 1,
+					["r"] = 0,
+				},
+				["ShowAggroBar"] = false,
+				["Texture"] = "Flat",
+				["HeadingBGColor"] = {
+					["a"] = 1,
+					["b"] = 1,
+					["g"] = 1,
+					["r"] = 1,
+				},
+				["ShowTPS"] = false,
+				["InvertColors"] = true,
+				["BarColor"] = {
+					["g"] = 1,
+					["b"] = 1,
+				},
+				["Font"] = "pixel_hr_small",
+				["Height"] = 5,
+				["Spacing"] = 7,
+				["UseMyBarColor"] = true,
+			},
+		},
+	},
+}

@@ -1,0 +1,17 @@
+﻿## Interface: 40300
+
+## Title: ArkDewdrop [3.0]
+## Author: Arkayenro
+## Email: arkayenro at gmail dot com
+## Version: 3.00
+## DefaultState: Disabled
+## LoadOnDemand: 0
+
+## X-Category: Library
+
+## LoadManagers: AddonLoader
+## X-LoadOn-Always:delayed
+
+LibStub.lua
+
+ArkDewdrop-3.0.lua

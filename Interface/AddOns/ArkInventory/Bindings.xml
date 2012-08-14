@@ -1,0 +1,58 @@
+<Bindings>
+	<Binding name="ARKINV_CONFIG" header="ARKINV">
+		ArkInventory.Frame_Config_Toggle( )
+	</Binding>
+	<Binding name="ARKINV_TOGGLE_BAG">
+		ArkInventory.Frame_Main_Toggle( ArkInventory.Const.Location.Bag )
+	</Binding>
+	<Binding name="ARKINV_TOGGLE_BANK">
+		ArkInventory.Frame_Main_Toggle( ArkInventory.Const.Location.Bank )
+	</Binding>
+	<Binding name="ARKINV_TOGGLE_VAULT">
+		ArkInventory.Frame_Main_Toggle( ArkInventory.Const.Location.Vault )
+	</Binding>
+	<Binding name="ARKINV_TOGGLE_VOID">
+		ArkInventory.Frame_Main_Toggle( ArkInventory.Const.Location.Void )
+	</Binding>
+	<Binding name="ARKINV_TOGGLE_MAIL">
+		ArkInventory.Frame_Main_Toggle( ArkInventory.Const.Location.Mail )
+	</Binding>
+	<Binding name="ARKINV_TOGGLE_WEARING">
+		ArkInventory.Frame_Main_Toggle( ArkInventory.Const.Location.Wearing )
+	</Binding>
+	<Binding name="ARKINV_TOGGLE_PET">
+		ArkInventory.Frame_Main_Toggle( ArkInventory.Const.Location.Pet )
+	</Binding>
+	<Binding name="ARKINV_TOGGLE_MOUNT">
+		ArkInventory.Frame_Main_Toggle( ArkInventory.Const.Location.Mount )
+	</Binding>
+	<Binding name="ARKINV_TOGGLE_TOKEN">
+		ArkInventory.Frame_Main_Toggle( ArkInventory.Const.Location.Token )
+	</Binding>
+	<Binding name="ARKINV_TOGGLE_EDIT">
+		ArkInventory.Frame_Main_Show( ArkInventory.Const.Location.Bag )
+		ArkInventory.ToggleEditMode( )
+	</Binding>
+	<Binding name="ARKINV_REFRESH">
+		ArkInventory.Frame_Main_Generate( nil, ArkInventory.Const.Window.Draw.Resort )
+	</Binding>
+	<Binding name="ARKINV_RELOAD">
+		ArkInventory.ItemCacheClear( )
+		ArkInventory.Frame_Main_Generate( nil, ArkInventory.Const.Window.Draw.Recalculate )
+	</Binding>
+	<Binding name="ARKINV_RESTACK">
+		ArkInventory.Restack( )
+	</Binding>
+	<Binding name="ARKINV_TOGGLE_RULES">
+		ArkInventory.Frame_Rules_Toggle( )
+	</Binding>
+	<Binding name="ARKINV_TOGGLE_SEARCH">
+		ArkInventory.Frame_Search_Toggle( )
+	</Binding>
+	<Binding name="ARKINV_LDB_PETS_SUMMON">
+		ArkInventory.LDB.Pets.OnClick( )
+	</Binding>
+	<Binding name="ARKINV_LDB_MOUNTS_SUMMON">
+		ArkInventory.LDB.Mounts.OnClick( )
+	</Binding>
+</Bindings>

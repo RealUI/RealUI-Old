@@ -1,0 +1,15 @@
+## Interface: 40300
+## Version: 1.41
+## Title: BadBoy_Guilded
+## Notes: Removes guild advertising from public channels.
+## Author: Funkydude
+## Dependencies: BadBoy
+## X-Category: Chat/Communication
+## X-License: All Rights Reserved
+## X-Curse-Packaged-Version: v1.41
+## X-Curse-Project-Name: BadBoy_Guilded
+## X-Curse-Project-ID: badboy_guilded
+## X-Curse-Repository-ID: wow/badboy_guilded/mainline
+
+BadBoy_Guilded.lua
+

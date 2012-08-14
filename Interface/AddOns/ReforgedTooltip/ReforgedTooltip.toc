@@ -1,0 +1,17 @@
+## Interface: 40300
+## Title: ReforgedTooltip
+## Notes: Shows what stat was reforged in item tooltips.
+## Notes-deDE: Zeigt in Gegenstandstooltips an, welches Attribut umgeschmiedet wurde.
+## Author: emelio
+## Version: 1.0.5
+## OptionalDeps: LibReforgingInfo-1.0
+## X-Curse-Packaged-Version: 1.0.5
+## X-Curse-Project-Name: ReforgedTooltip
+## X-Curse-Project-ID: reforgedtooltip
+## X-Curse-Repository-ID: wow/reforgedtooltip/mainline
+
+#@no-lib-strip@
+embeds.xml
+#@end-no-lib-strip@
+
+ReforgedTooltip.lua

@@ -1,0 +1,6 @@
+## Interface: 40300
+## Title: |cffaaaaaanib|rLibs
+## Author: Nibelheim
+## Notes: Provides libraries for nib addons.
+
+Embeds.xml

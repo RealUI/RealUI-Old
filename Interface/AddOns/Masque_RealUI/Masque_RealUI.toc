@@ -1,0 +1,8 @@
+## Interface: 40300
+## Title: Masque: |cffffffffRealUI|r
+## Version: 7.1
+## Author: Nibelheim
+## Notes: RealUI skin for Masque.
+## Dependencies: Masque
+
+RealUI.lua

@@ -1,0 +1,58 @@
+## Interface: 40300
+## Title: Raven
+## Notes: Monitors spells, provides timers, cooldowns, action bar highlights, helpful notifications
+## Author: Tomber
+## DefaultState: enabled
+## OptionalDependencies: ButtonFacade
+## SavedVariables: RavenDB
+## X-Curse-Packaged-Version: r112
+## X-Curse-Project-Name: Raven
+## X-Curse-Project-ID: raven
+## X-Curse-Repository-ID: wow/raven/mainline
+## X-Curse-Packaged-Version: r114
+## X-Curse-Project-Name: Raven
+## X-Curse-Project-ID: raven
+## X-Curse-Repository-ID: wow/raven/mainline
+## X-Curse-Packaged-Version: r178
+## X-Curse-Project-Name: Raven
+## X-Curse-Project-ID: raven
+## X-Curse-Repository-ID: wow/raven/mainline
+## X-Curse-Packaged-Version: r217
+## X-Curse-Project-Name: Raven
+## X-Curse-Project-ID: raven
+## X-Curse-Repository-ID: wow/raven/mainline
+## X-Curse-Packaged-Version: r221
+## X-Curse-Project-Name: Raven
+## X-Curse-Project-ID: raven
+## X-Curse-Repository-ID: wow/raven/mainline
+
+#@no-lib-strip@
+embeds.xml
+#@end-no-lib-strip@
+
+Localizations\enUS.lua
+Localizations\zhCH.lua
+Localizations\zhTW.lua
+Localizations\koKR.lua
+
+Main.lua
+Profile.lua
+Highlights.lua
+Conditions.lua
+Bars.lua
+Cancel.lua
+Nest.lua
+
+Presets\DeathKnight.lua
+Presets\Druid.lua
+Presets\Hunter.lua
+Presets\Mage.lua
+Presets\Paladin.lua
+Presets\Priest.lua
+Presets\Rogue.lua
+Presets\Shaman.lua
+Presets\Warlock.lua
+Presets\Warrior.lua
+Presets\Pets.lua
+Presets\Racials.lua
+Presets\General.lua

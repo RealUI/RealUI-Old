@@ -1,0 +1,10 @@
+## Interface: 40300
+## Title: |cffaaaaaanib|rMinimap
+## Author: Nibelheim
+## Notes: Minimap for RealUI.
+## Version: 7.1
+## SavedVariables: nibMinimapDB
+## Dependencies: nibLibs
+
+Core.lua
+Config.lua

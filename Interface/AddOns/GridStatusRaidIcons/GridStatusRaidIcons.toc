@@ -1,0 +1,16 @@
+## Interface: 40300
+## Author: kunda
+## Title: GridStatusRaidIcons
+## Notes: Adds Raid Target Icon status to Grid (Player or Player Target).
+## Version: 40000-2
+## Dependencies: Grid
+## X-Curse-Packaged-Version: 40000-2
+## X-Curse-Project-Name: GridStatusRaidIcons
+## X-Curse-Project-ID: grid-status-raid-icons
+## X-Curse-Repository-ID: wow/grid-status-raid-icons/mainline
+
+GridStatusRaidIcons-localization-enUS.lua
+GridStatusRaidIcons-localization-deDE.lua
+GridStatusRaidIcons-localization-koKR.lua
+
+GridStatusRaidIcons.lua

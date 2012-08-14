@@ -1,0 +1,60 @@
+## Interface: 40300
+
+## Title: ArkInventory
+## Title-zhCN: [背包]ArkInventory 整合背包银行
+## Author: Arkayenro - Khaz'goroth
+## Email: arkayenro at gmail dot com
+## Version: 3.02
+## DefaultState: Enabled
+## LoadOnDemand: 0
+## SavedVariables: ARKINVDB
+
+## Notes: Allows you to view all items from all your characters on the same realm, when-ever and where-ever you want.
+
+## OptionalDeps: Blizzard_GuildBankUI, Blizzard_VoidStorageUI, Ace3, AceGUI-3.0-SharedMediaWidgets, LibPeriodicTable-3.1, LibSharedMedia-3.0
+## X-Embeds: Ace3, AceGUI-3.0-SharedMediaWidgets, LibPeriodicTable-3.1, LibSharedMedia-3.0
+
+## X-Category: Inventory
+## X-Website: http://arkinventory.googlecode.com
+
+## LoadManagers: AddonLoader
+## X-LoadOn-Always:delayed
+
+
+Libs\LibStub\LibStub.lua
+Libs\CallbackHandler\CallbackHandler-1.0.lua
+Libs\LibDataBroker\LibDataBroker-1.1.lua
+Libs\ArkDewdrop\ArkDewdrop-3.0.lua
+
+
+#@no-lib-strip@
+embeds.xml
+#@end-no-lib-strip@
+
+Locale\locale.xml
+
+ArkInventoryExternals.lua
+
+
+ArkInventory.lua
+ArkInventoryCompanion.lua
+
+ArkInventoryStorage.lua
+ArkInventoryRestack.lua
+ArkInventoryUpgrades.lua
+ArkInventoryMenu.lua
+ArkInventoryRules.lua
+ArkInventorySearch.lua
+ArkInventorySync.lua
+
+ArkInventoryTooltip.lua
+ArkInventoryMoney.lua
+ArkInventoryMedia.lua
+
+ArkInventory.xml
+ArkInventorySearch.xml
+
+ArkInventoryConfig.lua
+ArkInventoryLDB.lua
+
+ArkInventoryTranslate.lua

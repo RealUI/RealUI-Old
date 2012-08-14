@@ -1,0 +1,13 @@
+## Interface: 40300
+## Title: |cffaaaaaanib|rSpellAlertConfig
+## Author: Nibelheim
+## Notes: Configures Blizzard's Spell Alerts
+## Version: 0.32 r3
+## SavedVariables: nibSpellAlertConfigDB
+## OptionalDeps: nibLibs, Ace3, LibSharedMedia-3.0, AceGUI-3.0-SharedMediaWidgets
+
+## X-WoWI-ID: 18245
+
+Embeds.xml
+Core.lua
+Config.lua

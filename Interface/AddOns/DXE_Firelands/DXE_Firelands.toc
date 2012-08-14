@@ -1,0 +1,17 @@
+## Interface: 40300
+## Title: DXE |cff99ff33Firelands|r
+## Notes: Deus Vox Encounters |cff99ff33Firelands|r
+## Author: Harleschorsch
+## LoadOnDemand: 1
+## Dependencies: DXE
+## X-DXE-Category: Firelands 
+## X-DXE-Zone: Firelands 
+## Title-zhTW: DXE |cff99ff33火源之界|r
+## Notes-zhTW: Deus Vox 首領警報 |cff99ff33火源之界|r
+## X-Curse-Packaged-Version: v635-16-gd049fdb
+## X-Curse-Project-Name: Deus Vox Encounters
+## X-Curse-Project-ID: deus-vox-encounters
+## X-Curse-Repository-ID: wow/deus-vox-encounters/mainline
+
+Locales.lua
+Encounters.lua

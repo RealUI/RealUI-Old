@@ -1,0 +1,12 @@
+## Interface: 40300
+## Title: oUF_RealUI
+## Author: Nibelheim
+## Version: 7.1
+## Notes: UF layout for RealUI.
+## Dependencies: oUF
+## OptionalDeps: nibRealUI
+
+embeds.xml
+cfg.lua
+overlay.lua
+layout.lua

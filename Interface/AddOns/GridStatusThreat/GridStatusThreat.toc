@@ -1,0 +1,19 @@
+## Interface: 40300
+## Author: kunda
+## Title: GridStatusThreat
+## Notes: Adds a simple percentage threat status to Grid.
+## Version: 40000-1
+## Dependencies: Grid
+## X-Curse-Packaged-Version: 40000-1
+## X-Curse-Project-Name: GridStatusThreat
+## X-Curse-Project-ID: grid-status-threat
+## X-Curse-Repository-ID: wow/grid-status-threat/mainline
+
+GridStatusThreat-localization-enUS.lua
+GridStatusThreat-localization-deDE.lua
+GridStatusThreat-localization-koKR.lua
+GridStatusThreat-localization-ruRU.lua
+GridStatusThreat-localization-zhCN.lua
+GridStatusThreat-localization-zhTW.lua
+
+GridStatusThreat.lua

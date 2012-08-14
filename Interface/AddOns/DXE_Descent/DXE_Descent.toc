@@ -1,0 +1,17 @@
+## Interface: 40300
+## Title: DXE |cff99ff33Descent|r
+## Notes: Deus Vox Encounters |cff99ff33Descent|r
+## Author: Shefki, Harleschorsch
+## LoadOnDemand: 1
+## Dependencies: DXE
+## X-DXE-Category: Descent 
+## X-DXE-Zone: Blackwing Descent 
+## Title-zhTW: DXE |cff99ff33黑翼陷窟|r
+## Notes-zhTW: Deus Vox 首領警報 |cff99ff33黑翼陷窟|r
+## X-Curse-Packaged-Version: v635-16-gd049fdb
+## X-Curse-Project-Name: Deus Vox Encounters
+## X-Curse-Project-ID: deus-vox-encounters
+## X-Curse-Repository-ID: wow/deus-vox-encounters/mainline
+
+Locales.lua
+Encounters.lua
