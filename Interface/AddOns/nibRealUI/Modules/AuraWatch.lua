@@ -2528,10 +2528,10 @@ function AuraWatch:UpdateConditionals()
 	
 	isResting = IsResting()
 	inInstance, instanceType = IsInInstance()
-	inParty = GetNumPartyMembers() > 0
-	inRaid = GetNumRaidMembers() > 0
+	inParty = GetNumSubgroupMembers() > 0
+	inRaid = IsInRaid()
 	playerRole = UnitGroupRolesAssigned("player")
-	playerSpec = GetPrimaryTalentTree()
+	playerSpec = GetSpecialization()
 	
 	if (isResting ~= _isResting) or (inInstance ~= _inInstance) or (instanceType ~= _instanceType) or (inParty ~= _inParty) or (inRaid ~= _inRaid) or (playerRole ~= _playerRole) or (playerSpec ~= _playerSpec) then 
 		self:UpdateAuras()

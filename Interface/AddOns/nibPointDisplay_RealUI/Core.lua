@@ -444,6 +444,8 @@ local function GetDebuffCount(SpellID, ...)
 end
 
 local function GetBuffCount(SpellID, ...)
+	if not SpellID then return end
+	print("SpellID: "..tostring(SpellID))
 	local unit = ... or "player"
 	local _,_,_,count = UnitAura(unit, SpellID)
 	if count == nil then count = 0 end
@@ -867,7 +869,7 @@ function nibPointDisplay_RealUI:HideUIElements()
 end
 
 function nibPointDisplay_RealUI:UpdateSpec()
-	PlayerSpec = GetActiveTalentGroup()
+	PlayerSpec = GetActiveSpecGroup()
 end
 
 function nibPointDisplay_RealUI:UpdateSmartHideConditions()

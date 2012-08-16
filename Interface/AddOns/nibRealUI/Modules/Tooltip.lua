@@ -192,17 +192,17 @@ function Tooltip:TalentQuery()
 	end
 end
 
-local maxTree, tree, active, left, leftText, right
+local current, tree, active, left, leftText, right
 function Tooltip:TalentText()
 	if UnitExists("mouseover") then
-		active = GetActiveTalentGroup(true)
-		maxTree = GetPrimaryTalentTree(true)
-		if maxTree and active then
+		active = GetActiveSpecGroup(true)
+		current = GetSpecialization(true)
+		if current and active then
 			for i = 1, 3 do
-				_, tree = GetTalentTabInfo(i, true, nil, active)
+				_, tree = GetSpecializationInfo(i, true, nil, active)
 				if not tree then break end
-				if i == maxTree then
-					maxTree = tree
+				if i == current then
+					current = tree
 				end
 			end
 		end
@@ -210,8 +210,8 @@ function Tooltip:TalentText()
 			left = _G[GameTooltip:GetName().."TextLeft"..i]
 			leftText = left:GetText()
 			if strsub(leftText, 1, 3) == "S: " then
-				if maxTree and active then
-					left:SetFormattedText("S: %s", maxTree)
+				if current and active then
+					left:SetFormattedText("S: %s", current)
 				else
 					left:SetText("S: None")
 				end
@@ -220,7 +220,7 @@ function Tooltip:TalentText()
 		end
 	end
 	Tooltip:UnregisterEvent("INSPECT_READY")
-	maxTree, tree = nil
+	current, tree = nil
 end
 
 function Tooltip:INSPECT_READY(event, arg)

@@ -97,7 +97,8 @@ local MMButtonTexts = {
 	[7] = "G",
 	[8] = "P",
 	[9] = "D",
-	[10] = "R",
+--	[10] = "R",
+	[10] = "M",
 	[11] = "J",
 	[12] = "?",
 }
@@ -111,7 +112,8 @@ local MMIDs = {
 	Guild = 7,
 	PvP = 8,
 	LFD = 9,
-	LFR = 10,
+--	LFR = 10,
+	MountsPets = 10,
 	DJ = 11,
 	Help = 12,
 }
@@ -1621,7 +1623,6 @@ local SlotNameTable = {
 	[8] = { slot = "FeetSlot", name = "Feet" },
 	[9] = { slot = "MainHandSlot", name = "Main Hand" },
 	[10] = { slot = "SecondaryHandSlot", name = "Off Hand" },
-	[11] = { slot = "RangedSlot", name = "Ranged" },
 }
 local DuraSlotInfo = { }
 
@@ -1649,7 +1650,7 @@ function InfoLine_Durability_Update(self)
 	local durability
 	local minVal = 100
 	
-	for i = 1, 11 do
+	for i = 1, 10 do
 		if not DuraSlotInfo[i] then tinsert(DuraSlotInfo, i, {equip, value, max, perc}) end
 		local slotID = GetInventorySlotInfo(SlotNameTable[i].slot)
 		local itemLink = GetInventoryItemLink("player", slotID)
@@ -1666,7 +1667,7 @@ function InfoLine_Durability_Update(self)
 			DuraSlotInfo[i].perc = floor((DuraSlotInfo[i].value/DuraSlotInfo[i].max)*100)
 		end
 	end
-	for i = 1, 11 do
+	for i = 1, 10 do
 		if ( DuraSlotInfo[i].equip and DuraSlotInfo[i].max ~= nil ) then
 			if DuraSlotInfo[i].perc < minVal then minVal = DuraSlotInfo[i].perc end
 		end
@@ -2251,11 +2252,11 @@ local SpecEquipList = {}
 
 local function SpecChangeClickFunc(self, ...)
 	if ... then
-		if GetActiveTalentGroup() == ... then return end
+		if GetActiveSpecGroup() == ... then return end
 	end
 	
-	if GetNumTalentGroups() > 1 then
-		local NewTG = GetActiveTalentGroup() == 1 and 2 or 1
+	if GetNumSpecGroups() > 1 then
+		local NewTG = GetActiveSpecGroup() == 1 and 2 or 1
 		
 		if NewTG == 1 then
 			if dbc.specgear.primary > 0 then
@@ -2294,7 +2295,7 @@ end
 
 local function SpecAddEquipListToCat(self, cat)
 	resSizeExtra = db.resolution[ndbc.resolution].tabfontsize
-	local numTalentGroups = GetNumTalentGroups()
+	local numSpecGroups = GetNumSpecGroups()
 	
 	-- Sets
 	local line = {}
@@ -2323,7 +2324,7 @@ local function SpecAddEquipListToCat(self, cat)
 					line["text"..i.."R"] = (dbc.specgear.primary == k) and db.colors.orange2[1] or 0.3
 					line["text"..i.."G"] = (dbc.specgear.primary == k) and db.colors.orange2[2] or 0.3
 					line["text"..i.."B"] = (dbc.specgear.primary == k) and db.colors.orange2[3] or 0.3
-				elseif (i == 3) and (numTalentGroups > 1) then
+				elseif (i == 3) and (numSpecGroups > 1) then
 					line["text"..i] = SECONDARY
 					line["size"..i] = 11 + resSizeExtra
 					line["justify"..i] = "LEFT"
@@ -2347,7 +2348,7 @@ local function SpecAddTalentGroupLineToCat(self, cat, talentGroup)
 	local PrimaryTreeColor = db.colors.orange2
 	local OtherTreeColor = {0.8, 0.8, 0.8}
 	
-	local IsPrimary = GetActiveTalentGroup()
+	local IsPrimary = GetActiveSpecGroup()
 	local maxPrimaryTree = GetPrimaryTalentTree()
 	
 	local line = {}
@@ -2397,9 +2398,9 @@ local function Spec_UpdateTablet(self)
 	resSizeExtra = db.resolution[ndbc.resolution].tabfontsize
 	local Cols, lineHeader
 	
-	local numTalentGroups = GetNumTalentGroups()
+	local numSpecGroups = GetNumSpecGroups()
 	
-	if numTalentGroups > 1 then
+	if numSpecGroups > 1 then
 		wipe(SpecSection)
 	
 		-- Spec Category
@@ -2428,7 +2429,7 @@ local function Spec_UpdateTablet(self)
 	
 	local numEquipSets = GetNumEquipmentSets()
 	if numEquipSets > 0 then
-		if numTalentGroups > 1 then
+		if numSpecGroups > 1 then
 			AddBlankTabLine(SpecSection["specs"].talentCat, 8)
 		end
 		
@@ -2446,9 +2447,9 @@ local function Spec_UpdateTablet(self)
 	end
 	
 	-- Hint
-	if (numTalentGroups > 1) and (numEquipSets > 0) then
+	if (numSpecGroups > 1) and (numEquipSets > 0) then
 		Tablets.spec:SetHint(L["<Click> to change talent specs."].."\n"..L["<Equip Click> to equip."].."\n"..L["<Equip Ctl+Click> to assign to "]..PRIMARY..".\n"..L["<Equip Alt+Click> to assign to "]..SECONDARY..".\n"..L["<Equip Shift+Click> to unassign."])
-	elseif numTalentGroups > 1 then
+	elseif numSpecGroups > 1 then
 		Tablets.spec:SetHint(L["<Click> to change talent specs."])
 	elseif numEquipSets > 0 then
 		Tablets.spec:SetHint(L["<Equip Click> to equip."].."\n"..L["<Equip Ctl+Click> to assign to "]..PRIMARY.."\n"..L["<Equip Shift+Click> to unassign."])
@@ -2495,14 +2496,14 @@ local function Spec_Update(self)
 	
 	-- Talent Info
 	wipe(TalentInfo)
-	local numTalentGroups = GetNumTalentGroups()
-	for i = 1, numTalentGroups do
+	local numSpecGroups = GetNumSpecGroups()
+	for i = 1, numSpecGroups do
 		TalentInfo[i] = {}
 		for t = 1, 3 do
-			local _, _, _, talentIcon, pointsSpent = GetTalentTabInfo(t, false, false, i)
+			local _, _, _, specIcon, pointsSpent = GetSpecializationInfo(t, false, false, i)
 			TalentInfo[i][t] = {
 				points = pointsSpent,
-				icon = talentIcon,
+				icon = specIcon,
 			}
 		end
 	end
@@ -2527,10 +2528,10 @@ local function Spec_Update(self)
 	end
 	
 	-- Info text
-	if (numTalentGroups > 1) then
+	if (numSpecGroups > 1) then
 		-- Active talent tree
 		self.hidden = false
-		if GetActiveTalentGroup() == 1 then
+		if GetActiveSpecGroup() == 1 then
 			self.text:SetText(PRIMARY)
 			UpdateElementWidth(self)
 		else
@@ -3148,7 +3149,7 @@ function InfoLine:UpdateMMButtonState()
 		end
 	end
 	
-	-- LFR
+--[[	-- LFR
 	if ( RaidParentFrame:IsShown() ) then
 		ILFrames.micromenu.buttons[MMIDs.LFR].windowopen = true
 	else
@@ -3158,9 +3159,21 @@ function InfoLine:UpdateMMButtonState()
 			ILFrames.micromenu.buttons[MMIDs.LFR].disabled = false
 			ILFrames.micromenu.buttons[MMIDs.LFR].windowopen = false
 		end
+	end]]
+
+	-- Mounts & Pets
+	if PetJournalParent and PetJournalParent:IsShown() then
+		ILFrames.micromenu.buttons[MMIDs.MountsPets].windowopen = true
+	else
+		if GetNumCompanions("CRITTER") == 0 then
+			ILFrames.micromenu.buttons[MMIDs.MountsPets].disabled = true
+		else
+			ILFrames.micromenu.buttons[MMIDs.MountsPets].disabled = false
+			ILFrames.micromenu.buttons[MMIDs.MountsPets].windowopen = false
+		end
 	end
-	
-	-- DJ
+
+	-- EJ
 	if EncounterJournal and EncounterJournal:IsShown() then
 		ILFrames.micromenu.buttons[MMIDs.DJ].windowopen = true
 	else
@@ -3216,6 +3229,8 @@ function InfoLine:MMButton_OnEnter(button)
 		tt = MicroButtonTooltipText(DUNGEONS_BUTTON, "TOGGLELFGPARENT")
 	elseif button == MMIDs.LFR then
 		tt = MicroButtonTooltipText(RAID_FINDER, "TOGGLERAIDFINDER")
+	elseif button == MMIDs.MountsPets then
+		tt = MicroButtonTooltipText(MOUNTS_AND_PETS, "TOGGLEPETJOURNAL")
 	elseif button == MMIDs.DJ then
 		tt = MicroButtonTooltipText(ENCOUNTER_JOURNAL, "TOGGLEENCOUNTERJOURNAL")
 	elseif button == MMIDs.Help then
@@ -3679,7 +3694,7 @@ local function CreateMicroMenuFrame(side)
 		NewMM.buttons[i]:SetScript("OnEnter", function() InfoLine:MMButton_OnEnter(i) end)
 		NewMM.buttons[i]:SetScript("OnLeave", function() InfoLine:MMButton_OnLeave(i) end)	
 	end
-	
+
 	-- Set Macro texts
 	NewMM.buttons[1]:SetAttribute("type", "macro")
 	NewMM.buttons[1]:SetAttribute("macrotext", "/run ToggleCharacter('PaperDollFrame')")
@@ -3692,7 +3707,8 @@ local function CreateMicroMenuFrame(side)
 	NewMM.buttons[8]:SetAttribute("type", "macro")
 	NewMM.buttons[8]:SetAttribute("macrotext", "/run TogglePVPFrame()")
 	NewMM.buttons[9]:SetAttribute("clickbutton", LFDMicroButton)
-	NewMM.buttons[10]:SetAttribute("clickbutton", RaidMicroButton)
+--	NewMM.buttons[10]:SetAttribute("clickbutton", RaidMicroButton)
+	NewMM.buttons[10]:SetAttribute("clickbutton", CompanionsMicroButton)
 	NewMM.buttons[11]:SetAttribute("clickbutton", EJMicroButton)
 	NewMM.buttons[12]:SetAttribute("clickbutton", HelpMicroButton)
 	
