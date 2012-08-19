@@ -419,7 +419,7 @@ RealUILootFrame.slots = {}
 
 local LootOnEnter = function(self)
 	local slot = self:GetID()
-	if(LootSlotIsItem(slot)) then
+	if(GetLootSlotType(slot)) then
 		GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
 		GameTooltip:SetLootItem(slot)
 		CursorUpdate(self)
@@ -560,7 +560,7 @@ function Loot:LOOT_OPENED(event, autoloot)
 			if texture then
 				local color = ITEM_QUALITY_COLORS[quality]
 
-				if(LootSlotIsCoin(i)) then
+				if (GetLootSlotType(i) == 2) then
 					item = item:gsub("\n", ", ")
 				end
 

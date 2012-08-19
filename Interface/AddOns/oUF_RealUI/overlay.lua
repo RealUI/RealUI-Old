@@ -200,8 +200,8 @@ local ParentFrames = {
 	[PET_ID] = "oUF_RealUIPet",
 	[TARGET_ID] = "oUF_RealUITarget",
 	[FOCUS_ID] = "oUF_RealUIFocus",
-	[FOCUSTARGET_ID] = "oUF_RealUIFocustarget",
-	[TARGETTARGET_ID] = "oUF_RealUITargettarget",
+	[FOCUSTARGET_ID] = "oUF_RealUIFocusTarget",
+	[TARGETTARGET_ID] = "oUF_RealUITargetTarget",
 	[MAINTANK_ID] = "oUF_RealUIMaintank",
 }
 

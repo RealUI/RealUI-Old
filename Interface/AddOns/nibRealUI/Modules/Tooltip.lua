@@ -192,26 +192,17 @@ function Tooltip:TalentQuery()
 	end
 end
 
-local current, tree, active, left, leftText, right
 function Tooltip:TalentText()
+	local specID, spec, left, leftText
 	if UnitExists("mouseover") then
-		active = GetActiveSpecGroup(true)
-		current = GetSpecialization(true)
-		if current and active then
-			for i = 1, 3 do
-				_, tree = GetSpecializationInfo(i, true, nil, active)
-				if not tree then break end
-				if i == current then
-					current = tree
-				end
-			end
-		end
+		specID = GetInspectSpecialization("mouseover")
+		_, spec = GetSpecializationInfoByID(specID)
 		for i = 1, GameTooltip:NumLines() do
 			left = _G[GameTooltip:GetName().."TextLeft"..i]
 			leftText = left:GetText()
 			if strsub(leftText, 1, 3) == "S: " then
-				if current and active then
-					left:SetFormattedText("S: %s", current)
+				if spec then
+					left:SetFormattedText("S: %s", spec)
 				else
 					left:SetText("S: None")
 				end
@@ -220,7 +211,7 @@ function Tooltip:TalentText()
 		end
 	end
 	Tooltip:UnregisterEvent("INSPECT_READY")
-	current, tree = nil
+	specID, spec = nil
 end
 
 function Tooltip:INSPECT_READY(event, arg)

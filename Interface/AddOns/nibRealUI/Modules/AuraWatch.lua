@@ -298,6 +298,101 @@ local Defaults = {
 					},
 				},
 			},
+			["MONK"] = {
+				enabled = true,
+				configmode = false,
+				position = {
+					anchorfrom = "CENTER",
+					anchorto = "CENTER",
+					x = 0,
+					y = -118,
+					direction = "RIGHT",
+				},
+				warningbar = {
+					enabled = true,
+					side = "RIGHT",
+				},
+				auras = {
+					[1] = {
+						enabled = true,
+						inactive = false,
+						incombat = true,
+						level = 1,
+						personal = true,
+						spells = {
+						--	[5118] = true,	-- aspect of the cheetah
+						},
+						negspells = {},
+						show = {
+							group = {
+								party = true,
+								raid = true,
+								solo = false,
+							},
+							location = {
+								instance = true,
+								pvp = false,
+								outinstance = false,
+							},
+							role = {
+								enabled = false,
+								dps = false,
+								heal = false,
+								tank = false,
+							},
+							spec = {
+								[1] = true,
+								[2] = true,
+								[3] = true,
+							},
+						},
+						expire = {
+							enabled = false,
+							time = 10,
+						},
+					},
+					[2] = {
+						enabled = true,
+						inactive = true,
+						incombat = true,
+						level = 1,
+						personal = true,
+						spells = {
+						--	[13165] = true,	-- hawk
+						--	[20043] = true,	-- wild
+						--	[82661] = true,	-- fox	
+						},
+						negspells = {},
+						show = {
+							group = {
+								party = true,
+								raid = true,
+								solo = false,
+							},
+							location = {
+								instance = true,
+								pvp = false,
+								outinstance = false,
+							},
+							role = {
+								enabled = false,
+								dps = false,
+								heal = false,
+								tank = false,
+							},
+							spec = {
+								[1] = true,
+								[2] = true,
+								[3] = true,
+							},
+						},
+						expire = {
+							enabled = false,
+							time = 10,
+						},
+					},
+				},
+			},
 			["PALADIN"] = {
 				enabled = true,
 				configmode = false,

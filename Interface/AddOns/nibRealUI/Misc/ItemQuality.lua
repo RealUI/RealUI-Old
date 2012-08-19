@@ -57,8 +57,8 @@ function ItemQuality:CreateBorder(slottype, slot, name, hasText)
 end
 
 function ItemQuality:MakeTypeTable()
-	ItemsList = {"Head", "Shoulder", "Chest", "Waist", "Legs", "Feet", "Wrist", "Hands", "MainHand", "SecondaryHand", "Ranged"}
-	NDItemsList = {"Ammo", "Neck", "Back", "Finger0", "Finger1", "Trinket0", "Trinket1", "Relic", "Tabard", "Shirt"}
+	ItemsList = {"Head", "Shoulder", "Chest", "Waist", "Legs", "Feet", "Wrist", "Hands", "MainHand", "SecondaryHand"}
+	NDItemsList = {"Neck", "Back", "Finger0", "Finger1", "Trinket0", "Trinket1", "Relic", "Tabard", "Shirt"}
 	for _, item in ipairs(ItemsList) do
 		self:CreateBorder("Character", item, "ItemQuality", true)
 	end
@@ -75,7 +75,12 @@ function ItemQuality:UpdateItems()
 		local str = _G[item.."ItemQualityS"]
 		local v1, v2 = GetInventoryItemDurability(id)
 		v1, v2 = tonumber(v1) or 0, tonumber(v2) or 0
-		local percent = v1 / v2 * 100
+		local percent
+		if v1 == 0 or v2 == 0 then
+			percent = 0
+		else
+			percent = v1 / v2 * 100
+		end
 		
 		if (v2 ~= 0) then
 			local text

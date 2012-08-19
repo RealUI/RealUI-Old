@@ -2,10 +2,6 @@ local addonName, addon = ...
 if not addon.healthCheck then return end
 local L = addon.L
 
-local wow_ver = select(4, GetBuildInfo())
-local wow_500 = wow_ver >= 50000
-local UIPanelButtonTemplate = wow_500 and "UIPanelButtonTemplate" or "UIPanelButtonTemplate2"
-
 local frame = CreateFrame("Frame", nil, InterfaceOptionsFramePanelContainer)
 frame.name = addonName
 frame:Hide()
@@ -219,7 +215,7 @@ frame:SetScript("OnShow", function(frame)
 	UIDropDownMenu_SetWidth(dropdown, 160)
 	UIDropDownMenu_JustifyText(dropdown, "LEFT")
 
-	local clear = CreateFrame("Button", "BugSackSaveButton", frame, UIPanelButtonTemplate)
+	local clear = CreateFrame("Button", "BugSackSaveButton", frame, "UIPanelButtonTemplate2")
 	clear:SetText(L["Wipe saved bugs"])
 	clear:SetWidth(177)
 	clear:SetHeight(24)

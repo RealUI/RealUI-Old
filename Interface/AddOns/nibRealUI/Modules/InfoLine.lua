@@ -83,7 +83,8 @@ local MMButtonTable = {
 	[7] = "guild",
 	[8] = "pvp",
 	[9] = "dungeonfinder",
-	[10] = "raidfinder",
+--	[10] = "raidfinder",
+	[10] = "mountsandpets",
 	[11] = "dungeonjournal",
 	[12] = "helprequest",
 }
@@ -946,8 +947,8 @@ end
 local xp, lvl, xpmax, restxp
 local rep, replvlmax, repStandingID, repstatus, watchedFaction
 function InfoLine_XR_OnLeave(self)
-	if ( (repstatus == "---") and (UnitLevel("player") == 85) ) then
-		-- Level 85 and no Rep tracked, hide display
+	if ( (repstatus == "---") and (UnitLevel("player") == MAX_PLAYER_LEVEL) ) then
+		-- Max Level and no Rep tracked, hide display
 		self:SetAlpha(0)
 	end
 	if GameTooltip:IsShown() then GameTooltip:Hide() end
@@ -958,7 +959,7 @@ function InfoLine_XR_OnEnter(self)
 
 	GameTooltip:SetOwner(self, "ANCHOR_TOP"..self.side, 0, 2)
 	
-	if UnitLevel("player") < 85 then
+	if UnitLevel("player") < MAX_PLAYER_LEVEL then
 		GameTooltip:AddLine(strform("|cff%s%s|r", TextColorTTHeader, XP.." / "..REPUTATION))
 		GameTooltip:AddLine(" ")
 		
@@ -990,7 +991,7 @@ function InfoLine_XR_OnEnter(self)
 	GameTooltip:AddDoubleLine(L["Remaining"], nibRealUI:ReadableNumber(replvlmax - rep), 0.9, 0.9, 0.9, 0.9, 0.9, 0.9)
 	
 	-- Hint
-	if (UnitLevel("player") < 85) and not(IsXPUserDisabled()) then
+	if (UnitLevel("player") < MAX_PLAYER_LEVEL) and not(IsXPUserDisabled()) then
 		GameTooltip:AddLine(" ")
 		GameTooltip:AddLine(strform("|cff00ff00%s|r", L["<Click> to switch between"]))
 		GameTooltip:AddLine(strform("|cff00ff00%s|r", "    "..L["XP and Rep display."]))
@@ -1006,6 +1007,11 @@ function InfoLine_XR_Update(self)
 	xpmax = UnitXPMax("player")
 	restxp = GetXPExhaustion() or 0
 	local percentXP = (xp/xpmax)*100
+	if (xp <= 0) or (xpmax <= 0) then
+		percentXP = 0
+	else
+		percentXP = (xp/xpmax)*100
+	end
 	local percentXPStr = tostring(percentXP)
 	local percentRestXPStr = tostring(floor((restxp / xpmax) * 100))
 	
@@ -1020,7 +1026,12 @@ function InfoLine_XR_Update(self)
 	repstatus = getglobal("FACTION_STANDING_LABEL"..replvl)
 	repStandingID = replvl
 	
- 	local percentRep = (rep/(replvlmax))*100
+ 	local percentRep
+	if (replvlmax <= 0) then
+		percentRep = 0
+	else
+		percentRep = (rep/(replvlmax))*100
+	end
 	local percentRepStr = tostring(percentRep)
 	
 	if not watchedFaction then
@@ -1034,7 +1045,7 @@ function InfoLine_XR_Update(self)
 	-- Set Info Text
 	local XRSuffix, XRStr, XRPer, XRLen, XRRested
 	local HideMe = false
-	if ( (dbc.xrstate == "x") and not(UnitLevel("player") == 85) and not(IsXPUserDisabled()) ) then
+	if ( (dbc.xrstate == "x") and not(UnitLevel("player") == MAX_PLAYER_LEVEL) and not(IsXPUserDisabled()) ) then
 		XRSuffix, XRStr, XRPer = "XP:", percentXPStr, percentXP
 		if restxp > 0 then
 			XRRested = percentRestXPStr
@@ -1042,8 +1053,8 @@ function InfoLine_XR_Update(self)
 			XRRested = ""
 		end
 	else
-		if ( (repstatus == "---") and (UnitLevel("player") == 85) ) then
-			-- Level 85 and no Rep tracked, hide display
+		if ( (repstatus == "---") and (UnitLevel("player") == MAX_PLAYER_LEVEL) ) then
+			-- Max Level and no Rep tracked, hide display
 			HideMe = true
 		end
 		XRSuffix, XRStr, XRPer, XRRested = "Rep:", percentRepStr, percentRep, ""
@@ -1070,7 +1081,7 @@ end
 
 function InfoLine_XR_OnMouseDown(self)
 	dbc.xrstate = (dbc.xrstate == "x") and "r" or "x"
-	if UnitLevel("player") == 85 and not InCombatLockdown() then
+	if UnitLevel("player") == MAX_PLAYER_LEVEL and not InCombatLockdown() then
 		ToggleCharacter("ReputationFrame")
 	end
 	InfoLine_XR_Update(self)
@@ -1133,7 +1144,7 @@ local function Currency_UpdateTablet()
 	local FactionList = {nibRealUI.faction, nibRealUI:OtherFaction(nibRealUI.faction)}
 	resSizeExtra = db.resolution[ndbc.resolution].tabfontsize
 	
-	local Has85, OnlyMe = false, true
+	local HasMaxLvl, OnlyMe = false, true
 	
 	-- Get max col widths
 	MaxWidth = {[1] = 0, [2] = 0, [3] = 0, [4] = 0, [5] = 0, [6] = 0, [7] = 0, [8] = 0, [9] = 0}
@@ -1146,7 +1157,7 @@ local function Currency_UpdateTablet()
 			for kf, vf in ipairs(FactionList) do
 				if CurrencyTabletData[realm][vf] and #CurrencyTabletData[realm][vf] > 0 then
 					for kn, vn in pairs(CurrencyTabletData[realm][vf]) do
-						if vn[2] == 85 then Has85 = true end
+						if vn[2] == 85 then HasMaxLvl = true end
 						TotalGold = TotalGold + vn[3]
 						MaxWidth[3] = max(MaxWidth[3], GetTextWidth(convertMoney(vn[3]), 11 + resSizeExtra))
 						for i = 4, 9 do
@@ -1308,7 +1319,7 @@ local function Currency_UpdateTablet()
 	if OnlyMe then
 		hint = L["<Click> to switch currency displayed."]
 	else
-		if Has85 then
+		if HasMaxLvl then
 			hint = L["<Click> to switch currency displayed."].."\n"..L["<Alt+Click> to erase highlighted character data."].."\n"..L["<Shift+Click> to reset weekly caps."]
 		else
 			hint = L["<Click> to switch currency displayed."].."\n"..L["<Alt+Click> to erase highlighted character data."]
@@ -1323,7 +1334,7 @@ local function Currency_UpdateTablet()
 		"textB", 0,
 		"wrap", true
 	)
-	if not OnlyMe and Has85 then
+	if not OnlyMe and HasMaxLvl then
 		AddBlankTabLine(hintCat, 2)
 		hintCat:AddLine(
 			"text", L["Note: Weekly caps will reset upon loading currency data"].."\n  "..L["on a character whose weekly caps have reset."],
@@ -1464,7 +1475,7 @@ local function Currency_Update(self)
 						if vn then
 							local vpStr = tostring(dbg.currency[kr][kf][kn].vp)
 							local cpStr = tostring(dbg.currency[kr][kf][kn].cp)
-							if dbg.currency[kr][kf][kn].level == 85 then
+							if dbg.currency[kr][kf][kn].level == MAX_PLAYER_LEVEL then
 								vpStr = vpStr.." ("..tostring(dbg.currency[kr][kf][kn].vpw or 0).."/1000)"
 								cpStr = cpStr.." ("..tostring(dbg.currency[kr][kf][kn].cpw or 0).."/1650)"
 							end
@@ -1569,7 +1580,7 @@ function Currency_OnMouseDown(self)
 		print("|cff00ffffRealUI: |r|cffffffffTo erase character data, mouse-over their entry in the Currency display and then Alt+Click.")
 	else
 		dbc.currencystate = (dbc.currencystate < 7) and (dbc.currencystate + 1) or 1
-		if UnitLevel("player") < 85 then
+		if UnitLevel("player") < MAX_PLAYER_LEVEL then
 			if dbc.currencystate == 3 or dbc.currencystate == 4 then
 				dbc.currencystate = 5
 			elseif dbc.currencystate == 6 or dbc.currencystate == 7 then
@@ -1630,7 +1641,7 @@ function InfoLine_Durability_OnEnter(self)
 	GameTooltip:SetOwner(self, "ANCHOR_TOP"..self.side, 0, 2)
 	GameTooltip:AddLine(strform("|cff%s%s|r", TextColorTTHeader, DURABILITY))
 	GameTooltip:AddLine(" ")
-	for i = 1, 11 do
+	for i = 1, 10 do
 		local durastring
 		if ( DuraSlotInfo[i].equip and DuraSlotInfo[i].max ~= nil ) then
 			if ( DuraSlotInfo[i].perc <= 50 ) then
@@ -2268,7 +2279,7 @@ local function SpecChangeClickFunc(self, ...)
 			end
 		end
 		
-		SetActiveTalentGroup(NewTG)
+		SetActiveSpecGroup(NewTG)
 	end
 end
 
@@ -2343,51 +2354,38 @@ local TalentInfo = {}
 local function SpecAddTalentGroupLineToCat(self, cat, talentGroup)
 	resSizeExtra = db.resolution[ndbc.resolution].tabfontsize
 	
-	local ActiveColor = db.colors.blue1
-	local InactiveColor = {0.9, 0.9, 0.9}
-	local PrimaryTreeColor = db.colors.orange2
-	local OtherTreeColor = {0.8, 0.8, 0.8}
+	local ActiveGroupColor = db.colors.orange2
+	local InactiveColor = db.colors.disabled
+	local ActiveSpecColor = db.colors.blue1
 	
-	local IsPrimary = GetActiveSpecGroup()
-	local maxPrimaryTree = GetPrimaryTalentTree()
-	
+	local activeSpecGroup = GetActiveSpecGroup()
+	local activeSpec = GetSpecialization()
+	local id, name, description, icon, inactiveSpec
 	local line = {}
-	for i = 1, 4 do
-		local SpecColor = (IsPrimary == talentGroup) and ActiveColor or InactiveColor
-		local TreeColor = ((IsPrimary == talentGroup) and (maxPrimaryTree == i - 1)) and PrimaryTreeColor or OtherTreeColor
+	
+	for i = 1, 2 do
+		local GroupColor = (activeSpecGroup == talentGroup) and ActiveGroupColor or InactiveColor
+		local SpecColor = (activeSpecGroup == talentGroup) and ActiveSpecColor or InactiveColor
 		if i == 1 then
 			line["text"] = talentGroup == 1 and PRIMARY or SECONDARY
 			line["justify"] = "LEFT"
 			line["size"] = 11 + resSizeExtra
-			line["textR"] = SpecColor[1]
-			line["textG"] = SpecColor[2]
-			line["textB"] = SpecColor[3]
+			line["textR"] = GroupColor[1]
+			line["textG"] = GroupColor[2]
+			line["textB"] = GroupColor[3]
 			line["hasCheck"] = true
-			line["checked"] = IsPrimary == talentGroup
+			line["checked"] = activeSpecGroup == talentGroup
 			line["isRadio"] = true
 			line["func"] = function() SpecChangeClickFunc(self, talentGroup) end
 			line["customwidth"] = 130
 		elseif i == 2 then
-			line["text"..i] = TalentInfo[talentGroup][1].points
-			line["justify"..i] = "CENTER"
-			line["text"..i.."R"] = TreeColor[1]
-			line["text"..i.."G"] = TreeColor[2]
-			line["text"..i.."B"] = TreeColor[3]
-			line["customwidth"..i] = 20
-		elseif i == 3 then
-			line["text"..i] = TalentInfo[talentGroup][2].points
-			line["justify"..i] = "CENTER"
-			line["text"..i.."R"] = TreeColor[1]
-			line["text"..i.."G"] = TreeColor[2]
-			line["text"..i.."B"] = TreeColor[3]
-			line["customwidth"..i] = 20
-		elseif i == 4 then
-			line["text"..i] = TalentInfo[talentGroup][3].points
-			line["justify"..i] = "CENTER"
-			line["text"..i.."R"] = TreeColor[1]
-			line["text"..i.."G"] = TreeColor[2]
-			line["text"..i.."B"] = TreeColor[3]
-			line["customwidth"..i] = 20
+			id, name, description, icon = GetSpecializationInfo(GetSpecialization(false, false, talentGroup))
+			line["text"..i] = strform("|T%s:%d:%d:%d:%d|t %s", icon, 11 + resSizeExtra, 11 + resSizeExtra, 0, 0, name)
+			line["justify"..i] = "RIGHT"
+			line["text"..i.."R"] = SpecColor[1]
+			line["text"..i.."G"] = SpecColor[2]
+			line["text"..i.."B"] = SpecColor[3]
+			line["customwidth"..i] = 130
 		end
 	end
 	cat:AddLine(line)
@@ -2406,24 +2404,16 @@ local function Spec_UpdateTablet(self)
 		-- Spec Category
 		SpecSection["specs"] = {}
 		SpecSection["specs"].cat = Tablets.spec:AddCategory()
-		SpecSection["specs"].cat:AddLine("text", TALENTS, "size", 13 + resSizeExtra, "textR", 1, "textG", 1, "textB", 1)
+		SpecSection["specs"].cat:AddLine("text", SPECIALIZATION, "size", 13 + resSizeExtra, "textR", 1, "textG", 1, "textB", 1)
 		
-		-- Talent Cat
-		Cols = {
-			" ",
-			strform("|T%s:%d:%d:%d:%d|t", TalentInfo[1][1].icon or "", 16 + resSizeExtra, 16 + resSizeExtra, 0, 4),
-			strform("|T%s:%d:%d:%d:%d|t", TalentInfo[1][2].icon or "", 16 + resSizeExtra, 16 + resSizeExtra, 0, 4),
-			strform("|T%s:%d:%d:%d:%d|t", TalentInfo[1][3].icon or "", 16 + resSizeExtra, 16 + resSizeExtra, 0, 4),
-		}
-		SpecSection["specs"].talentCat = Tablets.spec:AddCategory("columns", #Cols)
-		lineHeader = MakeTabletHeader(Cols, 13 + resSizeExtra, 12, {"LEFT", "CENTER", "CENTER", "CENTER"})
-		SpecSection["specs"].talentCat:AddLine(lineHeader)
+		-- Spec Cat
+		SpecSection["specs"].talentCat = Tablets.spec:AddCategory("columns", 2)
 		AddBlankTabLine(SpecSection["specs"].talentCat, 1)
 		
-		-- Primary Talent line
+		-- Primary Spec
 		SpecAddTalentGroupLineToCat(self, SpecSection["specs"].talentCat, 1)
 		
-		-- Secondary Talent line
+		-- Secondary Spec
 		SpecAddTalentGroupLineToCat(self, SpecSection["specs"].talentCat, 2)
 	end
 	
@@ -3056,6 +3046,7 @@ end
 
 function InfoLine:UpdateMMButtonState()
 	local playerLevel = UnitLevel("player")
+	local factionGroup = UnitFactionGroup("player")
 	
 	-- Character
 	if CharacterFrame:IsShown() then
@@ -3075,15 +3066,11 @@ function InfoLine:UpdateMMButtonState()
 	if PlayerTalentFrame and PlayerTalentFrame:IsShown() then
 		ILFrames.micromenu.buttons[MMIDs.Talents].windowopen = true
 	else
-		if GetNumTalentPoints ~= nil then
-			if GetNumTalentPoints() == 0 then
-				ILFrames.micromenu.buttons[MMIDs.Talents].disabled = true
-			else
-				ILFrames.micromenu.buttons[MMIDs.Talents].disabled = false
-				ILFrames.micromenu.buttons[MMIDs.Talents].windowopen = false
-			end
-		else
+		if (playerLevel < SHOW_SPEC_LEVEL) then
 			ILFrames.micromenu.buttons[MMIDs.Talents].disabled = true
+		else
+			ILFrames.micromenu.buttons[MMIDs.Talents].disabled = false
+			ILFrames.micromenu.buttons[MMIDs.Talents].windowopen = false
 		end
 	end
 	
@@ -3100,36 +3087,34 @@ function InfoLine:UpdateMMButtonState()
 	end
 
 	-- QuestLog
-	if QuestLogFrame:IsShown() then
+	if QuestLogFrame and QuestLogFrame:IsShown() then
 		ILFrames.micromenu.buttons[MMIDs.QuestLog].windowopen = true
 	else
 		ILFrames.micromenu.buttons[MMIDs.QuestLog].windowopen = false
 	end
 	
 	-- Social
-	if FriendsFrame:IsShown() then
+	if FriendsFrame and FriendsFrame:IsShown() then
 		ILFrames.micromenu.buttons[MMIDs.Social].windowopen = true
 	else
 		ILFrames.micromenu.buttons[MMIDs.Social].windowopen = false
 	end
 	
 	-- Guild
-	if IsInGuild() then
-		if (GuildFrame and GuildFrame:IsShown()) then
-			ILFrames.micromenu.buttons[MMIDs.Guild].windowopen = true
-		else
-			ILFrames.micromenu.buttons[MMIDs.Guild].disabled = false
-			ILFrames.micromenu.buttons[MMIDs.Guild].windowopen = false
-		end
-	else
+	if ( IsTrialAccount() or factionGroup == "Neutral" ) then
 		ILFrames.micromenu.buttons[MMIDs.Guild].disabled = true
+	elseif (GuildFrame and GuildFrame:IsShown()) or (LookingForGuildFrame and LookingForGuildFrame:IsShown()) then
+		ILFrames.micromenu.buttons[MMIDs.Guild].windowopen = true
+	else
+		ILFrames.micromenu.buttons[MMIDs.Guild].disabled = false
+		ILFrames.micromenu.buttons[MMIDs.Guild].windowopen = false
 	end
 	
 	-- PvP
-	if PVPFrame:IsShown() then
+	if PVPFrame and PVPFrame:IsShown() then
 		ILFrames.micromenu.buttons[MMIDs.PvP].windowopen = true
 	else
-		if playerLevel < PVPMicroButton.minLevel then
+		if playerLevel < PVPMicroButton.minLevel or factionGroup == "Neutral" then
 			ILFrames.micromenu.buttons[MMIDs.PvP].disabled = true
 		else
 			ILFrames.micromenu.buttons[MMIDs.PvP].disabled = false
@@ -3138,10 +3123,10 @@ function InfoLine:UpdateMMButtonState()
 	end	
 
 	-- LFD
-	if LFDParentFrame:IsShown() then
+	if PVEFrame and PVEFrame:IsShown() then
 		ILFrames.micromenu.buttons[MMIDs.LFD].windowopen = true
 	else
-		if playerLevel < LFDMicroButton.minLevel then
+		if playerLevel < LFDMicroButton.minLevel or factionGroup == "Neutral" then
 			ILFrames.micromenu.buttons[MMIDs.LFD].disabled = true
 		else
 			ILFrames.micromenu.buttons[MMIDs.LFD].disabled = false
@@ -3165,24 +3150,16 @@ function InfoLine:UpdateMMButtonState()
 	if PetJournalParent and PetJournalParent:IsShown() then
 		ILFrames.micromenu.buttons[MMIDs.MountsPets].windowopen = true
 	else
-		if GetNumCompanions("CRITTER") == 0 then
-			ILFrames.micromenu.buttons[MMIDs.MountsPets].disabled = true
-		else
-			ILFrames.micromenu.buttons[MMIDs.MountsPets].disabled = false
-			ILFrames.micromenu.buttons[MMIDs.MountsPets].windowopen = false
-		end
+		ILFrames.micromenu.buttons[MMIDs.MountsPets].disabled = false
+		ILFrames.micromenu.buttons[MMIDs.MountsPets].windowopen = false
 	end
 
 	-- EJ
 	if EncounterJournal and EncounterJournal:IsShown() then
 		ILFrames.micromenu.buttons[MMIDs.DJ].windowopen = true
 	else
-		if playerLevel < EJMicroButton.minLevel then
-			ILFrames.micromenu.buttons[MMIDs.DJ].disabled = true
-		else
-			ILFrames.micromenu.buttons[MMIDs.DJ].disabled = false
-			ILFrames.micromenu.buttons[MMIDs.DJ].windowopen = false
-		end
+		ILFrames.micromenu.buttons[MMIDs.DJ].disabled = false
+		ILFrames.micromenu.buttons[MMIDs.DJ].windowopen = false
 	end
 
 	-- Help Request
@@ -3222,7 +3199,11 @@ function InfoLine:MMButton_OnEnter(button)
 	elseif button == MMIDs.Social then
 		tt = MicroButtonTooltipText(SOCIAL_BUTTON, "TOGGLESOCIAL")
 	elseif button == MMIDs.Guild then
-		tt = MicroButtonTooltipText(GUILD, "TOGGLEGUILDTAB")
+		if ( IsInGuild() ) then
+			tt = MicroButtonTooltipText(GUILD, "TOGGLEGUILDTAB")
+		else
+			tt = MicroButtonTooltipText(LOOKINGFORGUILD, "TOGGLEGUILDTAB");
+		end
 	elseif button == MMIDs.PvP then
 		tt = MicroButtonTooltipText(PLAYER_V_PLAYER, "TOGGLECHARACTER4")
 	elseif button == MMIDs.LFD then

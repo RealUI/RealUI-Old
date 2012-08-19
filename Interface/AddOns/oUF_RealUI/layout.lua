@@ -215,11 +215,11 @@ LF:SetScript("OnEvent", function()
 
 	oUF:Factory(function(self)
 		spawnHelper(self, "player", "CENTER", cfg.unit_positions[layoutSize].player.x, cfg.unit_positions[layoutSize].player.y)
-		spawnHelper(self, "pet", "RIGHT", self.units.player, cfg.unit_positions[layoutSize].pet.x, cfg.unit_positions[layoutSize].pet.y)
-		spawnHelper(self, "focus", "RIGHT", self.units.player, cfg.unit_positions[layoutSize].focus.x, cfg.unit_positions[layoutSize].focus.y)
-		spawnHelper(self, "focustarget", "RIGHT", self.units.focus, cfg.unit_positions[layoutSize].focustarget.x, cfg.unit_positions[layoutSize].focustarget.y)
+		spawnHelper(self, "pet", "RIGHT", "oUF_RealUIPlayer", cfg.unit_positions[layoutSize].pet.x, cfg.unit_positions[layoutSize].pet.y)
+		spawnHelper(self, "focus", "RIGHT", "oUF_RealUIPlayer", cfg.unit_positions[layoutSize].focus.x, cfg.unit_positions[layoutSize].focus.y)
+		spawnHelper(self, "focustarget", "RIGHT", "oUF_RealUIFocus", cfg.unit_positions[layoutSize].focustarget.x, cfg.unit_positions[layoutSize].focustarget.y)
 		spawnHelper(self, "target", "CENTER", cfg.unit_positions[layoutSize].target.x, cfg.unit_positions[layoutSize].target.y)
-		spawnHelper(self, "targettarget", "LEFT", self.units.target, cfg.unit_positions[layoutSize].targettarget.x, cfg.unit_positions[layoutSize].targettarget.y)
+		spawnHelper(self, "targettarget", "LEFT", "oUF_RealUITarget", cfg.unit_positions[layoutSize].targettarget.x, cfg.unit_positions[layoutSize].targettarget.y)
 		
 		-- Main Tank
 		-- if cfg.showtank then

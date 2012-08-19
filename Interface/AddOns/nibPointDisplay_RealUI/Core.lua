@@ -1,7 +1,6 @@
 local nibPointDisplay_RealUI = LibStub("AceAddon-3.0"):NewAddon("nibPointDisplay_RealUI", "AceConsole-3.0", "AceEvent-3.0", "AceBucket-3.0")
 local media = LibStub("LibSharedMedia-3.0")
 local db
-
 nibPointDisplay_RealUI.Types = {
 	["GENERAL"] = {
 		name = "General",
@@ -39,10 +38,16 @@ nibPointDisplay_RealUI.Types = {
 			[2] = {name = "Fingers of Frost", id = "ff", barcount = 2},
 		},
 	},
+	["MONK"] = {
+		name = "Monk",
+		points = {
+			[1] = {name = "Chi", id = "chi", barcount = 5},
+		},
+	},
 	["PALADIN"] = {
 		name = "Paladin",
 		points = {
-			[1] = {name = "Holy Power", id = "hp", barcount = 3},
+			[1] = {name = "Holy Power", id = "hp", barcount = 5},
 		},
 	},
 	["PRIEST"] = {
@@ -436,6 +441,7 @@ end
 
 -- Point retrieval
 local function GetDebuffCount(SpellID, ...)
+	if not SpellID then return end
 	local unit = ... or "target"
 	local _,_,_,count,_,_,_,caster = UnitDebuff(unit, SpellID)
 	if count == nil then count = 0 end
@@ -445,7 +451,6 @@ end
 
 local function GetBuffCount(SpellID, ...)
 	if not SpellID then return end
-	print("SpellID: "..tostring(SpellID))
 	local unit = ... or "player"
 	local _,_,_,count = UnitAura(unit, SpellID)
 	if count == nil then count = 0 end
@@ -507,7 +512,13 @@ function nibPointDisplay_RealUI:GetPoints(CurClass, CurType)
 		elseif CurType == "ff" then
 			NewPoints = GetBuffCount(SpellInfo[CurType], "player")
 		end
-	-- Paladin
+	-- Monk
+	elseif CurClass == "MONK" then
+		-- Chi
+		if CurType == "chi" then
+			NewPoints = UnitPower("player", SPELL_POWER_LIGHT_FORCE)
+		end
+	-- Priest
 	elseif CurClass == "PALADIN" then
 		-- Holy Power
 		if CurType == "hp" then
@@ -869,7 +880,7 @@ function nibPointDisplay_RealUI:HideUIElements()
 end
 
 function nibPointDisplay_RealUI:UpdateSpec()
-	PlayerSpec = GetActiveSpecGroup()
+	PlayerSpec = GetActiveSpecGroup()	--
 end
 
 function nibPointDisplay_RealUI:UpdateSmartHideConditions()
@@ -940,6 +951,8 @@ function nibPointDisplay_RealUI:PLAYER_LOGIN()
 	-- Mage
 	SpellInfo["ab"] = GetSpellInfo(36032)		-- Arcane Blast
 	SpellInfo["ff"] = GetSpellInfo(44544)		-- Fingers of Frost
+	-- Monk
+	--SpellInfo[""] = GetSpellInfo()
 	-- Priest
 	SpellInfo["eva"] = GetSpellInfo(81661)		-- Evangelism
 	SpellInfo["so"] = GetSpellInfo(77487)		-- Shadow Orb
@@ -975,6 +988,9 @@ function nibPointDisplay_RealUI:PLAYER_LOGIN()
 	end
 	if (PlayerClass == "DRUID") then
 		tinsert(EventList, "PLAYER_TOTEM_UPDATE")
+	end
+	if (PlayerClass == "MONK") then
+		tinsert(EventList, "UNIT_POWER")
 	end
 	if (PlayerClass == "PALADIN") then
 		tinsert(EventList, "UNIT_POWER")

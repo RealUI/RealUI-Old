@@ -1474,7 +1474,11 @@ local function AcquireFrame(self, registration, data, detachedData)
 				val = 0
 			end
 			self.scrollFrame:SetVerticalScroll(val)
-			self.slider:SetValue(val/max)
+			if val == 0 or max == 0 then
+				self.slider:SetValue(0)
+			else
+				self.slider:SetValue(val/max)
+			end
 		end
 		tooltip.Show = wrap(tooltip.Show, "tooltip:Show")
 		
