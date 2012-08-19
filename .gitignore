@@ -3,4 +3,5 @@
 # Ace
 *.pkgmeta
 
-\Interface\AddOns\Blizzard_LookingForGuildUI
+# Blizzard
+Blizzard_*/
