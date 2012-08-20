@@ -5,9 +5,7 @@ Addon Update Exclusions
 ------------------------
 The following addons have been modified to suit RealUI and should not be updated:
 
-  - Aurora
   - GridManaBars
-  - Omen
   - SharedMedia + SharedMedia_MyMedia
   
 Installation Procedure
@@ -69,4 +67,5 @@ To access the RealUI options window, click the small icon at the bottom left of 
 Troubleshooting/comments/questions?
 -----------------------------------
 
+Find a bug? Please use my Github Issue tracker.
 Please visit: http://www.wowinterface.com/downloads/info16068-RealUI.html

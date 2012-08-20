@@ -1,4 +1,4 @@
-## Interface: 40300
+## Interface: 50001
 ## Title: Masque: |cffffffffRealUI|r
 ## Version: 7.1
 ## Author: Nibelheim

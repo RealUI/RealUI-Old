@@ -4,157 +4,17 @@
 ---------------------------------------------------------
 local bzone = LibStub("LibBabble-Zone-3.0"):GetUnstrictLookupTable()
 local bboss = LibStub("LibBabble-Boss-3.0"):GetUnstrictLookupTable()
-local bzoneRev = LibStub("LibBabble-Zone-3.0"):GetReverseLookupTable()
 
 ---------------------------------------------------------
 --	Localization
 ---------------------------------------------------------
 
-local L = {}
-do
-	local loc = GetLocale()
-	if loc == "koKR" then
-		L["Raid Debuff"] = "레이드 디버프"
-		L["Option for %s"] = "%s의 설정"
-		L["Enable"] = "활성화"
-		L["Enable %s"] = "%s 활성화"
-		L["Icon Priority"] = "아이콘 우선순위"
-		L["Color Priority"] = "색상 우선순위"
-		L["Custom Color"] = "임의의 색상"
-		L["Color"] = "색상"
-		L.colorDesc = "색상 변경"
-		L["Ignore dispellable debuff"] = "해제 가능한 디버프 무시"
-		L["Ignore undispellable debuff"] = "해제 불가능한 디버프 무시"
-		L["Remained time"] = "남은 시간"
-		L["Stackable debuff"] = "중첩 디버프"
-		L["Only color"] = "색상만 표시"
-		L.detector = "새로운 디버프 기록"
-		L["Remove"] = "제거"
-		L["Load"] = "불러오기"
-		L["Detected debuff"] = "추적된 디버프"
-		L["Remove detected debuff"] = "추적된 디버프 제거"
-		L.msgAct = "지금부터 새로운 디버프를 추적합니다."
-		L.msgDeact = "새로운 디버프를 추적하지 않습니다."
-		L["Aura Refresh Frequency"] = "디버프 재확인 주기"
-		L["Border"] = "테두리"
-		L["Center Icon"] = "중앙 아이콘"
-		L["Import Debuff"] = "디버프 추가"
-    		L["Import Debuff Desc"] = "현재 지역에 새 레이드 디버프 추가"
-	elseif loc == "ruRU" then
-		L["Raid Debuff"] = "Дебаффы рейда"
-		L["Option for %s"] = "Опции %s"
-		L["Enable"] = "Включить"
-		L["Enable %s"] = "Включить %s"
-		L["Icon Priority"] = "Приоритет иконки"
-		L["Color Priority"] = "Приоритет цвета"
-		L["Custom Color"] = "Свой цвет"
-		L["Color"] = "Цвет"
-		L.colorDesc = "Изменение цвета"
-		L["Ignore dispellable debuff"] = "Игнорировать дебаффы которые можно снять"
-		L["Ignore undispellable debuff"] = "Игнорировать дебаффы которые не можно снять"
-		L["Remained time"] = "Остаток времени"
-		L["Stackable debuff"] = "Наращиваемые дебаффы"
-		L["Only color"] = "Показывать только цвет, игнорируя иконку"
-		L.detector = "Детектор дебаффов"
-		L["Remove"] = "Удалить"
-		L["Load"] = "Загрузить"
-		L["Detected debuff"] = "Определённый дебафф"
-		L["Remove detected debuff"] = "Удалить определённый дебафф"
-		L.msgAct = "Детектор дебаффов активирован для текущей сессии."
-		L.msgDeact = "Детектор дебаффов деактивирован."
-		L["Aura Refresh Frequency"] = "Частота обновления ауры"
-		L["Border"] = "Граница"
-		L["Center Icon"] = "Иконка в центре"
-		L["Import Debuff"] = "Import Debuff"
-   		 L["Import Debuff Desc"] = "Import a new raid debuff for this zone"
-	elseif loc == "zhCN" then
-		L["Raid Debuff"] = "团队减益状态"
-		L["Option for %s"] = "%s 设置"
-		L["Enable"] = "开启"
-		L["Enable %s"] = "开启 %s"
-		L["Icon Priority"] = "图标属性"
-		L["Color Priority"] = "颜色属性"
-		L["Custom Color"] = "自订颜色"
-		L["Color"] = "颜色"
-		L.colorDesc = "修改颜色"
-		L["Ignore dispellable debuff"] = "忽略可驱散的减益状态"
-		L["Ignore undispellable debuff"] = "忽略不可驱散的减益状态"
-		L["Remained time"] = "剩余时间"
-		L["Stackable debuff"] = "可堆叠的减益状态"
-		L["Only color"] = "忽略图示而只显示颜色"
-		L.detector = "侦测新的减益状态"
-		L["Remove"] = "移除"
-		L["Load"] = "载入"
-		L["Detected debuff"] = "已侦测的减益状态"
-		L["Remove detected debuff"] = "移除已侦测的减益状态"
-		L.msgAct = "减益状态侦测器已开启在目前的战斗期间。"
-		L.msgDeact = "减益状态侦测器已关闭。"
-		L["Aura Refresh Frequency"] = "光环刷新频率"
-		L["Border"] = "外框"
-		L["Center Icon"] = "中心图标"
-		L["Import Debuff"] = "导入数据"
-    		L["Import Debuff Desc"] = "导入这个地区新的数据"
-	elseif loc == "zhTW" then
-		L["Raid Debuff"] = "團隊減益狀態"
-		L["Option for %s"] = "%s 選項"
-		L["Enable"] = "啟用"
-		L["Enable %s"] = "啟用%s"
-		L["Icon Priority"] = "圖示屬性"
-		L["Color Priority"] = "顏色屬性"
-		L["Custom Color"] = "自訂顏色"
-		L["Color"] = "顏色"
-		L.colorDesc = "修改顏色"
-		L["Ignore dispellable debuff"] = "忽略可驅散的減益狀態"
-		L["Ignore undispellable debuff"] = "忽略不可驅散的減益狀態"
-		L["Remained time"] = "剩餘時間"
-		L["Stackable debuff"] = "可堆疊的減益狀態"
-		L["Only color"] = "忽略圖示而只顯示顏色"
-		L.detector = "偵測新的減益狀態"
-		L["Remove"] = "移除"
-		L["Load"] = "載入"
-		L["Detected debuff"] = "已偵測的減益狀態"
-		L["Remove detected debuff"] = "移除已偵測的減益狀態"
-		L.msgAct = "減益狀態偵測器已啟動在目前的戰鬥期間。"
-		L.msgDeact = "減益狀態偵測器已停用。"
-		L["Aura Refresh Frequency"] = "光環更新頻率"
-		L["Border"] = "邊框"
-		L["Center Icon"] = "中央圖示"
-		L["Import Debuff"] = "導入數據"
-    		L["Import Debuff Desc"] = "導入這個地區的新數據"
-	else
-		L["Raid Debuff"] = "Raid Debuff"
-		L["Option for %s"] = "Option for %s"
-		L["Enable"] = "Enable"
-		L["Enable %s"] = "Enable %s"
-		L["Icon Priority"] = "Icon Priority"
-		L["Color Priority"] = "Color Priority"
-		L["Custom Color"] = "Custom Color"
-		L["Color"] = "Color"
-		L.colorDesc = "Modify Color"
-		L["Ignore dispellable debuff"] = "Ignore dispellable debuff"
-		L["Ignore undispellable debuff"] = "Ignore undispellable debuff"
-		L["Remained time"] = "Remained time"
-		L["Stackable debuff"] = "Stackable debuff"
-		L["Only color"] = "Only show color, Ignore icon"
-		L.detector = "Detect new debuff"
-		L["Remove"] = "Remove"
-		L["Load"] = "Load"
-		L["Detected debuff"] = "Detected debuff"
-		L["Remove detected debuff"] = "Remove detected debuff"
-		L.msgAct = "Debuff detector is activated."
-		L.msgDeact = "Debuff detector is deactivated."
-		L["Aura Refresh Frequency"] = "Aura Refresh Frequency"
-		L["Border"] = "Border"
-		L["Center Icon"] = "Center Icon"
-		L["Import Debuff"] = "Import Debuff"
-  		L["Import Debuff Desc"] = "Import a new raid debuff for this zone"
-	end
-end
+local L = LibStub("AceLocale-3.0"):GetLocale("GridStatusRaidDebuff")
 
 ---------------------------------------------------------
 --	local
 ---------------------------------------------------------
-local realzone, detectStatus, enzone, zonetype
+local realzone, detectStatus, zonetype
 local db, myClass, myDispellable
 local debuff_list = {}
 local refreshEventScheduled = false
@@ -167,12 +27,43 @@ local colorMap = {
 	["Disease"] = { r = .6, g = .4, b =  0},
 }
 
+-- Priest specs: 1) Discipline, 2) Holy, 3) Shadow
+-- Dispel Magic/Mass Dispel: Magic (Shadow)
+-- Purify/Mass Dispel: Magic and Disease (Disc/Holy)
+
+-- Paladin specs: 1) Holy, 2) Protection, 3) Retribution
+-- Cleanse: Poison and Disease (non-Holy)
+-- Cleanse: Poison, Disease, and Magic (Holy, Scared Cleansing)
+
+-- Mage:
+-- Remove Curse (all)
+
+-- Druid specs: 1) Balance, 2) Feral, 3) Guardian, 4) Restoration
+-- Remove Corruption: Curse and Poison (non-Resto)
+-- Nature's Cure: Magic, Curse, Poison (Resto)
+
+-- Shaman specs: 1) Elemental, 2) Enhancement, 3) Restoration
+-- Cleanse Spirit: Curse (non-Resto)
+-- Purify Spirit: Curse and Magic (Resto)
+
+-- Monk specs: 1) Brewmaster, 2) Mistweaver, 3) Windwalker
+-- Detox: Poison and Disease (non-Mistweaver)
+-- Detox: Poison, Disease, and Magic (Mistweaver)
+
+-- Cannot do GetSpecialization != 3 for priest, unspeced is also an option (nil)
 local dispelMap = {
-	["PRIEST"] = {["Magic"] = true, ["Disease"] = true},
-	["PALADIN"] = {["Disease"] = true, ["Poison"] = true, ["Magic"] = (select(5,GetTalentInfo(1,14)) == 1)},
+	["PRIEST"] = {["Magic"] = true, ["Disease"] = ((GetSpecialization() == 1) or (GetSpecialization() == 2))},
+	["PALADIN"] = {["Disease"] = true, ["Poison"] = true, ["Magic"] = (GetSpecialization() == 1)},
 	["MAGE"] = {["Curse"] = true},
-	["DRUID"] = {["Curse"] = true, ["Poison"] = true, ["Magic"] = (select(5,GetTalentInfo(3,17)) == 1)},
-	["SHAMAN"] = {["Curse"] = true, ["Magic"] = (select(5,GetTalentInfo(3,12)) == 1)},
+	["DRUID"] = {["Curse"] = true, ["Poison"] = true, ["Magic"] = (GetSpecialization() == 4)},
+	["SHAMAN"] = {["Curse"] = true, ["Magic"] = (GetSpecialization() == 3)},
+	["MONK"] = {["Disease"] = true, ["Poison"] = true, ["Magic"] = (GetSpecialization() == 2)},
+}
+
+-- Spells to ignore detecting
+local ignore_ids = {
+	[1604] = true, -- Dazed
+	[6307] = true, -- Blood Pact
 }
 
 local clientVersion
@@ -198,7 +89,8 @@ local fmt = string.format
 local ssub = string.sub
 
 GridStatusRaidDebuff.defaultDB = {
-	debug = false,
+        -- Removed from Grid 1477
+	-- debug = false,
 	isFirst = true,
 
 	["alert_RaidDebuff"] = {
@@ -212,7 +104,7 @@ GridStatusRaidDebuff.defaultDB = {
 
 	ignDis = false,
 	ignUndis = false,
-	detect = false,
+	detect = true,
 	frequency = 0.1,
 
 	["debuff_options"] = {},
@@ -226,7 +118,10 @@ function GridStatusRaidDebuff:OnInitialize()
 end
 
 function GridStatusRaidDebuff:OnEnable()
-	self.debugging = self.db.profile.debug
+	-- Removed from Grid 1477
+	-- self.debugging = self.db.profile.debug
+	-- New variable:
+	-- self.debugging = GridStatusRaidDebuff.debug
 
 	myClass = select(2, UnitClass("player"))
 	myDispellable = dispelMap[myClass]
@@ -261,7 +156,7 @@ end
 
 function GridStatusRaidDebuff:CheckDetectZone()
 	detectStatus = self.db.profile.detect and not (zonetype == "none" or zonetype == "pvp") --check db Enable
-	self:Debug("CheckDetectZone", realzone, enzone, detectStatus and "Detector On")
+	self:Debug("CheckDetectZone", realzone, detectStatus and "Detector On")
 
 	if detectStatus then
 		self:CreateZoneMenu(realzone)
@@ -274,24 +169,12 @@ end
 
 function GridStatusRaidDebuff:ZoneCheck()
 	realzone, zonetype = GetInstanceInfo()
-	enzone = bzoneRev[realzone]
-
-	-- Fall back on GetRealZoneText if GetInstanceInfo does not return a valid zone
-	if (not enzone) then
-		realzone = GetRealZoneText()
-		enzone = bzoneRev[realzone]
-	end
-
-	if (not enzone) then
-		self:Debug("ZoneCheck", realzone, enzone, "No enzone translation")
-		-- enzone = nil
-		-- return
-	end
 
 	self:UpdateAllUnit()
 	self:CheckDetectZone()
 
-	if myClass == "PALADIN" or myClass == "DRUID" or myClass == "SHAMAN" then
+	if myClass == "PALADIN" or myClass == "DRUID" or myClass == "SHAMAN" or myClass == "PRIEST" or
+	   myClass == "MONK" then
 		self:RegisterEvent("PLAYER_TALENT_UPDATE")
 	end
 
@@ -330,11 +213,15 @@ end
 
 function GridStatusRaidDebuff:PLAYER_TALENT_UPDATE()
 	if myClass == "PALADIN" then
-		myDispellable["Magic"] = (select(5,GetTalentInfo(1,14)) == 1)
+		myDispellable["Magic"] = (GetSpecialization() == 1)
 	elseif myClass == "DRUID" then
-		myDispellable["Magic"] = (select(5,GetTalentInfo(3,17)) == 1)
+		myDispellable["Magic"] = (GetSpecialization() == 4)
 	elseif myClass == "SHAMAN" then
-		myDispellable["Magic"] = (select(5,GetTalentInfo(3,12)) == 1)
+		myDispellable["Magic"] = (GetSpecialization() == 3)
+	elseif myClass == "PRIEST" then
+		myDispellable["Disease"] = ((GetSpecialization() == 1) or (GetSpecialization() == 2))
+	elseif myClass == "MONK" then
+		myDispellable["Magic"] = (GetSpecialization() == 2)
 	end
 end
 
@@ -349,7 +236,7 @@ function GridStatusRaidDebuff:ScanNewDebuff(e, ts, event, hideCaster, srcguid, s
 	if (settings.enable and debuff_list[realzone]) then
 		if event == "SPELL_AURA_APPLIED" and srcguid and not GridRoster:IsGUIDInRaid(srcguid) and GridRoster:IsGUIDInRaid(dstguid)
 			and not debuff_list[realzone][name] then
-			if spellId == 1604 then return end --Ignore Dazed
+			if ignore_ids[spellId] then return end --Ignore Dazed
 			self:Debug("New Debuff", srcname, dstname, name)
 
 			self:DebuffLocale(realzone, name, spellId, 5, 5, true, true)
@@ -500,7 +387,7 @@ function GridStatusRaidDebuff:Debuff(en_zone, first, second, icon_priority, colo
 		-- The structure is stored by localized zone
 		-- If we only have the English zone and not the localized one
 		-- we can't store it
-		-- self:Debug("Debuff", realzone, enzone, "en_zone translation not found")
+		-- self:Debug("Debuff", realzone, "en_zone translation not found")
 		warn(("LibBabble translation for zone %q not found"):format(en_zone))
 	end
 end
@@ -538,7 +425,7 @@ function GridStatusRaidDebuff:BossName(en_zone, order, en_boss)
 		-- The structure is stored by localized zone
 		-- If we only have the English zone and not the localized one
 		-- we can't store it
-		-- self:Debug("BossName", realzone, enzone, "zone translation not found")
+		-- self:Debug("BossName", realzone, "zone translation not found")
 		warn(("LibBabble translation for zone %q not found"):format(en_zone))
 	end
 end

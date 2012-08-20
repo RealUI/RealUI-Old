@@ -1,5 +1,5 @@
-## Interface: 40300
-## Author: Parnic (modified by Nibelheim) (originally created by Iceroth)
+## Interface: 50001
+## Author: Parnic (modified by Nibelheim (MoP update by Gethe)) (originally created by Iceroth)
 ## Name: nibIceHUD
 ## Title: |cffaaaaaanib|rIceHUD
 ## Notes: IceHUD, now with 75% less fat
@@ -32,6 +32,7 @@ modules\TargetOfTargetCast.lua
 modules\CustomCDBar.lua
 modules\EclipseBar.lua
 modules\Vengeance.lua
+modules\WeakenedBlows.lua
 modules\RogueExtras1.lua
 modules\RogueExtras2.lua
 modules\RogueLegendary.lua

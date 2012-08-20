@@ -1,4 +1,4 @@
-## Interface: 40300
+## Interface: 50001
 ## Title: |cffaaaaaanib|rRealUI
 ## Author: Nibelheim
 ## Notes: RealUI core functionality
