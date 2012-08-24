@@ -359,7 +359,9 @@ function mod:GROUP_ROSTER_UPDATE(evt) -- WoW5 only
 			end
 		end
 	elseif IsInGroup() then
-		for i = 1, GetNumGroupMembers() do
+		-- Bug fix for MoP, GetNumGroupMembers includes yourself
+		local max = GetNumGroupMembers() -1
+		for i = 1, max do
 			local u = "party" .. i
 			local n = UnitName(u)
 			local _, c = UnitClass(u)

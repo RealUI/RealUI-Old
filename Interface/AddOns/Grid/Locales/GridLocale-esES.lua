@@ -1,6 +1,16 @@
 --[[--------------------------------------------------------------------
-	Grid Localization
-	esES/esMX | Spanish (Europe/Latin America) | Español (Europa/America Latina)
+	Grid
+	Compact party and raid unit frames.
+	Copyright (c) 2006-2012 Kyle Smith (a.k.a. Pastamancer), A. Kinley (a.k.a. Phanx) <addons@phanx.net>
+	All rights reserved.
+	See the accompanying README and LICENSE files for more information.
+	http://www.wowinterface.com/downloads/info5747-Grid.html
+	http://www.wowace.com/addons/grid/
+	http://www.curse.com/addons/wow/grid
+------------------------------------------------------------------------
+	GridLocale-esES.lua
+	Spanish (Español) localization.
+	Contributors: Akkorian, Guiaswow, Valdesca, yllelder
 ----------------------------------------------------------------------]]
 
 if GetLocale() ~= "esES" and GetLocale() ~= "esMX" then return end
@@ -272,9 +282,9 @@ L["Change what information is shown by the status color and text."] = "Cambia qu
 L["Change what information is shown by the status text."] = "Cambia que información de muestra por el texto del estado"
 L["Class Filter"] = "Filtro de Clases"
 L["Color"] = "Color"
-L["Color to use when the %s is above the high count threshold values."] = "Color a usar cuando el % is mayor que el máximo de los valores del umbral"
-L["Color to use when the %s is between the low and high count threshold values."] = "Color a usar cuando el % esta entre el mínimo y el máximo del los valore del umbral"
-L["Color when %s is below the low threshold value."] = "Color cuando % es por debajo del mínimo del valor del umbral"
+L["Color to use when the %s is above the high count threshold values."] = "Color para usar cuando el %s is mayor que el máximo de los valores del umbral."
+L["Color to use when the %s is between the low and high count threshold values."] = "Color para usar cuando el %s está entre el mínimo y el máximo del los valore del umbral."
+L["Color when %s is below the low threshold value."] = "Color para usar cuando %s está por debajo del mínimo del valor del umbral."
 L["Curse"] = "Maldición"
 L["<debuff name>"] = "<nombre del perjuicio>"
 L["(De)buff name"] = "Nombre del (De)buff "
@@ -303,13 +313,13 @@ L["Show duration"] = "Mostrar duración"
 L["Show if mine"] = "Mostrar si es mío"
 L["Show if missing"] = "Mostrar si falta"
 L["Show on pets and vehicles."] = "Mostrar en mascotas y vehículos."
-L["Show on %s players."] = "Mostrar en % jugadores."
+L["Show on %s players."] = "Mostrar en %s jugadores."
 L["Show status for the selected classes."] = "Mostrar el estado para las clases seleccionadas."
 L["Show the time left to tenths of a second, instead of only whole seconds."] = "Mostrar el tiempo que queda a décimas de segundo, en lugar de sólo unos segundos enteros."
 L["Show the time remaining, for use with the center icon cooldown."] = "Mostrar el tiempo restante, para usar con el cooldown del icono central"
 L["Show time left to tenths"] = "Mostrar el tiempo que queda a décimas de segundo"
-L["%s is high when it is at or above this value."] = "% es alto cuando es igual o mayor que este valor "
-L["%s is low when it is at or below this value."] = "% es bajo cuando es igual o menor que este valor"
+L["%s is high when it is at or above this value."] = "%s está alto cuando está igual o mayor que este valor."
+L["%s is low when it is at or below this value."] = "%s está bajo cuando está igual o menor que este valor."
 L["Stack count"] = "Número de apilados"
 L["Status Information"] = "Información de estado"
 L["Text"] = "Texto"
@@ -343,8 +353,8 @@ L["Low HP threshold"] = "Límite de salud baja"
 L["Low HP warning"] = "Alerta de salud baja"
 L["Offline"] = "Desconectado"
 L["Offline warning"] = "Alerta de desconectado"
-L["Only show deficit above % damage."] = "Mostrar déficit sobre % de daño"
-L["Set the HP % for the low HP warning."] = "Establece el % límite para la alerta de salud baja"
+L["Only show deficit above % damage."] = "Mostrar déficit sobre este porcentaje de daño."
+L["Set the HP % for the low HP warning."] = "Establece el límite porcentual para la alerta de salud baja."
 L["Show dead as full health"] = "Mostrar muerto como vida completa"
 L["Treat dead units as being full health."] = "Trata las unidades muertas como si tuvieran la salud al completo"
 L["Unit health"] = "Salud de la unidad"

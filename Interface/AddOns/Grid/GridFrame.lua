@@ -1,5 +1,12 @@
 --[[--------------------------------------------------------------------
-	GridFrame.lua
+	Grid
+	Compact party and raid unit frames.
+	Copyright (c) 2006-2012 Kyle Smith (a.k.a. Pastamancer), A. Kinley (a.k.a. Phanx) <addons@phanx.net>
+	All rights reserved.
+	See the accompanying README and LICENSE files for more information.
+	http://www.wowinterface.com/downloads/info5747-Grid.html
+	http://www.wowace.com/addons/grid/
+	http://www.curse.com/addons/wow/grid
 ----------------------------------------------------------------------]]
 
 local GRID, Grid = ...
@@ -8,9 +15,14 @@ local L = Grid.L
 local GridStatus
 
 local media = LibStub("LibSharedMedia-3.0", true)
-if media then media:Register("statusbar", "Gradient", "Interface\\Addons\\Grid\\gradient32x32") end
+if media then
+	media:Register("statusbar", "Blizzard Raid Bar", "Interface\\RaidFrame\\Raid-Bar-Hp-Fill")
+	media:Register("statusbar", "Gradient", "Interface\\Addons\\Grid\\gradient32x32")
+end
 
 local GridFrame = Grid:NewModule("GridFrame", "AceBucket-3.0", "AceTimer-3.0")
+
+local format, gsub, pairs, tonumber, type = format, gsub, pairs, tonumber, type
 
 ------------------------------------------------------------------------
 
@@ -62,8 +74,8 @@ function GridFrame:InitializeFrame(frame)
 
 	-- create border
 	frame:SetBackdrop({
-		bgFile = "Interface\\Addons\\Grid\\white16x16", tile = true, tileSize = 16,
-		edgeFile = "Interface\\Addons\\Grid\\white16x16", edgeSize = 1,
+		bgFile = "Interface\\BUTTONS\\WHITE8X8", tile = true, tileSize = 8,
+		edgeFile = "Interface\\BUTTONS\\WHITE8X8", edgeSize = 1,
 		insets = {left = 1, right = 1, top = 1, bottom = 1},
 	})
 	frame:SetBackdropBorderColor(0,0,0,0)
@@ -134,14 +146,22 @@ function GridFrame:InitializeFrame(frame)
 		frame.Text2:SetShadowOffset(0, 0)
 	end
 
+	if GridFrame.db.profile.invertBarColor and GridFrame.db.profile.invertTextColor then
+		frame.Text:SetShadowColor(1, 1, 1)
+		frame.Text2:SetShadowColor(1, 1, 1)
+	else
+		frame.Text:SetShadowColor(0, 0, 0)
+		frame.Text2:SetShadowColor(0, 0, 0)
+	end
+
 	-- create icon background/border
 	frame.IconBG = CreateFrame("Frame", nil, frame)
 	frame.IconBG:SetWidth(GridFrame.db.profile.iconSize)
 	frame.IconBG:SetHeight(GridFrame.db.profile.iconSize)
 	frame.IconBG:SetPoint("CENTER", frame, "CENTER")
 	frame.IconBG:SetBackdrop({
-			-- bgFile = "Interface\\Addons\\Grid\\white16x16", tile = true, tileSize = 16,
-			edgeFile = "Interface\\Addons\\Grid\\white16x16", edgeSize = 2,
+			-- bgFile = "Interface\\BUTTONS\\WHITE8X8", tile = true, tileSize = 8,
+			edgeFile = "Interface\\BUTTONS\\WHITE8X8", edgeSize = 2,
 			insets = { left = 2, right = 2, top = 2, bottom = 2 },
 		})
 	frame.IconBG:SetBackdropBorderColor(1, 1, 1, 1)
@@ -181,7 +201,7 @@ function GridFrame:InitializeFrame(frame)
 	frame.IconStackText:SetJustifyV("BOTTOM")
 
 	-- set texture
-	frame:SetNormalTexture(1, 1, 1, 0)
+	frame:SetNormalTexture("")
 	frame:EnableMouseoverHighlight(GridFrame.db.profile.enableMouseoverHighlight)
 
 	if frame:CanChangeAttribute() then
@@ -511,19 +531,23 @@ function GridFrame.prototype:InvertBarColor()
 		if GridFrame.db.profile.invertTextColor then
 			r, g, b = self.Text:GetTextColor()
 			self.Text:SetTextColor(r * 0.2, g * 0.2, b * 0.2)
+			self.Text:SetShadowColor(1, 1, 1)
 
 			r, g, b = self.Text2:GetTextColor()
 			self.Text2:SetTextColor(r * 0.2, g * 0.2, b * 0.2)
+			self.Text2:SetShadowColor(1, 1, 1)
 		end
 	else
 		self:SetBarColor(self.Bar:GetStatusBarColor())
 
 		if GridFrame.db.profile.invertTextColor then
 			local r, g, b = self.Text:GetTextColor()
-			self.Text:SetTextColor(r / 0.2, g / 0.2, b / 0.2)
+			self.Text:SetTextColor(r * 5, g * 5, b * 5)
+			self.Text:SetShadowColor(0, 0, 0)
 
 			r, g, b = self.Text2:GetTextColor()
-			self.Text2:SetTextColor(r / 0.2, g / 0.2, b / 0.2)
+			self.Text2:SetTextColor(r * 5, g * 5, b * 5)
+			self.Text2:SetShadowColor(0, 0, 0)
 		end
 	end
 end
@@ -533,11 +557,19 @@ function GridFrame.prototype:InvertTextColor()
 	if GridFrame.db.profile.invertTextColor then
 		r, g, b = self.Text:GetTextColor()
 		self.Text:SetTextColor(r * 0.2, g * 0.2, b * 0.2)
+		self.Text:SetShadowColor(1, 1, 1)
 
 		r, g, b = self.Text2:GetTextColor()
 		self.Text2:SetTextColor(r * 0.2, g * 0.2, b * 0.2)
+		self.Text2:SetShadowColor(1, 1, 1)
 	else
+		r, g, b = self.Text:GetTextColor()
+		self.Text:SetTextColor(r * 5, g * 5, b * 5)
+		self.Text:SetShadowColor(0, 0, 0)
 
+		r, g, b = self.Text2:GetTextColor()
+		self.Text2:SetTextColor(r * 5, g * 5, b * 5)
+		self.Text2:SetShadowColor(0, 0, 0)
 	end
 end
 
@@ -585,8 +617,8 @@ function GridFrame.prototype:CreateIndicator(indicator)
 	f:SetWidth(GridFrame.db.profile.cornerSize)
 	f:SetHeight(GridFrame.db.profile.cornerSize)
 	f:SetBackdrop({
-		bgFile = "Interface\\Addons\\Grid\\white16x16", tile = true, tileSize = 16,
-		edgeFile = "Interface\\Addons\\Grid\\white16x16", edgeSize = 1,
+		bgFile = "Interface\\BUTTONS\\WHITE8X8", tile = true, tileSize = 8,
+		edgeFile = "Interface\\BUTTONS\\WHITE8X8", edgeSize = 1,
 		insets = {left = 1, right = 1, top = 1, bottom = 1},
 	})
 	f:SetBackdropBorderColor(0,0,0,1)
@@ -783,7 +815,7 @@ GridFrame.defaultDB = {
 	enableText2 = false,
 	enableBarColor = false,
 	font = "Friz Quadrata TT",
-	fontSize = 11,
+	fontSize = 12,
 	fontOutline = "NONE",
 	fontShadow = true,
 	texture = "Gradient",
@@ -972,7 +1004,7 @@ GridFrame.options = {
 			end,
 		},
 		["mouseoverhighlight"] = {
-			name = string.format(L["Enable Mouseover Highlight"]),
+			name = format(L["Enable Mouseover Highlight"]),
 			desc = L["Toggle mouseover highlight."],
 			order = 80, width = "double",
 			type = "toggle",
@@ -985,8 +1017,8 @@ GridFrame.options = {
 			end,
 		},
 		["text2"] = {
-			name = string.format(L["Enable %s indicator"], L["Center Text 2"]),
-			desc = string.format(L["Toggle the %s indicator."], L["Center Text 2"]),
+			name = format(L["Enable %s indicator"], L["Center Text 2"]),
+			desc = format(L["Toggle the %s indicator."], L["Center Text 2"]),
 			order = 100, width = "double",
 			type = "toggle",
 			get = function()
@@ -1052,8 +1084,8 @@ GridFrame.options = {
 					end,
 				},
 				["barcolor"] = {
-					name = string.format(L["Enable %s indicator"], L["Health Bar Color"]),
-					desc = string.format(L["Toggle the %s indicator."], L["Health Bar Color"]),
+					name = format(L["Enable %s indicator"], L["Health Bar Color"]),
+					desc = format(L["Toggle the %s indicator."], L["Health Bar Color"]),
 					order = 30, width = "double",
 					type = "toggle",
 					get = function()
@@ -1134,7 +1166,7 @@ GridFrame.options = {
 					end,
 				},
 				["cooldown"] = {
-					name = string.format(L["Enable %s"], L["Icon Cooldown Frame"]),
+					name = format(L["Enable %s"], L["Icon Cooldown Frame"]),
 					desc = L["Toggle center icon's cooldown frame."],
 					order = 30, width = "double",
 					type = "toggle",
@@ -1147,7 +1179,7 @@ GridFrame.options = {
 					end,
 				},
 				["stacktext"] = {
-					name = string.format(L["Enable %s"], L["Icon Stack Text"]),
+					name = format(L["Enable %s"], L["Icon Stack Text"]),
 					desc = L["Toggle center icon's stack count text."],
 					order = 40, width = "double",
 					type = "toggle",
@@ -1402,7 +1434,7 @@ function GridFrame:UpdateFrameUnits()
 			local old_unit = frame.unit
 			local old_guid = frame.unitGUID
 			local unitid = SecureButton_GetModifiedUnit(frame)
-				  unitid = unitid and unitid:gsub("petpet", "pet") -- http://forums.wowace.com/showpost.php?p=307619&postcount=3174
+				  unitid = unitid and gsub(unitid, "petpet", "pet") -- http://forums.wowace.com/showpost.php?p=307619&postcount=3174
 			local guid = unitid and UnitGUID(unitid) or nil
 
 			if old_unit ~= unitid or old_guid ~= guid then
@@ -1458,7 +1490,7 @@ end
 function GridFrame:UpdateIndicator(frame, indicator)
 	local status = self:StatusForIndicator(frame.unit, frame.unitGUID, indicator)
 	if status then
-		-- self:Debug("Showing status", status.text, "for", name, "on", indicator)
+		self:Debug("Showing status", status.text, "for", name, "on", indicator)
 		frame:SetIndicator(indicator,
 			status.color,
 			status.text,
@@ -1470,7 +1502,7 @@ function GridFrame:UpdateIndicator(frame, indicator)
 			status.stack,
 			status.texCoords)
 	else
-		-- self:Debug("Clearing indicator", indicator, "for", name)
+		self:Debug("Clearing indicator", indicator, "for", name)
 		frame:ClearIndicator(indicator)
 	end
 end
@@ -1496,11 +1528,6 @@ function GridFrame:StatusForIndicator(unitid, guid, indicator)
 				valid = false
 			end
 
-			if status.range and type(status.range) ~= "number" then
-				self:Debug("range not number for", statusName)
-				valid = false
-			end
-
 			if status.priority and type(status.priority) ~= "number" then
 				self:Debug("priority not number for", statusName)
 				valid = false
@@ -1508,9 +1535,9 @@ function GridFrame:StatusForIndicator(unitid, guid, indicator)
 
 			-- only check range for valid statuses
 			if valid then
-				local inRange = not status.range or self:UnitInRange(unitid, status.range)
+				local inRange = not status.range or self:UnitInRange(unitid)
 
-				if ((status.priority or 99) > topPriority) and inRange then
+				if inRange and ((status.priority or 99) > topPriority) then
 					topStatus = status
 					topPriority = topStatus.priority
 				end
@@ -1522,14 +1549,22 @@ function GridFrame:StatusForIndicator(unitid, guid, indicator)
 end
 
 local GridStatusRange
-function GridFrame:UnitInRange(id, yrds)
-	if not id or not UnitExists(id) then return false end
+function GridFrame:UnitInRange(unit)
+	if not unit or not UnitExists(unit) then return false end
+	--print("GridFrame:UnitInRange", unit)
+
+	if UnitIsUnit(unit, "player") then
+		return true
+	end
 
 	if not GridStatusRange then
 		GridStatusRange = Grid:GetModule("GridStatus"):GetModule("GridStatusRange")
 	end
+	if GridStatusRange then
+		return GridStatusRange:UnitInRange(unit)
+	end
 
-	return GridStatusRange and GridStatusRange:UnitInRange(id) or UnitInRange(id)
+	return UnitInRange(unit)
 end
 
 ------------------------------------------------------------------------
@@ -1592,7 +1627,7 @@ function GridFrame:UpdateOptionsForIndicator(indicator, name, order)
 	if not menu[indicator] then
 		menu[indicator] = {
 			name = name,
-			desc = string.format(L["Options for %s indicator."], name),
+			desc = format(L["Options for %s indicator."], name),
 			order = order and (order + 1) or nil,
 			type = "group",
 			args = {
@@ -1624,7 +1659,7 @@ function GridFrame:UpdateOptionsForIndicator(indicator, name, order)
 		local indicatorType = indicator
 		local statusKey = status
 
-		-- self:Debug(indicator.type, status)
+		self:Debug(indicator.type, status)
 
 		if not indicatorMenu[status] then
 			indicatorMenu[status] = {
@@ -1640,7 +1675,7 @@ function GridFrame:UpdateOptionsForIndicator(indicator, name, order)
 					GridFrame:UpdateAllFrames()
 				end,
 			}
-			-- self:Debug("Added", indicator.type, status)
+			self:Debug("Added", indicator.type, status)
 		end
 	end
 end

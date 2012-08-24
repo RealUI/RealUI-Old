@@ -329,7 +329,7 @@ local function channel(addon, text)
 	local chan = sink.channelMapping[loc]
 	if chan == "GROUP" then
 		chan = select(2, IsInInstance()) == "pvp" and "BATTLEGROUND" or (UnitInRaid("player") and "RAID" or "PARTY")
-		if chan == "PARTY" and GetNumPartyMembers() == 0 then chan = "SAY" end
+		if chan == "PARTY" and GetNumSubgroupMembers() == 0 then chan = "SAY" end
 	elseif chan == "CHANNEL" then
 		local id, name = GetChannelName(loc)
 		if name then

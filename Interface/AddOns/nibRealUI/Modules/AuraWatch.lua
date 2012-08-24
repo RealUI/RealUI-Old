@@ -2692,7 +2692,7 @@ function AuraWatch:OnEnable()
 	end
 	
 	self:RegisterBucketEvent({"UNIT_AURA"}, 1/3, "UpdateAuras")
-	self:RegisterBucketEvent({"PLAYER_UPDATE_RESTING", "PLAYER_ENTERING_WORLD", "RAID_ROSTER_UPDATE", "PARTY_MEMBERS_CHANGED", "PLAYER_ROLES_ASSIGNED"}, 2, "UpdateConditionals")
+	self:RegisterBucketEvent({"PLAYER_UPDATE_RESTING", "PLAYER_ENTERING_WORLD", "GROUP_ROSTER_UPDATE", "PLAYER_ROLES_ASSIGNED"}, 2, "UpdateConditionals")
 	self:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED", "UpdateConditionals")
 	self:RegisterEvent("PLAYER_TALENT_UPDATE", "UpdateConditionals")
 	self:RegisterBucketEvent({"UNIT_ENTERING_VEHICLE", "UNIT_ENTERED_VEHICLE", "UNIT_EXITING_VEHICLE", "UNIT_EXITED_VEHICLE"}, 1, "UpdateVehicleStatus")

@@ -1843,7 +1843,7 @@ local function Friends_Update(self)
 	
 	-- Battle.net Friends
 	for t = 1, BNGetNumFriends() do
-		local BNid, BNfirstname, BNlastname, toonname, toonid, client, online, lastonline, isafk, isdnd, broadcast, note = BNGetFriendInfo(t)
+		local BNid, BNname, battletag, isBattleTagPresence, toonname, toonid, client, online, lastonline, isafk, isdnd, broadcast, note = BNGetFriendInfo(t)
 		
 		-- WoW friends
 		if ( online and client=="WoW" ) then
@@ -1863,13 +1863,12 @@ local function Friends_Update(self)
 			
 			-- Name
 			local cname
-			local realname = strform("%s %s", BNfirstname, BNlastname)
 			if ( realmName == GetRealmName() ) then
 				-- On My Realm
 				cname = strform(
 					"|cff%02x%02x%02x%s|r |cffcccccc(|r|cff%02x%02x%02x%s|r|cffcccccc)|r",
 					FRIENDS_BNET_NAME_COLOR.r * 255, FRIENDS_BNET_NAME_COLOR.g * 255, FRIENDS_BNET_NAME_COLOR.b * 255,
-					realname,
+					BNname,
 					classColor[1] * 255, classColor[2] * 255, classColor[3] * 255,
 					name
 				)
@@ -1878,7 +1877,7 @@ local function Friends_Update(self)
 				cname = strform(
 					"|cff%02x%02x%02x%s|r |cffcccccc(|r|cff%02x%02x%02x%s|r|cffcccccc-%s)|r",
 					FRIENDS_BNET_NAME_COLOR.r * 255, FRIENDS_BNET_NAME_COLOR.g * 255, FRIENDS_BNET_NAME_COLOR.b * 255,
-					realname,
+					BNname,
 					classColor[1] * 255, classColor[2] * 255, classColor[3] * 255,
 					name,
 					realmName
@@ -1892,9 +1891,9 @@ local function Friends_Update(self)
 			
 			-- Faction
 			if faction == 0 then
-				faction = "Horde"
-			else
 				faction = "Alliance"
+			else
+				faction = "Horde"
 			end
 
 			-- Add Friend to list
@@ -1910,7 +1909,32 @@ local function Friends_Update(self)
 			
 			-- Name
 			local cname
-			local realname = strform("%s %s", BNfirstname, BNlastname)
+			local realname = strform("%s %s", BNname, battletag)
+			cname = strform(
+				"|cff%02x%02x%02x%s|r |cffcccccc(%s)|r",
+				FRIENDS_BNET_NAME_COLOR.r * 255, FRIENDS_BNET_NAME_COLOR.g * 255, FRIENDS_BNET_NAME_COLOR.b * 255,
+				realname,
+				toonname
+			)
+			if ( isafk and toonname ) then
+				cname = strform("%s %s", CHAT_FLAG_AFK, cname)
+			elseif ( isdnd and toonname ) then
+				cname = strform("%s %s", CHAT_FLAG_DND, cname)
+			end
+			
+			-- Add Friend to list
+			tinsert(FriendsTabletData, { cname, "", gametext, "", client, realname, note })
+		-- D3 friends
+		elseif ( online and client=="D3" ) then
+			if ( not FriendsTabletData or FriendsTabletData == nil ) then FriendsTabletData = {} end
+			
+			local _,name, _, realmName, faction, _, race, class, guild, area, lvl, gametext = BNGetToonInfo(toonid)
+			client = "D3"
+			curFriendsOnline = curFriendsOnline + 1
+			
+			-- Name
+			local cname
+			local realname = strform("%s %s", BNname, battletag)
 			cname = strform(
 				"|cff%02x%02x%02x%s|r |cffcccccc(%s)|r",
 				FRIENDS_BNET_NAME_COLOR.r * 255, FRIENDS_BNET_NAME_COLOR.g * 255, FRIENDS_BNET_NAME_COLOR.b * 255,

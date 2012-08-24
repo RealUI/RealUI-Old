@@ -1,6 +1,16 @@
 --[[--------------------------------------------------------------------
-	Grid Localization
-	deDE | German | Deutsch
+	Grid
+	Compact party and raid unit frames.
+	Copyright (c) 2006-2012 Kyle Smith (a.k.a. Pastamancer), A. Kinley (a.k.a. Phanx) <addons@phanx.net>
+	All rights reserved.
+	See the accompanying README and LICENSE files for more information.
+	http://www.wowinterface.com/downloads/info5747-Grid.html
+	http://www.wowace.com/addons/grid/
+	http://www.curse.com/addons/wow/grid
+------------------------------------------------------------------------
+	GridLocale-deDE.lua
+	German (Deutsch) localization.
+	Contributors: Alakabaster, derwanderer, kaybe, kunda, Leialyn, ole510
 ----------------------------------------------------------------------]]
 
 if GetLocale() ~= "deDE" then return end
@@ -69,8 +79,8 @@ L["Icon Size"] = "Symbolgröße"
 L["Icon Stack Text"] = "Symbol Stack-Text"
 L["Indicators"] = "Indikatoren"
 L["Invert Bar Color"] = "Invertiere die Leistenfarbe"
--- L["Invert Text Color"] = ""
--- L["Make the healing bar use the status color instead of the health bar color."] = ""
+L["Invert Text Color"] = "Invertiere Textfarbe"
+L["Make the healing bar use the status color instead of the health bar color."] = "Lassen sie die Lebensleiste die Status Farbe nutzen, anstelle der Lebensbalken Farbe"
 L["Never"] = "Nie"
 L["None"] = "Kein Umriss"
 L["Number of characters to show on Center Text indicator."] = "Anzahl der Buchstaben der Indikatoren 'Text im Zentrum 1/2'."
@@ -269,17 +279,17 @@ L["Adds a new debuff to the status module"] = "Fügt einen neuen Debuff zum Stat
 L["Auras"] = "Auren"
 L["<buff name>"] = "<Buffname>"
 L["Buff: %s"] = "Buff: %s"
--- L["Change what information is shown by the status color."] = ""
--- L["Change what information is shown by the status color and text."] = ""
--- L["Change what information is shown by the status text."] = ""
+L["Change what information is shown by the status color."] = "Ändere welche Information für die Statusfarbe angezeigt wird."
+L["Change what information is shown by the status color and text."] = "Ändere welche Informationen für die Statusfarbe und den Statustext angezeigt werden."
+L["Change what information is shown by the status text."] = "Ändere welche Information für den Statustext angezeigt wird."
 L["Class Filter"] = "Klassenfilter"
--- L["Color"] = ""
+L["Color"] = "Farbe"
 -- L["Color to use when the %s is above the high count threshold values."] = ""
 -- L["Color to use when the %s is between the low and high count threshold values."] = ""
 -- L["Color when %s is below the low threshold value."] = ""
 L["Curse"] = "Fluch"
 L["<debuff name>"] = "<Debuffname>"
--- L["(De)buff name"] = ""
+L["(De)buff name"] = "(De)buff Name"
 L["Debuff: %s"] = "Debuff: %s"
 L["Debuff type: %s"] = "Debufftyp: %s"
 L["Delete (De)buff"] = "Lösche Debuff/Buff"
@@ -289,17 +299,17 @@ L["Display status only if the buff is not active."] = "Zeigt den Status nur an, 
 L["Display status only if the buff was cast by you."] = "Zeigt den Status nur an, wenn Du ihn gezaubert hast."
 L["Ghost"] = "Geistererscheinung"
 -- L["High color"] = ""
--- L["High threshold"] = ""
+L["High threshold"] = "Hoher Schwellwert"
 -- L["Low color"] = ""
--- L["Low threshold"] = ""
+L["Low threshold"] = "Niedriger Schwellwert"
 L["Magic"] = "Magie"
 -- L["Middle color"] = ""
--- L["Pet"] = ""
+L["Pet"] = "Begleiter"
 L["Poison"] = "Gift"
--- L["Present or missing"] = ""
--- L["Refresh interval"] = ""
+L["Present or missing"] = "Vorhanden oder fehlend"
+L["Refresh interval"] = "Aktualisierungsintervall"
 L["Remove %s from the menu"] = "Entfernt %s vom Menü"
--- L["%s colors"] = ""
+L["%s colors"] = "%s farben"
 -- L["%s colors and threshold values."] = ""
 L["Show duration"] = "Dauer anzeigen"
 L["Show if mine"] = "Zeigen wenn es meiner ist"
@@ -307,16 +317,16 @@ L["Show if missing"] = "Zeigen wenn es fehlt"
 -- L["Show on pets and vehicles."] = ""
 L["Show on %s players."] = "Zeigt den Status für die Klasse: %s."
 L["Show status for the selected classes."] = "Zeigt den Status für die ausgwählte Klasse."
--- L["Show the time left to tenths of a second, instead of only whole seconds."] = ""
+L["Show the time left to tenths of a second, instead of only whole seconds."] = "Zeige die verbleibende Zeit in Zehntelsekunden, anstelle von ganzen Sekunden "
 L["Show the time remaining, for use with the center icon cooldown."] = "Zeigt die Dauer im Cooldown-Rahmen (Symbol im Zentrum)."
--- L["Show time left to tenths"] = ""
--- L["%s is high when it is at or above this value."] = ""
--- L["%s is low when it is at or below this value."] = ""
--- L["Stack count"] = ""
--- L["Status Information"] = ""
--- L["Text"] = ""
--- L["Time in seconds between each refresh of the status time left."] = ""
--- L["Time left"] = ""
+L["Show time left to tenths"] = "Zeige verbleibende Zeit in Zehntelsekunden"
+L["%s is high when it is at or above this value."] = "%s ist hoch wenn der Wert gleich oder höher ist."
+L["%s is low when it is at or below this value."] = "%s ist niedrig wenn der Wert gleich oder höher ist."
+L["Stack count"] = "Stapel Zählen"
+L["Status Information"] = "Statusinformation"
+L["Text"] = "Text"
+L["Time in seconds between each refresh of the status time left."] = "Zeit in Sekunden zwischen jeder Aktualisierung des Status Zeit verbleiben."
+L["Time left"] = "Verbleibende Zeit"
 
 ------------------------------------------------------------------------
 --	GridStatusHeals

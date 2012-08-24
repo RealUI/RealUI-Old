@@ -1,6 +1,16 @@
 --[[--------------------------------------------------------------------
-	Grid Localization
-	frFR | French | Français
+	Grid
+	Compact party and raid unit frames.
+	Copyright (c) 2006-2012 Kyle Smith (a.k.a. Pastamancer), A. Kinley (a.k.a. Phanx) <addons@phanx.net>
+	All rights reserved.
+	See the accompanying README and LICENSE files for more information.
+	http://www.wowinterface.com/downloads/info5747-Grid.html
+	http://www.wowace.com/addons/grid/
+	http://www.curse.com/addons/wow/grid
+------------------------------------------------------------------------
+	GridLocale-frFR.lua
+	French (Français) localization.
+	Contributors: Devfool, Pettigrow, Strigx, trasher
 ----------------------------------------------------------------------]]
 
 if GetLocale() ~= "frFR" then return end
@@ -14,7 +24,7 @@ Grid.L = L
 
 L["Debug"] = "Déboger"
 L["Debugging"] = "Débogage"
-L["Hide minimap icon"] = "Cacher icône minicarte"
+L["Hide minimap icon"] = "Cacher l'icône de la minicarte"
 L["Module debugging menu."] = "Menu du module de débogage."
 L["Toggle debugging for %s."] = "Active ou non le débogage pour %s."
 
@@ -32,7 +42,7 @@ L["Adjust the size of the corner indicators."] = "Modifie la taille des indicate
 L["Adjust the texture of each unit's frame."] = "Modifie la texture utilisée par chaque cellule d'unité."
 L["Adjust the width of each unit's frame."] = "Modifie la longueur de chaque cellule d'unité."
 L["Always"] = "Toujours"
-L["Bar Options"] = "Option des Barres"
+L["Bar Options"] = "Option des barres"
 L["Border"] = "Bordure"
 L["Border Size"] = "Taille des bordures"
 L["Bottom Left Corner"] = "Coin inférieur gauche"
@@ -41,7 +51,7 @@ L["Center Icon"] = "Icône central"
 L["Center Text"] = "Texte central"
 L["Center Text 2"] = "Texte central 2"
 L["Center Text Length"] = "Longueur du texte central"
--- L["Color the healing bar using the active status color instead of the health bar color."] = ""
+L["Color the healing bar using the active status color instead of the health bar color."] = "Colorie la barre de soins en utilisant la couleur de statut active au lieu de la couleur de la barre de vie."
 L["Corner Size"] = "Taille des coins"
 -- L["Darken the text color to match the inverted bar."] = ""
 L["Enable Mouseover Highlight"] = "Activer la surbrillance au survol"
@@ -58,19 +68,19 @@ L["Frame Texture"] = "Texture des cellules"
 L["Frame Width"] = "Longueur des cellules"
 L["Healing Bar"] = "Barre de soins"
 L["Healing Bar Opacity"] = "Opacité de la barre de soins"
--- L["Healing Bar Uses Status Color"] = ""
+L["Healing Bar Uses Status Color"] = "Barre de soins utilise la couleur de statut"
 L["Health Bar"] = "Barre de vie"
 L["Health Bar Color"] = "Couleur de la barre de vie"
 L["Horizontal"] = "Horizontal"
 L["Icon Border Size"] = "Taille de la bordure de l'icône"
 L["Icon Cooldown Frame"] = "Texte du temps de recharge sur l'icône"
-L["Icon Options"] = "Options des Icônes"
+L["Icon Options"] = "Options des icônes"
 L["Icon Size"] = "Taille de l'icône"
 L["Icon Stack Text"] = "Texte du cumul sur l'icône"
 L["Indicators"] = "Indicateurs"
 L["Invert Bar Color"] = "Inverser la couleur de la barre"
 -- L["Invert Text Color"] = ""
--- L["Make the healing bar use the status color instead of the health bar color."] = ""
+L["Make the healing bar use the status color instead of the health bar color."] = "Fait en sorte que la barre de soins utilise la couleur de statut au lieu de la couleur de la barre de vie."
 L["Never"] = "Jamais"
 L["None"] = "Aucun"
 L["Number of characters to show on Center Text indicator."] = "Détermine le nombre de caractère à afficher pour le texte central."
@@ -80,7 +90,7 @@ L["Options for GridFrame."] = "Options concernant GridFrame."
 L["Options for %s indicator."] = "Options concernant l'indicateur %s."
 L["Options related to bar indicators."] = "Options relatives aux barres d'indicateurs"
 L["Options related to icon indicators."] = "Options relatives aux icônes d'indicateurs"
-L["Options related to text indicators."] = "Options relatives aux indicateurs textuels"
+L["Options related to text indicators."] = "Options relatives aux indicateurs textuels."
 L["Orientation of Frame"] = "Orientation de la grille"
 L["Orientation of Text"] = "Orientation du texte"
 L["Set frame orientation."] = "Détermine l'orientation de la grille."
@@ -90,7 +100,7 @@ L["Show Tooltip"] = "Afficher les bulles d'aide"
 L["Show unit tooltip.  Choose 'Always', 'Never', or 'OOC'."] = "Affiche les bulles d'aide des unités. Choississez 'Toujours', 'Jamais' ou 'Hors combat'."
 L["Statuses"] = "Statuts"
 L["Swap foreground/background colors on bars."] = "Permute la couleur de l'avant-plan et de l'arrière-plan des barres."
-L["Text Options"] = "Options de Texte"
+L["Text Options"] = "Options du texte"
 L["Thick"] = "Épais"
 L["Thin"] = "Mince"
 -- L["Throttle Updates"] = ""
@@ -216,7 +226,7 @@ L["None"] = "Aucun"
 ------------------------------------------------------------------------
 --	GridLDB
 
-L["Click to toggle the frame lock."] = "Clic gauche pour vérouiller/dévérouiller la grille."
+L["Click to toggle the frame lock."] = "Clic gauche pour (dé)verrouiller la grille."
 L["Right-Click to open the options menu."] = "Clic droit pour afficher la fenêtre d'options."
 
 ------------------------------------------------------------------------
@@ -292,10 +302,10 @@ L["Ghost"] = "Fantôme"
 -- L["Low threshold"] = ""
 L["Magic"] = "Magie"
 -- L["Middle color"] = ""
--- L["Pet"] = ""
+L["Pet"] = "Familier"
 L["Poison"] = "Poison"
--- L["Present or missing"] = ""
--- L["Refresh interval"] = ""
+L["Present or missing"] = "Présent ou absent"
+L["Refresh interval"] = "Intervalle de rafraîchissement"
 L["Remove %s from the menu"] = "Enlève %s du menu."
 -- L["%s colors"] = ""
 -- L["%s colors and threshold values."] = ""
@@ -305,9 +315,9 @@ L["Show if missing"] = "Afficher si manquant"
 -- L["Show on pets and vehicles."] = ""
 L["Show on %s players."] = "Affiche le statut pour la classe %s."
 L["Show status for the selected classes."] = "Affiche le statut pour les classes sélectionnées."
--- L["Show the time left to tenths of a second, instead of only whole seconds."] = ""
+L["Show the time left to tenths of a second, instead of only whole seconds."] = "Affiche le temps restant en dixièmes de seconde au lieu des secondes entières."
 L["Show the time remaining, for use with the center icon cooldown."] = "Affiche le temps restant. À utiliser avec le temps de recharge de l'icône centrale."
--- L["Show time left to tenths"] = ""
+L["Show time left to tenths"] = "Afficher temps restant en dixièmes"
 -- L["%s is high when it is at or above this value."] = ""
 -- L["%s is low when it is at or below this value."] = ""
 -- L["Stack count"] = ""

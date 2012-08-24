@@ -1,6 +1,12 @@
 --[[--------------------------------------------------------------------
-	GridLayoutLayouts.lua
-	Registers some layouts with GridLayout.
+	Grid
+	Compact party and raid unit frames.
+	Copyright (c) 2006-2012 Kyle Smith (a.k.a. Pastamancer), A. Kinley (a.k.a. Phanx) <addons@phanx.net>
+	All rights reserved.
+	See the accompanying README and LICENSE files for more information.
+	http://www.wowinterface.com/downloads/info5747-Grid.html
+	http://www.wowace.com/addons/grid/
+	http://www.curse.com/addons/wow/grid
 ----------------------------------------------------------------------]]
 
 local GRID, Grid = ...
@@ -231,7 +237,7 @@ GridLayout:AddLayout(L["By Class 10"], {
 	[1] = {
 		groupFilter = "1,2",
 		groupBy = "CLASS",
-		groupingOrder = "WARRIOR,DEATHKNIGHT,ROGUE,PALADIN,DRUID,SHAMAN,PRIEST,MAGE,WARLOCK,HUNTER",
+		groupingOrder = "WARRIOR,DEATHKNIGHT,ROGUE,MONK,PALADIN,DRUID,SHAMAN,PRIEST,MAGE,WARLOCK,HUNTER",
 		unitsPerColumn = 5,
 		maxColumns = 2,
 	},
@@ -241,7 +247,7 @@ GridLayout:AddLayout(L["By Class 10 w/Pets"], {
 	[1] = {
 		groupFilter = "1,2",
 		groupBy = "CLASS",
-		groupingOrder = "WARRIOR,DEATHKNIGHT,ROGUE,PALADIN,DRUID,SHAMAN,PRIEST,MAGE,WARLOCK,HUNTER",
+		groupingOrder = "WARRIOR,DEATHKNIGHT,ROGUE,MONK,PALADIN,DRUID,SHAMAN,PRIEST,MAGE,WARLOCK,HUNTER",
 		unitsPerColumn = 5,
 		maxColumns = 2,
 	},
@@ -259,7 +265,7 @@ GridLayout:AddLayout(L["By Class 25"], {
 	[1] = {
 		groupFilter = "1,2,3,4,5",
 		groupBy = "CLASS",
-		groupingOrder = "WARRIOR,DEATHKNIGHT,ROGUE,PALADIN,DRUID,SHAMAN,PRIEST,MAGE,WARLOCK,HUNTER",
+		groupingOrder = "WARRIOR,DEATHKNIGHT,ROGUE,MONK,PALADIN,DRUID,SHAMAN,PRIEST,MAGE,WARLOCK,HUNTER",
 		unitsPerColumn = 5,
 		maxColumns = 5,
 	},
@@ -269,7 +275,7 @@ GridLayout:AddLayout(L["By Class 25 w/Pets"], {
 	[1] = {
 		groupFilter = "1,2,3,4,5",
 		groupBy = "CLASS",
-		groupingOrder = "WARRIOR,DEATHKNIGHT,ROGUE,PALADIN,DRUID,SHAMAN,PRIEST,MAGE,WARLOCK,HUNTER",
+		groupingOrder = "WARRIOR,DEATHKNIGHT,ROGUE,MONK,PALADIN,DRUID,SHAMAN,PRIEST,MAGE,WARLOCK,HUNTER",
 		unitsPerColumn = 5,
 		maxColumns = 5,
 	},

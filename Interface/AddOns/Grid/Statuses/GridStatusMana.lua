@@ -1,4 +1,13 @@
 --[[--------------------------------------------------------------------
+	Grid
+	Compact party and raid unit frames.
+	Copyright (c) 2006-2012 Kyle Smith (a.k.a. Pastamancer), A. Kinley (a.k.a. Phanx) <addons@phanx.net>
+	All rights reserved.
+	See the accompanying README and LICENSE files for more information.
+	http://www.wowinterface.com/downloads/info5747-Grid.html
+	http://www.wowace.com/addons/grid/
+	http://www.curse.com/addons/wow/grid
+------------------------------------------------------------------------
 	GridStatusMana.lua
 	GridStatus module for tracking unit mana.
 ----------------------------------------------------------------------]]
@@ -86,6 +95,8 @@ function GridStatusMana:UpdateAllUnits()
 	end
 end
 
+local UnitGUID, UnitIsDeadOrGhost, UnitPower, UnitPowerMax, UnitPowerType = UnitGUID, UnitIsDeadOrGhost, UnitPower, UnitPowerMax, UnitPowerType
+
 function GridStatusMana:UpdateUnit(event, unitid)
 	local guid = UnitGUID(unitid)
 	if not GridRoster:IsGUIDInRaid(guid) then return end
@@ -117,7 +128,7 @@ function GridStatusMana:StatusLowMana(guid, gained)
 	if gained then
 		GridStatus:SendStatusGained(guid, "alert_lowMana",
 			settings.priority,
-			(settings.range and 40),
+			settings.range,
 			settings.color,
 			settings.text,
 			nil,

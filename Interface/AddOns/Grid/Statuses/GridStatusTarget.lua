@@ -1,4 +1,13 @@
 --[[--------------------------------------------------------------------
+	Grid
+	Compact party and raid unit frames.
+	Copyright (c) 2006-2012 Kyle Smith (a.k.a. Pastamancer), A. Kinley (a.k.a. Phanx) <addons@phanx.net>
+	All rights reserved.
+	See the accompanying README and LICENSE files for more information.
+	http://www.wowinterface.com/downloads/info5747-Grid.html
+	http://www.wowace.com/addons/grid/
+	http://www.curse.com/addons/wow/grid
+------------------------------------------------------------------------
 	GridStatusTarget.lua
 	GridStatus module for tracking the player's target.
 	Created by noha, modified by Pastamancer.
@@ -25,7 +34,7 @@ GridStatusTarget.defaultDB = {
 
 
 function GridStatusTarget:PostInitialize()
-	self:RegisterStatus('player_target', L["Your Target"], nil, true)
+	self:RegisterStatus("player_target", L["Your Target"], nil, true)
 end
 
 function GridStatusTarget:OnStatusEnable(status)
@@ -53,7 +62,7 @@ function GridStatusTarget:PLAYER_TARGET_CHANGED()
 		cur_target = UnitGUID("target")
 		self.core:SendStatusGained(cur_target, "player_target",
 			settings.priority,
-			(settings.range and 40),
+			settings.range,
 			settings.color,
 			settings.text,
 			nil,

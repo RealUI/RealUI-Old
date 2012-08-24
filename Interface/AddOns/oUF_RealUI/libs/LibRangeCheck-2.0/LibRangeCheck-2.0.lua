@@ -1,6 +1,6 @@
 --[[
 Name: LibRangeCheck-2.0
-Revision: $Revision: 115 $
+Revision: $Revision: 124 $
 Author(s): mitch0
 Website: http://www.wowace.com/projects/librangecheck-2-0/
 Description: A range checking library based on interact distances and spell ranges
@@ -41,7 +41,7 @@ License: Public Domain
 -- @class file
 -- @name LibRangeCheck-2.0
 local MAJOR_VERSION = "LibRangeCheck-2.0"
-local MINOR_VERSION = tonumber(("$Revision: 115 $"):match("%d+")) + 100000
+local MINOR_VERSION = tonumber(("$Revision: 124 $"):match("%d+")) + 100000
 
 local lib, oldminor = LibStub:NewLibrary(MAJOR_VERSION, MINOR_VERSION)
 if not lib then
@@ -329,7 +329,9 @@ local tinsert = tinsert
 local tremove = tremove
 local BOOKTYPE_SPELL = BOOKTYPE_SPELL
 local GetSpellInfo = GetSpellInfo
-local GetSpellName = GetSpellName or GetSpellBookItemName
+local GetSpellBookItemName = GetSpellBookItemName
+local GetNumSpellTabs = GetNumSpellTabs
+local GetSpellTabInfo = GetSpellTabInfo
 local GetItemInfo = GetItemInfo
 local UnitCanAttack = UnitCanAttack
 local UnitCanAssist = UnitCanAssist
@@ -426,14 +428,16 @@ local function initItemRequests(cacheAll)
     foundNewItems = nil
 end
 
+local function getNumSpells()
+    local _, _, offset, numSpells = GetSpellTabInfo(GetNumSpellTabs())
+    return offset + numSpells
+end
+
 -- return the spellIndex of the given spell by scanning the spellbook
 local function findSpellIdx(spellName)
-    local i = 1
-    while true do
-        local spell, rank = GetSpellName(i, BOOKTYPE_SPELL)
-        if not spell then return nil end
+    for i = 1, getNumSpells() do
+        local spell, rank = GetSpellBookItemName(i, BOOKTYPE_SPELL)
         if spell == spellName then return i end
-        i = i + 1
     end
     return nil
 end

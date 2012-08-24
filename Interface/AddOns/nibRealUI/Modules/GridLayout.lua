@@ -585,7 +585,7 @@ function GridLayout:Update()
 		SetGridFrameWidth(NewWidth)
 		
 	-- 5 man group - Adjust w/pets
-	elseif ( (Type == "arena" and LayoutDB.arena.enabled) or (Type ~= "arena" and (not UnitInRaid("player")) and (GetNumPartyMembers() > 0) and LayoutDB.party.enabled) ) then
+	elseif ( (Type == "arena" and LayoutDB.arena.enabled) or (Type ~= "arena" and (not UnitInRaid("player")) and (GetNumSubgroupMembers() > 0) and LayoutDB.party.enabled) ) then
 		local HasPet = UnitExists("pet") or UnitExists("partypet1") or UnitExists("partypet2") or UnitExists("partypet3") or UnitExists("partypet4")
 		if HasPet then 
 			NewLayout = Grid.L["By Group 5 w/Pets"]
@@ -703,7 +703,7 @@ end
 function GridLayout:OnEnable()
 	if not(GLM and GFM) then return end
 	
-	self:RegisterBucketEvent({"PLAYER_ENTERING_WORLD", "ZONE_CHANGED_NEW_AREA", "RAID_ROSTER_UPDATE", "PARTY_MEMBERS_CHANGED", "UNIT_PET"}, 1.1, "Update")
+	self:RegisterBucketEvent({"PLAYER_ENTERING_WORLD", "ZONE_CHANGED_NEW_AREA", "GROUP_ROSTER_UPDATE", "UNIT_PET"}, 1.1, "Update")
 	self:RegisterEvent("PLAYER_REGEN_ENABLED", "UpdateLockdown")
 	
 	WorldMapFrame:HookScript("OnHide", function() GridLayout:Update() end)

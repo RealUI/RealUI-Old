@@ -1,10 +1,21 @@
 --[[--------------------------------------------------------------------
+	Grid
+	Compact party and raid unit frames.
+	Copyright (c) 2006-2012 Kyle Smith (a.k.a. Pastamancer), A. Kinley (a.k.a. Phanx) <addons@phanx.net>
+	All rights reserved.
+	See the accompanying README and LICENSE files for more information.
+	http://www.wowinterface.com/downloads/info5747-Grid.html
+	http://www.wowace.com/addons/grid/
+	http://www.curse.com/addons/wow/grid
+------------------------------------------------------------------------
 	GridStatusHealth.lua
 	GridStatus module for tracking unit health.
 ----------------------------------------------------------------------]]
 
 local _, Grid = ...
 local L = Grid.L
+
+local MoP = select(4, GetBuildInfo()) >= 50000
 
 local GridRoster = Grid:GetModule("GridRoster")
 
@@ -156,8 +167,13 @@ function GridStatusHealth:PostEnable()
 	self:RegisterEvent("UNIT_NAME_UPDATE", "UpdateUnit")
 
 	self:RegisterEvent("PLAYER_ENTERING_WORLD", "UpdateAllUnits")
-	self:RegisterEvent("PARTY_MEMBERS_CHANGED", "UpdateAllUnits")
-	self:RegisterEvent("RAID_ROSTER_UPDATE", "UpdateAllUnits")
+
+	if MoP then
+		self:RegisterEvent("GROUP_ROSTER_UPDATE", "UpdateAllUnits")
+	else
+		self:RegisterEvent("PARTY_MEMBERS_CHANGED", "UpdateAllUnits")
+		self:RegisterEvent("RAID_ROSTER_UPDATE", "UpdateAllUnits")
+	end
 
 	self:RegisterMessage("Grid_ColorsChanged", "UpdateAllUnits")
 end
@@ -186,6 +202,8 @@ function GridStatusHealth:Grid_UnitJoined(event, guid, unitid)
 		self:UpdateUnit(event, unitid)
 	end
 end
+
+local UnitGUID, UnitHealth, UnitHealthMax, UnitIsConnected, UnitIsDeadOrGhost, UnitIsFeignDeath = UnitGUID, UnitHealth, UnitHealthMax, UnitIsConnected, UnitIsDeadOrGhost, UnitIsFeignDeath
 
 function GridStatusHealth:UpdateUnit(event, unitid, ignoreRange)
 	local guid = UnitGUID(unitid)
@@ -225,16 +243,16 @@ function GridStatusHealth:UpdateUnit(event, unitid, ignoreRange)
 
 	if cur < max then
 		if cur > 999 then
-			healthText = string.format("%.1fk", cur / 1000)
+			healthText = format("%.1fk", cur / 1000)
 		else
-			healthText = string.format("%d", cur)
+			healthText = format("%d", cur)
 		end
 
 		local deficit = max - cur
 		if deficit > 999 then
-			deficitText = string.format("-%.1fk", deficit / 1000)
+			deficitText = format("-%.1fk", deficit / 1000)
 		else
-			deficitText = string.format("-%d", deficit)
+			deficitText = format("-%d", deficit)
 		end
 	else
 		healthPriority = 1
@@ -244,10 +262,11 @@ function GridStatusHealth:UpdateUnit(event, unitid, ignoreRange)
 	if (cur / max * 100) <= deficitSettings.threshold then
 		self.core:SendStatusGained(guid, "unit_healthDeficit",
 			deficitPriority,
-			(deficitSettings.range and 40),
+			deficitSettings.range,
 			(deficitSettings.useClassColors and self.core:UnitColor(guid) or deficitSettings.color),
 			deficitText,
-			cur, max,
+			cur,
+			max,
 			deficitSettings.icon)
 	else
 		self.core:SendStatusLost(guid, "unit_healthDeficit")
@@ -255,10 +274,11 @@ function GridStatusHealth:UpdateUnit(event, unitid, ignoreRange)
 
 	self.core:SendStatusGained(guid, "unit_health",
 		healthPriority,
-		(not ignoreRange and healthSettings.range and 40),
+		(not ignoreRange and healthSettings.range),
 		(healthSettings.useClassColors and self.core:UnitColor(guid) or healthSettings.color),
 		healthText,
-		cur, max,
+		cur,
+		max,
 		healthSettings.icon)
 end
 
@@ -269,13 +289,13 @@ end
 function GridStatusHealth:StatusLowHealth(guid, gained)
 	local settings = self.db.profile.alert_lowHealth
 
-	-- return if this option isnt enabled
+	-- return if this option isn't enabled
 	if not settings.enable then return end
 
 	if gained then
 		self.core:SendStatusGained(guid, "alert_lowHealth",
 			settings.priority,
-			(settings.range and 40),
+			settings.range,
 			settings.color,
 			settings.text,
 			nil,
@@ -299,7 +319,7 @@ function GridStatusHealth:StatusDeath(guid, gained)
 		self:SendMessage("Grid_UnitDeath", guid)
 		self.core:SendStatusGained(guid, "alert_death",
 			settings.priority,
-			(settings.range and 40),
+			settings.range,
 			settings.color,
 			settings.text,
 			(self.db.profile.unit_health.deadAsFullHealth and 100 or 0),
@@ -321,7 +341,7 @@ function GridStatusHealth:StatusFeignDeath(guid, gained)
 	if gained then
 		self.core:SendStatusGained(guid, "alert_feignDeath",
 			settings.priority,
-			(settings.range and 40),
+			settings.range,
 			settings.color,
 			settings.text,
 			(self.db.profile.unit_health.deadAsFullHealth and 100 or 0),
@@ -342,7 +362,7 @@ function GridStatusHealth:StatusOffline(guid, gained)
 		self:SendMessage("Grid_UnitOffline", guid)
 		self.core:SendStatusGained(guid, "alert_offline",
 			settings.priority,
-			(settings.range and 40),
+			settings.range,
 			settings.color,
 			settings.text,
 			nil,

@@ -1,10 +1,21 @@
 --[[--------------------------------------------------------------------
+	Grid
+	Compact party and raid unit frames.
+	Copyright (c) 2006-2012 Kyle Smith (a.k.a. Pastamancer), A. Kinley (a.k.a. Phanx) <addons@phanx.net>
+	All rights reserved.
+	See the accompanying README and LICENSE files for more information.
+	http://www.wowinterface.com/downloads/info5747-Grid.html
+	http://www.wowace.com/addons/grid/
+	http://www.curse.com/addons/wow/grid
+------------------------------------------------------------------------
 	GridStatusResurrect.lua
 	GridStatus module for showing incoming resurrections.
 ----------------------------------------------------------------------]]
 
 local _, Grid = ...
 local L = Grid.L
+
+local MoP = select(4, GetBuildInfo()) >= 50000
 
 local GridRoster = Grid:GetModule("GridRoster")
 
@@ -26,7 +37,7 @@ GridStatusResurrect.defaultDB = {
 local extraOptionsForStatus = {
 	showUntilUsed = {
 		name = L["Show until used"],
-		desc = L["Show the status until the resurrection is accepted or cache, instead of only while it is being cast."],
+		desc = L["Show the status until the resurrection is accepted or expires, instead of only while it is being cast."],
 		type = "toggle", width = "double",
 		get = function()
 			return GridStatusResurrect.db.profile.alert_resurrect.showUntilUsed
@@ -39,15 +50,17 @@ local extraOptionsForStatus = {
 }
 
 ------------------------------------------------------------------------
-
+--[[
 local resSpells = {
-	2008,  -- Ancestral Spirit (shaman)
-	61999, -- Raise Ally (death knight)
-	20484, -- Rebirth (druid)
-	7238,  -- Redemption (paladin)
-	2006,  -- Resurrection (priest)
-	50769, -- Revive (druid)
-	982,   -- Revive Pet (hunter)
+	2008,   -- Ancestral Spirit (shaman)
+	61999,  -- Raise Ally (death knight)
+	20484,  -- Rebirth (druid)
+	7238,   -- Redemption (paladin)
+	2006,   -- Resurrection (priest)
+	115178, -- Resuscitate (monk)
+	50769,  -- Revive (druid)
+	982,    -- Revive Pet (hunter)
+	20707,  -- Soulstone (warlock)
 }
 for i = #resSpells, 1, -1 do
 	local id = resSpells[i]
@@ -59,6 +72,8 @@ for i = #resSpells, 1, -1 do
 	end
 	resSpells[i] = nil
 end
+]]
+------------------------------------------------------------------------
 
 function GridStatusResurrect:PostInitialize()
 	self:Debug("PostInitialize")
@@ -71,7 +86,12 @@ function GridStatusResurrect:OnStatusEnable(status)
 
 	self:RegisterEvent("INCOMING_RESURRECT_CHANGED", "UpdateAllUnits")
 	self:RegisterEvent("PARTY_LEADER_CHANGED", "OnGroupChanged")
-	self:RegisterEvent("RAID_ROSTER_UPDATE", "OnGroupChanged")
+	if MoP then
+		self:RegisterEvent("GROUP_ROSTER_UPDATE", "OnGroupChanged")
+	else
+		self:RegisterEvent("PARTY_MEMBERS_CHANGED", "OnGroupChanged")
+		self:RegisterEvent("RAID_ROSTER_UPDATE", "OnGroupChanged")
+	end
 
 	self:RegisterMessage("Grid_PartyTransition", "OnGroupChanged")
 	self:RegisterMessage("Grid_UnitJoined", "OnUnitJoined")
@@ -82,12 +102,17 @@ function GridStatusResurrect:OnStatusDisable(status)
 
 	self:UnregisterEvent("INCOMING_RESURRECT_CHANGED")
 	self:UnregisterEvent("PARTY_LEADER_CHANGED")
-	self:UnregisterEvent("RAID_ROSTER_UPDATE")
+	if MoP then
+		self:UnregisterEvent("GROUP_ROSTER_UPDATE")
+	else
+		self:UnregisterEvent("PARTY_MEMBERS_CHANGED")
+		self:UnregisterEvent("RAID_ROSTER_UPDATE")
+	end
 
 	self:UnregisterMessage("Grid_PartyTransition")
 	self:UnregisterMessage("Grid_UnitJoined")
 
-	self:CancelTimer(self.timerHandle, true)
+	self:StopTimer("CheckCacheExpiry")
 	self.core:SendStatusLostAllUnits("alert_resurrect")
 end
 
@@ -95,21 +120,21 @@ end
 
 local TIMER_INTERVAL = 0.5
 
-local pending = 0
-local cache = {}
+local numPending = 0
+local casting, pending = {}, {}
 
 function GridStatusResurrect:SendStatusLost(guid)
 	self:Debug("SendStatusLost", GridRoster:GetUnitidByGUID(guid), (GridRoster:GetNameByGUID(guid)))
 	self.core:SendStatusLost(guid, "alert_resurrect")
 
-	cache[guid] = nil
-	pending = pending - 1
+	casting[guid] = nil
+	pending[guid] = nil
+	numPending = numPending - 1
 
-	if pending == 0 then
+	if numPending == 0 then
 		self:UnregisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
 		self:UnregisterEvent("UNIT_HEALTH")
-		self:CancelTimer(self.timerHandle, true)
-		self.timerHandle = nil
+		self:StopTimer("CheckCacheExpiry")
 		self:Debug("Stopped timer.")
 	end
 end
@@ -120,7 +145,7 @@ function GridStatusResurrect:UpdateUnit(unit, guid)
 	end
 
 	local hasRes = UnitHasIncomingResurrection(unit)
-	if hasRes and not cache[guid] then
+	if hasRes and not casting[guid] then
 		self:Debug(unit, UnitName(unit), "is now being resurrected.")
 
 		local settings = self.db.profile.alert_resurrect
@@ -132,26 +157,30 @@ function GridStatusResurrect:UpdateUnit(unit, guid)
 			nil, nil,
 			settings.icon)
 
-		cache[guid] = GetTime() + 3600 -- huge value to avoid expiry while casting
+		casting[guid] = true
 
-	elseif not hasRes and cache[guid] then
+	elseif not hasRes and casting[guid] then
 		self:Debug(unit, UnitName(unit), "is no longer being resurrected.")
+		casting[guid] = nil
 
 		if not self.db.profile.alert_resurrect.showUntilUsed then
 			self:Debug("Resurrection cast ended.")
 			self:SendStatusLost(guid)
+
+		elseif pending[guid] then
+			self:Debug("Resurrection cast ended. Duplicate detected.")
+
 		else
-			cache[guid] = 1
+			pending[guid] = 1
 			self:Debug("Resurrection cast ended. Waiting for combat log event.")
 
-			pending = pending + 1
-			self:Debug("Pending resurrections:", pending)
+			numPending = numPending + 1
+			self:Debug("Pending resurrections:", numPending)
 
-			if pending == 1 then
+			if numPending == 1 then
 				self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
 				self:RegisterEvent("UNIT_HEALTH")
-				self:CancelTimer(self.timerHandle, true)
-				self.timerHandle = self:ScheduleRepeatingTimer("CheckCacheExpiry", TIMER_INTERVAL)
+				self:StartTimer("CheckCacheExpiry", TIMER_INTERVAL, true)
 				self:Debug("Started timer.")
 			end
 		end
@@ -160,7 +189,7 @@ end
 
 function GridStatusResurrect:UNIT_HEALTH(event, unit)
 	local guid = UnitGUID(unit)
-	if not cache[guid] then return end
+	if not pending[guid] then return end
 
 	self:Debug("UNIT_HEALTH", unit)
 
@@ -178,16 +207,16 @@ function GridStatusResurrect:COMBAT_LOG_EVENT_UNFILTERED(event, _, combatEvent, 
 
 	self:Debug(combatEvent, sourceName, "cast", spellName, "on", destName)
 
-	if cache[destGUID] then
+	if pending[destGUID] then
 		self:Debug(GridRoster:GetUnitidByGUID(destGUID), destName, "received resurrection. Waiting for acceptance or expiry.")
-		cache[destGUID] = GetTime() + 120
+		pending[destGUID] = GetTime() + 120
 	end
 end
 
 function GridStatusResurrect:CheckCacheExpiry()
 	--self:Debug("CheckCacheExpiry") -- pretty spammy
 	local now = GetTime()
-	for guid, expiry in pairs(cache) do
+	for guid, expiry in pairs(pending) do
 		if expiry - now < TIMER_INTERVAL then
 			self:Debug("Resurrection expired on", GridRoster:GetUnitidByGUID(guid), (GridRoster:GetNameByGUID(guid)))
 			self:SendStatusLost(guid)

@@ -43,7 +43,7 @@ local RAID_CLASS_COLORS = RAID_CLASS_COLORS
 local UnitDetailedThreatSituation = UnitDetailedThreatSituation
 local UnitExists, UnitGUID, UnitName, UnitClass, UnitHealth = UnitExists, UnitGUID, UnitName, UnitClass, UnitHealth
 local UnitIsPlayer, UnitPlayerControlled, UnitCanAttack = UnitIsPlayer, UnitPlayerControlled, UnitCanAttack
-local GetNumRaidMembers, GetNumPartyMembers = GetNumRaidMembers, GetNumPartyMembers
+local GetNumGroupMembers, GetNumSubgroupMembers = GetNumGroupMembers, GetNumSubgroupMembers
 
 
 -----------------------------------------------------------------------------
@@ -1281,8 +1281,8 @@ local lastPartyUpdateTime = GetTime()
 
 function Omen:PARTY_MEMBERS_CHANGED()
 	local oldInParty, oldInRaid = inParty, inRaid
-	inParty = GetNumPartyMembers() > 0
-	inRaid = GetNumRaidMembers() > 0
+	inParty = GetNumSubgroupMembers() > 0
+	inRaid = IsInRaid()
 	if oldInParty ~= inParty or oldInRaid ~= inRaid then manualToggle = false end
 	self:UpdateVisible()
 
@@ -1321,7 +1321,7 @@ function Omen:UpdatePartyGUIDs()
 	if inParty or inRaid then
 		local playerFmt = inRaid and rID or pID
 		local petFmt = inRaid and rpID or ppID
-		local currentPartySize = inRaid and GetNumRaidMembers() or GetNumPartyMembers()
+		local currentPartySize = inRaid and GetNumGroupMembers() or GetNumSubgroupMembers()
 
 		for i = 1, currentPartySize do
 			local unitID = playerFmt[i]
@@ -1532,7 +1532,7 @@ function Omen:RecordThreat(srcGUID)
 		unitID = "player"
 	end
 	if not unitID and inRaid then
-		for i = 1, GetNumRaidMembers() do
+		for i = 1, GetNumGroupMembers() do
 			if UnitGUID(rID[i]) == srcGUID then
 				unitID = rID[i]
 				break
@@ -1540,7 +1540,7 @@ function Omen:RecordThreat(srcGUID)
 		end
 	end
 	if not unitID and inParty then
-		for i = 1, GetNumPartyMembers() do
+		for i = 1, GetNumSubgroupMembers() do
 			if UnitGUID(pID[i]) == srcGUID then
 				unitID = pID[i]
 				break
@@ -1553,14 +1553,14 @@ function Omen:RecordThreat(srcGUID)
 	-- Record the threat of this unitID on all reachable targets
 	if inParty or inRaid then
 		if inRaid then
-			for i = 1, GetNumRaidMembers() do
+			for i = 1, GetNumGroupMembers() do
 				recordThreat(unitID, rID[i], srcGUID)
 				recordThreat(unitID, rpID[i], srcGUID)
 				recordThreat(unitID, rtID[i], srcGUID)
 				recordThreat(unitID, rptID[i], srcGUID)
 			end
 		else
-			for i = 1, GetNumPartyMembers() do
+			for i = 1, GetNumSubgroupMembers() do
 				recordThreat(unitID, pID[i], srcGUID)
 				recordThreat(unitID, ppID[i], srcGUID)
 				recordThreat(unitID, ptID[i], srcGUID)
@@ -1816,14 +1816,14 @@ function Omen:UpdateBarsReal()
 		-- Get data for threat on mob by scanning the whole raid
 		if inParty or inRaid then
 			if inRaid then
-				for i = 1, GetNumRaidMembers() do
+				for i = 1, GetNumGroupMembers() do
 					updatethreat(rID[i], mob)
 					updatethreat(rpID[i], mob)
 					updatethreat(rtID[i], mob)
 					updatethreat(rptID[i], mob)
 				end
 			else
-				for i = 1, GetNumPartyMembers() do
+				for i = 1, GetNumSubgroupMembers() do
 					updatethreat(pID[i], mob)
 					updatethreat(ppID[i], mob)
 					updatethreat(ptID[i], mob)

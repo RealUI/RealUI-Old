@@ -1,4 +1,13 @@
 --[[--------------------------------------------------------------------
+	Grid
+	Compact party and raid unit frames.
+	Copyright (c) 2006-2012 Kyle Smith (a.k.a. Pastamancer), A. Kinley (a.k.a. Phanx) <addons@phanx.net>
+	All rights reserved.
+	See the accompanying README and LICENSE files for more information.
+	http://www.wowinterface.com/downloads/info5747-Grid.html
+	http://www.wowace.com/addons/grid/
+	http://www.curse.com/addons/wow/grid
+------------------------------------------------------------------------
 	GridStatusName.lua
 	GridStatus module for tracking unit names.
 ----------------------------------------------------------------------]]
@@ -25,16 +34,17 @@ GridStatusName.defaultDB = {
 
 
 local nameOptions = {
-	["class"] = {
+	class = {
 		name = L["Use class color"],
 		desc = L["Color by class"],
-		type = 'toggle', width = "double",
+		type = "toggle", width = "double",
 		get = function() return GridStatusName.db.profile.unit_name.class end,
 		set = function()
 			GridStatusName.db.profile.unit_name.class = not GridStatusName.db.profile.unit_name.class
 			GridStatusName:UpdateAllUnits()
 		end,
 	},
+	range = false,
 }
 
 function GridStatusName:PostInitialize()

@@ -1249,8 +1249,7 @@ end
 
 function FrameMover:OnEnable()
 	self:RegisterEvent("PLAYER_ENTERING_WORLD")
-	self:RegisterEvent("RAID_ROSTER_UPDATE", "HidePartyRaid")
-	self:RegisterEvent("PARTY_MEMBERS_CHANGED", "HidePartyRaid")
+	self:RegisterEvent("GROUP_ROSTER_UPDATE", "HidePartyRaid")
 	self:RegisterEvent("PLAYER_ALIVE", "HidePartyRaid")
 	self:RegisterEvent("PLAYER_DEAD", "HidePartyRaid")
 	self:RegisterEvent("PLAYER_REGEN_ENABLED", "UpdateLockdown")

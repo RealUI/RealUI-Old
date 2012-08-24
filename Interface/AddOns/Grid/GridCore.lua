@@ -1,5 +1,12 @@
 --[[--------------------------------------------------------------------
-	GridCore.lua
+	Grid
+	Compact party and raid unit frames.
+	Copyright (c) 2006-2012 Kyle Smith (a.k.a. Pastamancer), A. Kinley (a.k.a. Phanx) <addons@phanx.net>
+	All rights reserved.
+	See the accompanying README and LICENSE files for more information.
+	http://www.wowinterface.com/downloads/info5747-Grid.html
+	http://www.wowace.com/addons/grid/
+	http://www.curse.com/addons/wow/grid
 ----------------------------------------------------------------------]]
 
 local _, Grid = ...
@@ -14,23 +21,24 @@ local L = setmetatable( Grid.L, {
 
 _G.Grid = LibStub("AceAddon-3.0"):NewAddon(Grid, "Grid", "AceConsole-3.0", "AceEvent-3.0")
 
+local format, print, strlen, tostring, type = format, print, strlen, tostring, type
+
 ------------------------------------------------------------------------
 
 function Grid:Debug(str, ...)
 	if not self.debug then return end
-	if not str or str:len() == 0 then return end
-
+	if not str or strlen(str) == 0 then return end
 
 	if (...) then
 		if str:find("%%%.%d") or str:find("%%[dfqsx%d]") then
-			str = str:format(...)
+			str = format(str, ...)
 		else
-			str = (" "):join(str, tostringall(...))
+			str = strjoin(" ", str, tostringall(...))
 		end
 	end
 
 	local name = self.moduleName or self.name or GRID
-	_G[Grid.db.global.debugFrame]:AddMessage(("|cffff9933%s:|r %s"):format(name, str))
+	_G[Grid.db.global.debugFrame]:AddMessage(format("|cffff9933%s:|r %s", name, str))
 end
 
 function Grid:GetDebuggingEnabled(moduleName)
@@ -83,7 +91,8 @@ end
 
 Grid.options = {
 	handler = Grid,
-	type = "group", childGroups = "tab",
+	type = "group",
+	childGroups = "tab",
 	args = {
 		debug = {
 			type = "group",
@@ -211,7 +220,7 @@ function Grid.modulePrototype:RegisterModule(name, module)
 	if module.extraOptions and not module.options then
 		module.options = {
 			name = module.menuName or module.moduleName,
-			desc = string.format(L["Options for %s."], module.moduleName),
+			desc = format(L["Options for %s."], module.moduleName),
 			type = "group",
 			args = {},
 		}
@@ -247,6 +256,53 @@ function Grid.modulePrototype:ResetModules()
     end
 end
 
+function Grid.modulePrototype:StartTimer(eventName, callback, delay, repeating, arg)
+	if not self.ScheduleTimer then
+		-- This module doesn't use AceTimer-3.0.
+		return
+	end
+
+	if not self.timerHandles then
+		-- First time starting a timer.
+		self.timerHandles = {}
+	end
+
+	if self.timerHandles[eventName] then
+		-- Timer is already running; stop it first.
+		self:StopTimer(eventName)
+	end
+
+	if type(callback) == "function" then
+		-- StartTimer("DoSomething", self.DoSomething, 5, self)
+		callback = function() return callback(self) end
+		if arg == self then
+			-- Not needed with AceTimer-3.0
+			arg = nil
+		end
+	elseif type(callback) == "number" then
+		-- StartTimer("DoSomething", 5) eg. real AceTimer usage
+		callback, delay, repeating, arg = eventName, callback, delay, repeating
+	end
+
+	local handle
+	if repeating then
+		handle = self:ScheduleRepeatingTimer(callback, delay, arg)
+	else
+		handle = self:ScheduleTimer(callback, delay, arg)
+	end
+	self.timerHandles[eventName] = handle
+	return handle
+end
+
+function Grid.modulePrototype:StopTimer(eventName)
+	if not self.timerHandles or not self.timerHandles[eventName] then
+		-- This module doesn't use AceTimer, or hasn't started any timers yet, or this timer isn't running.
+		return
+	end
+	self:CancelTimer(self.timerHandles[eventName])
+	self.timerHandles[eventName] = nil
+end
+
 Grid:SetDefaultModulePrototype(Grid.modulePrototype)
 Grid:SetDefaultModuleLibraries("AceEvent-3.0")
 
@@ -272,8 +328,8 @@ function Grid:OnInitialize()
 	local AceConfigDialog = LibStub("AceConfigDialog-3.0")
 
 	local status = AceConfigDialog:GetStatusTable("Grid")
-	status.width = 777 -- 685
-	status.height = 486 -- 530
+	status.width = 780 -- 685
+	status.height = 500 -- 530
 
 	local child1 = AceConfigDialog:GetStatusTable("Grid", { "Indicators" })
 	child1.groups = child1.groups or { }
@@ -351,7 +407,7 @@ do
 	function Grid:GetDebuggingOptions(moduleName)
 		return {
 			name = moduleName,
-			desc = L["Enable debugging messages for the %s module."]:format(moduleName),
+			desc = format(L["Enable debugging messages for the %s module."], moduleName),
 			type = "toggle",
 			width = "double",
 			get = debug_get,
