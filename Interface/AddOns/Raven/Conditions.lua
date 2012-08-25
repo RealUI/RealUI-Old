@@ -309,15 +309,12 @@ local function GetStance()
 	return form
 end
 
--- Return the number of points spent in the specified talent (either spell name or spell id), return nil if no points spent
+-- Return whether the specified talent (either spell name or spell id) is active in current spec
 function RavenCheckTalent(talent)
 	local id = tonumber(talent)
 	if id then talent = GetSpellInfo(id) end -- translate spell id
 	local t = MOD.talents[talent]
-	if t then
-		local _, _, _, _, pts = GetTalentInfo(t.tab, t.index, false, false, nil)
-		if pts and (pts > 0) then return pts end
-	end
+	if t and t.active then return true end
 	return nil
 end
 
@@ -629,7 +626,7 @@ function MOD:UpdateConditions()
 	-- update globally useful conditions
 	local stat = MOD.status
 	stat.inCombat = (UnitAffectingCombat("player") ~= nil)
-	stat.inRaid = UnitInRaid("player")
+	stat.inRaid = IsInRaid()
 	stat.inGroup = GetNumGroupMembers() > 0
 	stat.inParty = stat.inGroup and not stat.inRaid
 	local instance, it = IsInInstance()

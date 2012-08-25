@@ -61,6 +61,7 @@ MOD.BarGroupTemplate = { -- default bar group settings
 	detectDebuffsCastBy = "player", detectCooldownsBy = "player", detectTracking = false, detectOnlyTracking = false,
 	detectSpellCooldowns = true, detectTrinketCooldowns = true, detectInternalCooldowns = true, detectSpellEffectCooldowns = true,
 	detectPotionCooldowns = true, detectOtherCooldowns = true, detectRuneCooldowns = false,
+	detectSharedStances = true, detectSharedShouts = true,
 	detectSharedFrostTraps = true, detectSharedFireTraps = true, detectSharedShocks = true, detectSharedCrusader = true,
 	setDuration = false, uniformDuration = 120, checkDuration = false, minimumDuration = true, filterDuration = 120,
 	checkTimeLeft = false, minimumTimeLeft = true, filterTimeLeft = 120, showNoDuration = false, showOnlyNoDuration = false,
@@ -358,7 +359,7 @@ function MOD:GetSpellColorForBar(bar)
 	local c = bar.color -- get override if one is set
 	if not c then
 		local sp = MOD:GetAssociatedSpellForBar(bar)
-		if sp then c = MOD:GetColor(sp) end
+		if sp then c = MOD:GetColor(sp, bar.spellID) end
 	end
 	return c
 end
@@ -369,7 +370,7 @@ function MOD:SetSpellColorForBar(bar, r, g, b, a)
 	if c then c.r = r; c.g = g; c.b = b; c.a = a; return end
 	if not bar.colorLink then -- set the shared color for bars with the same associated spell
 		local sp = MOD:GetAssociatedSpellForBar(bar)
-		if sp then c = MOD:GetColor(sp) end
+		if sp then c = MOD:GetColor(sp, bar.spellID) end
 		if c then c.r = r; c.g = g; c.b = b; c.a = a; return end
 		c = { r = r, g = g, b = b, a = a }
 		if sp then MOD:SetColor(sp, c) else bar.color = c end
@@ -441,18 +442,18 @@ end
 -- Get the start, finish and expire sound files to play for a bar
 local function GetSoundsForBar(bg, bar)
 	local start, finish, expire, et, mt, replay, replayTime, sp = nil, nil, nil, nil, nil, nil, nil
-	if bg.soundSpellStart or bar.soundSpellStart then sp = MOD:GetAssociatedSpellForBar(bar); if sp then start = MOD:GetSound(sp) end end
+	if bg.soundSpellStart or bar.soundSpellStart then sp = MOD:GetAssociatedSpellForBar(bar); if sp then start = MOD:GetSound(sp, bar.spellID) end end
 	if not start and bar.soundAltStart ~= "None" then start = bar.soundAltStart end
 	if not start and bg.soundAltStart ~= "None" then start = bg.soundAltStart end
 	if bg.replay then replay = true; replayTime = bg.replayTime or 5 elseif bar.replay then replay = true; replayTime = bar.replayTime or 5 end
 	if start then start = media:Fetch("sound", start) end
-	if bg.soundSpellEnd or bar.soundSpellEnd then sp = MOD:GetAssociatedSpellForBar(bar); if sp then finish = MOD:GetSound(sp) end end
+	if bg.soundSpellEnd or bar.soundSpellEnd then sp = MOD:GetAssociatedSpellForBar(bar); if sp then finish = MOD:GetSound(sp, bar.spellID) end end
 	if not finish and bar.soundAltEnd ~= "None" then finish = bar.soundAltEnd end
 	if not finish and bg.soundAltEnd ~= "None" then finish = bg.soundAltEnd end
 	if finish then finish = media:Fetch("sound", finish) end
 	if bar.soundSpellExpire then et = bar.expireTime or 5; mt = bar.expireMinimum or 0
 		elseif bg.soundSpellExpire then et = bg.expireTime or 5; mt = bg.expireMinimum or 0 end
-	if et then sp = MOD:GetAssociatedSpellForBar(bar); if sp then expire = MOD:GetSound(sp) end end
+	if et then sp = MOD:GetAssociatedSpellForBar(bar); if sp then expire = MOD:GetSound(sp, bar.spellID) end end
 	if not expire and bar.soundAltExpire ~= "None" then expire = bar.soundAltExpire; et = bar.expireTime or 5; mt = bar.expireMinimum or 0 end
 	if not expire and bg.soundAltExpire ~= "None" then expire = bg.soundAltExpire; et = bg.expireTime or 5; mt = bg.expireMinimum or 0  end
 	if expire then expire = media:Fetch("sound", expire) else et = nil; mt = nil end
@@ -504,8 +505,7 @@ end
 -- Returns whether solo, party or raid
 local function PartyInfo()
 	if GetNumGroupMembers() == 0 then return "solo" end
-	local inRaid = UnitInRaid("player")
-	if inRaid then return "raid" end
+	if IsInRaid() then return "raid" end
 	return "party"
 end
 
@@ -982,7 +982,7 @@ local function DetectNewBuffs(unit, n, aura, isBuff, bp, vbp, bg)
 	if bp.filterBuffBars and CheckFilterBarGroup(bp.filterBuffBarGroup, "Buff", n, bp.detectBuffsMonitor) then return end -- check if in filter bar group
 	local bt = MOD.BuffTable
 	if not bt[n] then bt[n] = { det = true } end -- newly detected aura goes into auras table
-	local label = MOD:GetLabel(n) -- check if there is a cached label for this action
+	local label = MOD:GetLabel(n, aura[14]) -- check if there is a cached label for this action or spellid
 	local checkTracking = not (bp.detectTracking and bp.detectOnlyTracking)
 	if (aura[4] == "Tracking") then checkTracking = bp.detectTracking end
 	local tt, ta = aura[11], aura[12]
@@ -1006,8 +1006,7 @@ local function DetectNewBuffs(unit, n, aura, isBuff, bp, vbp, bg)
 			and not (bp.noTargetBuffs and UnitIsUnit(unit, "target")) and not (bp.noFocusBuffs and UnitIsUnit(unit, "focus")) and
 			MOD:CheckCastBy(aura[6], bp.detectBuffsCastBy))) and CheckTimeAndDuration(bp, aura[2], aura[5]) and checkTracking and checkTypes then
 		local b, tag = detectedBar, "Buff"
-		b.action = n
-		b.barType = "Buff"
+		b.action = n; b.spellID = aura[14]; b.barType = "Buff"
 		if aura[6] then tag = tag .. aura[6] elseif aura[10] and (aura[10] > 0) then tag = tag .. tostring(aura[10]) end
 		if aura[14] then tag = tag .. tostring(aura[14]) elseif (tt == "weapon") or (tt == "tracking") then tag = tag .. ta end
 		if unit == "all" then
@@ -1037,7 +1036,7 @@ local function DetectNewDebuffs(unit, n, aura, isBuff, bp, vbp, bg)
 	if bp.filterDebuffBars and CheckFilterBarGroup(bp.filterDebuffBarGroup, "Debuff", n, bp.detectDebuffsMonitor) then return end -- check if in filter bar group
 	local bt = MOD.DebuffTable
 	if not bt[n] then bt[n] = { det = true } end -- newly detected aura goes into auras table
-	local label = MOD:GetLabel(n)
+	local label = MOD:GetLabel(n, aura[14]) -- check if there is a cached label for this action or spellid
 	local isDispel = MOD:IsDebuffDispellable(n, unit, aura[4])
 	local isInflict = aura[17]
 	local isNPC = aura[18]
@@ -1062,8 +1061,7 @@ local function DetectNewDebuffs(unit, n, aura, isBuff, bp, vbp, bg)
 			and not (bp.noTargetDebuffs and UnitIsUnit(unit, "target")) and not (bp.noFocusDebuffs and UnitIsUnit(unit, "focus")) and
 			MOD:CheckCastBy(aura[6], bp.detectDebuffsCastBy))) and CheckTimeAndDuration(bp, aura[2], aura[5]) and checkTypes then
 		local b, tag = detectedBar, "Debuff"
-		b.action = n
-		b.barType = "Debuff"
+		b.action = n; b.spellID = aura[14]; b.barType = "Debuff"
 		if aura[6] then tag = tag .. aura[6] elseif aura[10] and (aura[10] > 0) then tag = tag .. tostring(aura[10]) end
 		if aura[14] then tag = tag .. tostring(aura[14]) elseif (tt == "weapon") or (tt == "tracking") then tag = tag .. ta end
 		if unit == "all" then
@@ -1117,6 +1115,14 @@ local function CheckSharedCooldowns(n, b, bp)
 		if (n == LSPELL["Frost Shock"]) or (n == LSPELL["Flame Shock"]) then return false end
 		if n == LSPELL["Earth Shock"] then b.barLabel = L["Shocks"] end
 	end
+	if bp.detectSharedStances then
+		if (n == LSPELL["Defensive Stance"]) or (n == LSPELL["Berserker Stance"]) then return false end
+		if n == LSPELL["Battle Stance"] then b.barLabel = L["Stances"] end
+	end
+	if bp.detectSharedShouts then
+		if (n == LSPELL["Commanding Shout"]) then return false end
+		if n == LSPELL["Battle Shout"] then b.barLabel = L["Shouts"] end
+	end
 	if bp.detectSharedCrusader then
 		if n == LSPELL["Hammer of the Righteous"] then return false end
 		if n == LSPELL["Crusader Strike"] then b.barLabel = L["Crusader/Hammer"] end
@@ -1132,7 +1138,7 @@ local function AutoRuneBars(bp, vbp, bg)
 		local rune = MOD.runeSlots[i]
 		local icon = MOD.runeIcons[rune.rtype]
 		local b = detectedBar
-		b.action = MOD.runeTypes[rune.rtype]; b.barLabel = runeSlotPrefix[i] .. b.action
+		b.action = MOD.runeTypes[rune.rtype]; b.spellID = nil; b.barLabel = runeSlotPrefix[i] .. b.action
 		b.barType = "Cooldown"; b.uniqueID = "Cooldown"; b.group = nil; b.barSource = "Detected"
 		if rune.ready then -- generate ready bar with no duration
 			if CheckTimeAndDuration(bp, 0, 0) then
@@ -1158,12 +1164,12 @@ local function AutoTotemBars(bp, vbp, bg)
 		if haveTotem and name and name ~= "" then -- generate timer bar for the totem in the slot
 			local timeLeft = duration - (GetTime() - startTime)
 			if CheckTimeAndDuration(bp, timeLeft, duration) then
-				b.action = name; b.barLabel = name
+				b.action = name; b.barLabel = name; b.spellID = nil
 				UpdateBar(bp, vbp, bg, b, icon, timeLeft, duration, nil, nil, "totem", i, nil, nil, true)
 			end
 		else -- generate ready bar with no duration
 			if CheckTimeAndDuration(bp, 0, 0) then
-				b.action = totemSlotName[i]; b.barLabel = b.action
+				b.action = totemSlotName[i]; b.barLabel = b.action; b.spellID = nil
 				UpdateBar(bp, vbp, bg, b, nil, 0, 0, nil, nil, "text", b.action, nil, nil, true)
 			end
 		end
@@ -1180,14 +1186,10 @@ local function DetectNewCooldowns(n, cd, bp, vbp, bg)
 	if bp.filterCooldownBars and CheckFilterBarGroup(bp.filterCooldownBarGroup, "Cooldown", n, true) then return end -- check if in filter bar group
 	local cdt = MOD.CooldownTable	
 	if not cdt[n] then cdt[n] = { det = true } end -- newly detected cooldown goes into cooldowns table
-	local label = MOD:GetLabel(n)
+	local label = MOD:GetLabel(n, cd[8]) -- check if there is a cached label for this action or spellid
 	if MOD:CheckCastBy(cd[7], bp.detectCooldownsBy) and CheckCooldownType(cd, bp) and CheckTimeAndDuration(bp, cd[1], cd[4]) then
 		local b = detectedBar
-		b.action = n
-		b.barLabel = label
-		b.barType = "Cooldown"
-		b.uniqueID = "Cooldown"
-		b.group = nil
+		b.action = n; b.spellID = cd[8]; b.barType = "Cooldown"; b.barLabel = label; b.uniqueID = "Cooldown"; b.group = nil
 		b.barSource = GetSpellSource(cdt[n])
 		if CheckSharedCooldowns(n, b, bp) then
 			UpdateBar(bp, vbp, bg, b, cd[2], cd[1], cd[4], nil, nil, cd[5], cd[6], nil, nil, true)
@@ -1228,7 +1230,7 @@ local function UpdateBarGroupBars(bp, vbp, bg)
 					local b, label = headerBar, name
 					local rti = MOD:GetRaidTarget(id)
 					if rti then label = prefixRaidTargetIcon .. rti .. ":0|t " .. name end
-					b.action = ""; b.barLabel = label; b.barType = "Notification"
+					b.action = ""; b.spellID = nil; b.barLabel = label; b.barType = "Notification"
 					b.uniqueID = id; b.group = id; b.barSource = "header"
 					UpdateBar(bp, vbp, bg, b, nil, 0, 0, nil, nil, "header", name, id, nil, nil)
 				end
@@ -1247,7 +1249,7 @@ local function UpdateBarGroupBars(bp, vbp, bg)
 								if mon and CheckTimeAndDuration(bp, aura[2], aura[5]) then
 									count = count + 1
 									if count > 1 then bar.barLabel = bar.barLabel .. " " end -- add space at end to make unique
-									bar.startReady = nil
+									bar.startReady = nil; bar.spellID = aura[14]
 									UpdateBar(bp, vbp, bg, bar, aura[8], aura[2], aura[5], aura[3], aura[4], aura[11], aura[12], bar.monitor, aura[16], isMine)
 								end
 							end
@@ -1269,7 +1271,7 @@ local function UpdateBarGroupBars(bp, vbp, bg)
 						local cd = MOD:CheckCooldown(aname) -- look up in the active cooldowns table
 						if cd and (cd[1] ~= nil) then
 							if CheckTimeAndDuration(bp, cd[1], cd[4]) then
-								bar.startReady = nil
+								bar.startReady = nil; bar.spellID = cd[8]
 								UpdateBar(bp, vbp, bg, bar, cd[2], cd[1], cd[4], nil, nil, cd[5], cd[6], nil, nil, true)
 							end
 						elseif bar.enableReady and (bar.readyNotUsable or IsUsableSpell(aname) or IsUsableItem(aname)) then -- see if need to create a ready bar
@@ -1286,6 +1288,7 @@ local function UpdateBarGroupBars(bp, vbp, bg)
 						end
 					elseif t == "Notification" then
 						if MOD:CheckCondition(bar.action) then
+							bar.spellID = nil
 							local icon = MOD:GetIconForBar(bar)
 							if not icon then icon = defaultNotificationIcon end
 							UpdateBar(bp, vbp, bg, bar, icon, 0, 0, nil, nil, "notification", bar.barLabel, bar.action, nil, true)

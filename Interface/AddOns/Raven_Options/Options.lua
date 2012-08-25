@@ -2650,7 +2650,7 @@ MOD.OptionsTable = {
 					args = {
 						SpellName = {
 							type = "input", order = 30, name = L["Spell Name"],
-							desc = L["Enter spell name (or numeric identifier) whose color you want to change."],
+							desc = L["Enter a spell name (or numeric identifier, optionally preceded by # for a specific spell id)."],
 							get = function(info) return conditions.name end,
 							set = function(info, n) n = ValidateSpellName(n); conditions.name = n end,
 						},
@@ -4676,6 +4676,18 @@ MOD.OptionsTable = {
 									desc = L["If checked, only show one cooldown for shaman Shocks."],
 									get = function(info) return GetBarGroupField("detectSharedShocks") end,
 									set = function(info, value) SetBarGroupField("detectSharedShocks", value) end,
+								},
+								StanceCooldowns = {
+									type = "toggle", order = 20, name = L["Stances"],
+									desc = L["If checked, only show one cooldown for warrior Stances."],
+									get = function(info) return GetBarGroupField("detectSharedStances") end,
+									set = function(info, value) SetBarGroupField("detectSharedStances", value) end,
+								},
+								ShoutCooldowns = {
+									type = "toggle", order = 20, name = L["Shouts"],
+									desc = L["If checked, only show one cooldown for warrior Shouts."],
+									get = function(info) return GetBarGroupField("detectSharedShouts") end,
+									set = function(info, value) SetBarGroupField("detectSharedShouts", value) end,
 								},
 								PallyCooldowns = {
 									type = "toggle", order = 25, name = L["Crusader/Hammer"],

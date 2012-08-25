@@ -12,12 +12,15 @@
 -- Raven:UnitHasDebuff(unit, type) returns true and table with detailed info if unit has an active debuff of the specified type (e.g., "Poison")
 
 -- Mists of Pandaria (WoW 5.0) changes
--- Talent changes: rewrite talent tracking, change talent condition checking, fix special cases that check talents (e.g., dispels)
--- Party/raid changes: rewrite code that tests if in party or raid, change party/raid-related condition checking
--- Presets: update all class presets with new spell ids and cooldown info
--- UI: change UIPanelButtonTemplate2 to UIPanelButtonTemplate
+-- (done) Talent changes: rewrite talent tracking, change talent condition checking
+-- (done) Special cases: revisit old special cases such as serpent sting spreading
+-- (done) Dispel changes: change to test for spell availability instead of talents
+-- (done) Party/raid changes: rewrite code that tests if in party or raid, change party/raid-related condition checking
+-- (done) Presets: update all class presets with new spell ids and cooldown info
+-- (done) UI: change UIPanelButtonTemplate2 to UIPanelButtonTemplate
 -- Buff consolidation: figure out how to work with new raid buff interface
--- Ranged slot: remove from buff and cooldown tracking, no ranged slot-related conditions
+-- (done) Ranged slot: remove from buff and cooldown tracking, no ranged slot-related conditions
+-- (done) Vehicle/possess: change action bar slots
 
 Raven = LibStub("AceAddon-3.0"):NewAddon("Raven", "AceConsole-3.0", "AceEvent-3.0")
 local L = LibStub("AceLocale-3.0"):GetLocale("Raven")
@@ -41,10 +44,12 @@ MOD.petSpells = {} -- stores info about pre-defined spells for pets
 MOD.classConditions = {} -- stores info about pre-defined conditions for each class
 MOD.talents = {} -- table containing names and talent table location for each talent
 MOD.talentList = {} -- table with list of talent names
+MOD.talentSpec = nil -- currently active talent spec
 MOD.runeSlots = {} -- cache information about each rune slot for DKs
 MOD.runeTypes = {} -- cache types of runes
 MOD.runeIcons = {} -- cache icons for Death Knight runes
 MOD.updateActions = true -- action bar changed
+MOD.updateDispels = true -- need to update dispel types
 
 local doUpdate = true -- set by any event that can change bars (used to throttle major updates)
 local forceUpdate = false -- set to cause immediate update (reserved for critical changes like to player's target or focus)
@@ -85,9 +90,6 @@ local startGCD, durationGCD = nil -- detect global cooldowns
 local raidTargets = {} -- raid target to GUID
 local shamanEnchants = nil -- table of shaman weapon enchants
 local fireSpells = nil -- special case support for mage Impact procs
-local expireSpells = {} -- table of spell expire values
-local hasImpact = false -- set for mages when talents are initialized
-local hasSerpentSpread = false -- set for hunters when talents are initialized
 local petGUID = nil -- cache pet GUID so can properly remove trackers for them when dismissed
 local enteredWorld = nil -- set by PLAYER_ENTERING_WORLD event
 local trackerTag = 0 -- used for mark/sweep in AddTrackers
@@ -206,8 +208,7 @@ local function RefreshTrackers()
 	ValidateUnitIDs()
 	table.wipe(refreshUnits) -- table of guids to prevent refreshing multiple times
 	MOD:AddTrackers("player"); MOD:AddTrackers("target");  MOD:AddTrackers("focus")
-	local inRaid = UnitInRaid("player")
-	if inRaid then
+	if IsInRaid() then
 		for i = 1, GetNumGroupMembers() do MOD:AddTrackers("raid"..i); MOD:AddTrackers("raidpet"..i); MOD:AddTrackers("raid"..i.."target") end
 	else
 		for i = 1, GetNumGroupMembers() do MOD:AddTrackers("party"..i); MOD:AddTrackers("partypet"..i); MOD:AddTrackers("party"..i.."target") end
@@ -222,7 +223,7 @@ local function GetUnitIDFromGUID(guid)
 	local uid = cacheUnits[guid] -- look up the guid in the cache and if it is there make sure it is still valid and then return it
 	if uid then if guid == UnitGUID(uid) then return uid else uid = nil end end
 	for _, unit in pairs(units) do uid = CheckUnitIDs(unit, guid); if uid then break end end -- first check primary units
-	local inRaid = UnitInRaid("player")
+	local inRaid = IsInRaid()
 	if not uid and not inRaid then -- check party, party pet, and party target units
 		for i = 1, GetNumGroupMembers() do
 			uid = CheckUnitIDs("party"..i, guid); if uid then break end
@@ -247,17 +248,7 @@ local function CombatLogTracker(event, timeStamp, e, hc, srcGUID, srcName, sf1, 
 		doUpdate = true
 		local now = GetTime()
 		if e == "SPELL_CAST_SUCCESS" then -- check for special cases
-			if spellID == 33763 then -- Lifebloom refreshes don't generate aura applied events once three stacks are active
-				e = "SPELL_AURA_APPLIED"
-			elseif (spellID == 2136) and hasImpact then -- Fire Blast with Impact talent
-				local dst = GetUnitIDFromGUID(dstGUID) or dstName
-				if dst and fireSpells then
-					for _, v in pairs(fireSpells) do
-						local name, _, _, _, _, _, expire, caster = UnitAura(dst, v, nil, "HARMFUL|PLAYER")
-						if name and caster == "player" then expireSpells[name] = expire end
-					end
-				end
-			end
+			if spellID == 33763 then e = "SPELL_AURA_APPLIED" end -- Lifebloom refreshes don't always generate aura applied events
 		end
 		if e == "SPELL_AURA_APPLIED" or e == "SPELL_AURA_APPLIED_DOSE" or e == "SPELL_AURA_REFRESH" then
 			local name, rank, icon, count, bType, duration, expire, caster, isStealable, boss, apply, _
@@ -274,8 +265,6 @@ local function CombatLogTracker(event, timeStamp, e, hc, srcGUID, srcName, sf1, 
 			if spellID and not icon then icon = MOD:GetIcon(spellName, spellID) end
 			if not name then
 				name = spellName; rank = ""; count = 1; bType = nil; duration = MOD:GetDuration(name)
-				if hasSerpentSpread and (spellID == 1978) or (spellID == 88466) then spellID = 88466; duration = 9 end -- special case aoe serpent spread
-				if hasImpact then local fs = expireSpells[name]; if fs then duration = fs - now end end -- special case mage Impact
 				if duration > 0 then expire = now + duration else duration = 0; expire = 0 end
 				caster = "player"; isStealable = nil; boss = nil
 				isBuff = (MOD.BuffTable[name] ~= nil) -- default to debuff unless the spell name is in the known buff table
@@ -300,17 +289,6 @@ local function CombatLogTracker(event, timeStamp, e, hc, srcGUID, srcName, sf1, 
 				if t then tracker[spellName] = ReleaseTable(t) end -- release the tracker entry
 				if not next(tracker) then unitDebuffs[dstGUID] = ReleaseTable(tracker) end -- release table when no more entries for this GUID
 			end
---[[
-		elseif e == "SPELL_DAMAGE" and MOD.myClass == "SHAMAN" and spellID == 8349 then -- special case for shaman Fire Nova
-			local tracker = unitDebuffs[dstGUID] -- table of debuffs currently applied to this GUID
-			if tracker then
-				local t = tracker[ LSPELL["Flame Shock"] ] -- get tracker entry for active Flame Shock, if one exists
-				if t then -- extend duration by 3 or 6 seconds if Call of Flame talent
-					local pts = RavenCheckTalent(16160)
-					if pts then pts = pts * 3; t[5] = t[5] + pts; t[10] = t[10] + pts; t[2] = t[2] + pts end
-				end
-			end	
-]]--
 		elseif e == "SPELL_SUMMON" and MOD.myClass == "MAGE" and spellID == 99063 then -- special case for mage T12 2-piece
 			local name = GetSpellInfo(99061) -- T12 bonus spell name
 			if name then
@@ -343,8 +321,7 @@ end
 local function CheckRaidTargets()
 	doUpdate = true
 	for _, unit in pairs(units) do CheckRaidTarget(unit) end -- first check primary units
-	local inRaid = UnitInRaid("player")
-	if inRaid then
+	if IsInRaid() then
 		for i = 1, GetNumGroupMembers() do CheckRaidTarget("raid"..i); CheckRaidTarget("raidpet"..i); CheckRaidTarget("raid"..i.."target") end
 	else
 		for i = 1, GetNumGroupMembers() do CheckRaidTarget("party"..i); CheckRaidTarget("partypet"..i); CheckRaidTarget("party"..i.."target") end
@@ -494,34 +471,33 @@ function MOD:PLAYER_TARGET_CHANGED() unitUpdate.target = true; unitUpdate.target
 -- Event called when spells in spell book change
 function MOD:SPELLS_CHANGED() MOD:SetIconDefaults(); MOD:SetCooldownDefaults(); updateCooldowns = true; doUpdate = true end
 
--- Create cache of talent tab info
+-- Create cache of talent info
 local function InitializeTalents()	
-	-- local tabs = GetNumTalentTabs(false, false)
-	-- if tabs == 0 then return end
+	local tabs = GetNumSpecializations(false, false)
+	if tabs == 0 then return end
+
+	local currentSpec = GetSpecialization()
+	MOD.talentSpec = currentSpec and select(2, GetSpecializationInfo(currentSpec)) or "None"
+	
 	talentsInitialized = true; doUpdate = true
-	MOD.talents = {}; MOD.talentList = {}
---[[
+	table.wipe(MOD.talents); table.wipe(MOD.talentList)
+	
+	local ts = GetNumTalents(currentSpec)
 	local select = 1
-	for i = 1, tabs do
-		local ts = GetNumTalents(i, false, false)
-		for j = 1, ts do
-			local name, rank, maxRank, _
-			name, _, _, _, rank, maxRank = GetTalentInfo(i, j, false, false, nil) -- player's active talents
-			if name then
-				MOD.talents[name] = { rank = rank, maxRank = maxRank, tab = i, index = j }
-				MOD.talentList[select] = name
-				select = select + 1
-			end
+	for i = 1, ts do
+		local name, texture, tier, _, selected = GetTalentInfo(i) -- player's active talents
+		if name then
+			MOD.talents[name] = { tab = currentSpec, index = i, tier = tier, icon = texture, active = selected }
+			MOD.talentList[select] = name
+			select = select + 1
 		end
 	end
-]]--
+
 	table.sort(MOD.talentList)
 	for i, t in pairs(MOD.talentList) do
 		MOD.talents[t].select = i
 	end
-	MOD:SetDispelDefaults()
-	if MOD.myClass == "MAGE" then hasImpact = (RavenCheckTalent(12357) ~= nil) end
-	if MOD.myClass == "HUNTER" then hasSerpentSpread = (RavenCheckTalent(87935) ~= nil) end
+	MOD.updateDispels = true
 end
 
 -- Check if the options panel is loaded, if not then get it loaded and ask it to toggle open/close status
@@ -1245,9 +1221,11 @@ function MOD:UpdateCooldowns()
 				end
 			end
 		end
-		if IsPossessBarVisible() or UnitUsingVehicle("player") then -- check for possess/vehicle bar actions
-			for slot = 121, 132 do
-				local actionType, spellID = GetActionInfo(slot)
+		local offset = nil -- check for override/vehicle bar actions on cooldown
+		if HasVehicleActionBar() then offset = 132 elseif HasOverrideActionBar() then offset = 156 end
+		if offset then
+			for slot = 1, 6 do
+				local actionType, spellID = GetActionInfo(slot + offset)
 				if actionType == "spell" then
 					local start, duration, enable = GetSpellCooldown(spellID)
 					if start and (start > 0) and (enable == 1) and (duration > 1.5) then -- don't include global cooldowns

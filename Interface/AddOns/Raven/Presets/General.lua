@@ -11,7 +11,9 @@ Raven.generalSpells = {
 	{ "Chilled", DEBUFF, p.Blue3, id = 7321 },
 	{ "Enraged", BUFF, p.Red1, id = 71216 },
 	{ "Dazed", DEBUFF, p.Cyan, id = 15571 },
+	{ "Disoriented", DEBUFF, p.Gray, id = 115226 },
 	{ "Thunderclap", DEBUFF, p.Blue3, id = 8147 },
+	{ "Weakened Blows", DEBUFF, p.Gray, id = 115798 },
 	{ "Ghost", DEBUFF, p.Gray, id = 9036 },
 	{ "Basic Campfire", nil, p.Orange2, cooldown = true, id = 818, profession = "Cooking" },
 	{ "Survey", nil, p.Grey, cooldown = true, id = 80451, profession = "Archaeology" },
@@ -39,12 +41,10 @@ Raven.spellEffects = {
 
 Raven.internalCooldowns = {
 	-- Spell internal cooldowns
-	{ id = 61346, duration = 60, cancel = { 48517, 48518 }, class = "DRUID"}, -- Nature's Grace
-	{ id = 56343, duration = 22, class = "HUNTER" }, -- Lock and Load
-	{ id = 47537, duration = 12, class = "PRIEST" }, -- Rapture
 	{ id = 81164, duration = 45, class = "DEATHKNIGHT" }, -- Will of the Necropolis
-	{ id = 85285, duration = 60, class = "PALADIN" }, -- Sacred Shield
-	
+	{ id = 122464, duration = 10, class = "MONK" }, -- Dematerialize
+	{ id = 47536, duration = 12, class = "PRIEST" }, -- Rapture
+
 	-- Enchant internal cooldowns
 	{ id = 74245, duration = 45, }, -- Landslide
 	{ id = 74241, duration = 45, }, -- Power Torrent

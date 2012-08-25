@@ -128,17 +128,17 @@ local function ProcessSpellInfo(p, pet, class, race, special)
 	if not name then name = p[1] end -- if no id specified then use the non-localized name
 	MOD.DefaultProfile.global.SpellColors[name] = c -- sets default color in the shared color table
 	if p.cooldown and (not MOD.CooldownTable[name] or (class == MOD.myClass)) then -- add to the cooldown table, indexed by name
-		MOD.CooldownTable[name] = { pet = pet, class = class, race = race, school = p.school, id = p.id }
+		MOD.CooldownTable[name] = { pet = pet, class = class, race = race, id = p.id }
 	end
 	if not pet and ((class == MOD.myClass) or (race == MOD.myRace) or special) then
-		if p.lockout and p.school then MOD.lockSpells[name] = { school = p.school, id = p.id } end
+		if p.lockout and p.school then MOD.lockSpells[name] = { school = p.school or "Physical", id = p.id } end
 		if p.cooldown and (not cooldownSpells[name] or (class == MOD.myClass)) then -- prefer player's class
-			cooldownSpells[name] = { school = p.school, id = p.id, profession = p.profession }
+			cooldownSpells[name] = { school = p.school or "Physical", id = p.id, refer = p.refer, profession = p.profession }
 		end
 	end
 	if p[2] ~= nil then -- add to the buff or debuff table, prefer player's class if already present
 		local bt = p[2] and MOD.BuffTable or MOD.DebuffTable
-		if not bt[name] or (class == MOD.myClass) then bt[name] = { pet = pet, class = class, race = race, school = p.school, id = p.id } end
+		if not bt[name] or (class == MOD.myClass) then bt[name] = { pet = pet, class = class, race = race, id = p.id } end
 	end	
 end
 	
@@ -165,7 +165,7 @@ function MOD:SetSpellDefaults()
 	
 	if MOD.myClass == "DEATHKNIGHT" then -- localize rune spell names
 		local t = {}
-		for k, p in pairs(MOD.runeSpells) do if p.id then name = GetSpellInfo(p.id); t[name] = p end end
+		for k, p in pairs(MOD.runeSpells) do if p.id then local name = GetSpellInfo(p.id); if name then t[name] = p end end end
 		MOD.runeSpells = t
 	end
 end
@@ -176,7 +176,7 @@ function MOD:SetCooldownDefaults()
 	
 	local name, _, icon
 	for spell, p in pairs(cooldownSpells) do
-		if p.id and IsSpellKnown(p.id) then -- only include known spells in the cooldown list
+		if p.id and (IsSpellKnown(p.refer or p.id) or (MOD.myRace == "Draenei" and p.id == 59545)) then -- only include known spells
 			name, _, icon = GetSpellInfo(p.id)
 			MOD.cdSpells[name] = { name = name, id = p.id, school = p.school, icon = icon, link = GetSpellLink(p.id) }
 		end
@@ -443,8 +443,10 @@ function MOD:SetColor(name, c)
 end
 
 -- Get a color from the cache of given name, but if not in cache then return nil
-function MOD:GetColor(name)
-	local c = MOD.db.global.SpellColors[name]
+function MOD:GetColor(name, spellID)
+	local c = nil
+	if spellID then c = MOD.db.global.SpellColors["#" .. tostring(spellID)] end -- allow names stored as #spellid
+	if not c then c = MOD.db.global.SpellColors[name] end
 	return c
 end
 
@@ -456,8 +458,10 @@ function MOD:SetLabel(name, label)
 end
 
 -- Get a label from the cache, but if not in the cache then return the name
-function MOD:GetLabel(name)
-	local label = MOD.db.global.Labels[name]
+function MOD:GetLabel(name, spellID)
+	local label = nil
+	if spellID then label = MOD.db.global.Labels["#" .. tostring(spellID)] end -- allow names stored as #spellid
+	if not label then label = MOD.db.global.Labels[name] end
 	if not label then label = name end
 	return label
 end
@@ -471,7 +475,12 @@ end
 function MOD:SetSound(name, sound) if name then MOD.db.global.Sounds[name] = sound end end
 
 -- Get a sound from the cache, return nil if none specified
-function MOD:GetSound(name) if name then return MOD.db.global.Sounds[name] else return nil end end
+function MOD:GetSound(name, spellID)
+	local sound = nil
+	if spellID then sound = MOD.db.global.Sounds["#" .. tostring(spellID)] end -- allow names stored as #spellid
+	if name and not sound then sound = MOD.db.global.Sounds[name] end
+	return sound
+end
 
 -- Reset all sounds to default values
 function MOD:ResetSoundDefaults() for name in pairs(MOD.db.global.Sounds) do MOD.db.global.Sounds[name] = nil end end
@@ -499,6 +508,11 @@ function MOD:SetSpellNameDefaults()
 	LSPELL["Frost Shock"] = GetSpellInfo(8056)
 	LSPELL["Flame Shock"] = GetSpellInfo(8050)
 	LSPELL["Earth Shock"] = GetSpellInfo(8042)
+	LSPELL["Defensive Stance"] = GetSpellInfo(71)
+	LSPELL["Berserker Stance"] = GetSpellInfo(2458)
+	LSPELL["Battle Stance"] = GetSpellInfo(2457)
+	LSPELL["Battle Shout"] = GetSpellInfo(6673)
+	LSPELL["Commanding Shout"] = GetSpellInfo(469)
 	LSPELL["Flight Form"] = GetSpellInfo(33943)
 	LSPELL["Swift Flight Form"] = GetSpellInfo(40120)
 	LSPELL["Earthliving Weapon"] = GetSpellInfo(51730)
@@ -527,34 +541,38 @@ end
 function MOD:SetDispelDefaults()
 	dispelTypes.Poison = false; dispelTypes.Curse = false; dispelTypes.Magic = false; dispelTypes.Disease = false
 	if MOD.myClass == "DRUID" then
-		if RavenCheckSpellKnown(2782) then -- Remove Corruption
+		if RavenCheckSpellKnown(88423) then -- Nature's Cure
+			dispelTypes.Poison = true; dispelTypes.Curse = true; dispelTypes.Magic = true
+		elseif RavenCheckSpellKnown(2782) then -- Remove Corruption
 			dispelTypes.Poison = true; dispelTypes.Curse = true
-			if RavenCheckTalent(88423) then dispelTypes.Magic = true end -- Nature's Cure
 		end
 	elseif MOD.myClass == "PRIEST" then
-		if RavenCheckSpellKnown(527) then dispelTypes.Magic = true end -- Dispel Magic
-		if RavenCheckSpellKnown(528) then -- Cure Disease
-			dispelTypes.Disease = true
-			if RavenCheckTalent(64129) then dispelTypes.Poison = "player" end -- Body and Soul is self only
+		if RavenCheckSpellKnown(527) then
+			dispelTypes.Magic = true; dispelTypes.Disease = true -- Purify
+		elseif RavenCheckSpellKnown(32375) then
+			dispelTypes.Magic = true -- Mass Dispel
 		end
 	elseif MOD.myClass == "MAGE" then
 		if RavenCheckSpellKnown(475) then dispelTypes.Curse = true end -- Remove Curse
 	elseif MOD.myClass == "PALADIN" then
 		if RavenCheckSpellKnown(4987) then -- Cleanse
 			dispelTypes.Poison = true; dispelTypes.Disease = true
-			if RavenCheckTalent(53551) then dispelTypes.Magic = true end -- Sacred Cleansing
+			if RavenCheckSpellKnown(53551) then dispelTypes.Magic = true end -- Sacred Cleansing
 		end
 	elseif MOD.myClass == "SHAMAN" then
-		if RavenCheckSpellKnown(51886) then -- Cleanse Spirit
-			dispelTypes.Curse = true
-			if RavenCheckTalent(77130) then dispelTypes.Magic = true end -- Improved Cleanse Spirit
+		if RavenCheckSpellKnown(77130) then
+			dispelTypes.Curse = true; dispelTypes.Magic = true -- Purify Spirit
+		elseif RavenCheckSpellKnown(51886) then
+			dispelTypes.Curse = true -- Cleanse Spirit
 		end
 	end
+	MOD.updateDispels = false
 end
 
 -- Return true if the player can dispel the type of debuff on the unit
 function MOD:IsDebuffDispellable(n, unit, debuffType)
 	if not debuffType then return false end
+	if MOD.updateDispels == true then MOD:SetDispelDefaults() end
 	local t = dispelTypes[debuffType]
 	if not t then return false end
 	if (t == "player") and (unit ~= "player") then return false end -- special case for self-only dispels

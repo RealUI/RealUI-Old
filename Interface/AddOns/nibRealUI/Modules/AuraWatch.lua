@@ -2235,7 +2235,7 @@ local function GetAuraList(list)
 end
 
 local function GetAuraInfo(spellName, personal)
-	local name,_,_, count,_, duration, expire = UnitAura("player", spellName)--, nil, personal and "PLAYER")
+	local name,_,_, count,_, duration, expire = UnitAura("player", spellName, nil, personal and "PLAYER")
 	return {["name"] = name, ["count"] = count, ["duration"] = duration, ["expire"] = expire}
 end
 
@@ -2263,10 +2263,12 @@ function AuraWatch:UpdateAuras(...)
 			curNegAuraList = GetNegAuraList(db.bargroups[uClass].auras[ka].negspells)
 			for kn, vn in ipairs(curNegAuraList) do
 				spellIDName = SpellNames[vn]
-				curNegAuraInfoTable[kn] = GetAuraInfo(spellIDName, db.bargroups[uClass].auras[ka].personal)
-				if curNegAuraInfoTable[kn].name then
-					curAuraHasNegative = true
-					break
+				if spellIDName then
+					curNegAuraInfoTable[kn] = GetAuraInfo(spellIDName, db.bargroups[uClass].auras[ka].personal)
+					if curNegAuraInfoTable[kn].name then
+						curAuraHasNegative = true
+						break
+					end
 				end
 			end
 			
@@ -2328,17 +2330,18 @@ function AuraWatch:UpdateAuras(...)
 					curAuraExpireTable = {}
 					for ks, vs in ipairs(curAuraList) do
 						spellIDName = SpellNames[vs]
-						curAuraInfoTable[ks] = GetAuraInfo(spellIDName, db.bargroups[uClass].auras[ka].personal)
-						
-						-- Find the first active Aura, fill out Expiration table
-						if curAuraInfoTable[ks].name then
-							if not firstAuraActive then firstAuraActive = vs end
-							if curAuraInfoTable[ks].expire and db.bargroups[uClass].auras[ka].expire.enabled then
-								curAuraExpireTable[vs] = curAuraInfoTable[ks].expire
-								anyAuraExpire = true
+						if spellIDName then
+							curAuraInfoTable[ks] = GetAuraInfo(spellIDName, db.bargroups[uClass].auras[ka].personal)
+							
+							-- Find the first active Aura, fill out Expiration table
+							if curAuraInfoTable[ks].name then
+								if not firstAuraActive then firstAuraActive = vs end
+								if curAuraInfoTable[ks].expire and db.bargroups[uClass].auras[ka].expire.enabled then
+									curAuraExpireTable[vs] = curAuraInfoTable[ks].expire
+									anyAuraExpire = true
+								end
 							end
 						end
-						
 					end
 					
 					-- Find which Aura to use

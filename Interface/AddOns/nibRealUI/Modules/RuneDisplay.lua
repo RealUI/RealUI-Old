@@ -13,7 +13,7 @@ local RUNETYPE_UNHOLY = 2
 local RUNETYPE_FROST = 3
 local RUNETYPE_DEATH = 4
 
-local gcdNextDuration = 1.5
+local gcdNextDuration = 1.0
 local gcdEnd = 0
 
 -- Combat Fader
@@ -612,7 +612,6 @@ function RuneDisplay:PLAYER_ENTERING_WORLD()
 	RuneDisplay:UpdateRuneTextures()
 
 	-- Update GCD info
-	RuneDisplay:UPDATE_SHAPESHIFT_FORM()
 	RuneDisplay:ACTIONBAR_UPDATE_COOLDOWN()
 end
 
@@ -625,26 +624,15 @@ function RuneDisplay:RUNE_TYPE_UPDATE(event, rune)
 	RuneDisplay:RuneTextureUpdate(rune, select(3, GetRuneCooldown(rune)))
 end
 
-function RuneDisplay:UPDATE_SHAPESHIFT_FORM()
-	if GetShapeshiftForm() == 3 then
-		-- Unholy presence
-		gcdNextDuration = 1.0
-	else
-		-- Not unholy presence
-		gcdNextDuration = 1.5
-	end
-end
-
 function RuneDisplay:ACTIONBAR_UPDATE_COOLDOWN()
 	-- Update Global Cooldown
-	local gcdStart, gcdDuration, gcdIsEnabled = GetCompanionCooldown("CRITTER", 1)
+	local gcdStart, gcdDuration, gcdIsEnabled = GetShapeshiftFormCooldown(1)
 	gcdEnd = gcdIsEnabled and gcdDuration > 0 and gcdStart + gcdDuration or gcdEnd
 end
 
 function RuneDisplay:SetupEvents()
 	if ( (not nibRealUI:GetModuleEnabled(MODNAME)) and EventsRegistered) then
 		self:UnregisterEvent("ACTIONBAR_UPDATE_COOLDOWN")
-		self:UnregisterEvent("UPDATE_SHAPESHIFT_FORM")
 		self:UnregisterEvent("RUNE_TYPE_UPDATE")
 		self:UnregisterEvent("PLAYER_ENTERING_WORLD")
 		
@@ -653,7 +641,6 @@ function RuneDisplay:SetupEvents()
 		EventsRegistered = false
 	else
 		self:RegisterEvent("ACTIONBAR_UPDATE_COOLDOWN")
-		self:RegisterEvent("UPDATE_SHAPESHIFT_FORM")
 		self:RegisterEvent("RUNE_TYPE_UPDATE")
 		self:RegisterEvent("PLAYER_ENTERING_WORLD")
 		
