@@ -2422,7 +2422,7 @@ local function Spec_UpdateTablet(self)
 	
 	local numSpecGroups = GetNumSpecGroups()
 	
-	if numSpecGroups > 1 then
+	if (numSpecGroups > 1) and (GetSpecialization(false, false, 2)) then
 		wipe(SpecSection)
 	
 		-- Spec Category

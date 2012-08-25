@@ -2235,7 +2235,7 @@ local function GetAuraList(list)
 end
 
 local function GetAuraInfo(spellName, personal)
-	local name,_,_, count,_, duration, expire = UnitAura("player", spellName, nil, personal and "PLAYER")
+	local name,_,_, count,_, duration, expire = UnitAura("player", spellName)--, nil, personal and "PLAYER")
 	return {["name"] = name, ["count"] = count, ["duration"] = duration, ["expire"] = expire}
 end
 

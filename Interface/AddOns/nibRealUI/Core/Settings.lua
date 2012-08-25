@@ -406,6 +406,7 @@ local function InstallationStage1()
 	
 	---- First Time
 	if dbg.tags.firsttime then
+		print("First Time? "..tostring(dbg.tags.firsttime))
 		-- CVars
 		SetDefaultCVars()
 		
