@@ -262,7 +262,7 @@ function RogueExtras2.prototype:Toggle(vis)
 end
 
 function RogueExtras2.prototype:UpdateSpec()
-	playerSpec = GetPrimaryTalentTree()
+	playerSpec = GetSpecialization()
 	self:UpdateRogueExtras2()
 end
 

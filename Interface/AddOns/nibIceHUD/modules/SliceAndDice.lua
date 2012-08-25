@@ -5,12 +5,8 @@ local nibIceHUD = _G.nibIceHUD
 
 local GlyphSpellId = 56810
 
-local baseTime = 9
-local gapPerComboPoint = 3
-local glyphBonusSec = 6
-local impSndTalentPage = 2
-local impSndTalentIdx = 4
-local impSndBonusPerRank = 0.25
+local baseTime = 12
+local gapPerComboPoint = 6
 local maxComboPoints = 5
 local sndEndTime = 0
 local sndDuration = 0
@@ -315,27 +311,8 @@ function SliceAndDice.prototype:GetMaxBuffTime(numComboPoints)
 	end
 
 	maxduration = baseTime + ((numComboPoints - 1) * gapPerComboPoint)
-	
-	if self:HasGlyphBonus() then
-		maxduration = maxduration + glyphBonusSec
-	end
-
-	local _, _, _, _, rank = GetTalentInfo(impSndTalentPage, impSndTalentIdx)
-	maxduration = maxduration * (1 + (rank * impSndBonusPerRank))
 
 	return maxduration
-end
-
-function SliceAndDice.prototype:HasGlyphBonus()
-	for i=1,GetNumGlyphSockets() do
-		local enabled, _, _, spell = GetGlyphSocketInfo(i)
-
-		if enabled and spell == GlyphSpellId then
-			return true
-		end
-	end
-
-	return false
 end
 
 function SliceAndDice.prototype:OutCombat()

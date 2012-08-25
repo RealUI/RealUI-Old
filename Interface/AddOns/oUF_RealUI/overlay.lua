@@ -1032,7 +1032,7 @@ function Overlay:UpdateUnitPowerBarInfo(UnitID)
 	UF[UFUnit].power.steppoints[2] = PlayerStepPoints[2]
 	UF[UFUnit].power.steppoints[3] = 0
 	UF[UFUnit].power.hassteps = false
-	UF[UFUnit].power.sinrogue = ((class == "ROGUE") and (GetPrimaryTalentTree() == 1) and (UFUnit == PLAYER_ID))
+	UF[UFUnit].power.sinrogue = ((class == "ROGUE") and (GetSpecialization() == 1) and (UFUnit == PLAYER_ID))
 	if ((pToken == "MANA") or ((pToken ~= "MANA") and (pMax == 100))) then
 		UF[UFUnit].power.hassteps = true
 	elseif UnitPowerMax(Unit) > 80 then

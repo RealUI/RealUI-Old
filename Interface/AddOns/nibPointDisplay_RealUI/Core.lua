@@ -78,8 +78,9 @@ nibPointDisplay_RealUI.Types = {
 	["WARLOCK"] = {
 		name = "Warlock",
 		points = {
-			[1] = {name = "Soul Shards", id = "ss", barcount = 3},
-			[2] = {name = "Molten Core", id = "mco", barcount = 3},
+			[1] = {name = "Soul Shards", id = "ss", barcount = 4},
+			[2] = {name = "Burning Embers", id = "be", barcount = 4},
+			[3] = {name = "Molten Core", id = "mco", barcount = 3},
 		},
 	},
 	["WARRIOR"] = {
@@ -179,7 +180,6 @@ local SpellInfo = {
 	["ff"] = nil,
 	["eva"] = nil,
 	["deva"] = nil,
-	["so"] = nil,
 	["ser"] = nil,
 	["dp"] = nil,
 	["mw"] = nil,
@@ -531,7 +531,7 @@ function nibPointDisplay_RealUI:GetPoints(CurClass, CurType)
 			NewPoints = GetBuffCount(SpellInfo[CurType])
 		-- Shadow Orb
 		elseif CurType == "so" then
-			NewPoints = GetBuffCount(SpellInfo[CurType])
+			NewPoints = UnitPower("player", SPELL_POWER_SHADOW_ORBS)
 		-- Serendipity
 		elseif CurType == "ser" then
 			NewPoints = GetBuffCount(SpellInfo[CurType])
@@ -566,8 +566,11 @@ function nibPointDisplay_RealUI:GetPoints(CurClass, CurType)
 	-- Warlock
 	elseif CurClass == "WARLOCK" then
 		-- Soul Shards
-		if CurType == "ss" then
+		if CurType == "ss" and GetSpecialization() == 1 then
 			NewPoints = UnitPower("player", SPELL_POWER_SOUL_SHARDS)
+		-- Burning Embers
+		elseif CurType == "be" and GetSpecialization() == 3 then
+			NewPoints = UnitPower("player", SPELL_POWER_BURNING_EMBERS)
 		-- Molten Core
 		elseif CurType == "mco" then
 			NewPoints = GetBuffCount(SpellInfo[CurType])
@@ -930,12 +933,11 @@ function nibPointDisplay_RealUI:PLAYER_LOGIN()
 	media:Register("background", "Round_Small_Surround", [[Interface\Addons\nibPointDisplay_RealUI\Media\Round_Small_Surround]])
 	media:Register("background", "Round_Larger_BG", [[Interface\Addons\nibPointDisplay_RealUI\Media\Round_Larger_BG]])
 	media:Register("background", "Round_Larger_Surround", [[Interface\Addons\nibPointDisplay_RealUI\Media\Round_Larger_Surround]])
-	media:Register("background", "Soul_Shard", [[Interface\Addons\nibPointDisplay_RealUI\Media\SoulShard]])
-	media:Register("background", "Soul_Shard2_BG", [[Interface\Addons\nibPointDisplay_RealUI\Media\SoulShard2_BG]])
-	media:Register("background", "Soul_Shard2_Surround", [[Interface\Addons\nibPointDisplay_RealUI\Media\SoulShard2_Surround]])
+	media:Register("background", "Soul_Shard_BG", [[Interface\Addons\nibPointDisplay_RealUI\Media\SoulShard_BG]])
+	media:Register("background", "Soul_Shard_Surround", [[Interface\Addons\nibPointDisplay_RealUI\Media\SoulShard_Surround]])
 	
-	HolyPowerBG = {[[Interface\Addons\nibPointDisplay_RealUI\Media\HolyPower1_BG]], [[Interface\Addons\nibPointDisplay_RealUI\Media\HolyPower2_BG]], [[Interface\Addons\nibPointDisplay_RealUI\Media\HolyPower3_BG]]}
-	HolyPowerSurround = {[[Interface\Addons\nibPointDisplay_RealUI\Media\HolyPower1_Surround]], [[Interface\Addons\nibPointDisplay_RealUI\Media\HolyPower2_Surround]], [[Interface\Addons\nibPointDisplay_RealUI\Media\HolyPower3_Surround]]}
+	HolyPowerBG = {[[Interface\Addons\nibPointDisplay_RealUI\Media\HolyPower1_BG]], [[Interface\Addons\nibPointDisplay_RealUI\Media\HolyPower2_BG]], [[Interface\Addons\nibPointDisplay_RealUI\Media\HolyPower3_BG]], [[Interface\Addons\nibPointDisplay_RealUI\Media\HolyPower4_BG]], [[Interface\Addons\nibPointDisplay_RealUI\Media\HolyPower5_BG]]}
+	HolyPowerSurround = {[[Interface\Addons\nibPointDisplay_RealUI\Media\HolyPower1_Surround]], [[Interface\Addons\nibPointDisplay_RealUI\Media\HolyPower2_Surround]], [[Interface\Addons\nibPointDisplay_RealUI\Media\HolyPower3_Surround]], [[Interface\Addons\nibPointDisplay_RealUI\Media\HolyPower4_Surround]], [[Interface\Addons\nibPointDisplay_RealUI\Media\HolyPower5_Surround]]}
 	
 	-- Get Spell Info
 	-- Death Knight

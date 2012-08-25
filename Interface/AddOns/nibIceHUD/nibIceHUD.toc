@@ -31,6 +31,8 @@ modules\CustomBar.lua
 modules\TargetOfTargetCast.lua
 modules\CustomCDBar.lua
 modules\EclipseBar.lua
+modules\DemonicFury.lua
+modules\BurningEmbers.lua
 modules\Vengeance.lua
 modules\WeakenedBlows.lua
 modules\RogueExtras1.lua

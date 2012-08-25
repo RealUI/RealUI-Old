@@ -405,8 +405,8 @@ local function InstallationStage1()
 	CreateInstallWindow()
 	
 	---- First Time
+	print("First Time? "..tostring(dbg.tags.firsttime))
 	if dbg.tags.firsttime then
-		print("First Time? "..tostring(dbg.tags.firsttime))
 		-- CVars
 		SetDefaultCVars()
 		

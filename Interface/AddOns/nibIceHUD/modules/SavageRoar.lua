@@ -3,11 +3,8 @@ local SavageRoar = IceCore_CreateClass(IceUnitBar)
 
 local nibIceHUD = _G.nibIceHUD
 
-local baseTime = 14
-local gapPerComboPoint = 5
-local impSRTalentPage = 2
-local impSRTalentIdx = 17
-local impSRBonusPerRank = 4
+local baseTime = 18
+local gapPerComboPoint = 6
 local maxComboPoints = 5
 local SREndTime = 0
 local SRDuration = 0
@@ -290,10 +287,6 @@ function SavageRoar.prototype:GetMaxBuffTime(numComboPoints)
 	end
 
 	maxduration = baseTime + ((numComboPoints - 1) * gapPerComboPoint)
-
-	_, _, _, _, rank = GetTalentInfo(impSRTalentPage, impSRTalentIdx)
-
-	maxduration = maxduration + (rank * impSRBonusPerRank)
 
 	return maxduration
 end

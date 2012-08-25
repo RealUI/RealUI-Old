@@ -2384,7 +2384,8 @@ local function SpecAddTalentGroupLineToCat(self, cat, talentGroup)
 	
 	local activeSpecGroup = GetActiveSpecGroup()
 	local activeSpec = GetSpecialization()
-	local id, name, description, icon, inactiveSpec
+	local id, name, description, icon, spec
+	local defaultSpecTexture = "Interface\\Icons\\Ability_Marksmanship"
 	local line = {}
 	
 	for i = 1, 2 do
@@ -2403,9 +2404,14 @@ local function SpecAddTalentGroupLineToCat(self, cat, talentGroup)
 			line["func"] = function() SpecChangeClickFunc(self, talentGroup) end
 			line["customwidth"] = 130
 		elseif i == 2 then
-			id, name, description, icon = GetSpecializationInfo(GetSpecialization(false, false, talentGroup))
+			spec = GetSpecialization(false, false, talentGroup)
+			if spec then
+				id, name, description, icon = GetSpecializationInfo(spec)
+			else
+				id, name, description, icon = nil, NONE, nil, defaultSpecTexture
+			end
 			line["text"..i] = strform("|T%s:%d:%d:%d:%d|t %s", icon, 11 + resSizeExtra, 11 + resSizeExtra, 0, 0, name)
-			line["justify"..i] = "RIGHT"
+			line["justify"..i] = "LEFT"
 			line["text"..i.."R"] = SpecColor[1]
 			line["text"..i.."G"] = SpecColor[2]
 			line["text"..i.."B"] = SpecColor[3]
@@ -2422,7 +2428,7 @@ local function Spec_UpdateTablet(self)
 	
 	local numSpecGroups = GetNumSpecGroups()
 	
-	if (numSpecGroups > 1) and (GetSpecialization(false, false, 2)) then
+--	if (numSpecGroups > 1) and (GetSpecialization(false, false, 2)) then
 		wipe(SpecSection)
 	
 		-- Spec Category
@@ -2439,7 +2445,7 @@ local function Spec_UpdateTablet(self)
 		
 		-- Secondary Spec
 		SpecAddTalentGroupLineToCat(self, SpecSection["specs"].talentCat, 2)
-	end
+--	end
 	
 	local numEquipSets = GetNumEquipmentSets()
 	if numEquipSets > 0 then
