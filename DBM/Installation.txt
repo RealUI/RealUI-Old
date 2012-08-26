@@ -1,0 +1,9 @@
+1.) Login to each charater that you want to use DBM.
+
+2.) Comletely exit the game.
+
+3.) Place DBM-Core.lua at:
+
+World of Warcraft\WTF\Account\ACCOUNTNAME\REALM\CHARACTER\SavedVariables
+
+Overwrite if asked.

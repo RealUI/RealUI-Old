@@ -1,0 +1,55 @@
+------------------------------------------------------------------------
+r6 | stassart | 2012-07-30 04:22:40 +0000 (Mon, 30 Jul 2012) | 1 line
+Changed paths:
+   M /trunk/Locale/enUS.lua
+   M /trunk/Locale/koKR.lua
+   M /trunk/Locale/ruRU.lua
+   M /trunk/Locale/zhCN.lua
+   M /trunk/Locale/zhTW.lua
+
+Bugfix in Locale files missing not L check.
+------------------------------------------------------------------------
+r5 | stassart | 2012-07-30 04:13:48 +0000 (Mon, 30 Jul 2012) | 1 line
+Changed paths:
+   M /trunk/GridStatusRaidDebuff.toc
+   A /trunk/Locale/Locale.xml
+   M /trunk/embeds.xml
+
+Added Locale/Locale.xml, fixed embeds.xml.
+------------------------------------------------------------------------
+r4 | stassart | 2012-07-30 04:02:52 +0000 (Mon, 30 Jul 2012) | 1 line
+Changed paths:
+   M /trunk/.pkgmeta
+   M /trunk/Core.lua
+   M /trunk/GridStatusRaidDebuff.toc
+
+Switch to using AceLocale.
+------------------------------------------------------------------------
+r3 | stassart | 2012-07-30 03:48:05 +0000 (Mon, 30 Jul 2012) | 1 line
+Changed paths:
+   A /trunk/Locale
+   A /trunk/Locale/enUS.lua
+   A /trunk/Locale/koKR.lua
+   A /trunk/Locale/ruRU.lua
+   A /trunk/Locale/zhCN.lua
+   A /trunk/Locale/zhTW.lua
+
+Added Locale files, building with Curseforge translation.
+------------------------------------------------------------------------
+r2 | stassart | 2012-07-30 01:41:53 +0000 (Mon, 30 Jul 2012) | 1 line
+Changed paths:
+   A /trunk/.pkgmeta
+   A /trunk/Core.lua
+   A /trunk/GridStatusRaidDebuff.toc
+   A /trunk/embeds.xml
+
+Initial MoP version.
+------------------------------------------------------------------------
+r1 | svn | 2012-07-30 01:28:39 +0000 (Mon, 30 Jul 2012) | 1 line
+Changed paths:
+   A /branches
+   A /tags
+   A /trunk
+
+gridstatusraiddebuff-mop/mainline: Initial Import
+------------------------------------------------------------------------

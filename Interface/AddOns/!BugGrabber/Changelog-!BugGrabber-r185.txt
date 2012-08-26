@@ -1,0 +1,32 @@
+------------------------------------------------------------------------
+r185 | rabbit | 2012-03-04 18:07:52 +0000 (Sun, 04 Mar 2012) | 1 line
+Changed paths:
+   M /trunk/locales.lua
+
+Add ptBR from the wowace localization system.
+------------------------------------------------------------------------
+r184 | rabbit | 2012-03-04 17:31:50 +0000 (Sun, 04 Mar 2012) | 1 line
+Changed paths:
+   M /trunk/!BugGrabber.toc
+   M /trunk/BugGrabber.lua
+
+Bump TOC.
+------------------------------------------------------------------------
+r183 | rabbit | 2012-03-04 17:21:10 +0000 (Sun, 04 Mar 2012) | 1 line
+Changed paths:
+   M /trunk/BugGrabber.lua
+
+Only create the chat link hook when needed.
+------------------------------------------------------------------------
+r182 | rabbit | 2012-03-04 01:32:01 +0000 (Sun, 04 Mar 2012) | 1 line
+Changed paths:
+   M /trunk/BugGrabber.lua
+
+Be a bit more restrictive with the chat prints if we're running embedded.
+------------------------------------------------------------------------
+r181 | rabbit | 2011-08-09 01:29:31 +0000 (Tue, 09 Aug 2011) | 1 line
+Changed paths:
+   M /trunk/!BugGrabber.toc
+
+wtf -- comments in .toc?
+------------------------------------------------------------------------

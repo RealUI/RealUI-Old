@@ -1,0 +1,20 @@
+------------------------------------------------------------------------
+r342 | arkayenro | 2012-08-09 10:48:29 +0000 (Thu, 09 Aug 2012) | 4 lines
+Changed paths:
+   A /tags/3.02.95 (from /trunk:341)
+
+*3.02.95 (09-AUG-2012)*
+ * fixed - removed ranged slot for mop beta
+ * added - more checking of saved variables
+
+------------------------------------------------------------------------
+r341 | arkayenro | 2012-08-09 10:40:11 +0000 (Thu, 09 Aug 2012) | 4 lines
+Changed paths:
+   M /trunk/ArkInventory.lua
+   M /trunk/VersionHistory.txt
+
+*3.02.95 (09-AUG-2012)*
+ * fixed - removed ranged slot for mop beta
+ * added - more checking of saved variables
+
+------------------------------------------------------------------------

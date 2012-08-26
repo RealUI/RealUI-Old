@@ -1,0 +1,187 @@
+------------------------------------------------------------------------
+r249 | tomber | 2012-08-24 15:29:04 +0000 (Fri, 24 Aug 2012) | 3 lines
+Changed paths:
+   M /trunk/Presets/DeathKnight.lua
+   M /trunk/Presets/Druid.lua
+   M /trunk/Presets/Hunter.lua
+   M /trunk/Presets/Mage.lua
+   M /trunk/Presets/Monk.lua
+   M /trunk/Presets/Paladin.lua
+   M /trunk/Presets/Priest.lua
+   M /trunk/Presets/Racials.lua
+   M /trunk/Presets/Rogue.lua
+   M /trunk/Presets/Shaman.lua
+   M /trunk/Presets/Warlock.lua
+   M /trunk/Presets/Warrior.lua
+   M /trunk/Profile.lua
+
+Make "Physical" the default spell school and remove from presets. Optimize spell school tables to reduce table sizes.
+
+Fix cooldown detection for mage Frost Bomb.
+------------------------------------------------------------------------
+r248 | tomber | 2012-08-23 19:27:31 +0000 (Thu, 23 Aug 2012) | 1 line
+Changed paths:
+   M /trunk/Main.lua
+
+Update cooldown detection for vehicle and override bars to work in MoP.
+------------------------------------------------------------------------
+r247 | tomber | 2012-08-21 14:41:53 +0000 (Tue, 21 Aug 2012) | 1 line
+Changed paths:
+   M /trunk/Main.lua
+
+Removed special case code no longer needed in MoP.
+------------------------------------------------------------------------
+r246 | tomber | 2012-08-19 21:36:24 +0000 (Sun, 19 Aug 2012) | 7 lines
+Changed paths:
+   M /trunk/Bars.lua
+   M /trunk/Conditions.lua
+   M /trunk/Main.lua
+   M /trunk/Presets/Pets.lua
+   M /trunk/Presets/Warlock.lua
+   M /trunk/Profile.lua
+
+Detect warlock Dark Soul cooldowns.
+
+Update talent test condition for MoP.
+
+Update dispellable debuff checking for MoP.
+
+Update pet presets for MoP.
+------------------------------------------------------------------------
+r245 | tomber | 2012-08-18 22:40:24 +0000 (Sat, 18 Aug 2012) | 3 lines
+Changed paths:
+   M /trunk/Presets/Hunter.lua
+   M /trunk/Presets/Shaman.lua
+   M /trunk/Presets/Warlock.lua
+
+Updated hunter and shaman presets for MoP class changes. This completes all the class-related presets (still need to update the pet-related presets).
+
+Fixed warlock's Hand of Gul'dan and Conflagration to show a cooldown when unavailable (still need to consider how best to present these and other spells that use the recharge mechanic).
+------------------------------------------------------------------------
+r244 | tomber | 2012-08-18 01:51:46 +0000 (Sat, 18 Aug 2012) | 9 lines
+Changed paths:
+   M /trunk/Bars.lua
+   M /trunk/Localizations/enUS.lua
+   M /trunk/Presets/DeathKnight.lua
+   M /trunk/Presets/General.lua
+   M /trunk/Presets/Priest.lua
+   M /trunk/Presets/Racials.lua
+   M /trunk/Presets/Warlock.lua
+   M /trunk/Presets/Warrior.lua
+   M /trunk/Profile.lua
+   M /trunk/Raven_Options/Options.lua
+
+Update presets for warrior, death knight, warlock for MoP class changes.
+
+Add warrior shared cooldowns for stances and shouts.
+
+Fix Gift of the Naaru detection.
+
+Fix missing cooldowns for priest: Rapture, Holy Word: Sanctuary, Holy Word: Serenity.
+
+Fix custom sounds when using #spellid format on Spells tab.
+------------------------------------------------------------------------
+r243 | tomber | 2012-08-17 01:40:44 +0000 (Fri, 17 Aug 2012) | 1 line
+Changed paths:
+   M /trunk/Bars.lua
+   M /trunk/Localizations/enUS.lua
+   M /trunk/Profile.lua
+   M /trunk/Raven_Options/Options.lua
+
+Added support for entering specific spell ids on the Spells tab for changing labels, colors and sounds associated with spells. Format is same as in spell lists: #123456. Still needs a bit more testing for colors and sounds...
+------------------------------------------------------------------------
+r242 | tomber | 2012-08-16 05:53:29 +0000 (Thu, 16 Aug 2012) | 1 line
+Changed paths:
+   M /trunk/Presets/General.lua
+   M /trunk/Presets/Monk.lua
+   M /trunk/Presets/Paladin.lua
+
+Add presets for monk class.
+------------------------------------------------------------------------
+r241 | tomber | 2012-08-15 04:36:06 +0000 (Wed, 15 Aug 2012) | 2 lines
+Changed paths:
+   M /trunk/Presets/Paladin.lua
+
+Update presets for paladin class changes in MoP.
+
+------------------------------------------------------------------------
+r240 | tomber | 2012-08-14 04:16:05 +0000 (Tue, 14 Aug 2012) | 3 lines
+Changed paths:
+   M /trunk/Main.lua
+   M /trunk/Presets/Mage.lua
+   M /trunk/Profile.lua
+
+Update presets for mage class changes in MoP.
+
+No longer use the "last resort" brute force search for spell ids when in combat. It is possible that icons will not be displayed for some spells in the buff/debuff trackers but this should be rare. The change is needed to prevent the script time too long error introduced with the Lua execution time limit in MoP.
+------------------------------------------------------------------------
+r239 | tomber | 2012-08-12 21:23:07 +0000 (Sun, 12 Aug 2012) | 1 line
+Changed paths:
+   M /trunk/Presets/Druid.lua
+   M /trunk/Presets/Priest.lua
+   M /trunk/Presets/Racials.lua
+   M /trunk/Profile.lua
+
+Update presets for priest class changes in MoP. Also, updated racials to use only one spell id instead of a list. Removed support for spell referals in preset files (should no longer be required with cooldown detection changes).
+------------------------------------------------------------------------
+r238 | tomber | 2012-08-11 21:50:34 +0000 (Sat, 11 Aug 2012) | 7 lines
+Changed paths:
+   M /trunk/Main.lua
+   M /trunk/Presets/Druid.lua
+   M /trunk/Presets/General.lua
+   M /trunk/Presets/Rogue.lua
+   M /trunk/Profile.lua
+
+Changed cooldown detection to prefer testing using the spellbook over spell ids. This works better in MoP given how spell variants are now implemented (case in point: Mangle).
+
+Removed support for multiple spell ids per spell in the preset tables. This should no longer be needed once all presets are updated for MoP.
+
+Fixed a couple minor issues in druid presets.
+
+Completed first pass on rogue presets, including rewrite of poison-related notifications to reflect new lethal and non-lethal poison spells.
+------------------------------------------------------------------------
+r237 | tomber | 2012-08-11 02:39:46 +0000 (Sat, 11 Aug 2012) | 1 line
+Changed paths:
+   M /trunk/Main.lua
+   M /trunk/Presets/Druid.lua
+
+Update presets for druid class changes in MoP.
+------------------------------------------------------------------------
+r236 | tomber | 2012-08-05 22:13:04 +0000 (Sun, 05 Aug 2012) | 1 line
+Changed paths:
+   M /trunk/Main.lua
+   M /trunk/Profile.lua
+
+Lowered upper limit on spell id brute force search (the previous limit was too high and caused an error on at least one beta user's system). Also, modified code so that the brute force search is not used during combat log event.
+------------------------------------------------------------------------
+r235 | tomber | 2012-08-03 23:29:12 +0000 (Fri, 03 Aug 2012) | 1 line
+Changed paths:
+   M /trunk/Raven_Options/Options.lua
+
+Remove ranged slot related code from the options module.
+------------------------------------------------------------------------
+r234 | tomber | 2012-08-03 21:55:50 +0000 (Fri, 03 Aug 2012) | 1 line
+Changed paths:
+   M /trunk/Cancel.lua
+   M /trunk/Conditions.lua
+   M /trunk/Localizations/enUS.lua
+   M /trunk/Main.lua
+
+Remove code related to ranged slot.
+------------------------------------------------------------------------
+r233 | tomber | 2012-07-05 21:53:32 +0000 (Thu, 05 Jul 2012) | 4 lines
+Changed paths:
+   M /trunk/.pkgmeta
+   M /trunk/Bars.lua
+   M /trunk/Localizations/enUS.lua
+   A /trunk/Presets/Monk.lua
+   M /trunk/Presets/Racials.lua
+   M /trunk/Profile.lua
+   M /trunk/Raven.toc
+   M /trunk/Raven_Options/Options.lua
+
+Added supporting data structures for monk class/pandaren race. This is minimal support, intended to make Raven for work monks without Lua errors. Monk cooldowns will not be recognized until the preset file is filled in.
+
+Changed packaging settings to use alpha versions of libraries, hopefully picking up the API fixes in the latest Ace3 alphas.
+
+------------------------------------------------------------------------

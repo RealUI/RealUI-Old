@@ -1,0 +1,220 @@
+2012-07-16  dave  <dave@Dave.home>
+
+[2285532ff45f] [tip]
+* ACP.lua, ACP.xml:
+
+Smoother scrolling; now calls UpdateAddOnMemoryUsage on showing the frame, not on every scroll.
+
+
+2012-07-01  sylvanaar  <sylvanaar@mindspring.com>
+
+[2405fa5371f4]
+* ACP.lua, localization-enUS.lua:
+
+Make use of GetAddOnOptionalDependencies(). Show it where X-Embeds used to be. If recursive enable option checked, optional dependencies that are LoD get enabled.
+
+
+[1fb79c5217c8]
+* ACP.toc, localization-itIT.lua:
+
+add itIT localization
+
+
+2012-03-24  sylvanaar  <sylvanaar@mindspring.com>
+
+[b26ef4cc2562]
+* ACP.lua:
+
+add code suggested by Mikk to help prevent taint when using StaticPopupDialog
+
+
+2011-11-29  sylvanaar  <sylvanaar@mindspring.com>
+
+[98bddb3447ac]
+* .hgtags:
+
+Added tag 3.3.17 for changeset 64d6f9e5c2c2
+
+
+2011-11-28  sylvanaar  <sylvanaar@mindspring.com>
+
+[64d6f9e5c2c2] [3.3.17]
+* ACP.toc:
+
+TOC 40300
+
+
+2011-07-05  sylvanaar  <sylvanaar@mindspring.com>
+
+[fab14d624b80]
+* ACP.lua:
+
+fix leaked globals found by new IntelliJ inspection
+
+
+2011-06-28  sylvanaar  <sylvanaar@mindspring.com>
+
+[ae8a3ddfc43f]
+* .hgtags:
+
+Added tag 3.3.16 for changeset 30892b68ac8e
+
+
+[30892b68ac8e] [3.3.16]
+* Merge
+
+
+[d52d3e6cb845]
+* ACP.toc:
+
+TOC 40200
+
+
+2011-06-06  sylvanaar  <sylvanaar@mindspring.com>
+
+[a804405003af]
+* .hgtags:
+
+Added tag 3.3.15 for changeset 9c940e15aa11
+
+
+[9c940e15aa11] [3.3.15]
+* .pkgmeta:
+
+tools-used: idlua
+
+
+2011-04-26  sylvanaar  <sylvanaar>
+
+[eacd74281d7a]
+* .hgtags:
+
+Added tag 3.3.14 for changeset 8bfe5c89b9ed
+
+
+[8bfe5c89b9ed] [3.3.14]
+* ACP.toc:
+
+TOC 40100
+
+
+2011-01-18  sylvanaar  <sylvanaar>
+
+[01fa0f76bd88]
+* ACP.lua:
+
+support for X-Child-Of which works the same as X-Part-Of. Contributed by pddingo
+
+
+2011-01-07  sylvanaar  <sylvanaar>
+
+[55bdcc3b962f]
+* .hgtags:
+
+Added tag 3.3.13 for changeset dd0ed9c6ba06
+
+
+2010-12-26  sylvanaar  <sylvanaar>
+
+[dd0ed9c6ba06] [3.3.13]
+* ACP.lua:
+
+fix for some libraries which provide X-Category not showing up in the library section
+
+
+2010-12-11  sylvanaar  <sylvanaar>
+
+[08bf6642a39f]
+* ACP.lua:
+
+sync the recursive checkbox with the slash command
+
+
+[9c3bc72a266b]
+* ACP.lua, ACP.xml:
+
+the recursive checkbox now shows the correct state of recursive enable
+
+
+2010-12-05  sylvanaar  <sylvanaar>
+
+[a8bd3ef41001]
+* .hgtags:
+
+Added tag 3.3.12 for changeset ce23499e2cd4
+
+
+[ce23499e2cd4] [3.3.12]
+* ACP.lua:
+
+allow slash commands for set management to take values >9
+
+
+2010-12-02  sylvanaar  <sylvanaar>
+
+[017c43d0e4b6]
+* ACP.lua:
+
+don't process protected addons when doing set operations
+
+
+2010-11-28  sylvanaar  <sylvanaar>
+
+[41f9ebfe7759]
+* .hgtags:
+
+Added tag 3.3.11 for changeset 80808ecf5e11
+
+
+[80808ecf5e11] [3.3.11]
+* ACP.lua, ACP.xml:
+
+make the ACP frame moveable
+
+
+2010-11-27  sylvanaar  <sylvanaar>
+
+[4f1a55154c90]
+* .hgtags:
+
+Added tag 3.3.10 for changeset 780e8955af72
+
+
+2010-11-24  sylvanaar  <sylvanaar>
+
+[780e8955af72] [3.3.10]
+* ACP.lua:
+
+fix usage of global self
+
+
+2010-11-23  sylvanaar  <sylvanaar>
+
+[95e171473c04]
+* ACP.lua:
+
+make the /acp command toggle the window
+
+
+[3397f512253e]
+* ACP.lua:
+
+set the scale of acp's frame
+
+
+2010-11-20  sylvanaar  <sylvanaar>
+
+[42be63189fbe]
+* ACP.lua:
+
+check the length of the command string  so we dont print the command list when using /acp by itself
+
+
+2010-11-19  sylvanaar  <sylvanaar>
+
+[afb329cf703f]
+* ACP.lua:
+
+fix slash command issues
+
+

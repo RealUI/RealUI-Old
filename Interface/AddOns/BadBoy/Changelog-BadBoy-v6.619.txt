@@ -1,0 +1,34 @@
+------------------------------------------------------------------------
+r781 | funkydude | 2011-11-29 17:25:05 +0000 (Tue, 29 Nov 2011) | 1 line
+Changed paths:
+   A /tags/v6.619 (from /trunk:780)
+
+Tagging as v6.619
+------------------------------------------------------------------------
+r780 | funkydude | 2011-11-29 17:23:43 +0000 (Tue, 29 Nov 2011) | 1 line
+Changed paths:
+   M /trunk/BadBoy.toc
+
+bump toc
+------------------------------------------------------------------------
+r779 | funkydude | 2011-11-27 16:58:36 +0000 (Sun, 27 Nov 2011) | 1 line
+Changed paths:
+   M /trunk/BadBoy.lua
+   M /trunk/BadBoy.toc
+
+anti-phishing/anti-goldspam update
+------------------------------------------------------------------------
+r777 | funkydude | 2011-11-23 14:16:05 +0000 (Wed, 23 Nov 2011) | 1 line
+Changed paths:
+   M /trunk/BadBoy.lua
+   M /trunk/BadBoy.toc
+
+anti-goldspam update
+------------------------------------------------------------------------
+r776 | funkydude | 2011-11-23 13:32:07 +0000 (Wed, 23 Nov 2011) | 1 line
+Changed paths:
+   M /trunk/BadBoy.lua
+   M /trunk/BadBoy.toc
+
+anti-goldspam update
+------------------------------------------------------------------------

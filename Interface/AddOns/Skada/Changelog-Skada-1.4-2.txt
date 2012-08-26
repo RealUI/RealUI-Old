@@ -1,0 +1,68 @@
+------------------------------------------------------------------------
+r398 | zarnivoop | 2012-07-06 13:07:40 +0000 (Fri, 06 Jul 2012) | 1 line
+Changed paths:
+   A /tags/1.4-2 (from /trunk:397)
+
+Tagging as 1.4-2
+------------------------------------------------------------------------
+r397 | zarnivoop | 2012-07-06 12:52:14 +0000 (Fri, 06 Jul 2012) | 1 line
+Changed paths:
+   M /trunk/BarDisplay.lua
+
+fixed a silly error
+------------------------------------------------------------------------
+r395 | zarnivoop | 2012-07-06 09:58:03 +0000 (Fri, 06 Jul 2012) | 1 line
+Changed paths:
+   M /trunk/BarDisplay.lua
+
+fix green borders in 5.0
+------------------------------------------------------------------------
+r394 | zarnivoop | 2012-07-06 08:46:04 +0000 (Fri, 06 Jul 2012) | 3 lines
+Changed paths:
+   M /trunk/.pkgmeta
+   M /trunk/BarDisplay.lua
+   M /trunk/modules/SkadaDamage/Damage.lua
+
+fixed a problem with the new title height option (setting not present in old configs = breakage)
+.pkgmeta now referencing latest Ace3 to get 5.0 fixes
+fixed division by zero in Damage.lua
+------------------------------------------------------------------------
+r393 | talryn1 | 2012-07-05 17:38:32 +0000 (Thu, 05 Jul 2012) | 1 line
+Changed paths:
+   M /trunk/Skada.lua
+   M /trunk/modules/SkadaCC/CC.lua
+   M /trunk/modules/SkadaThreat/Threat.lua
+
+Add compatibility for WoW 5.0.
+------------------------------------------------------------------------
+r392 | zarnivoop | 2012-07-05 16:35:27 +0000 (Thu, 05 Jul 2012) | 2 lines
+Changed paths:
+   M /trunk/BarDisplay.lua
+   M /trunk/Options.lua
+   M /trunk/lib/SpecializedLibBars-1.0/SpecializedLibBars-1.0.lua
+   M /trunk/locale/enUS.lua
+
+added class icons option (on by default)
+added title height option
+------------------------------------------------------------------------
+r388 | Zarnivoop | 2012-06-07 12:57:06 +0000 (Thu, 07 Jun 2012) | 3 lines
+Changed paths:
+   M /trunk/Skada.toc
+   A /trunk/locale/itIT.lua
+
+Added itIT translation, fixed esES not being present in .toc.
+
+
+------------------------------------------------------------------------
+r387 | eridius | 2012-05-13 02:57:52 +0000 (Sun, 13 May 2012) | 7 lines
+Changed paths:
+   M /trunk/modules/SkadaHealing/Healing.lua
+
+Remove the giant table of known absorbs
+
+Instead of trying to figure out known absorbs and adding them to the
+table, just use the srcFlags and dstFlags to figure out if the spell is
+being cast between two friendly players. All known buffs with an amount
+are shields.
+
+------------------------------------------------------------------------

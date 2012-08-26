@@ -215,7 +215,7 @@ frame:SetScript("OnShow", function(frame)
 	UIDropDownMenu_SetWidth(dropdown, 160)
 	UIDropDownMenu_JustifyText(dropdown, "LEFT")
 
-	local clear = CreateFrame("Button", "BugSackSaveButton", frame, "UIPanelButtonTemplate2")
+	local clear = CreateFrame("Button", "BugSackSaveButton", frame, "UIPanelButtonTemplate")
 	clear:SetText(L["Wipe saved bugs"])
 	clear:SetWidth(177)
 	clear:SetHeight(24)
