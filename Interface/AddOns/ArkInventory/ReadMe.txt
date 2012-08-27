@@ -1,3 +1,13 @@
+Description:
+
+to see how you need to setup sorting go here http://code.google.com/p/arkinventory/wiki/UserGuide_HowTo_Sorting
+to see how to setup rules go here http://code.google.com/p/arkinventory/wiki/RuleFunction
+the FAQ is here http://code.google.com/p/arkinventory/wiki/FAQ
+the wiki is here http://code.google.com/p/arkinventory/w/list
+
+please ensure you have read those before you lodge a ticket at http://code.google.com/p/arkinventory/issues/list 
+
+
 General:
 
     * home page - http://arkinventory.googlecode.com/
@@ -14,9 +24,7 @@ General:
 		* google code - http://code.google.com/p/arkinventory/downloads/list
 		* wow interface - http://www.wowinterface.com/downloads/info6488
 		* curse gaming - http://wow.curse.com/downloads/wow-addons/details/ark-inventory.aspx
-		* wow ui - http://wowui.worldofwar.net/?p=mod&m=4504
 		
-	* use WoW UI Updater to keep all your mods up to date - http://wuu.vagabonds.info/
 	
 	
 

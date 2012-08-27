@@ -1,6 +1,6 @@
 ﻿-- (c) 2009-2010, all rights reserved.
--- $Revision: 911 $
--- $Date: 2012-07-04 20:52:51 +1000 (Wed, 04 Jul 2012) $
+-- $Revision: 926 $
+-- $Date: 2012-08-21 11:14:33 +1000 (Tue, 21 Aug 2012) $
 
 ArkInventoryRules = LibStub( "AceAddon-3.0" ):NewAddon( "ArkInventoryRules" )
 
@@ -13,6 +13,8 @@ function ArkInventoryRules.ItemCacheClear( )
 end
 
 function ArkInventoryRules.OnInitialize( )
+	
+	if ArkInventory.VersionCantRun( ) then return end
 	
 	ArkInventoryRules.Tooltip = ArkInventory.TooltipInit( "ARKINV_RuleTooltip" )
 	
@@ -60,6 +62,8 @@ end
 
 function ArkInventoryRules.OnEnable( )
 	
+	if ArkInventory.VersionCantRun( ) then return end
+	
 	-- update all rules, set enabled and format correctly, first bag open will validate them
 	local cat = ArkInventory.db.global.option.category[ArkInventory.Const.Category.Type.Rule]
 	for k, v in pairs( cat.data ) do
@@ -82,6 +86,8 @@ function ArkInventoryRules.OnEnable( )
 end
 
 function ArkInventoryRules.OnDisable( )
+	
+	if ArkInventory.VersionCantRun( ) then return end
 	
 	ArkInventory.ItemCacheClear( )
 	ArkInventory.Frame_Main_Generate( nil, ArkInventory.Const.Window.Draw.Recalculate )
@@ -1098,10 +1104,10 @@ function ArkInventoryRules.System.location( ... )
 			k = ArkInventory.Const.Location.Mail
 		elseif k == "wearing" or k == "gear" or k == string.lower( ArkInventory.Localise["LOCATION_WEARING"] ) then
 			k = ArkInventory.Const.Location.Wearing
-		elseif k == "pet" or k == string.lower( ArkInventory.Localise["LOCATION_PET"] ) then
-			k = ArkInventory.Const.Location.Pet
-		elseif k == "mount" or k == string.lower( ArkInventory.Localise["LOCATION_MOUNT"] ) then
-			k = ArkInventory.Const.Location.Mount
+--		elseif k == "pet" or k == string.lower( ArkInventory.Localise["LOCATION_PET"] ) then
+--			k = ArkInventory.Const.Location.Pet
+--		elseif k == "mount" or k == string.lower( ArkInventory.Localise["LOCATION_MOUNT"] ) then
+--			k = ArkInventory.Const.Location.Mount
 		elseif k == "token" or k == "currency" or k == string.lower( ArkInventory.Localise["LOCATION_TOKEN"] ) then
 			k = ArkInventory.Const.Location.Token
 		else

@@ -1,5 +1,9 @@
 -- localisation checking code, read from the bottom up
 
+--print( "Translate" )
+
+if ArkInventory.VersionCantRun( ) then return end
+
 local frame = CreateFrame( "Frame" )
 frame.timermax = 5
 frame.loopmax = 5
@@ -85,12 +89,10 @@ local updateTable = {
 		ArkInventory.Const.Category.Code.System[407].text = value
 	end,
 	["WOW_ITEM_TYPE_MISC_MOUNT"] = function( value )
-		ArkInventory.Const.Category.Code.System[415].text = value
-		ArkInventory.Const.Slot.Data[ArkInventory.Const.Slot.Type.Mount].type = value
+		-- dont need to do anything
 	end,
 	["WOW_ITEM_TYPE_MISC_PET"] = function( value )
-		ArkInventory.Const.Category.Code.System[423].text = value
-		ArkInventory.Const.Slot.Data[ArkInventory.Const.Slot.Type.Critter].type = value
+		-- dont need to do anything
 	end,
 	["WOW_ITEM_TYPE_MISC_REAGENT"] = function( value )
 		ArkInventory.Const.Category.Code.System[408].text = value
@@ -145,11 +147,11 @@ local updateTable = {
 	
 	["LOCATION_MOUNT"] = function( value )
 		ArkInventory.Global.Location[ArkInventory.Const.Location.Mount].Name = value
-		BINDING_NAME_ARKINV_TOGGLE_MOUNT = value
+--		BINDING_NAME_ARKINV_TOGGLE_MOUNT = value
 	end,
 	["LOCATION_PET"] = function( value )
 		ArkInventory.Global.Location[ArkInventory.Const.Location.Pet].Name = value
-		BINDING_NAME_ARKINV_TOGGLE_PET = value
+--		BINDING_NAME_ARKINV_TOGGLE_PET = value
 	end,
 	
 	
@@ -622,7 +624,7 @@ frame:SetScript( "OnUpdate",
 		
 		-- failsafe to ensure we dont go on forever
 		if self.loop > ( self.loopmax + 1 ) then
-			print( "failsafe kicked in - aborting arkinventory translations due to an error of some sort" )
+			print( "failsafe kicked in - aborting arkinventory translations due to an unknown error" )
 			self:Hide( )
 		end
 		

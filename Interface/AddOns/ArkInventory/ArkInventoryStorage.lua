@@ -934,8 +934,13 @@ function ArkInventory:LISTEN_MERCHANT_LEAVE( )
 end
 
 function ArkInventory:LISTEN_COMPANION_UPDATE( event )
-	
 	--ArkInventory.Output( "LISTEN_COMPANION_UPDATE( ", event, " )" )
+	ArkInventory:SendMessage( "LISTEN_COMPANION_UPDATE_BUCKET" )
+end
+
+function ArkInventory:LISTEN_COMPANION_UPDATE_BUCKET( )
+	
+	--ArkInventory.Output( "LISTEN_COMPANION_UPDATE_BUCKET" )
 	
 	local loc_id
 	
@@ -1072,9 +1077,6 @@ function ArkInventory:LISTEN_SPELLS_CHANGED( event )
 	ArkInventory:SendMessage( "LISTEN_SPELLS_CHANGED_BUCKET" )
 	
 end
-
-
-
 
 function ArkInventory:LISTEN_RESCAN_LOCATION_BUCKET( arg1 )
 	
@@ -1477,7 +1479,7 @@ function ArkInventory.ScanBag( blizzard_id )
 		if h then
 			
 			texture, count, locked, quality, readable = GetContainerItemInfo( blizzard_id, slot_id )
-			--ArkInventory.Output( "h=", h, ", count[", count, "], q[", quality, "], read[", readable, "]" )
+			--ArkInventory.Output( "h=", h, ", texture[", texture, "], count[", count, "], q[", quality, "], read[", readable, "]" )
 			
 			ArkInventory.TooltipSetItem( ArkInventory.Global.Tooltip.Scan, blizzard_id, slot_id )
 			for _, v in pairs( ArkInventory.Const.Soulbound ) do
@@ -2045,7 +2047,7 @@ function ArkInventory.ScanMail( )
 end
 
 function ArkInventory.ScanCompanion( type_id )
-
+	
 	--ArkInventory.Output( "ScanCompanion( ", type_id, " ) start" )
 	
 	local blizzard_id
@@ -2074,7 +2076,8 @@ function ArkInventory.ScanCompanion( type_id )
 	
 	local old_bag_count = bag.count
 	
-	bag.count = GetNumCompanions( type_id )
+	--bag.count = GetNumCompanions( type_id )
+	bag.count = 0
 	bag.empty = 0
 	bag.type = ArkInventory.BagType( blizzard_id )
 	bag.status = ArkInventory.Const.Bag.Status.Active
@@ -3059,7 +3062,7 @@ function ArkInventory.ObjectInfo( h )
 		return
 	end
 	
-	local class, v1, v2 = ArkInventory.ObjectStringDecode( h )
+	local class, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10 = ArkInventory.ObjectStringDecode( h )
 	
 	if class == "item" then
 		
@@ -3083,6 +3086,14 @@ function ArkInventory.ObjectInfo( h )
 		
 		return class, link, name, texture, quality
 		
+	elseif class == "battlepet" then
+		
+		local name, icon, petType, creatureID, sourceText, description, isWild, canBattle, tradable, unique = C_PetJournal.GetPetInfoBySpeciesID( v1 )
+		
+--		v1-speciesID, v2-level, v3-breedQuality, v4-maxHealth, v5-power, v6-speed, ?
+		
+		return class, h, name, icon, v3, v2, 0, "", "", 1, "", 0, v1, v4, v5, v6, v7, v8, v9, v10
+		
 	elseif class == "token" then
 		
 		link = string.format( "|H%s:%s:%s|h[%s]|h", class, v1, v2, v1 )
@@ -3097,6 +3108,7 @@ function ArkInventory.ObjectStringDecode( h )
 	
 	-- item:itemId:enchantId:jewelId1:jewelId2:jewelId3:jewelId4:suffixId:uniqueId:linkLevel:reforgeId
 
+	-- battlepet:speciesID:level:breedQuality:maxHealth:power:speed:?
 	-- spell:spellID
 	-- token:name:texture
 	
@@ -3190,16 +3202,18 @@ end
 
 function ArkInventory.ObjectIDInternal( h )
 
-	local class, id, enchant, j1, j2, j3, j4, suffix, _, _, reforge = ArkInventory.ObjectStringDecode( h )
+	local class, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10 = ArkInventory.ObjectStringDecode( h )
 	
 	if class == "item" then
-		return string.format( "%s:%s:%s:%s:%s:%s:%s:%s:%s", class, id, enchant, suffix, j1, j2, j3, j4, reforge )
+		return string.format( "%s:%s:%s:%s:%s:%s:%s:%s:%s", class, v1, v2, v7, v3, v4, v5, v6, v10 )
 	elseif class == "empty" or class == "spell" then
-		return string.format( "%s:%s", class, id )
+		return string.format( "%s:%s", class, v1 )
+	elseif class == "battlepet" then
+		return string.format( "%s:%s", class, v1 )
 	elseif class == "token" then
-		return string.format( "%s:%s:%s", class, id, suffix )
+		return string.format( "%s:%s:%s", class, v1, v7 )
 	else
-		error( string.format( "code failure: unknown class [%s] for object %s", class, h ) )
+		error( string.format( "code failure: uncoded class [%s] for object %s", class, h ) )
 	end
 	
 end
@@ -3210,7 +3224,7 @@ function ArkInventory.ObjectIDTooltip( h )
 	
 	--ArkInventory.Output( "class[", class, "] : [", v1, "] : [", v2, "]" )
 	
-	if class == "item" or class == "empty" or class == "spell" then
+	if class == "item" or class == "empty" or class == "spell" or class == "battlepet" then
 		return string.format( "%s:%s", class, v1 )
 	elseif class == "token" then
 		return string.format( "%s:%s", class, v1 )
@@ -3237,6 +3251,8 @@ function ArkInventory.ObjectIDCacheCategory( loc_id, bag_id, sb, h )
 	elseif class == "empty" then
 		return string.format( "%s:%s:%s", class, 0, soulbound )
 	elseif class == "spell" then
+		return string.format( "%s:%s:%s", class, v1, 0 )
+	elseif class == "battlepet" then
 		return string.format( "%s:%s:%s", class, v1, 0 )
 	elseif class == "token" then
 		return string.format( "%s:%s", class, v1 )

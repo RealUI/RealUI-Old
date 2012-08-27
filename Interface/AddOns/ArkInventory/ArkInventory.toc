@@ -1,8 +1,4 @@
-## Interface: 40300
-## X-Curse-Packaged-Version: 3.02.95
-## X-Curse-Project-Name: ArkInventory
-## X-Curse-Project-ID: ark-inventory
-## X-Curse-Repository-ID: wow/ark-inventory/mainline
+## Interface: 50001
 
 ## Title: ArkInventory
 ## Title-zhCN: [背包]ArkInventory 整合背包银行
@@ -15,7 +11,7 @@
 
 ## Notes: Allows you to view all items from all your characters on the same realm, when-ever and where-ever you want.
 
-## OptionalDeps: Blizzard_GuildBankUI, Blizzard_VoidStorageUI, Ace3, AceGUI-3.0-SharedMediaWidgets, LibPeriodicTable-3.1, LibSharedMedia-3.0
+## OptionalDeps: Blizzard_GuildBankUI, Blizzard_VoidStorageUI, Blizzard_PetJournal, Ace3, AceGUI-3.0-SharedMediaWidgets, LibPeriodicTable-3.1, LibSharedMedia-3.0
 ## X-Embeds: Ace3, AceGUI-3.0-SharedMediaWidgets, LibPeriodicTable-3.1, LibSharedMedia-3.0
 
 ## X-Category: Inventory
@@ -50,6 +46,8 @@ ArkInventoryMenu.lua
 ArkInventoryRules.lua
 ArkInventorySearch.lua
 ArkInventorySync.lua
+
+ArkInventoryPetJournal.lua
 
 ArkInventoryTooltip.lua
 ArkInventoryMoney.lua

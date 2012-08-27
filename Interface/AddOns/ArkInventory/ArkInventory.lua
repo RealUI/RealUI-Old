@@ -1,6 +1,6 @@
 -- (c) 2009-2011, all rights reserved.
--- $Revision: 913 $
--- $Date: 2012-08-09 20:30:33 +1000 (Thu, 09 Aug 2012) $
+-- $Revision: 925 $
+-- $Date: 2012-08-21 11:11:51 +1000 (Tue, 21 Aug 2012) $
 
 
 ArkInventory = LibStub( "AceAddon-3.0" ):NewAddon( "ArkInventory", "AceConsole-3.0", "AceHook-3.0", "AceEvent-3.0", "AceBucket-3.0" )
@@ -32,9 +32,9 @@ ArkInventory.Const = { -- constants
 	
 	Program = {
 		Name = "ArkInventory",
-		Version = 3.0295,
-		UIVersion = "3.2.95",
-		--Beta = "BETA 11-11-01-50",
+		Version = 30300,
+		UIVersion = "3.3.00",
+		Beta = "BETA 08-21-11-00",
 	},
 	
 	Frame = {
@@ -221,7 +221,7 @@ ArkInventory.Const = { -- constants
 	Fade = 0.6,
 	GuildTag = "+",
 
-	InventorySlotName = { "HeadSlot", "NeckSlot", "ShoulderSlot", "BackSlot", "ChestSlot", "ShirtSlot", "TabardSlot", "WristSlot", "HandsSlot", "WaistSlot", "LegsSlot", "FeetSlot", "Finger0Slot", "Finger1Slot", "Trinket0Slot", "Trinket1Slot", "MainHandSlot", "SecondaryHandSlot", "RangedSlot" },
+	InventorySlotName = { "HeadSlot", "NeckSlot", "ShoulderSlot", "BackSlot", "ChestSlot", "ShirtSlot", "TabardSlot", "WristSlot", "HandsSlot", "WaistSlot", "LegsSlot", "FeetSlot", "Finger0Slot", "Finger1Slot", "Trinket0Slot", "Trinket1Slot", "MainHandSlot", "SecondaryHandSlot" },
 
 	Category = {
 		
@@ -277,7 +277,7 @@ ArkInventory.Const = { -- constants
 				},
 				[415] = {
 					["id"] = "SYSTEM_MOUNT",
-					["text"] = ArkInventory.Localise["WOW_ITEM_TYPE_MISC_MOUNT"],
+					["text"] = ArkInventory.Localise["MOUNT"],
 				},
 				[416] = {
 					["id"] = "SYSTEM_EQUIPMENT_SOULBOUND",
@@ -285,7 +285,7 @@ ArkInventory.Const = { -- constants
 				},
 				[423] = {
 					["id"] = "SYSTEM_PET",
-					["text"] = ArkInventory.Localise["WOW_ITEM_TYPE_MISC_PET"],
+					["text"] = ArkInventory.Localise["PET"],
 				},
 				[428] = {
 					["id"] = "SYSTEM_REPUTATION",
@@ -868,7 +868,7 @@ ArkInventory.Const.Slot.Data = {
 	[ArkInventory.Const.Slot.Type.Critter] = {
 		["name"] = ArkInventory.Localise["STATUS_NAME_CRITTER"],
 		["long"] = ArkInventory.Localise["WOW_ITEM_TYPE_CONTAINER_BAG"],
-		["type"] = ArkInventory.Localise["WOW_ITEM_TYPE_MISC_PET"],
+		["type"] = ArkInventory.Localise["PET"],
 		["colour"] = ArkInventory.Const.Slot.DefaultColour,
 		["emptycolour"] = GREEN_FONT_COLOR_CODE, -- status text colour when no slots left
 		["hide"] = true,
@@ -1092,7 +1092,7 @@ ArkInventory.Global = { -- globals
 			maxSlot = { },
 			
 			isOffline = false,
-			canView = true,
+			canView = false,
 			canOverride = nil,
 			
 			template = "ARKINV_TemplateButtonCompanionItem",
@@ -1115,7 +1115,7 @@ ArkInventory.Global = { -- globals
 			maxSlot = { },
 			
 			isOffline = false,
-			canView = true,
+			canView = false,
 			canOverride = nil,
 			
 			template = "ARKINV_TemplateButtonCompanionItem",
@@ -1278,8 +1278,8 @@ BINDING_NAME_ARKINV_TOGGLE_BANK = ArkInventory.Localise["LOCATION_BANK"]
 BINDING_NAME_ARKINV_TOGGLE_VAULT = GUILD_BANK
 BINDING_NAME_ARKINV_TOGGLE_MAIL = MAIL_LABEL
 BINDING_NAME_ARKINV_TOGGLE_WEARING = ArkInventory.Localise["LOCATION_WEARING"]
-BINDING_NAME_ARKINV_TOGGLE_PET = ArkInventory.Localise["LOCATION_PET"]
-BINDING_NAME_ARKINV_TOGGLE_MOUNT = ArkInventory.Localise["LOCATION_MOUNT"]
+--BINDING_NAME_ARKINV_TOGGLE_PET = ArkInventory.Localise["LOCATION_PET"]
+--BINDING_NAME_ARKINV_TOGGLE_MOUNT = ArkInventory.Localise["LOCATION_MOUNT"]
 BINDING_NAME_ARKINV_TOGGLE_TOKEN = ArkInventory.Localise["LOCATION_TOKEN"]
 BINDING_NAME_ARKINV_TOGGLE_VOID = VOID_STORAGE
 BINDING_NAME_ARKINV_TOGGLE_EDIT = ArkInventory.Localise["MENU_ACTION_EDITMODE"]
@@ -1293,6 +1293,14 @@ BINDING_NAME_ARKINV_CONFIG = ArkInventory.Localise["CONFIG_TEXT"]
 BINDING_NAME_ARKINV_LDB_PETS_SUMMON = ArkInventory.Localise["LDB_PETS_SUMMON"]
 BINDING_NAME_ARKINV_LDB_MOUNTS_SUMMON = ArkInventory.Localise["LDB_MOUNTS_SUMMON"]
 
+--[[
+	<Binding name="ARKINV_TOGGLE_PET">
+		ArkInventory.Frame_Main_Toggle( ArkInventory.Const.Location.Pet )
+	</Binding>
+	<Binding name="ARKINV_TOGGLE_MOUNT">
+		ArkInventory.Frame_Main_Toggle( ArkInventory.Const.Location.Mount )
+	</Binding>
+]]--
 
 ArkInventory.Const.DatabaseDefaults.global = {
 	["option"] = {
@@ -1834,6 +1842,10 @@ ArkInventory.Const.DatabaseDefaults.profile = {
 
 function ArkInventory.OnLoad( )
 	
+	--print( "OnLoad" )
+	
+	if ArkInventory.VersionCantRun( ) then return end
+	
 	local loc_id
 	
 	-- bags
@@ -1899,17 +1911,17 @@ end
 
 function ArkInventory.OnInitialize( )
 	
-	--ArkInventory.Output( "OnInitialize" )
-	
-	if ArkInventory.Const.TOC > 50000 then
-		-- mop has no ranged slot
-		ArkInventory.Const.InventorySlotName = { "HeadSlot", "NeckSlot", "ShoulderSlot", "BackSlot", "ChestSlot", "ShirtSlot", "TabardSlot", "WristSlot", "HandsSlot", "WaistSlot", "LegsSlot", "FeetSlot", "Finger0Slot", "Finger1Slot", "Trinket0Slot", "Trinket1Slot", "MainHandSlot", "SecondaryHandSlot" }
-	end
+	--print( "OnInitialize" )
 	
 	ArkInventory.Global.Version = string.format( "v%s", ArkInventory.Const.Program.UIVersion )
 	if ArkInventory.Const.Program.Beta then
 		ArkInventory.Global.Version = string.format( "%s %s(%s)%s", ArkInventory.Global.Version, RED_FONT_COLOR_CODE, ArkInventory.Const.Program.Beta or "unknown beta version", FONT_COLOR_CODE_CLOSE )
 	end
+	
+	if ArkInventory.VersionCantRun( ) then return end
+	
+	--print( "init" )
+	
 	
 	-- pre acedb load, the database is just a table
 	
@@ -1949,10 +1961,15 @@ function ArkInventory.OnInitialize( )
 end
 
 function ArkInventory.OnEnable( )
-
+	
 	-- Called when the addon is enabled
 	
-	--ArkInventory.Output( "OnEnable" )
+	--print( "OnEnable" )
+	
+	if ArkInventory.VersionCantRun( true ) then
+		ArkInventory:Disable( )
+		return
+	end
 	
 	ArkInventory.ConvertOldOptions( )
 	
@@ -2045,6 +2062,9 @@ function ArkInventory.OnEnable( )
 	--ArkInventory:RegisterEvent( "COMPANION_UPDATE" ) -- triggered from way too many irrelevant things, dont ever use it.  companions are scanned at onenable so its covered
 	ArkInventory:RegisterEvent( "COMPANION_LEARNED", "LISTEN_COMPANION_UPDATE" )
 	ArkInventory:RegisterEvent( "COMPANION_UNLEARNED", "LISTEN_COMPANION_UPDATE" )
+	--ArkInventory:RegisterEvent( "PET_JOURNAL_PET_DELETED", "LISTEN_COMPANION_UPDATE" )
+	ArkInventory:RegisterEvent( "PET_JOURNAL_LIST_UPDATE", "LISTEN_COMPANION_UPDATE" )
+	ArkInventory:RegisterBucketMessage( "LISTEN_COMPANION_UPDATE_BUCKET", 1 )
 	
 	ArkInventory:RegisterEvent( "EQUIPMENT_SETS_CHANGED", "LISTEN_EQUIPMENT_SETS_CHANGED" )
 	
@@ -2101,11 +2121,14 @@ end
 
 function ArkInventory.OnDisable( )
 	
+	ArkInventory.Output( string.format( "%s %s", ArkInventory.Global.Version, ArkInventory.Localise["DISABLED"] ) )
+	
+	if ArkInventory.VersionCantRun( ) then return end
+	
+	
 	--ArkInventory.Frame_Main_Hide( )
 	
 	ArkInventory.BlizzardAPIHooks( true )
-	
-	ArkInventory.Output( string.format( "%s %s", ArkInventory.Global.Version, ArkInventory.Localise["DISABLED"] ) )
 	
 end
 
@@ -3095,6 +3118,11 @@ function ArkInventory.ItemCategoryGetDefaultActual( i )
 	
 	-- everything else
 	local class, _, itemName, _, itemRarity, _, _, itemType, itemSubType, _, itemEquipLoc = ArkInventory.ObjectInfo( i.h )
+	
+	-- battle pets
+	if class == "battlepet" then
+		return ArkInventory.CategoryGetSystemID( "SYSTEM_PET" )
+	end
 	
 	-- items only
 	if class ~= "item" then
@@ -4564,10 +4592,10 @@ function ArkInventory.Frame_Main_OnShow( frame )
 		PlaySound( "igSpellBookOpen" )
 	elseif loc_id == ArkInventory.Const.Location.Wearing then
 		PlaySound( "igBackPackOpen" )
-	elseif loc_id == ArkInventory.Const.Location.Pet then
-		PlaySound( "igSpellBookOpen" )
-	elseif loc_id == ArkInventory.Const.Location.Mount then
-		PlaySound( "igSpellBookOpen" )
+--	elseif loc_id == ArkInventory.Const.Location.Pet then
+--		PlaySound( "igSpellBookOpen" )
+--	elseif loc_id == ArkInventory.Const.Location.Mount then
+--		PlaySound( "igSpellBookOpen" )
 	elseif loc_id == ArkInventory.Const.Location.Token then
 		ArkInventory.ScanLocation( loc_id )
 		PlaySound( "igSpellBookOpen" )
@@ -4643,10 +4671,10 @@ function ArkInventory.Frame_Main_OnHide( frame )
 		PlaySound( "igSpellBookClose" )
 	elseif loc_id == ArkInventory.Const.Location.Wearing then
 		PlaySound( "igBackPackClose" )
-	elseif loc_id == ArkInventory.Const.Location.Pet then
-		PlaySound( "igSpellBookClose" )
-	elseif loc_id == ArkInventory.Const.Location.Mount then
-		PlaySound( "igSpellBookClose" )
+--	elseif loc_id == ArkInventory.Const.Location.Pet then
+--		PlaySound( "igSpellBookClose" )
+--	elseif loc_id == ArkInventory.Const.Location.Mount then
+--		PlaySound( "igSpellBookClose" )
 	elseif loc_id == ArkInventory.Const.Location.Token then
 		PlaySound( "igSpellBookClose" )
 	elseif loc_id == ArkInventory.Const.Location.Auction then
@@ -5871,7 +5899,9 @@ end
 
 
 function ArkInventory.Frame_Bag_OnLoad( frame )
-
+	
+	if ArkInventory.VersionCantRun( ) then return end
+	
 	assert( frame, "Frame_Bag_OnLoad( ) passed a nil frame" )
 
 	local framename = frame:GetName( )
@@ -6318,7 +6348,8 @@ function ArkInventory.Frame_Item_OnEnter( frame )
 	
 	local usedmycode = false
 	
-	if ArkInventory.Global.Mode.Edit or ArkInventory.Global.Location[loc_id].isOffline or blizzard_id == BANK_CONTAINER or loc_id == ArkInventory.Const.Location.Vault or loc_id == ArkInventory.Const.Location.Wearing or loc_id == ArkInventory.Const.Location.Mail or loc_id == ArkInventory.Const.Location.Pet or loc_id == ArkInventory.Const.Location.Mount or loc_id == ArkInventory.Const.Location.Token  or loc_id == ArkInventory.Const.Location.Auction or loc_id == ArkInventory.Const.Location.Spellbook or loc_id == ArkInventory.Const.Location.Tradeskill or loc_id == ArkInventory.Const.Location.Void then
+	if ArkInventory.Global.Mode.Edit or ArkInventory.Global.Location[loc_id].isOffline or blizzard_id == BANK_CONTAINER or loc_id == ArkInventory.Const.Location.Vault or loc_id == ArkInventory.Const.Location.Wearing or loc_id == ArkInventory.Const.Location.Mail or loc_id == ArkInventory.Const.Location.Token  or loc_id == ArkInventory.Const.Location.Auction or loc_id == ArkInventory.Const.Location.Spellbook or loc_id == ArkInventory.Const.Location.Tradeskill or loc_id == ArkInventory.Const.Location.Void then
+	-- or loc_id == ArkInventory.Const.Location.Pet or loc_id == ArkInventory.Const.Location.Mount or 
 		
 		usedmycode = true -- edit mode, offline, bank, vault, mail, pet, token, auciton, spellbook, tradeskills, void storage
 		
@@ -6328,6 +6359,7 @@ function ArkInventory.Frame_Item_OnEnter( frame )
 			
 			if ArkInventory.Global.Mode.Edit or ArkInventory.Global.Location[loc_id].isOffline then
 				
+				--ArkInventory.Output( "item=[", i.h, "]" )
 				ArkInventory.GameTooltipSetHyperlink( frame, i.h )
 				
 			elseif blizzard_id == BANK_CONTAINER then
@@ -8285,8 +8317,9 @@ function ArkInventory.LocationOptionGetReal( loc_id, ... )
 		assert( p ~= nil, string.format( "bad code: %s is nil - please reload ui to reset the database or report to author if it continues", s ) )
 		
 		local k = select( i, ... )
-		assert( k ~= nil, string.format( "bad code: parameter %s is nil", i ) )
-		assert( type( k ) ~= "boolean", string.format( "bad code: parameter %s is boolean", i ) )
+		if ( ( type( k ) ~= "number" ) and ( type( k ) ~= "string" ) ) then
+			assert( true, string.format( "bad code: parameter %s is %s", i, type( k ) ) )
+		end
 		
 		s = string.format( "%s.%s", s, k )
 		p = p[k]
@@ -8317,8 +8350,9 @@ function ArkInventory.LocationOptionSetReal( loc_id, ... )
 		assert( p ~= nil, string.format( "bad code: %s is nil - please reload ui to reset database or report to author if it continues", s ) )
 		
 		local k = select( i, ... )
-		assert( k ~= nil, string.format( "bad code: parameter %s is nil", i ) )
-		assert( type( k ) ~= "boolean", string.format( "bad code: parameter %s is boolean", i ) )
+		if ( ( type( k ) ~= "number" ) and ( type( k ) ~= "string" ) ) then
+			assert( true, string.format( "bad code: parameter %s is %s", i, type( k ) ) )
+		end
 		
 		s = string.format( "%s.%s", s, k )
 		p = p[k]
@@ -8382,14 +8416,19 @@ function ArkInventory.GameTooltipSetHyperlink( frame, h )
 	
 	ArkInventory.GameTooltipSetPosition( frame )
 	
-	if class ~= "token" then
+	if class == "token" then
 		
-		GameTooltip:SetHyperlink( h )
+		--local _, _, name = ArkInventory.ObjectInfo( h )
+		GameTooltip:SetText( h, 1, 1, 1, 1 )
+		
+	elseif class == "battlepet" then
+		
+		local _, _, _, _, breedQuality, level, _, _, _, _, _, _, speciesID, maxHealth, power, speed, customName = ArkInventory.ObjectInfo( h )
+		BattlePetToolTip_Show( speciesID, level, breedQuality, maxHealth, power, speed, customName )
 		
 	else
 		
-		local _, _, name = ArkInventory.ObjectInfo( h )
-		GameTooltip:SetText( h, 1, 1, 1, 1 )
+		GameTooltip:SetHyperlink( h )
 		
 	end
 	
@@ -8828,4 +8867,13 @@ function ArkInventory.FrameDragStop( frame )
 	
 	frame:Raise( )
 	
+end
+
+function ArkInventory.VersionCantRun( w )
+	if ArkInventory.Const.TOC < 50000 then
+		if w then
+			ArkInventory.Output( "this version cannot be used on the live servers, please downgrade" )
+		end
+		return true
+	end
 end

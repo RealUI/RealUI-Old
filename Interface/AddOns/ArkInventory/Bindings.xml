@@ -20,12 +20,6 @@
 	<Binding name="ARKINV_TOGGLE_WEARING">
 		ArkInventory.Frame_Main_Toggle( ArkInventory.Const.Location.Wearing )
 	</Binding>
-	<Binding name="ARKINV_TOGGLE_PET">
-		ArkInventory.Frame_Main_Toggle( ArkInventory.Const.Location.Pet )
-	</Binding>
-	<Binding name="ARKINV_TOGGLE_MOUNT">
-		ArkInventory.Frame_Main_Toggle( ArkInventory.Const.Location.Mount )
-	</Binding>
 	<Binding name="ARKINV_TOGGLE_TOKEN">
 		ArkInventory.Frame_Main_Toggle( ArkInventory.Const.Location.Token )
 	</Binding>

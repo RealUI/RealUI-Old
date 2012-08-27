@@ -683,9 +683,9 @@ ArkInventory.Const.CompanionTranslationData = { -- temporary table for item to s
 [10822] = { id = 10695 }, -- Dark Whelpling
 [20769] = { id = 25162 }, -- Disgusting Oozeling
 [8500] = { id = 10707 }, -- Great Horned Owl
-[21301] = { id = 26533, r = { item = "17202x1" } }, -- Green Helper Box / Father Winter's Helper
+[21301] = { id = 26533 }, -- Green Helper Box / Father Winter's Helper
 [8501] = { id = 10706 }, -- Hawk Owl
-[21308] = { id = 26529, r = { item = "17202x1" } }, -- Jingling Bell / Winter Reindeer
+[21308] = { id = 26529 }, -- Jingling Bell / Winter Reindeer
 [15996] = { id = 19772 }, -- Lifelike Mechanical Toad / Lifelike Toad
 [11826] = { id = 15049 }, -- Lil' Smoky
 [10398] = { id = 12243 }, -- Mechanical Chicken
@@ -698,10 +698,10 @@ ArkInventory.Const.CompanionTranslationData = { -- temporary table for item to s
 [10394] = { id = 10709 }, -- Prairie Dog Whistle / Brown Prairie Dog
 [8497] = { id = 10711 }, -- Rabbit Crate (Snowshoe) / Snowshoe Rabbit
 [23015] = { id = 28740 }, -- Rat Cage / Whiskers the Rat
-[21305] = { id = 26541, r = { item = "17202x1" } }, -- Red Helper Box / Winter's Little Helper
+[21305] = { id = 26541 }, -- Red Helper Box / Winter's Little Helper
 -- item 22200 Silver Shafted Arrow
 [12529] = { id = 16450 }, -- Smolderweb Carrier / Smolderweb Hatchling
-[21309] = { id = 26045, r = { item = "17202x1" } }, -- Snowman Kit / Tiny Snowman
+[21309] = { id = 26045 }, -- Snowman Kit / Tiny Snowman
 [11474] = { id = 15067 }, -- Sprite Darter Egg / Sprite Darter Hatchling
 [8499] = { id = 10697 }, -- Tiny Crimson Whelpling / Crimson Whelpling
 [8498] = { id = 10698 }, -- Tiny Emerald Whelpling / Emerald Whelpling
