@@ -108,7 +108,7 @@ Bartender4DB = {
 								["Backdrop"] = false,
 							},
 							["version"] = 3,
-							["fadeoutalpha"] = 0,
+							["fadeoutalpha"] = 0.25,
 							["position"] = {
 								["y"] = -213.5,
 								["x"] = -171.5,
@@ -117,7 +117,7 @@ Bartender4DB = {
 							["padding"] = -9,
 							["hidemacrotext"] = true,
 							["visibility"] = {
-								["customdata"] = "[mod:ctrl][target=focus,exists][harm,nodead][combat][group:party][group:raid][vehicleui]show;hide",
+								["customdata"] = "[mod:ctrl][combat]show;[target=focus,exists][harm,nodead][group:party][group:raid][vehicleui]fade;hide",
 								["custom"] = true,
 								["vehicleui"] = false,
 							},
@@ -184,7 +184,7 @@ Bartender4DB = {
 							},
 							["enabled"] = false,
 							["padding"] = -9,
-							["fadeoutalpha"] = 0,
+							["fadeoutalpha"] = 0.25,
 							["position"] = {
 								["y"] = -240.5,
 								["x"] = -171.5,
@@ -195,7 +195,7 @@ Bartender4DB = {
 							["visibility"] = {
 								["custom"] = true,
 								["always"] = false,
-								["customdata"] = "[mod:ctrl][target=focus,exists][harm,nodead][combat][group:party][group:raid][vehicleui]show;hide",
+								["customdata"] = "[mod:ctrl][combat]show;[target=focus,exists][harm,nodead][group:party][group:raid][vehicleui]fade;hide",
 								["possess"] = false,
 								["nocombat"] = false,
 								["vehicleui"] = false,
@@ -247,7 +247,7 @@ Bartender4DB = {
 							},
 							["enabled"] = false,
 							["padding"] = -9,
-							["fadeoutalpha"] = 0,
+							["fadeoutalpha"] = 0.25,
 							["position"] = {
 								["y"] = -267.5,
 								["x"] = -171.5,
@@ -258,7 +258,7 @@ Bartender4DB = {
 							["visibility"] = {
 								["custom"] = true,
 								["possess"] = false,
-								["customdata"] = "[mod:ctrl][target=focus,exists][harm,nodead][combat][group:party][group:raid][vehicleui]show;hide",
+								["customdata"] = "[mod:ctrl][combat]show;[target=focus,exists][harm,nodead][group:party][group:raid][vehicleui]fade;hide",
 								["nocombat"] = false,
 								["vehicleui"] = false,
 							},
@@ -309,11 +309,11 @@ Bartender4DB = {
 								["ID"] = "PixelSkin",
 								["Backdrop"] = false,
 							},
-							["buttons"] = 9,
+							["buttons"] = 12,
 							["padding"] = -9,
 							["fadeoutalpha"] = 0,
 							["position"] = {
-								["y"] = 253.5,
+								["y"] = 334.5,
 								["x"] = -37,
 								["point"] = "RIGHT",
 							},
@@ -321,7 +321,7 @@ Bartender4DB = {
 							["hidemacrotext"] = true,
 							["visibility"] = {
 								["customdata"] = "[mod:ctrl]show;fade",
-								["custom"] = false,
+								["custom"] = true,
 								["vehicleui"] = false,
 							},
 						}, -- [5]
@@ -365,7 +365,7 @@ Bartender4DB = {
 								["ID"] = "PixelSkin",
 								["Backdrop"] = false,
 							},
-							["buttons"] = 9,
+							["buttons"] = 12,
 							["padding"] = -9,
 							["fadeoutalpha"] = 0,
 							["position"] = {
@@ -377,7 +377,7 @@ Bartender4DB = {
 							["hidemacrotext"] = true,
 							["visibility"] = {
 								["customdata"] = "[mod:ctrl]show;fade",
-								["custom"] = false,
+								["custom"] = true,
 								["vehicleui"] = false,
 							},
 						}, -- [6]
@@ -623,7 +623,7 @@ Bartender4DB = {
 								["x"] = -171.5,
 								["point"] = "BOTTOM",
 							},
-							["fadeoutalpha"] = 0,
+							["fadeoutalpha"] = 0.25,
 							["skin"] = {
 								["ID"] = "PixelSkin",
 								["Colors"] = {
@@ -669,7 +669,7 @@ Bartender4DB = {
 							["padding"] = -9,
 							["hidemacrotext"] = true,
 							["visibility"] = {
-								["customdata"] = "[mod:ctrl][target=focus,exists][harm,nodead][combat][group:party][group:raid][vehicleui]show;hide",
+								["customdata"] = "[mod:ctrl][combat]show;[target=focus,exists][harm,nodead][group:party][group:raid][vehicleui]fade;hide",
 								["custom"] = true,
 								["vehicleui"] = false,
 							},
@@ -693,7 +693,7 @@ Bartender4DB = {
 						{
 							["enabled"] = false,
 							["showgrid"] = true,
-							["fadeoutalpha"] = 0,
+							["fadeoutalpha"] = 0.25,
 							["version"] = 3,
 							["skin"] = {
 								["ID"] = "PixelSkin",
@@ -741,7 +741,7 @@ Bartender4DB = {
 							["hidemacrotext"] = true,
 							["visibility"] = {
 								["custom"] = true,
-								["customdata"] = "[mod:ctrl][target=focus,exists][harm,nodead][combat][group:party][group:raid][vehicleui]show;hide",
+								["customdata"] = "[mod:ctrl][combat]show;[target=focus,exists][harm,nodead][group:party][group:raid][vehicleui]fade;hide",
 								["always"] = false,
 								["possess"] = false,
 								["nocombat"] = false,
@@ -757,7 +757,7 @@ Bartender4DB = {
 							["enabled"] = false,
 							["showgrid"] = true,
 							["version"] = 3,
-							["fadeoutalpha"] = 0,
+							["fadeoutalpha"] = 0.25,
 							["skin"] = {
 								["ID"] = "PixelSkin",
 								["Colors"] = {
@@ -805,7 +805,7 @@ Bartender4DB = {
 							["visibility"] = {
 								["custom"] = true,
 								["possess"] = false,
-								["customdata"] = "[mod:ctrl][target=focus,exists][harm,nodead][combat][group:party][group:raid][vehicleui]show;hide",
+								["customdata"] = "[mod:ctrl][combat]show;[target=focus,exists][harm,nodead][group:party][group:raid][vehicleui]fade;hide",
 								["nocombat"] = false,
 								["vehicleui"] = false,
 							},
@@ -821,7 +821,7 @@ Bartender4DB = {
 							["version"] = 3,
 							["padding"] = -9,
 							["fadeoutalpha"] = 0,
-							["fadeout"] = true,
+							["fadeout"] = false,
 							["skin"] = {
 								["ID"] = "PixelSkin",
 								["Colors"] = {
@@ -865,17 +865,17 @@ Bartender4DB = {
 								["Backdrop"] = false,
 							},
 							["position"] = {
-								["y"] = 253.5,
+								["y"] = 334.5,
 								["x"] = -37,
 								["point"] = "RIGHT",
 							},
 							["hidemacrotext"] = true,
 							["visibility"] = {
 								["customdata"] = "[mod:ctrl]show;fade",
-								["custom"] = false,
+								["custom"] = true,
 								["vehicleui"] = false,
 							},
-							["buttons"] = 9,
+							["buttons"] = 12,
 						}, -- [5]
 						{
 							["showgrid"] = true,
@@ -928,10 +928,10 @@ Bartender4DB = {
 							["hidemacrotext"] = true,
 							["visibility"] = {
 								["customdata"] = "[mod:ctrl]show;fade",
-								["custom"] = false,
+								["custom"] = true,
 								["vehicleui"] = false,
 							},
-							["buttons"] = 9,
+							["buttons"] = 12,
 						}, -- [6]
 						{
 							["version"] = 3,
@@ -1169,7 +1169,7 @@ Bartender4DB = {
 						}, -- [1]
 						{
 							["showgrid"] = true,
-							["fadeoutalpha"] = 0,
+							["fadeoutalpha"] = 0.25,
 							["position"] = {
 								["y"] = 38,
 								["x"] = -171.5,
@@ -1221,7 +1221,7 @@ Bartender4DB = {
 							["hidemacrotext"] = true,
 							["padding"] = -9,
 							["visibility"] = {
-								["customdata"] = "[mod:ctrl][target=focus,exists][harm,nodead][combat][group:party][group:raid][vehicleui]show;hide",
+								["customdata"] = "[mod:ctrl][combat]show;[target=focus,exists][harm,nodead][group:party][group:raid][vehicleui]fade;hide",
 								["custom"] = true,
 								["vehicleui"] = false,
 							},
@@ -1245,7 +1245,7 @@ Bartender4DB = {
 						{
 							["enabled"] = false,
 							["showgrid"] = true,
-							["fadeoutalpha"] = 0,
+							["fadeoutalpha"] = 0.25,
 							["version"] = 3,
 							["skin"] = {
 								["ID"] = "PixelSkin",
@@ -1294,7 +1294,7 @@ Bartender4DB = {
 							["visibility"] = {
 								["custom"] = true,
 								["always"] = false,
-								["customdata"] = "[mod:ctrl][target=focus,exists][harm,nodead][combat][group:party][group:raid][vehicleui]show;hide",
+								["customdata"] = "[mod:ctrl][combat]show;[target=focus,exists][harm,nodead][group:party][group:raid][vehicleui]fade;hide",
 								["possess"] = false,
 								["nocombat"] = false,
 								["vehicleui"] = false,
@@ -1356,7 +1356,7 @@ Bartender4DB = {
 							["padding"] = -9,
 							["visibility"] = {
 								["custom"] = true,
-								["customdata"] = "[mod:ctrl][target=focus,exists][harm,nodead][combat][group:party][group:raid][vehicleui]show;hide",
+								["customdata"] = "[mod:ctrl][combat]show;[target=focus,exists][harm,nodead][group:party][group:raid][vehicleui]fade;hide",
 								["possess"] = false,
 								["nocombat"] = false,
 								["vehicleui"] = false,
@@ -1373,7 +1373,7 @@ Bartender4DB = {
 							["version"] = 3,
 							["hidemacrotext"] = true,
 							["fadeoutalpha"] = 0,
-							["fadeout"] = true,
+							["fadeout"] = false,
 							["skin"] = {
 								["ID"] = "PixelSkin",
 								["Colors"] = {
@@ -1424,7 +1424,7 @@ Bartender4DB = {
 							["padding"] = -9,
 							["visibility"] = {
 								["customdata"] = "[mod:ctrl]show;fade",
-								["custom"] = false,
+								["custom"] = true,
 								["vehicleui"] = false,
 							},
 							["buttons"] = 9,
@@ -1439,7 +1439,7 @@ Bartender4DB = {
 							},
 							["buttons"] = 9,
 							["padding"] = -9,
-							["fadeout"] = true,
+							["fadeout"] = false,
 							["skin"] = {
 								["ID"] = "PixelSkin",
 								["Colors"] = {
@@ -1480,7 +1480,7 @@ Bartender4DB = {
 							["hidemacrotext"] = true,
 							["visibility"] = {
 								["customdata"] = "[mod:ctrl]show;fade",
-								["custom"] = false,
+								["custom"] = true,
 								["vehicleui"] = false,
 							},
 							["fadeoutalpha"] = 0,
@@ -1773,7 +1773,7 @@ Bartender4DB = {
 							["padding"] = -9,
 							["hidemacrotext"] = true,
 							["visibility"] = {
-								["customdata"] = "[mod:ctrl][target=focus,exists][harm,nodead][combat][group:party][group:raid][vehicleui]show;hide",
+								["customdata"] = "[mod:ctrl][combat]show;[target=focus,exists][harm,nodead][group:party][group:raid][vehicleui]fade;hide",
 								["custom"] = true,
 								["vehicleui"] = false,
 							},
@@ -1846,7 +1846,7 @@ Bartender4DB = {
 							["visibility"] = {
 								["custom"] = true,
 								["possess"] = false,
-								["customdata"] = "[mod:ctrl][target=focus,exists][harm,nodead][combat][group:party][group:raid][vehicleui]show;hide",
+								["customdata"] = "[mod:ctrl][combat]show;[target=focus,exists][harm,nodead][group:party][group:raid][vehicleui]fade;hide",
 								["always"] = false,
 								["nocombat"] = false,
 								["vehicleui"] = false,
@@ -1908,7 +1908,7 @@ Bartender4DB = {
 							["hidemacrotext"] = true,
 							["visibility"] = {
 								["custom"] = true,
-								["customdata"] = "[mod:ctrl][target=focus,exists][harm,nodead][combat][group:party][group:raid][vehicleui]show;hide",
+								["customdata"] = "[mod:ctrl][combat]show;[target=focus,exists][harm,nodead][group:party][group:raid][vehicleui]fade;hide",
 								["possess"] = false,
 								["nocombat"] = false,
 								["vehicleui"] = false,
@@ -1929,7 +1929,7 @@ Bartender4DB = {
 							},
 							["buttons"] = 9,
 							["padding"] = -9,
-							["fadeout"] = true,
+							["fadeout"] = false,
 							["skin"] = {
 								["ID"] = "PixelSkin",
 								["Colors"] = {
@@ -1976,7 +1976,7 @@ Bartender4DB = {
 							["hidemacrotext"] = true,
 							["visibility"] = {
 								["customdata"] = "[mod:ctrl]show;fade",
-								["custom"] = false,
+								["custom"] = true,
 								["vehicleui"] = false,
 							},
 							["fadeoutalpha"] = 0,
@@ -1991,7 +1991,7 @@ Bartender4DB = {
 							},
 							["buttons"] = 9,
 							["padding"] = -9,
-							["fadeout"] = true,
+							["fadeout"] = false,
 							["skin"] = {
 								["ID"] = "PixelSkin",
 								["Colors"] = {
@@ -2032,7 +2032,7 @@ Bartender4DB = {
 							["hidemacrotext"] = true,
 							["visibility"] = {
 								["customdata"] = "[mod:ctrl]show;fade",
-								["custom"] = false,
+								["custom"] = true,
 								["vehicleui"] = false,
 							},
 							["fadeoutalpha"] = 0,

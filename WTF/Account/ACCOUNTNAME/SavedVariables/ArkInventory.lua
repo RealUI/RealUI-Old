@@ -44,7 +44,7 @@ ARKINVDB = {
 				["font"] = {
 					["name"] = "Friz Quadrata TT",
 				},
-				["version"] = 3.0282,
+				["version"] = 3.0295,
 				["category"] = {
 					["item:17712:1"] = "2!2",
 					["item:17202:0"] = "2!2",
@@ -58,18 +58,21 @@ ARKINVDB = {
 					["item:40772:0"] = "2!2",
 					["item:6948:1"] = "2!2",
 					["item:21946:1"] = "2!2",
-					["item:5462:0"] = "2!2",
-					["item:5060:1"] = "2!2",
-					["item:7005:0"] = "2!2",
-					["item:6256:0"] = "2!2",
-					["item:46349:1"] = "2!2",
-					["item:20824:0"] = "2!2",
-					["item:2901:0"] = "2!2",
 					["item:64670:0"] = "1!404",
+					["item:5060:1"] = "2!2",
+					["item:2901:0"] = "2!2",
+					["item:6256:0"] = "2!2",
+					["item:20824:0"] = "2!2",
+					["item:46349:1"] = "2!2",
+					["item:7005:0"] = "2!2",
+					["item:5462:0"] = "2!2",
 				},
 				["location"] = {
 					{
 						["slot"] = {
+							["unusable"] = {
+								["tint"] = true,
+							},
 							["data"] = {
 								nil, -- [1]
 								nil, -- [2]
@@ -102,9 +105,6 @@ ARKINVDB = {
 								["style"] = "Seerah Solid",
 								["raritycutoff"] = 2,
 								["size"] = 1,
-							},
-							["unusable"] = {
-								["tint"] = true,
 							},
 						},
 						["window"] = {
@@ -150,6 +150,7 @@ ARKINVDB = {
 							["1!417"] = 3,
 							["1!501"] = 12,
 							["1!208"] = 2,
+							["1!211"] = 2,
 							["1!432"] = 3,
 							["1!419"] = 3,
 							["1!418"] = 3,
@@ -158,29 +159,30 @@ ARKINVDB = {
 							["1!416"] = 4,
 							["1!503"] = 9,
 							["1!206"] = 2,
+							["1!116"] = 8,
 							["1!113"] = 11,
-							["1!439"] = 19,
+							["1!101"] = 18,
 							["1!434"] = 14,
 							["1!502"] = 11,
 							["1!103"] = 13,
-							["1!115"] = 8,
+							["1!115"] = 19,
 							["1!202"] = 2,
 							["1!205"] = 2,
 							["1!504"] = 10,
 							["1!505"] = 13,
-							["2!2"] = 6,
+							["1!506"] = 9,
 							["1!109"] = 14,
-							["1!424"] = 3,
+							["1!436"] = 3,
 							["1!108"] = 12,
 							["1!430"] = 3,
 							["1!435"] = 3,
 							["1!105"] = 16,
-							["1!436"] = 3,
+							["1!424"] = 3,
 							["1!207"] = 2,
-							["1!506"] = 9,
+							["2!2"] = 6,
 							["1!433"] = 3,
 							["1!204"] = 2,
-							["1!101"] = 18,
+							["1!439"] = 19,
 						},
 						["title"] = {
 							["size"] = 2,
@@ -188,9 +190,9 @@ ARKINVDB = {
 						["changer"] = {
 							["highlight"] = {
 								["colour"] = {
-									["b"] = 1,
-									["g"] = 0.9803921568627451,
 									["r"] = 0.4509803921568628,
+									["g"] = 0.9803921568627451,
+									["b"] = 1,
 								},
 							},
 						},
@@ -213,46 +215,12 @@ ARKINVDB = {
 						},
 					}, -- [1]
 					{
-						["changer"] = {
-							["highlight"] = {
-								["colour"] = {
-									["r"] = 0.4509803921568628,
-									["g"] = 0.9803921568627451,
-									["b"] = 1,
-								},
-							},
-						},
-						["window"] = {
-							["pad"] = 4,
-							["scale"] = 0.8500000000000001,
-							["background"] = {
-								["colour"] = {
-									["a"] = 0.4000000357627869,
-								},
-							},
+						["slot"] = {
 							["border"] = {
 								["offset"] = 3,
-								["style"] = "None",
+								["style"] = "Skinner Border",
 								["size"] = 16,
-								["colour"] = {
-									["r"] = 0.6666666666666666,
-									["g"] = 0.6666666666666666,
-									["b"] = 0.6666666666666666,
-								},
 							},
-							["width"] = 10,
-						},
-						["search"] = {
-							["hide"] = true,
-						},
-						["sort"] = {
-							["instant"] = true,
-							["default"] = 2,
-						},
-						["title"] = {
-							["size"] = 2,
-						},
-						["slot"] = {
 							["data"] = {
 								nil, -- [1]
 								nil, -- [2]
@@ -280,10 +248,44 @@ ARKINVDB = {
 									["long"] = "WOW_SKILL_INSCRIPTION",
 								}, -- [16]
 							},
+						},
+						["window"] = {
+							["pad"] = 4,
+							["scale"] = 0.8500000000000001,
+							["background"] = {
+								["colour"] = {
+									["a"] = 0.4000000357627869,
+								},
+							},
 							["border"] = {
 								["offset"] = 3,
-								["style"] = "Skinner Border",
+								["style"] = "None",
 								["size"] = 16,
+								["colour"] = {
+									["r"] = 0.6666666666666666,
+									["g"] = 0.6666666666666666,
+									["b"] = 0.6666666666666666,
+								},
+							},
+							["width"] = 10,
+						},
+						["title"] = {
+							["size"] = 2,
+						},
+						["search"] = {
+							["hide"] = true,
+						},
+						["sort"] = {
+							["instant"] = true,
+							["default"] = 2,
+						},
+						["changer"] = {
+							["highlight"] = {
+								["colour"] = {
+									["r"] = 0.4509803921568628,
+									["g"] = 0.9803921568627451,
+									["b"] = 1,
+								},
 							},
 						},
 						["bar"] = {
@@ -305,13 +307,39 @@ ARKINVDB = {
 						},
 					}, -- [2]
 					{
-						["changer"] = {
-							["highlight"] = {
-								["colour"] = {
-									["r"] = 0.4509803921568628,
-									["g"] = 0.9803921568627451,
-									["b"] = 1,
-								},
+						["slot"] = {
+							["border"] = {
+								["offset"] = 0,
+								["style"] = "Seerah Solid",
+								["raritycutoff"] = 2,
+								["size"] = 1,
+							},
+							["data"] = {
+								nil, -- [1]
+								nil, -- [2]
+								{
+									["long"] = "WOW_ITEM_TYPE_KEY",
+									["type"] = "WOW_ITEM_TYPE_KEY",
+								}, -- [3]
+								nil, -- [4]
+								nil, -- [5]
+								{
+									["long"] = "WOW_SKILL_HERBALISM",
+								}, -- [6]
+								nil, -- [7]
+								nil, -- [8]
+								nil, -- [9]
+								{
+									["long"] = "WOW_SKILL_MINING",
+								}, -- [10]
+								nil, -- [11]
+								nil, -- [12]
+								nil, -- [13]
+								nil, -- [14]
+								nil, -- [15]
+								{
+									["long"] = "WOW_SKILL_INSCRIPTION",
+								}, -- [16]
 							},
 						},
 						["window"] = {
@@ -332,9 +360,8 @@ ARKINVDB = {
 								},
 							},
 						},
-						["sort"] = {
-							["instant"] = true,
-							["default"] = 2,
+						["title"] = {
+							["size"] = 2,
 						},
 						["category"] = {
 							["1!201"] = 2,
@@ -364,66 +391,41 @@ ARKINVDB = {
 							["1!503"] = 9,
 							["1!206"] = 2,
 							["1!113"] = 11,
-							["1!439"] = 19,
+							["1!101"] = 18,
 							["1!434"] = 14,
 							["1!436"] = 3,
-							["1!208"] = 2,
+							["1!110"] = 10,
 							["1!506"] = 9,
 							["1!115"] = 8,
 							["1!205"] = 2,
 							["1!504"] = 10,
 							["1!505"] = 13,
-							["1!109"] = 14,
+							["1!103"] = 13,
 							["1!202"] = 2,
-							["1!107"] = 13,
+							["1!108"] = 12,
 							["1!419"] = 3,
 							["1!430"] = 3,
 							["1!502"] = 11,
 							["1!105"] = 16,
-							["1!108"] = 12,
+							["1!107"] = 13,
 							["1!207"] = 2,
-							["1!103"] = 13,
+							["1!109"] = 14,
 							["1!433"] = 3,
-							["1!110"] = 10,
-							["1!101"] = 18,
+							["1!208"] = 2,
+							["1!439"] = 19,
 						},
-						["title"] = {
-							["size"] = 2,
+						["changer"] = {
+							["highlight"] = {
+								["colour"] = {
+									["r"] = 0.4509803921568628,
+									["g"] = 0.9803921568627451,
+									["b"] = 1,
+								},
+							},
 						},
-						["slot"] = {
-							["data"] = {
-								nil, -- [1]
-								nil, -- [2]
-								{
-									["long"] = "WOW_ITEM_TYPE_KEY",
-									["type"] = "WOW_ITEM_TYPE_KEY",
-								}, -- [3]
-								nil, -- [4]
-								nil, -- [5]
-								{
-									["long"] = "WOW_SKILL_HERBALISM",
-								}, -- [6]
-								nil, -- [7]
-								nil, -- [8]
-								nil, -- [9]
-								{
-									["long"] = "WOW_SKILL_MINING",
-								}, -- [10]
-								nil, -- [11]
-								nil, -- [12]
-								nil, -- [13]
-								nil, -- [14]
-								nil, -- [15]
-								{
-									["long"] = "WOW_SKILL_INSCRIPTION",
-								}, -- [16]
-							},
-							["border"] = {
-								["offset"] = 0,
-								["style"] = "Seerah Solid",
-								["raritycutoff"] = 2,
-								["size"] = 1,
-							},
+						["sort"] = {
+							["instant"] = true,
+							["default"] = 2,
 						},
 						["bar"] = {
 							["border"] = {
@@ -444,44 +446,13 @@ ARKINVDB = {
 						},
 					}, -- [3]
 					{
-						["changer"] = {
-							["highlight"] = {
-								["colour"] = {
-									["r"] = 0.4509803921568628,
-									["g"] = 0.9803921568627451,
-									["b"] = 1,
-								},
-							},
-						},
-						["window"] = {
-							["pad"] = 4,
-							["background"] = {
-								["colour"] = {
-									["a"] = 0.5,
-								},
-							},
-							["border"] = {
-								["offset"] = 1,
-								["style"] = "Seerah Solid",
-								["size"] = 1,
-								["colour"] = {
-									["r"] = 0,
-									["g"] = 0,
-									["b"] = 0,
-								},
-							},
-						},
-						["search"] = {
-							["hide"] = true,
-						},
-						["sort"] = {
-							["instant"] = true,
-							["default"] = 3,
-						},
-						["title"] = {
-							["size"] = 2,
-						},
 						["slot"] = {
+							["border"] = {
+								["offset"] = 0,
+								["style"] = "Seerah Solid",
+								["raritycutoff"] = 2,
+								["size"] = 1,
+							},
 							["data"] = {
 								nil, -- [1]
 								nil, -- [2]
@@ -509,11 +480,42 @@ ARKINVDB = {
 									["long"] = "WOW_SKILL_INSCRIPTION",
 								}, -- [16]
 							},
+						},
+						["window"] = {
+							["pad"] = 4,
+							["background"] = {
+								["colour"] = {
+									["a"] = 0.5,
+								},
+							},
 							["border"] = {
-								["offset"] = 0,
+								["offset"] = 1,
 								["style"] = "Seerah Solid",
-								["raritycutoff"] = 2,
 								["size"] = 1,
+								["colour"] = {
+									["r"] = 0,
+									["g"] = 0,
+									["b"] = 0,
+								},
+							},
+						},
+						["title"] = {
+							["size"] = 2,
+						},
+						["search"] = {
+							["hide"] = true,
+						},
+						["sort"] = {
+							["instant"] = true,
+							["default"] = 3,
+						},
+						["changer"] = {
+							["highlight"] = {
+								["colour"] = {
+									["r"] = 0.4509803921568628,
+									["g"] = 0.9803921568627451,
+									["b"] = 1,
+								},
 							},
 						},
 						["bar"] = {
@@ -535,13 +537,38 @@ ARKINVDB = {
 						},
 					}, -- [4]
 					{
-						["changer"] = {
-							["highlight"] = {
-								["colour"] = {
-									["r"] = 0.4509803921568628,
-									["g"] = 0.9803921568627451,
-									["b"] = 1,
-								},
+						["slot"] = {
+							["border"] = {
+								["offset"] = 3,
+								["style"] = "Skinner Border",
+								["size"] = 16,
+							},
+							["data"] = {
+								nil, -- [1]
+								nil, -- [2]
+								{
+									["long"] = "WOW_ITEM_TYPE_KEY",
+									["type"] = "WOW_ITEM_TYPE_KEY",
+								}, -- [3]
+								nil, -- [4]
+								nil, -- [5]
+								{
+									["long"] = "WOW_SKILL_HERBALISM",
+								}, -- [6]
+								nil, -- [7]
+								nil, -- [8]
+								nil, -- [9]
+								{
+									["long"] = "WOW_SKILL_MINING",
+								}, -- [10]
+								nil, -- [11]
+								nil, -- [12]
+								nil, -- [13]
+								nil, -- [14]
+								nil, -- [15]
+								{
+									["long"] = "WOW_SKILL_INSCRIPTION",
+								}, -- [16]
 							},
 						},
 						["window"] = {
@@ -572,7 +599,41 @@ ARKINVDB = {
 						["search"] = {
 							["hide"] = true,
 						},
+						["changer"] = {
+							["highlight"] = {
+								["colour"] = {
+									["r"] = 0.4509803921568628,
+									["g"] = 0.9803921568627451,
+									["b"] = 1,
+								},
+							},
+						},
+						["bar"] = {
+							["border"] = {
+								["offset"] = 3,
+								["style"] = "None",
+								["size"] = 16,
+							},
+							["pad"] = {
+								["internal"] = 4,
+								["external"] = 2,
+							},
+							["background"] = {
+								["colour"] = {
+									["a"] = 0,
+									["b"] = 0,
+								},
+							},
+						},
+					}, -- [5]
+					{
 						["slot"] = {
+							["border"] = {
+								["offset"] = 0,
+								["style"] = "Seerah Solid",
+								["raritycutoff"] = 2,
+								["size"] = 1,
+							},
 							["data"] = {
 								nil, -- [1]
 								nil, -- [2]
@@ -600,31 +661,7 @@ ARKINVDB = {
 									["long"] = "WOW_SKILL_INSCRIPTION",
 								}, -- [16]
 							},
-							["border"] = {
-								["offset"] = 3,
-								["style"] = "Skinner Border",
-								["size"] = 16,
-							},
 						},
-						["bar"] = {
-							["border"] = {
-								["offset"] = 3,
-								["style"] = "None",
-								["size"] = 16,
-							},
-							["pad"] = {
-								["internal"] = 4,
-								["external"] = 2,
-							},
-							["background"] = {
-								["colour"] = {
-									["a"] = 0,
-									["b"] = 0,
-								},
-							},
-						},
-					}, -- [5]
-					{
 						["changer"] = {
 							["highlight"] = {
 								["colour"] = {
@@ -661,41 +698,6 @@ ARKINVDB = {
 						},
 						["sort"] = {
 							["default"] = 2,
-						},
-						["slot"] = {
-							["data"] = {
-								nil, -- [1]
-								nil, -- [2]
-								{
-									["long"] = "WOW_ITEM_TYPE_KEY",
-									["type"] = "WOW_ITEM_TYPE_KEY",
-								}, -- [3]
-								nil, -- [4]
-								nil, -- [5]
-								{
-									["long"] = "WOW_SKILL_HERBALISM",
-								}, -- [6]
-								nil, -- [7]
-								nil, -- [8]
-								nil, -- [9]
-								{
-									["long"] = "WOW_SKILL_MINING",
-								}, -- [10]
-								nil, -- [11]
-								nil, -- [12]
-								nil, -- [13]
-								nil, -- [14]
-								nil, -- [15]
-								{
-									["long"] = "WOW_SKILL_INSCRIPTION",
-								}, -- [16]
-							},
-							["border"] = {
-								["offset"] = 0,
-								["style"] = "Seerah Solid",
-								["raritycutoff"] = 2,
-								["size"] = 1,
-							},
 						},
 						["bar"] = {
 							["border"] = {
@@ -1118,6 +1120,21 @@ ARKINVDB = {
 							},
 						},
 					}, -- [12]
+					{
+						["slot"] = {
+							["data"] = {
+								[16] = {
+									["long"] = "WOW_SKILL_INSCRIPTION",
+								},
+								[10] = {
+									["long"] = "WOW_SKILL_MINING",
+								},
+								[6] = {
+									["long"] = "WOW_SKILL_HERBALISM",
+								},
+							},
+						},
+					}, -- [13]
 				},
 				["anchor"] = {
 					{
@@ -1358,7 +1375,7 @@ ARKINVDB = {
 				1, -- [1]
 				[4] = 2,
 			},
-			["version"] = 3.0282,
+			["version"] = 3.0295,
 			["category"] = {
 				[2] = {
 					["data"] = {

@@ -1,6 +1,6 @@
 
 BugGrabberDB = {
-	["stopnag"] = 40200,
+	["stopnag"] = 50001,
 	["throttle"] = true,
 	["limit"] = 50,
 	["errors"] = {},
