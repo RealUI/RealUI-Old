@@ -34,7 +34,7 @@ nibPointDisplay_RealUI.Types = {
 	["MAGE"] = {
 		name = "Mage",
 		points = {
-			[1] = {name = "Arcane Blast", id = "ab", barcount = 4},
+			[1] = {name = "Arcane Blast", id = "ab", barcount = 6},
 			[2] = {name = "Fingers of Frost", id = "ff", barcount = 2},
 		},
 	},
@@ -57,7 +57,7 @@ nibPointDisplay_RealUI.Types = {
 			[2] = {name = "Shadow Orbs", id = "so", barcount = 3},
 			[3] = {name = "Serendipity", id = "ser", barcount = 2},
 			[4] = {name = "Dark Evangelism", id = "deva", barcount = 5},
-			[5] = {name = "Mind Melt", id = "mm", barcount = 2},
+			[5] = {name = "Mind Spike", id = "ms", barcount = 2},
 		},
 	},
 	["ROGUE"] = {
@@ -538,8 +538,8 @@ function nibPointDisplay_RealUI:GetPoints(CurClass, CurType)
 		-- Dark Evangelism
 		elseif CurType == "deva" then
 			NewPoints = GetBuffCount(SpellInfo[CurType])
-		-- Mind Melt
-		elseif CurType == "mm" then
+		-- Mind Spike
+		elseif CurType == "ms" then
 			NewPoints = GetBuffCount(SpellInfo[CurType])
 		end
 	-- Rogue
@@ -960,7 +960,7 @@ function nibPointDisplay_RealUI:PLAYER_LOGIN()
 	SpellInfo["so"] = GetSpellInfo(77487)		-- Shadow Orb
 	SpellInfo["ser"] = GetSpellInfo(63735)		-- Serendipity
 	SpellInfo["deva"] = GetSpellInfo(87118)		-- Dark Evangelism
-	SpellInfo["mm"] = GetSpellInfo(87160)		-- Mind Melt
+	SpellInfo["ms"] = GetSpellInfo(33371)		-- Mind Spike
 	-- Rogue	
 	SpellInfo["dp"] = GetSpellInfo(2818)		-- Deadly Poison
 	-- Shaman

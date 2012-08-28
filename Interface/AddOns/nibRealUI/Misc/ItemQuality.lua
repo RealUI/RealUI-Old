@@ -26,11 +26,6 @@ function ItemQuality:CreateBorder(slottype, slot, name, hasText)
 	local height = 37
 	local width = 37
 	
-	if slot == "Ammo" then
-		height = 27
-		width = 27
-	end
-	
 	if gslot then
 		local border = CreateFrame("Frame", slot .. name .. "B", gslot)
 		border:SetParent(gslot)
@@ -58,7 +53,7 @@ end
 
 function ItemQuality:MakeTypeTable()
 	ItemsList = {"Head", "Shoulder", "Chest", "Waist", "Legs", "Feet", "Wrist", "Hands", "MainHand", "SecondaryHand"}
-	NDItemsList = {"Neck", "Back", "Finger0", "Finger1", "Trinket0", "Trinket1", "Relic", "Tabard", "Shirt"}
+	NDItemsList = {"Neck", "Back", "Finger0", "Finger1", "Trinket0", "Trinket1", "Tabard", "Shirt"}
 	for _, item in ipairs(ItemsList) do
 		self:CreateBorder("Character", item, "ItemQuality", true)
 	end

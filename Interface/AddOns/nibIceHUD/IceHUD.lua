@@ -128,7 +128,7 @@ function nibIceHUD:OnInitialize()
 
 	self:NotifyNewDb()
 
-	ConfigDialog:SetDefaultSize("nibIceHUD", 750, 650)
+	ConfigDialog:SetDefaultSize("nibIceHUD", 760, 650)
 	self:RegisterChatCommand("icehud", function()
 		nibIceHUD:OpenConfig()
 	end)

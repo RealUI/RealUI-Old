@@ -1157,7 +1157,7 @@ local function Currency_UpdateTablet()
 			for kf, vf in ipairs(FactionList) do
 				if CurrencyTabletData[realm][vf] and #CurrencyTabletData[realm][vf] > 0 then
 					for kn, vn in pairs(CurrencyTabletData[realm][vf]) do
-						if vn[2] == 85 then HasMaxLvl = true end
+						if vn[2] == MAX_PLAYER_LEVEL then HasMaxLvl = true end
 						TotalGold = TotalGold + vn[3]
 						MaxWidth[3] = max(MaxWidth[3], GetTextWidth(convertMoney(vn[3]), 11 + resSizeExtra))
 						for i = 4, 9 do

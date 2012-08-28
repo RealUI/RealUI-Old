@@ -42,32 +42,29 @@ function WeakenedBlows.prototype:init()
 end
 
 -- 'Public' methods -----------------------------------------------------------
-
--- OVERRIDE
-function WeakenedBlows.prototype:Enable(core)
-	WeakenedBlows.super.prototype.Enable(self, core)
-
-	self:RegisterEvent("UNIT_AURA", "UpdateWeakenedBlows")
-		--self:RegisterEvent("PLAYER_TALENT_UPDATE", "checkRole")
-	
-	fName = GetSpellInfo(fSpellID)
-	
-	if not self.moduleSettings.alwaysFullAlpha then
-		self:Show(false)
-	else
-		self:UpdateWeakenedBlows()
-	end
-
-	self:SetBottomText1("WB")
-	
+function WeakenedBlows.prototype:isTankUpdate()
 	local role = self:checkRole()
 	--print("3: "..tostring(role))
 	if role and role == "TANK" then
 		isTank = true
 	else
 		isTank = false
-		self:Disable()
 	end
+end
+
+-- OVERRIDE
+function WeakenedBlows.prototype:Enable(core)
+	WeakenedBlows.super.prototype.Enable(self, core)
+
+	self:RegisterEvent("UNIT_AURA", "UpdateWeakenedBlows")
+	self:RegisterEvent("PLAYER_TALENT_UPDATE", "isTankUpdate")
+	
+	fName = GetSpellInfo(fSpellID)
+	
+	self:UpdateWeakenedBlows()
+
+	self:SetBottomText1("WB")
+	
 	--print("4: "..tostring(isTank))
 end
 
@@ -142,6 +139,8 @@ function WeakenedBlows.prototype:MyOnUpdate()
 end
 
 function WeakenedBlows.prototype:UpdateWeakenedBlows(event, unit, fromUpdate)
+	self:Show(isTank)
+	
 	if unit and unit ~= "target" then
 		return
 	end
