@@ -55,12 +55,11 @@ local Defaults = {
 						incombat = true,
 						level = 1,
 						spells = {
-							[57330] = true,	-- horn of winter
+							[57330] = true,	-- Horn of Winter
 						},
 						negspells = {
-							[8076] = true,	-- strength of earth totem
-							[6673] = true,	-- battle Shout
-							[93435] = true,	-- roar of courage (hunter pet)			
+							[19506] = true,	-- Trueshot Aura
+							[6673] = true,	-- Battle Shout
 						},
 						show = {
 							group = {
@@ -86,7 +85,7 @@ local Defaults = {
 							},
 						},
 						expire = {
-							enabled = true,
+							enabled = false,
 							time = 10,
 						},
 					},
@@ -144,7 +143,50 @@ local Defaults = {
 					enabled = true,
 					side = "RIGHT",
 				},
-				auras = {},
+				auras = {
+					[1] = {
+						enabled = true,
+						inactive = true,
+						incombat = true,
+						level = 1,
+						personal = false,
+						spells = {
+							[1126] = true,	-- Mark of the Wild
+						},
+						negspells = {
+							[20217] = true,	-- Blessing of Kings
+							[90363] = true,	-- Embrace of the Shale Spider (pet)
+							[115921] = true, -- Legacy of the Emperor
+						},
+						show = {
+							group = {
+								party = true,
+								raid = true,
+								solo = false,
+							},
+							location = {
+								instance = true,
+								pvp = false,
+								outinstance = false,
+							},
+							role = {
+								enabled = false,
+								dps = false,
+								heal = false,
+								tank = false,
+							},
+							spec = {
+								[1] = true,
+								[2] = true,
+								[3] = true,
+							},
+						},
+						expire = {
+							enabled = false,
+							time = 10,
+						},
+					},
+				},
 			},
 			["HUNTER"] = {
 				enabled = true,
@@ -168,7 +210,8 @@ local Defaults = {
 						level = 1,
 						personal = true,
 						spells = {
-							[5118] = true,	-- aspect of the cheetah
+							[5118] = true,	-- Cheetah
+							[13159] = true,  -- Pack
 						},
 						negspells = {},
 						show = {
@@ -206,9 +249,9 @@ local Defaults = {
 						level = 1,
 						personal = true,
 						spells = {
-							[13165] = true,	-- hawk
-							[20043] = true,	-- wild
-							[82661] = true,	-- fox	
+							[13165] = true,	-- Hawk
+							[109260] = true, -- Tron Hawk
+							[82661] = true,	-- Fox	
 						},
 						negspells = {},
 						show = {
@@ -410,44 +453,6 @@ local Defaults = {
 				auras = {
 					[1] = {
 						enabled = true,
-						inactive = false,
-						incombat = true,
-						level = 1,
-						personal = true,
-						spells = {
-							[32223] = true,	-- crusader aura
-						},
-						negspells = {},
-						show = {
-							group = {
-								party = true,
-								raid = true,
-								solo = false,
-							},
-							location = {
-								instance = true,
-								pvp = false,
-								outinstance = false,
-							},
-							role = {
-								enabled = false,
-								dps = false,
-								heal = false,
-								tank = false,
-							},
-							spec = {
-								[1] = true,
-								[2] = true,
-								[3] = true,
-							},
-						},
-						expire = {
-							enabled = false,
-							time = 10,
-						},
-					},
-					[2] = {
-						enabled = true,
 						inactive = true,
 						personal = false,
 						incombat = true,
@@ -484,17 +489,17 @@ local Defaults = {
 							time = 10,
 						},
 					},
-					[3] = {
+					[2] = {
 						enabled = true,
 						inactive = true,
 						personal = false,
 						incombat = true,
 						level = 1,
 						spells = {
-							[20154] = true,	-- seal of righteousness
-							[20164] = true,	-- seal of justice
-							[20165] = true,	-- seal of insight
-							[31801] = true,	-- seal of truth
+							[20154] = true,	-- Seal of Righteousness
+							[105361] = true, -- Seal of Command
+							[20165] = true,	-- Seal of Insight
+							[31801] = true,	-- Seal of Truth
 						},
 						negspells = {},
 						show = {
@@ -522,47 +527,6 @@ local Defaults = {
 						},
 						expire = {
 							enabled = true,
-							time = 10,
-						},
-					},
-					[4] = {
-						enabled = true,
-						inactive = true,
-						incombat = true,
-						level = 1,
-						personal = true,
-						spells = {
-							[465] = true,	-- devotion
-							[7294] = true,	-- retribution
-							[19746] = true,	-- concentration
-							[19891] = true,	-- resistance
-						},
-						negspells = {},
-						show = {
-							group = {
-								party = true,
-								raid = true,
-								solo = false,
-							},
-							location = {
-								instance = true,
-								pvp = false,
-								outinstance = false,
-							},
-							role = {
-								enabled = false,
-								dps = false,
-								heal = false,
-								tank = false,
-							},
-							spec = {
-								[1] = true,
-								[2] = true,
-								[3] = true,
-							},
-						},
-						expire = {
-							enabled = false,
 							time = 10,
 						},
 					},

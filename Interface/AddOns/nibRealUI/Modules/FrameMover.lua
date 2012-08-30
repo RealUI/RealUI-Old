@@ -1187,7 +1187,7 @@ function FrameMover:OnInitialize()
 						[4] = {name = "RavenBarGroupTargetDebuffs", parent = "oUF_RealUITarget", 	point = "RIGHT", 	rpoint = "RIGHT", 	x = 183.5, 	y = 22.5},
 						[5] = {name = "RavenBarGroupFocusBuffs", 	parent = "oUF_RealUIFocus", 	point = "LEFT", 	rpoint = "LEFT", 	x = -59, 	y = -6.5},
 						[6] = {name = "RavenBarGroupFocusDebuffs", 	parent = "oUF_RealUIFocus", 	point = "LEFT", 	rpoint = "LEFT", 	x = -59, 	y = -34.5},
-						[7] = {name = "RavenBarGroupToTDebuffs", 	parent = "oUF_RealUITargettarget", point = "RIGHT", rpoint = "RIGHT", 	x = 59, 	y = -6.5},
+						[7] = {name = "RavenBarGroupToTDebuffs", 	parent = "oUF_RealUITargetTarget", point = "RIGHT", rpoint = "RIGHT", 	x = 59, 	y = -6.5},
 						-- [8] = {name = "RavenBarGroupBuffs", 		parent = "UIParent", 			point = "TOPRIGHT", rpoint = "TOPRIGHT", 	x = -2, 	y = -2},
 					},
 				},
