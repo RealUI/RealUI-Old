@@ -1,7 +1,7 @@
-## Interface: 40300
-## Version: r1516
-## X-ReleaseDate: "$Date: 2012-08-19 03:16:08 +0000 (Sun, 19 Aug 2012) $"
-## X-Curse-Packaged-Version: r1516
+## Interface: 50001
+## Version: 5.0.4.1517
+## X-ReleaseDate: "$Date: 2012-08-28 09:26:01 +0000 (Tue, 28 Aug 2012) $"
+## X-Curse-Packaged-Version: 5.0.4.1517
 ## X-Curse-Project-Name: Grid
 ## X-Curse-Project-ID: grid
 ## X-Curse-Repository-ID: wow/grid/mainline

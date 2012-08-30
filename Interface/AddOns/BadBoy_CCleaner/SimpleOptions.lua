@@ -1,9 +1,9 @@
 
 do
-	BadBoyCCleanerConfigTitle:SetText("BadBoy_CCleaner v3.28") --wowace magic, replaced with tag version
+	BadBoyCCleanerConfigTitle:SetText("BadBoy_CCleaner v3.61") --wowace magic, replaced with tag version
 
 	local ccleanerNoIcons = CreateFrame("CheckButton", "BadBoyCCleanerNoIconButton", BadBoyConfig, "OptionsBaseCheckButtonTemplate")
-	ccleanerNoIcons:SetPoint("TOPLEFT", BadBoyConfigPopupButton, "BOTTOMLEFT", 0, -65)
+	ccleanerNoIcons:SetPoint("TOPLEFT", BadBoyConfigPopupButton, "BOTTOMLEFT", 0, -135)
 	ccleanerNoIcons:SetScript("OnClick", function(frame)
 		local tick = frame:GetChecked()
 		if tick then
@@ -17,7 +17,30 @@ do
 
 	local noIconsMsgText = ccleanerNoIcons:CreateFontString("BadBoyCCleanerNoIconButtonTitle", "ARTWORK", "GameFontHighlight")
 	noIconsMsgText:SetPoint("LEFT", ccleanerNoIcons, "RIGHT", 0, 1)
-	noIconsMsgText:SetText(BINDING_NAME_RAIDTARGETNONE)
+
+	noIconsMsgText:SetText("Remove raid icons from public chat")
+	local L = GetLocale()
+	if L == "frFR" then
+		noIconsMsgText:SetText("Enlever les icônes de raid des discussions publiques")
+	elseif L == "deDE" then
+		noIconsMsgText:SetText("Entferne Schlachtzugssymbole im Öffentlichen Chat")
+	elseif L == "zhTW" then
+		noIconsMsgText:SetText("Remove raid icons from public chat")
+	elseif L == "zhCN" then
+		noIconsMsgText:SetText("Remove raid icons from public chat")
+	elseif L == "esES" then
+		noIconsMsgText:SetText("Remove raid icons from public chat")
+	elseif L == "esMX" then
+		noIconsMsgText:SetText("Remove raid icons from public chat")
+	elseif L == "ruRU" then
+		noIconsMsgText:SetText("Remove raid icons from public chat")
+	elseif L == "koKR" then
+		noIconsMsgText:SetText("Remove raid icons from public chat")
+	elseif L == "ptBR" then
+		noIconsMsgText:SetText("Remove raid icons from public chat")
+	elseif L == "itIT" then
+		noIconsMsgText:SetText("Remove raid icons from public chat")
+	end
 
 	local ccleanerInput = CreateFrame("EditBox", "BadBoyCCleanerInput", BadBoyConfig, "InputBoxTemplate")
 	ccleanerInput:SetPoint("TOPLEFT", ccleanerNoIcons, "BOTTOMLEFT", 10, -5)

@@ -43,12 +43,21 @@ local RAID_CLASS_COLORS = RAID_CLASS_COLORS
 local UnitDetailedThreatSituation = UnitDetailedThreatSituation
 local UnitExists, UnitGUID, UnitName, UnitClass, UnitHealth = UnitExists, UnitGUID, UnitName, UnitClass, UnitHealth
 local UnitIsPlayer, UnitPlayerControlled, UnitCanAttack = UnitIsPlayer, UnitPlayerControlled, UnitCanAttack
+local IsInGroup, IsInRaid = IsInGroup, IsInRaid
 local GetNumGroupMembers, GetNumSubgroupMembers = GetNumGroupMembers, GetNumSubgroupMembers
-
 
 -----------------------------------------------------------------------------
 -- Local variables used
 local db
+local function BarClassesFunc()
+	local t = {}
+	for i, className in pairs(CLASS_SORT_ORDER) do
+		t[className] = true
+	end
+	t["PET"] = true
+	t["*NOTINPARTY*"] = true
+	return t
+end
 local defaults = {
 	profile = {
 		Alpha        = 1,
@@ -103,20 +112,7 @@ local defaults = {
 			FontOutline = "",
 			FontColor = {r = 1, g = 1, b = 1, a = 1,},
 			FontSize = 10,
-			Classes = {
-				DEATHKNIGHT = true,
-				DRUID = true,
-				HUNTER = true,
-				MAGE = true,
-				PALADIN = true,
-				PET = true,
-				PRIEST = true,
-				ROGUE = true,
-				SHAMAN = true,
-				WARLOCK = true,
-				WARRIOR = true,
-				["*NOTINPARTY*"] = true,
-			},
+			Classes = BarClassesFunc(),
 			ShowTPS = true,
 			TPSWindow = 10,
 			ShowHeadings = true,
@@ -161,6 +157,7 @@ local defaults = {
 			SinkOptions = {},
 			Threshold = 90,
 			SoundFile = "Fel Nova",
+			SoundChannel = "SFX",
 			DisableWhileTanking = true,
 		},
 		MinimapIcon = {
@@ -169,6 +166,14 @@ local defaults = {
 			radius = 80,
 		},
 	},
+}
+
+-- Posible sound channel options -- Cexikitin@ shadowmoon
+local SoundChannels = {
+	["Master"] = L["Master"],
+	["SFX"] = L["SFX"],
+	["Ambience"] = L["Ambience"],
+	["Music"] = L["Music"]
 }
 local guidNameLookup = {}   -- Format: guidNameLookup[guid] = "Unit Name"
 local guidClassLookup = {}  -- Format: guidClassLookup[guid] = "CLASS"
@@ -181,7 +186,7 @@ local moduleOptions = {}    -- Table for LoD module options registration
 local LDBIconRegistered = false  -- Registered icon?
 local normalizer = 1        -- Default threat normalizer for zones
 local zoneThreatMultipliers = {  -- UnitDetailedThreatSituation returns inconsistent raw threat per zone in 4.3.15050
-	[824] = 10 -- Dragon Soul returns threat values 10% of usual
+-- 	[824] = 10 -- Dragon Soul returns threat values 10% of usual
 }
 setmetatable(zoneThreatMultipliers, {__index = function(self, zoneID) self[zoneID] = 1 return 1 end})
 
@@ -213,21 +218,13 @@ for i = 1, 40 do
 	rpID[i] = format("raidpet%d", i)
 	rptID[i] = format("raidpet%dtarget", i)
 end
-local showClassesOptionTable = {
-	DEATHKNIGHT = L["DEATHKNIGHT"],
-	DRUID = L["DRUID"],
-	HUNTER = L["HUNTER"],
-	MAGE = L["MAGE"],
-	PALADIN = L["PALADIN"],
-	PET = L["PET"],
-	PRIEST = L["PRIEST"],
-	ROGUE = L["ROGUE"],
-	SHAMAN = L["SHAMAN"],
-	WARLOCK = L["WARLOCK"],
-	WARRIOR = L["WARRIOR"],
-	["*NOTINPARTY*"] = L["*Not in Party*"],
-}
 
+local showClassesOptionTable = {}
+for i, className in pairs(CLASS_SORT_ORDER) do
+	showClassesOptionTable[className] = LOCALIZED_CLASS_NAMES_MALE[className]
+end
+showClassesOptionTable["*NOTINPARTY*"] = L["*Not in Party*"]
+showClassesOptionTable["PET"] = L["PET"]
 
 ----------------------------------------------------------------------------------------
 -- Use a common frame and setup some common functions for the Omen dropdown menus
@@ -601,11 +598,9 @@ function Omen:OnEnable()
 	self:RegisterEvent("UNIT_THREAT_SITUATION_UPDATE")
 	self:RegisterEvent("PLAYER_TARGET_CHANGED")
 
-	self:RegisterEvent("PARTY_MEMBERS_CHANGED")
-	self:RegisterEvent("UNIT_PET", "PARTY_MEMBERS_CHANGED")
-	self:RegisterEvent("UNIT_NAME_UPDATE", "PARTY_MEMBERS_CHANGED")
-	self:RegisterEvent("PLAYER_PET_CHANGED", "PARTY_MEMBERS_CHANGED")
-	--self:RegisterEvent("RAID_ROSTER_UPDATE", "PARTY_MEMBERS_CHANGED") -- Is this needed?
+	self:RegisterEvent("GROUP_ROSTER_UPDATE")
+	self:RegisterEvent("UNIT_PET", "GROUP_ROSTER_UPDATE")
+	self:RegisterEvent("UNIT_NAME_UPDATE", "GROUP_ROSTER_UPDATE")
 
 	self:RegisterEvent("PLAYER_UPDATE_RESTING", "UpdateVisible")
 	self:RegisterEvent("PLAYER_ENTERING_WORLD")
@@ -620,7 +615,7 @@ function Omen:OnEnable()
 		self:RegisterEvent("UNIT_TARGET")
 	end
 
-	self:PARTY_MEMBERS_CHANGED()
+	self:GROUP_ROSTER_UPDATE()
 	self:PLAYER_TARGET_CHANGED()
 end
 
@@ -1021,7 +1016,7 @@ function Omen:Shake()
 end
 
 function Omen:Warn(sound, flash, shake, message)
-	if sound then PlaySoundFile(LSM:Fetch("sound", db.Warnings.SoundFile)) end
+	if sound then PlaySoundFile(LSM:Fetch("sound", db.Warnings.SoundFile),db.Warnings.SoundChannel) end
 	if flash then self:Flash() end
 	if shake then self:Shake() end
 	if message then self:Pour(message, 1, 0, 0, nil, 24, "OUTLINE", true) end
@@ -1279,9 +1274,9 @@ end
 
 local lastPartyUpdateTime = GetTime()
 
-function Omen:PARTY_MEMBERS_CHANGED()
+function Omen:GROUP_ROSTER_UPDATE()
 	local oldInParty, oldInRaid = inParty, inRaid
-	inParty = GetNumSubgroupMembers() > 0
+	inParty = IsInGroup()
 	inRaid = IsInRaid()
 	if oldInParty ~= inParty or oldInRaid ~= inRaid then manualToggle = false end
 	self:UpdateVisible()
@@ -1368,23 +1363,7 @@ The combat log offers no hint as to which version of Hand of Salvation is casted
 so we record anyway.
 ]]
 
-local TOC -- Pre-4.2 CLEU compat
-local dummyTable = {}
-do
-	-- Because GetBuildInfo() still returns 40000 on the PTR
-	local major, minor, rev = strsplit(".", (GetBuildInfo()))
-	TOC = major*10000 + minor*100
-end
-function Omen:COMBAT_LOG_EVENT_UNFILTERED(event, timestamp, eventtype, hideCaster, srcGUID, srcName, srcFlags, srcFlags2, dstGUID, dstName, dstFlags, dstFlags2, ...)
-	-- Pre-4.1 CLEU compat
-	if TOC < 40100 and srcFlags2 ~= dummyTable then
-		-- Insert a dummy for the new arguments introduced in 4.1/4.2 and perform a tail call
-		return self:COMBAT_LOG_EVENT_UNFILTERED(event, timestamp, eventtype, dummyTable, hideCaster, srcGUID, srcName, dummyTable, srcFlags, srcFlags2, dstGUID, dummyTable, dstName, dstFlags, dstFlags2, ...)
-	elseif TOC < 40200 and srcFlags2 ~= dummyTable then
-		-- Insert a dummy for the new arguments introduced in 4.2 and perform a tail call
-		return self:COMBAT_LOG_EVENT_UNFILTERED(event, timestamp, eventtype, hideCaster, srcGUID, srcName, srcFlags, dummyTable, srcFlags2, dstGUID, dstName, dummyTable, dstFlags, dstFlags2, ...)
-	end
-
+function Omen:COMBAT_LOG_EVENT_UNFILTERED(event, timestamp, eventtype, hideCaster, srcGUID, srcName, srcFlags, srcRaidFlags, dstGUID, dstName, dstFlags, dstRaidFlags, ...)
 	if eventtype == "SPELL_CAST_SUCCESS" then
 		local spellID = ...
 		if spellID == 34477 or spellID == 57934 then  -- Misdirection and Tricks of the Trade
@@ -1482,7 +1461,7 @@ function Omen:COMBAT_LOG_EVENT_UNFILTERED(event, timestamp, eventtype, hideCaste
 			end
 			if damage then
 				--self:Print(eventtype, srcName, damage)
-				mifadeThreat[srcGUID][dstGUID] = (mifadeThreat[srcGUID][dstGUID] or 0) + damage * 100
+				mifadeThreat[srcGUID][dstGUID] = (mifadeThreat[srcGUID][dstGUID] or 0) + damage -- no longer multiplied by 100 in MoP
 			end
 		end
 	end
@@ -1637,7 +1616,7 @@ function Omen:PLAYER_ENTERING_WORLD()
 	mifadeThreat = newTable()
 	delTable(tempThreat)
 	tempThreat = newTable()
-	self:PARTY_MEMBERS_CHANGED()
+	self:GROUP_ROSTER_UPDATE()
 end
 
 
@@ -1847,6 +1826,7 @@ function Omen:UpdateBarsReal()
 		updatethreat("mouseovertarget", mob)
 	end
 	local tankThreat = tankGUID and threatTable[tankGUID] or mobTargetGUID and threatTable[mobTargetGUID] or topthreat
+
 	if dbBar.ShowAggroBar and tankThreat > 0 then
 		if GetItemInfo(37727) then -- 5 yards (Ruby Acorn - http://www.wowhead.com/?item=37727)
 			threatTable["AGGRO"] = tankThreat * (IsItemInRange(37727, mob) == 1 and 1.1 or 1.3)
@@ -1946,16 +1926,16 @@ function Omen:UpdateBarsReal()
 				bar.Text1:SetText(guidNameLookup[guid])
 			end
 			if dbBar.ShowPercent and dbBar.ShowValue then
-				if dbBar.ShortNumbers and threat >= 100000 then
-					bar.Text2:SetFormattedText("%2.1fk [%d%%]", threat / 100000, tankThreat == 0 and 0 or threat / tankThreat * 100)
+				if dbBar.ShortNumbers and threat >= 1000 then
+					bar.Text2:SetFormattedText("%2.1fk [%d%%]", threat / 1000, tankThreat == 0 and 0 or threat / tankThreat * 100)
 				else
-					bar.Text2:SetFormattedText("%d [%d%%]", threat / 100, tankThreat == 0 and 0 or threat / tankThreat * 100)
+					bar.Text2:SetFormattedText("%d [%d%%]", threat, tankThreat == 0 and 0 or threat / tankThreat * 100)
 				end
 			elseif dbBar.ShowValue then
-				if dbBar.ShortNumbers and threat >= 100000 then
-					bar.Text2:SetFormattedText("%2.1fk", threat / 100000)
+				if dbBar.ShortNumbers and threat >= 1000 then
+					bar.Text2:SetFormattedText("%2.1fk", threat / 1000)
 				else
-					bar.Text2:SetFormattedText("%d", threat / 100)
+					bar.Text2:SetFormattedText("%d", threat)
 				end
 			else
 				bar.Text2:SetFormattedText("%d%%", tankThreat == 0 and 0 or threat / tankThreat * 100)
@@ -1979,14 +1959,15 @@ function Omen:UpdateBarsReal()
 			-- Get temporary threat values
 			local temp = 0
 			if tempThreat[mobGUID] and tempThreat[mobGUID][guid] then
-				temp = tempThreat[mobGUID][guid].total * 100
-				--self:Print("BARtemp "..tempThreat[mobGUID][guid].total)
+				temp = tempThreat[mobGUID][guid].total
+				-- self:Print("BARtemp "..tempThreat[mobGUID][guid].total)
 				if temp > threat then temp = threat end  -- Cap the temp threat
 			end
 
 			-- Update the width of the bar, and animate if necessary
 			local width = w * ((threat - temp) / topthreat)
 			local tempwidth = w * (temp / topthreat)
+-- 			self:Print("width:"..width..",threat:"..threat..",temp:"..temp..",topthreat:"..topthreat) -- debug
 			if width <= 0 then width = 1 end
 			if tempwidth <= 0 then
 				tempwidth = 1
@@ -2030,10 +2011,11 @@ function Omen:UpdateBarsReal()
 		end
 		local t = db.Warnings
 		if lastWarn.mobGUID == mobGUID and myThreatPercent >= t.Threshold and t.Threshold > lastWarn.threatpercent then
-			if not t.DisableWhileTanking or not (myClass == "WARRIOR" and GetBonusBarOffset() == 2 or
-			  myClass == "DRUID" and GetBonusBarOffset() == 3 or
+			if not t.DisableWhileTanking or not (myClass == "WARRIOR" and GetShapeshiftFormID() == 18 or
+			  myClass == "DRUID" and GetShapeshiftFormID() == BEAR_FORM or
+			  myClass == "MONK" and GetShapeshiftFormID() == 23 or
 			  myClass == "PALADIN" and UnitAura("player", GetSpellInfo(25780)) or
-			  myClass == "DEATHKNIGHT" and GetShapeshiftForm() ~= 0 and GetShapeshiftFormInfo(GetShapeshiftForm()) == "Interface\\Icons\\Spell_Deathknight_BloodPresence") then
+			  myClass == "DEATHKNIGHT" and UnitAura("player", GetSpellInfo(48263)) ) then
 				self:Warn(t.Sound, t.Flash, t.Shake, t.Message and L["Passed %s%% of %s's threat!"]:format(t.Threshold, guidNameLookup[lastWarn.tankGUID]))
 			end
 		end
@@ -2134,7 +2116,7 @@ function Omen:UpdateTPS()
 				-- Calculate TPS
 				local ratio = (startTime - threatStoreTime[1]) / (threatStoreTime[2] - threatStoreTime[1])
 				local startThreat = (secondThreat - baseThreat) * ratio + baseThreat
-				bar.Text3:SetFormattedText("%d", (finalThreat - startThreat) / TPSWindow / 100)
+				bar.Text3:SetFormattedText("%d", (finalThreat - startThreat) / TPSWindow ) -- MoP discarded 100 modifier
 			else
 				-- We don't have enough data for this unit
 				bar.Text3:SetText("??")
@@ -3350,9 +3332,17 @@ Omen.Options = {
 					values = AceGUIWidgetLSMlists.sound,
 					disabled = function() return not db.Warnings.Sound end,
 				},
+				SoundChannel = {
+					type = "select",
+					order = 9,
+					name = L["Sound Channel"],
+					desc = L["Sound Channel"],
+					values = SoundChannels,
+					disabled = function() return not db.Warnings.Sound end,
+				},
 				DisableWhileTanking = {
 					type = "toggle",
-					order = 9,
+					order = 10,
 					name = L["Disable while tanking"],
 					desc = L["DISABLE_WHILE_TANKING_DESC"],
 				},

@@ -1,0 +1,38 @@
+tag 1.5.0
+7723bac472e589dd7874f291e377ad5c04048000
+Hendrik Leppkes <h.leppkes@gmail.com>
+2012-08-28 07:10:16 +0200
+
+Tag as 1.5.0
+
+
+--------------------
+
+Hendrik Leppkes:
+	- Update toc for 50001
+	- Remove some remains of Babble-Zone
+	- Fix map minimizing on 4.3
+	- Rewrite map change handling on ZONE_CHANGED_NEW_AREA
+	- Refactor handling of the secure map poi overlays and add handling for the ScenarioPOIFrame
+	- Add Jade Forest fog clear data
+	- Remove stray global var access
+	- Fix typo
+	- Update copyright header to 2012
+	- Remove babble-zone from pkgmeta
+	- Added a checkbox to hide the EJ boss icons
+	- Move Coords closer to the center of the bar
+	- Update EJ Icons in realtime when changing the scale option
+	- Remove disabling of the BattlefieldMaps OnUpdate.
+	Blizzard must've fixed the problem that caused Mapster to do this.
+	- Fix a leaked global
+	- Add an option to change the scale of the EJ Map icons
+	- Add missing FogClear data for Gilneas and Kezan
+	- Replace Babble-Zone with GetMapNameByID
+	- Add Pandaria instances and raids
+	- Add prelim FogClear data for the dread wastes
+	- First set of FogClear data for Pandaria
+	- Disable FogClear on MicroDungeon maps
+	- Actually load the itIT locale as well
+	- Add FogClear data for The Wandering Isle
+	- Add itIT locale
+	- Add ptBR locale

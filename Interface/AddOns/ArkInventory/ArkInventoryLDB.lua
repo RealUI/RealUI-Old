@@ -11,7 +11,7 @@ ArkInventory.LDB = {
 	} ),
 	Companion = { },
 	Pets = ArkInventory.Lib.DataBroker:NewDataObject( string.format( "%s_%s", ArkInventory.Const.Program.Name, "Pets" ), {
-		type = "data source",
+--		type = "data source",
 		icon = ArkInventory.Global.Location[ArkInventory.Const.Location.Pet].Texture,
 		text = "",
 	} ),
@@ -207,7 +207,6 @@ function ArkInventory.LDB.Tracking_Item:OnTooltipShow( )
 	self:Show( )
 	
 end
-
 
 
 function ArkInventory.LDB.Pets:Update( )

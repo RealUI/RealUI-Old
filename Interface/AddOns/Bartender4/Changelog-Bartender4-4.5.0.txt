@@ -1,0 +1,43 @@
+tag 4.5.0
+57b797b1c5179ccf1a95cc5e6d1aa790ab1cf90a
+Hendrik Leppkes <h.leppkes@gmail.com>
+2012-08-28 07:09:41 +0200
+
+Tag as 4.5.0
+
+
+--------------------
+
+Hendrik Leppkes:
+	- Reword an option string
+	- Add an option to control the direction of button flyouts.
+	- Don't change hide-state of the vehicle ui related frames
+	- Fix disabling of the Blizzard Vehicle UI
+	- Disable mouse interaction with the MainMenuBar
+	- Validate that a state driver is set before trying to do string replaces in it.
+	- Add support for LibDualSpec-1.0
+	- Load LibKeyBound before LibActionButton
+	- Update WoWAce project URL
+	- Remove reference to long-removed ActionButton.lua
+	- Remove pre-4.3 compat checks
+	- Update copyright header
+	- Fix the XP bar
+	- Replace [bonusbar:5] with [possessbar]. Additionally, the page for possess bars seems to have moved to 12 from 11.
+	- Fix warrior stance paging and disable it by default. This is in-line with Blizzards new default for warriors.
+	- Use [petbattle] macro condition instead of hooking PetBattle UI functions
+	- Stealth and Shadow Dance now use the same bonusbar offset
+	- Fix Warlock Metamorphosis paging
+	- Reassign hotkeys in a pet battle
+	- Hide all bars in a pet battle
+	- Disable unused MainMenuBar animations.
+	This speeds up changes into VehicleUI, as well as fixes the display of the MicroMenu and other buttons after using a vehicle
+	- Add stance paging for Monks
+	- Re-Add Vehicle Bar with the Leave Vehicle button
+	- Preliminary fixes for Vehicle UI
+	- Update MicroMenu Buttons
+	Raid button is gone, new Companions button added
+	- Rename ShapeshiftBar -> StanceBar
+	- Bump TOC to 50001
+	- Add Italian locale
+	- Improve Masque integration in some spots
+	- Add ptBR locale

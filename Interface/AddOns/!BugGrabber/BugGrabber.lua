@@ -1,5 +1,5 @@
 --
--- $Id: BugGrabber.lua 184 2012-03-04 17:31:50Z rabbit $
+-- $Id: BugGrabber.lua 188 2012-08-28 19:07:09Z nevcairiel $
 --
 -- The BugSack and !BugGrabber team is:
 -- Current Developer: Rabbit
@@ -77,20 +77,36 @@ local L = {
 -- Locals
 --
 
+-- isGetAddOnMetadataFunctional is a Mists of Pandaria Beta workaround (GetAddOnMetadata doesn't work for "X-" tags)
+local isGetAddOnMetadataFunctional
+if select(4, GetBuildInfo()) >= 50000 then
+	isGetAddOnMetadataFunctional = GetAddOnMetadata("!BugGrabber", "X-Credits")
+else
+	isGetAddOnMetadataFunctional = true
+end
 local frame = CreateFrame("Frame")
 
 -- Should implement :FormatError(errorTable).
 local displayObjectName = nil
-for i = 1, GetNumAddOns() do
-	local meta = GetAddOnMetadata(i, "X-BugGrabber-Display")
-	if meta then
-		local enabled = select(4, GetAddOnInfo(i))
-		if enabled then
-			displayObjectName = meta
-			break
+if isGetAddOnMetadataFunctional then
+	for i = 1, GetNumAddOns() do
+		local meta = GetAddOnMetadata(i, "X-BugGrabber-Display")
+		if meta then
+			local enabled = select(4, GetAddOnInfo(i))
+			if enabled then
+				displayObjectName = meta
+				break
+			end
 		end
 	end
+else
+	-- If we can't search through metadata, then just look for BugSack and use it if its enabled
+	local bugSackEnabled = select(4, GetAddOnInfo("BugSack"))
+	if bugSackEnabled then
+		displayObjectName = "BugSack"
+	end
 end
+
 
 -- Shorthand to BugGrabberDB.errors
 local db = nil
@@ -162,15 +178,15 @@ local function printErrorObject(err)
 	end
 end
 
--- XXX Disabled until someone complains and demands that they return.
+-- XXX Re-enabled until someone complains and demands that they go away again.
 local function registerAddonActionEvents()
-	--frame:RegisterEvent("ADDON_ACTION_BLOCKED")
-	--frame:RegisterEvent("ADDON_ACTION_FORBIDDEN")
+	frame:RegisterEvent("ADDON_ACTION_BLOCKED")
+	frame:RegisterEvent("ADDON_ACTION_FORBIDDEN")
 end
 
 local function unregisterAddonActionEvents()
-	--frame:UnregisterEvent("ADDON_ACTION_BLOCKED")
-	--frame:UnregisterEvent("ADDON_ACTION_FORBIDDEN")
+	frame:UnregisterEvent("ADDON_ACTION_BLOCKED")
+	frame:UnregisterEvent("ADDON_ACTION_FORBIDDEN")
 end
 
 -----------------------------------------------------------------------

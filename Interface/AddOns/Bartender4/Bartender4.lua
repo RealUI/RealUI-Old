@@ -1,5 +1,5 @@
 --[[
-	Copyright (c) 2009, Hendrik "Nevcairiel" Leppkes < h.leppkes at gmail dot com >
+	Copyright (c) 2009-2012, Hendrik "Nevcairiel" Leppkes < h.leppkes at gmail dot com >
 	All rights reserved.
 ]]
 local AceAddon = LibStub("AceAddon-3.0")
@@ -9,6 +9,7 @@ local L = LibStub("AceLocale-3.0"):GetLocale("Bartender4")
 
 local LDB = LibStub("LibDataBroker-1.1", true)
 local LDBIcon = LibStub("LibDBIcon-1.0", true)
+local LibDualSpec = LibStub("LibDualSpec-1.0", true)
 
 local defaults = {
 	profile = {
@@ -33,6 +34,10 @@ function Bartender4:OnInitialize()
 	self.db.RegisterCallback(self, "OnProfileChanged", "UpdateModuleConfigs")
 	self.db.RegisterCallback(self, "OnProfileCopied", "UpdateModuleConfigs")
 	self.db.RegisterCallback(self, "OnProfileReset", "UpdateModuleConfigs")
+
+	if LibDualSpec then
+		LibDualSpec:EnhanceDatabase(Bartender4.db, "Bartender4")
+	end
 
 	self:SetupOptions()
 
@@ -113,6 +118,7 @@ function Bartender4:HideBlizzard()
 	--MainMenuBar:UnregisterAllEvents()
 	--MainMenuBar:Hide()
 	--MainMenuBar:SetParent(UIHider)
+	MainMenuBar:EnableMouse(false)
 
 	local animations = {MainMenuBar.slideOut:GetAnimations()}
 	animations[1]:SetOffset(0,0)
@@ -231,16 +237,9 @@ function Bartender4:RegisterPetBattleDriver()
 end
 
 function Bartender4:UpdateBlizzardVehicle()
-	if true --[[self.db.profile.blizzardVehicle]] then
-		--[[MainMenuBarArtFrame:RegisterEvent("UNIT_ENTERING_VEHICLE")
-		MainMenuBarArtFrame:RegisterEvent("UNIT_ENTERED_VEHICLE")
-		MainMenuBarArtFrame:RegisterEvent("UNIT_EXITING_VEHICLE")
-		MainMenuBarArtFrame:RegisterEvent("UNIT_EXITED_VEHICLE")
-		MainMenuBarArtFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
-		local vehicleModule = Bartender4:GetModule("Vehicle", true)
-		vehicleModule:Disable()
-		vehicleModule.blizzardVehicle = true --]]
-
+	if self.db.profile.blizzardVehicle then
+		MainMenuBar:SetParent(UIParent)
+		OverrideActionBar:SetParent(UIParent)
 		if not self.vehicleController then
 			self.vehicleController = CreateFrame("Frame", nil, UIParent, "SecureHandlerStateTemplate")
 			self.vehicleController:SetAttribute("_onstate-vehicle", [[
@@ -265,17 +264,8 @@ function Bartender4:UpdateBlizzardVehicle()
 		end
 		RegisterStateDriver(self.vehicleController, "vehicle", "[vehicleui]vehicle;novehicle")
 	else
-		--[[MainMenuBarArtFrame:UnregisterEvent("UNIT_ENTERING_VEHICLE")
-		MainMenuBarArtFrame:UnregisterEvent("UNIT_ENTERED_VEHICLE")
-		MainMenuBarArtFrame:UnregisterEvent("UNIT_EXITING_VEHICLE")
-		MainMenuBarArtFrame:UnregisterEvent("UNIT_EXITED_VEHICLE")
-		MainMenuBarArtFrame:UnregisterEvent("PLAYER_ENTERING_WORLD")
-
-		local vehicleModule = Bartender4:GetModule("Vehicle")
-		vehicleModule.blizzardVehicle = nil
-		if vehicleModule.db and vehicleModule.db.profile.enabled then
-			vehicleModule:Enable()
-		end--]]
+		MainMenuBar:SetParent(self.UIHider)
+		OverrideActionBar:SetParent(self.UIHider)
 		if self.vehicleController then
 			UnregisterStateDriver(self.vehicleController, "vehicle")
 		end

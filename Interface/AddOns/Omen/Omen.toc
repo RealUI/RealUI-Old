@@ -1,5 +1,5 @@
-## Interface: 40300
-## Version: 3.1.6
+## Interface: 50001
+## Version: 3.1.7
 ## Title: Omen3
 ## Notes: A lightweight, flexible, multi-target threat meter.
 ## Notes-ruRU: Лёгкий, гибкий, измеритель угрозы.
@@ -14,7 +14,7 @@
 ## X-Category: Combat
 ## X-ConfigMode: true
 ## SavedVariables: Omen3DB
-## X-Curse-Packaged-Version: v3.1.6
+## X-Curse-Packaged-Version: v3.1.7-1-gf007d31
 ## X-Curse-Project-Name: Omen Threat Meter
 ## X-Curse-Project-ID: omen-threat-meter
 ## X-Curse-Repository-ID: wow/omen-threat-meter/mainline
@@ -48,5 +48,7 @@ Localization\koKR.lua
 Localization\zhTW.lua
 Localization\zhCN.lua
 Localization\ruRU.lua
+Localization\itIT.lua
+Localization\ptBR.lua
 
 Omen.lua

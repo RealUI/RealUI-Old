@@ -26,7 +26,7 @@ Raven.classSpells.WARRIOR = {
 	{ "Demoralizing Banner", DEBUFF, p.Green1, cooldown = true, id = 114203 },
 	{ "Demoralizing Shout", DEBUFF, p.Green3, cooldown = true, id = 1160 },
 	{ "Devastate", DEBUFF, p.Orange3, id = 20243 },
-	{ "Die by the Sword", BUFF, p.Orange2, id = 118038 },
+	{ "Die by the Sword", BUFF, p.Orange2, cooldown = true, id = 118038 },
 	{ "Disarm", DEBUFF, p.Brown2, cooldown = true, id = 676 },
 	{ "Disrupting Shout", DEBUFF, p.Yellow3, cooldown = true, id = 102060 },
 	{ "Double Time", BUFF, p.Orange2, id = 103827 },

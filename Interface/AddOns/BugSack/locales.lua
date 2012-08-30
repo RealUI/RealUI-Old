@@ -55,7 +55,7 @@ L["You've received %d bugs from %s."] = true
 	if locale == "deDE" then
 L["All bugs"] = "Alle Fehler"
 L["All stored bugs have been exterminated painfully."] = "Alle gespeicherten Fehler wurden auf schmerzvollste Art gel\195\182scht."
-L["autoDesc"] = "\195\150ffnet BugSack automatisch, sobald ein Fehler auftritt."
+L["autoDesc"] = "\195\150ffnet BugSack automatisch, sobald ein Fehler auftritt, au\195\159er man befindet sich im Kampf."
 L["Auto popup"] = "Automatisches Aufpoppen"
 L["|cffeda55fClick|r to open BugSack with the last bug. |cffeda55fShift-Click|r to reload the user interface. |cffeda55fAlt-Click|r to clear the sack."] = "|cffeda55fKlicken|r, um BugSack mit dem letzten Fehler anzuzeigen. |cffeda55fShift-Klicken|r, um das UI neu zu laden. |cffeda55fAlt-Klicken|r, um alle Fehler zu l\195\182schen."
 L["|cffff4411BugSack requires the |r|cff44ff44!BugGrabber|r|cffff4411 addon, which you can download from the same place you got BugSack. Happy bug hunting!|r"] = "|cffff4411BugSack ben\195\182tigt das |r|cff44ff44!BugGrabber|r|cffff4411 Addon, das von der Seite heruntergeladen werden kann, wo du auch BugSack bekommen hast.|r"

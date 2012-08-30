@@ -25,6 +25,7 @@ Raven.classSpells.DEATHKNIGHT = {
 	{ "Dark Simulacrum", DEBUFF, p.Purple2, cooldown = true, id = 77606 },
 	{ "Dark Transformation", BUFF, p.Brown3, school = "Shadow", id = 63560 },
 	{ "Death and Decay", DEBUFF, p.Orange3, cooldown = true, school = "Shadow", id = 43265 },
+	{ "Death Coil", nil, p.Green2, lockout = true, school = "Shadow", id = 47541 },
 	{ "Death Gate", nil, p.Purple1, cooldown = true, school = "Shadow", id = 50977 },
 	{ "Death Grip", DEBUFF, p.Purple2, cooldown = true, id = 49576 },
 	{ "Death Pact", nil, p.Orange2, cooldown = true, school = "Shadow", id = 48743 },

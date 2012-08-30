@@ -1,7 +1,7 @@
-## Interface: 50000
+## Interface: 50001
 ## Title: Clique
 ## Author: Cladhaire
-## Version: v50000-0.1.2
+## Version: v50001-1.0.1
 ## Notes: Simply powerful click-casting interface
 ## SavedVariables: CliqueDB, CliqueDB3
 

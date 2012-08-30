@@ -1,5 +1,5 @@
 --[[
-	Copyright (c) 2009, Hendrik "Nevcairiel" Leppkes < h.leppkes at gmail dot com >
+	Copyright (c) 2009-2012, Hendrik "Nevcairiel" Leppkes < h.leppkes at gmail dot com >
 	All rights reserved.
 ]]
 local L = LibStub("AceLocale-3.0"):GetLocale("Bartender4")
@@ -59,6 +59,9 @@ function VehicleBarMod:ApplyConfig()
 end
 
 function VehicleBarMod:MainMenuBarVehicleLeaveButton_Update()
+	if CanExitVehicle() then
+		MainMenuBarVehicleLeaveButton:Show()
+	end
 	self.bar:UpdateButtonLayout()
 end
 

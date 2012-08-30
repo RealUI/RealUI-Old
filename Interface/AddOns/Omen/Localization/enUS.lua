@@ -220,6 +220,11 @@ L["Enable Warning Message"] = true
 L["Print a message to screen when you accumulate too much threat"] = true
 L["Warning Threshold %"] = true
 L["Sound to play"] = true
+L["Sound Channel"] = true
+L["Master"] = true
+L["SFX"] = true
+L["Ambience"] = true
+L["Music"] = true
 L["Disable while tanking"] = true
 local TOC = select(4, GetBuildInfo())
 if TOC < 40000 then

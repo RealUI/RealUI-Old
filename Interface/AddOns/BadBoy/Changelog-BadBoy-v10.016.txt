@@ -1,0 +1,30 @@
+------------------------------------------------------------------------
+r1012 | funkydude | 2012-08-28 20:28:19 +0000 (Tue, 28 Aug 2012) | 1 line
+Changed paths:
+   A /tags/v10.016 (from /trunk:1011)
+
+Tagging as v10.016
+------------------------------------------------------------------------
+r1011 | funkydude | 2012-08-28 20:19:39 +0000 (Tue, 28 Aug 2012) | 1 line
+Changed paths:
+   M /trunk/BadBoy.lua
+   M /trunk/BadBoy.toc
+   M /trunk/SimpleOptions.lua
+
+add itIT, bump toc
+------------------------------------------------------------------------
+r1010 | funkydude | 2012-08-23 12:45:43 +0000 (Thu, 23 Aug 2012) | 1 line
+Changed paths:
+   M /trunk/BadBoy.lua
+   M /trunk/BadBoy.toc
+
+fp fix
+------------------------------------------------------------------------
+r1009 | funkydude | 2012-08-07 23:41:02 +0000 (Tue, 07 Aug 2012) | 1 line
+Changed paths:
+   M /trunk/BadBoy.lua
+   M /trunk/BadBoy.toc
+   M /trunk/SimpleOptions.lua
+
+locale updates
+------------------------------------------------------------------------

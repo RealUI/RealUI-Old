@@ -1,27 +1,36 @@
 
 local knownIcons = { --list of all known raid icon chat shortcuts
-	"{rt%d}",
-	"{RT%d}",
-	"{x}",
-	"{X}",
-	"{"..(RAID_TARGET_1):lower().."}",
-	"{"..(RAID_TARGET_2):lower().."}",
-	"{"..(RAID_TARGET_3):lower().."}",
-	"{"..(RAID_TARGET_4):lower().."}",
-	"{"..(RAID_TARGET_5):lower().."}",
-	"{"..(RAID_TARGET_6):lower().."}",
-	"{"..(RAID_TARGET_7):lower().."}",
-	"{"..(RAID_TARGET_8):lower().."}",
-	"{"..(RAID_TARGET_1):upper().."}",
-	"{"..(RAID_TARGET_2):upper().."}",
-	"{"..(RAID_TARGET_3):upper().."}",
-	"{"..(RAID_TARGET_4):upper().."}",
-	"{"..(RAID_TARGET_5):upper().."}",
-	"{"..(RAID_TARGET_6):upper().."}",
-	"{"..(RAID_TARGET_7):upper().."}",
-	"{"..(RAID_TARGET_8):upper().."}",
+	"{%a%a%d}",
+	"{[Xx]}",
+	"{[Ss][Tt][Aa][Rr]}",
+	"{[Cc][Ii][Rr][Cc][Ll][Ee]}",
+	"{[Dd][Ii][Aa][Mm][Oo][Nn][Dd]}",
+	"{[Tt][Rr][Ii][Aa][Nn][Gg][Ll][Ee]}",
+	"{[Mm][Oo][Oo][Nn]}",
+	"{[Ss][Qq][Uu][Aa][Rr][Ee]}",
+	"{[Cc][Rr][Oo][Ss][Ss]}",
+	"{[Ss][Kk][Uu][Ll][Ll]}",
+	--deDE
+	"{[Ss][Tt][Ee][Rr][Nn]}",
+	"{[Kk][Rr][Ee][Ii][Ss]}",
+	"{[Dd][Ii][Aa][Mm][Aa][Nn][Tt]}",
+	"{[Dd][Rr][Ee][Ii][Ee][Cc][Kk]}",
+	"{[Mm][Oo][Nn][Dd]}",
+	"{[Vv][Ii][Ee][Rr][Ee][Cc][Kk]}",
+	"{[Kk][Rr][Ee][Uu][Zz]}",
+	"{[Tt][Oo][Tt][Ee][Nn][Ss][Cc][Hh][Ää]+[Dd][Ee][Ll]}",
+	--frFR
+	"{[Éé]+[Tt][Oo][Ii][Ll][Ee]}",
+	"{[Cc][Ee][Rr][Cc][Ll][Ee]}",
+	"{[Ll][Oo][Ss][Aa][Nn][Gg][Ee]}",
+	--"{[Tt][Rr][Ii][Aa][Nn][Gg][Ll][Ee]}",
+	"{[Ll][Uu][Nn][Ee]}",
+	"{[Cc][Aa][Rr][Rr][Éé]+}",
+	"{[Cc][Rr][Oo][Ii][Xx]}",
+	"{[Cc][Rr][Ââ]+[Nn][Ee]}",
+	-- Feel free to add translated icons
 }
-local replace = string.gsub
+
 BadBoyConfig:RegisterEvent("ADDON_LOADED")
 BadBoyConfig:SetScript("OnEvent", function(frame, evt, addon)
 	if addon ~= "BadBoy_CCleaner" then return end
@@ -33,6 +42,9 @@ BadBoyConfig:SetScript("OnEvent", function(frame, evt, addon)
 			"rape",
 		}
 	end
+
+	local gsub, prevLineId, result, modify, BADBOY_CCLEANER = gsub, 0, nil, nil, BADBOY_CCLEANER
+
 	table.sort(BADBOY_CCLEANER)
 	local text
 	for i=1, #BADBOY_CCLEANER do
@@ -46,24 +58,36 @@ BadBoyConfig:SetScript("OnEvent", function(frame, evt, addon)
 	BadBoyCCleanerNoIconButton:SetChecked(BADBOY_NOICONS)
 
 	--main filtering function
-	local filter = function(_,event,msg,player,...)
-		local chanid, found, modify = select(5, ...), 0, nil
-		if event == "CHAT_MSG_CHANNEL" and chanid == 0 then return end --Only scan official custom channels (gen/trade)
-		if not CanComplainChat(player) or UnitIsInMyGuild(player) then return end --Don't filter ourself/friends/guild
-		local lowMsg = (msg):lower() --lower all text
-		for i=1, #BADBOY_CCLEANER do --scan DB for matches
-			if lowMsg:find(BADBOY_CCLEANER[i]) then
-				if BadBoyLogger then BadBoyLogger("CCleaner", event, player, msg) end
-				return true --found a trigger, filter
+	local filter = function(_,event,msg,player,lang,chan,tar,flag,chanid,chanNum,chanName,u,lineId,...)
+		if lineId == prevLineId then
+			if modify then
+				return false,modify,player,lang,chan,tar,flag,chanid,chanNum,chanName,u,lineId,...
+			elseif result then
+				return true
+			else
+				return
 			end
-		end
-		if BADBOY_NOICONS then
-			for i = 1, #knownIcons do
-				msg, found = replace(msg, knownIcons[i], "")
-				if found > 0 then modify = true end --Set to true if we remove a raid icon from this message
+		else
+			prevLineId, modify, result = lineId, nil, nil
+			if event == "CHAT_MSG_CHANNEL" and chanid == 0 then return end --Only scan official custom channels (gen/trade)
+			if not CanComplainChat(player) or UnitIsInMyGuild(player) then return end --Don't filter ourself/friends/guild
+			local lowMsg = msg:lower() --lower all text
+			for i=1, #BADBOY_CCLEANER do --scan DB for matches
+				if lowMsg:find(BADBOY_CCLEANER[i], nil, true) then
+					if BadBoyLog then BadBoyLog("CCleaner", event, player, msg) end
+					result = true
+					return true --found a trigger, filter
+				end
 			end
-			if modify then --only modify message if we removed an icon
-				return false, msg, player, ...
+			if BADBOY_NOICONS and msg:find("{", nil, true) then
+				local found = 0
+				for i = 1, #knownIcons do
+					msg, found = gsub(msg, knownIcons[i], "")
+					if found > 0 then modify = msg end --Set to true if we remove a raid icon from this message
+				end
+				if modify then --only modify message if we removed an icon
+					return false,modify,player,lang,chan,tar,flag,chanid,chanNum,chanName,u,lineId,...
+				end
 			end
 		end
 	end

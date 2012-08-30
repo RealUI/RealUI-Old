@@ -1325,6 +1325,17 @@ end
 
 
 -- ****************************************************************************
+-- Called when a unit's combo points change.
+-- ****************************************************************************
+function eventFrame:UNIT_COMBO_POINTS(unitID)
+ -- Ignore the event if it's not for the player.
+ if (unitID ~= "player") then return end
+ local numCP = GetComboPoints("player")
+ if (numCP ~= 0) then HandleComboPoints(numCP) end
+end
+
+
+-- ****************************************************************************
 -- Called when the player leaves combat.
 -- ****************************************************************************
 function eventFrame:PLAYER_REGEN_ENABLED()
@@ -1341,17 +1352,6 @@ function eventFrame:PLAYER_REGEN_DISABLED()
  -- Get the event settings for entering combat and display it if it isn't disabled.
  local eventSettings = MSBTProfiles.currentProfile.events.NOTIFICATION_COMBAT_ENTER
  if (not eventSettings.disabled) then DisplayEvent(eventSettings, eventSettings.message) end
-end
-
-
--- ****************************************************************************
--- Called when a unit's combo points change.
--- ****************************************************************************
-function eventFrame:UNIT_COMBO_POINTS(unitID)
- -- Ignore the event if it's not for the player.
- if (arg1 ~= "player") then return end
- local numCP = GetComboPoints("player")
- if (numCP ~= 0) then HandleComboPoints(numCP) end
 end
 
 

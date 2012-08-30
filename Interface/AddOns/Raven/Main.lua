@@ -38,7 +38,6 @@ MOD.ldbi = nil -- set when using DBIcon library
 MOD.myClass = nil; MOD.localClass = nil
 MOD.myRace = nil; MOD.localRace = nil
 MOD.lockSpells = {} -- spells for testing lock out of each school of magic for current player
-MOD.cdSpells = {} -- spells that can go on cooldown for the current player
 MOD.classSpells = {} -- stores info about pre-defined spells for each class
 MOD.petSpells = {} -- stores info about pre-defined spells for pets
 MOD.classConditions = {} -- stores info about pre-defined conditions for each class
@@ -84,6 +83,7 @@ local iconPotion = nil -- icon for shared potions cooldown
 local iconElixir = nil -- icon for shared elixirs cooldown
 local lastTotems = {} -- cache last totems in each slot to see if changed
 local lockouts = {} -- schools of magic that we are currently locked out of
+local lockstarts = {} -- start times for current school lockouts
 local talentsInitialized = false -- set once talents have been initialized
 local matchTable = {} -- passed from MOD:CheckAura with list of active auras
 local startGCD, durationGCD = nil -- detect global cooldowns
@@ -532,6 +532,7 @@ function MOD:InitializeLDB()
 			if msg == "RightButton" then
 				if IsShiftKeyDown() then
 					MOD.db.profile.hideBlizz = not MOD.db.profile.hideBlizz
+					MOD.db.profile.hideConsolidated = MOD.db.profile.hideBlizz
 				else
 					MOD:ToggleBarGroupLocks()
 				end
@@ -559,14 +560,17 @@ end
 
 -- Show or hide the blizzard buff frames, called during update so synched with other changes
 local function CheckBlizzFrames()
-	local visible = BuffFrame:IsShown() or ConsolidatedBuffs:IsShown()
+	local visible = BuffFrame:IsShown()
 	if MOD.db.profile.hideBlizz then
-		if visible then BuffFrame:Hide(); TemporaryEnchantFrame:Hide(); ConsolidatedBuffs:Hide(); BuffFrame:UnregisterAllEvents() end
+		if visible then BuffFrame:Hide(); TemporaryEnchantFrame:Hide(); BuffFrame:UnregisterAllEvents() end
 	else
-		if not visible then
-			BuffFrame:Show(); if GetCVarBool("consolidateBuffs") then ConsolidatedBuffs:Show() end
-			TemporaryEnchantFrame:Show(); BuffFrame:RegisterEvent("UNIT_AURA")
-		end
+		if not visible then BuffFrame:Show(); TemporaryEnchantFrame:Show(); BuffFrame:RegisterEvent("UNIT_AURA") end
+	end
+	visible = ConsolidatedBuffs:IsShown()
+	if MOD.db.profile.hideConsolidated then
+		if visible then ConsolidatedBuffs:Hide() end
+	else
+		if not visible then if GetCVarBool("consolidateBuffs") then ConsolidatedBuffs:Show() end end
 	end
 	visible = RuneFrame:IsShown()
 	if MOD.db.profile.hideRunes then
@@ -994,7 +998,7 @@ function MOD:UpdateAuras()
 end
 
 -- Cooldown tables have this structure (name of the cooldown is the index into the activeCooldowns table):
--- b[1] = timeLeft, b[2] = icon, b[3] = startTime, b[4] = duration, b[5] = tooltipType, b[6] = tooltipArgument, b[7] = unit, b[8] = id
+-- b[1] = timeLeft, b[2] = icon, b[3] = startTime, b[4] = duration, b[5] = tooltipType, b[6] = tooltipArgument, b[7] = unit, b[8] = id, b[9] = count
 
 -- Check if valid cooldown table, if so then calculate time left from start time and duration and invalidate if cooldown has expired
 -- Returns either the updated cooldown table or nil if not valid
@@ -1009,14 +1013,14 @@ local function ValidateCooldown(b)
 end
 
 -- Add a cooldown to the current list of active cooldowns, cached info includes icon, start time, duration, tt_type, tt_arg, unit
-local function AddCooldown(name, id, icon, start, duration, tt_type, tt_arg, unit)
+local function AddCooldown(name, id, icon, start, duration, tt_type, tt_arg, unit, count)
 	local t = activeCooldowns -- shared for player and pet cooldowns
 	if not t[name] then
 		MOD:SetIcon(name, icon) --  cache icon for this spell or item name
-		t[name] = { 0, icon, start, duration, tt_type, tt_arg, unit, id }
+		t[name] = { 0, icon, start, duration, tt_type, tt_arg, unit, id, count }
 	else
 		local b = t[name]
-		b[1], b[2], b[3], b[4], b[5], b[6], b[7], b[8] = 0, icon, start, duration, tt_type, tt_arg, unit, id
+		b[1], b[2], b[3], b[4], b[5], b[6], b[7], b[8], b[9] = 0, icon, start, duration, tt_type, tt_arg, unit, id, count
 	end
 end
 
@@ -1176,37 +1180,73 @@ end
 
 -- Check for new and expiring cooldowns associated with all action bar slots plus trinkets (might want to add inventory slots someday)
 function MOD:UpdateCooldowns()
-	local _
 	if updateCooldowns then
 		ReleaseCooldowns() -- mark all cooldowns as not active
 		if MOD.myClass == "DEATHKNIGHT" then CheckRunes() end
+		local lockedOut = false -- flag set if any lockout spells are found
 		for school in pairs(lockouts) do lockouts[school] = 0 end -- clear any previous settings in lockout table
 		for name, ls in pairs(MOD.lockSpells) do
 			if not lockouts[ls.school] then lockouts[ls.school] = 0 end -- initialize when school seen for first time
 			if ls.index and (lockouts[ls.school] == 0) then
 				local start, duration = GetSpellCooldown(ls.index, "spell")
 				if start and (start > 0) and (duration > 1.5) then -- locked out!
-					lockouts[ls.school] = duration
+					lockouts[ls.school] = duration; lockstarts[ls.school] = start; lockedOut = true
 					AddCooldown(ls.label, nil, iconGCD, start, duration, "spell", ls.text, "player")
 				end
 			end
 		end
-		for _, cd in pairs(MOD.cdSpells) do
-			local start, duration, enable = 0, 0, 0
-			if cd.index then -- prefer spell book detection since works with spells like Mangle that have multiple variants
-				start, duration, enable = GetSpellCooldown(cd.index, "spell")
-			elseif cd.id then
-				start, duration, enable = GetSpellCooldown(cd.id)
-			elseif cd.name then
-				start, duration, enable = GetSpellCooldown(cd.name)
-			end
-			if start and (start > 0) and (enable == 1) and (duration > 1.5) then
-				if ((lockouts[cd.school] == nil) or (duration > lockouts[cd.school])) and -- not locked out or on longer cooldown
-						((MOD.myClass ~= "DEATHKNIGHT") or CheckRuneCooldown(cd.name, duration)) then -- death knight rune check
-					AddCooldown(cd.name, cd.id, cd.icon, start, duration, "spell link", cd.link, "player")
+
+		for tab = 1, 2 do -- scan first two tabs of player spell book (general and current spec) for player spells on cooldown
+			local _, _, offset, numSpells = GetSpellTabInfo(tab)
+			for i = 1, numSpells do
+				local index = i + offset
+				local stype, id = GetSpellBookItemInfo(index, "spell")
+				if stype == "SPELL" then -- use spellbook index to check for cooldown
+					local start, duration, enable, count, charges
+					count, charges, start, duration = GetSpellCharges(index, "spell")
+					if count and charges and count < charges then enable = 1 else start, duration, enable = GetSpellCooldown(index, "spell") end
+					if start and (start > 0) and (enable == 1) and (duration > 1.5) then -- don't include global cooldowns
+						local name, _, icon = GetSpellInfo(index, "spell")
+						if name then -- make sure we have a valid spell name
+							if (MOD.myClass ~= "DEATHKNIGHT") or CheckRuneCooldown(name, duration) then -- if death knight check rune cooldown
+								local locked = false
+								if lockedOut then -- check if this spell is on same cooldown as any lockout spell
+									for ls, ld in pairs(lockouts) do if ld == duration and lockstarts[ls] == start then locked = true end end
+								end
+								if not locked then
+									local link = GetSpellLink(index, "spell")
+									AddCooldown(name, id, icon, start, duration, "spell link", link, "player", count)
+								end
+							end
+						end
+					end
+				elseif stype == "FLYOUT" then -- use spell id to check for cooldown
+					local _, _, numSlots = GetFlyoutInfo(id)
+					for slot = 1, numSlots do
+						local spellID = GetFlyoutSlotInfo(id, slot)
+						if spellID then
+							local start, duration, enable = GetSpellCooldown(spellID)
+							if start and (start > 0) and (enable == 1) and (duration > 1.5) then -- don't include global cooldowns
+								local name, _, icon = GetSpellInfo(spellID)
+								if name then -- make sure we have a valid spell name
+									if (MOD.myClass ~= "DEATHKNIGHT") or CheckRuneCooldown(name, duration) then -- if death knight check rune cooldown
+										local locked = false
+										if lockedOut then -- check if this spell is on same cooldown as any lockout spell
+											for ls, ld in pairs(lockouts) do if ld == duration and lockstarts[ls] == start then locked = true end end
+										end
+										if not locked then
+											local link = GetSpellLink(spellID)
+											AddCooldown(name, spellID, icon, start, duration, "spell link", link, "player")
+										end
+									end
+								end
+							end
+						end
+					end
 				end
 			end
 		end
+
 		local numSpells = HasPetSpells() -- returns the number of pet spells
 		if numSpells and UnitExists("pet") then
 			for i = 1, numSpells do
@@ -1221,6 +1261,7 @@ function MOD:UpdateCooldowns()
 				end
 			end
 		end
+		
 		local offset = nil -- check for override/vehicle bar actions on cooldown
 		if HasVehicleActionBar() then offset = 132 elseif HasOverrideActionBar() then offset = 156 end
 		if offset then
@@ -1235,6 +1276,7 @@ function MOD:UpdateCooldowns()
 				end
 			end
 		end
+		
 		for bag = 0, NUM_BAG_SLOTS do
 			local numSlots = GetContainerNumSlots(bag)
 			for i = 1, numSlots do
@@ -1242,6 +1284,7 @@ function MOD:UpdateCooldowns()
 				if itemID then CheckItemCooldown(itemID) end
 			end
 		end
+		
 		CheckInventoryCooldown("HeadSlot")
 		CheckInventoryCooldown("NeckSlot")
 		CheckInventoryCooldown("BackSlot")

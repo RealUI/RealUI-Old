@@ -1,27 +1,43 @@
---[[	BLIZZARD IF YOU'RE READING THIS I'M BEGGING FOR YOUR HELP.
-		Please let me fetch either player level from the given guid (will also help BadBoy_Levels)
-		or let me fetch if the player is in a guild or not from the given guid (spammers never guilded)
-		or both!
 
-		I can then, 1) only scan chat from unguilded WoW players, 2) only scan chat from
-		players below level 10 (55-60 for DKs), this would near enough eliminate any chance of false positives.
-
-		You haven't implemented anything to help filtering gold spam since ComplainChat(), that was years ago, please show us you care.
-]]--
-
--- GLOBALS: print, SetCVar, GetTime, pairs, UnitInParty, UnitInRaid, UnitIsInMyGuild, ComplainChat, CanComplainChat, BNGetNumFriends, BNGetNumFriendToons, BNGetFriendToonInfo
+-- GLOBALS: print, tinsert, tremove, strsplit, SetCVar, GetTime, pairs, tonumber, UnitInParty, UnitInRaid, UnitIsInMyGuild, ReportPlayer, ComplainChat, CanComplainChat, BNGetNumFriends, BNGetNumFriendToons, BNGetFriendToonInfo, ChatFrame_OnHyperlinkShow
 local myDebug = nil
 
---These entries remove -2 points
-local whiteList = {
-	"recruit",
-	"dkp",
-	"looking", --guild
-	"lf[gm]",
-	"|cff",
-	"raid",
-	"roleplay",
-}
+local reportMsg = "BadBoy: >>> |cfffe2ec8|Hbadboy:%s:%d|h[Spam blocked, click to report!]|h|r <<<"
+local throttleMsg = "|cFF33FF99BadBoy|r: Please wait ~4 seconds between reports to prevent being disconnected (Blizzard bug)"
+do
+	local L = GetLocale()
+	if L == "frFR" then
+		reportMsg = "BadBoy: >>> |cfffe2ec8|Hbadboy:%s:%d|h[Spam bloqué, cliquez pour signaler !]|h|r <<<"
+		throttleMsg = "|cFF33FF99BadBoy|r: Veuillez patienter ~4 secondes entre les signalements afin d'éviter d'être déconnecté (bug de Blizzard)"
+	elseif L == "deDE" then
+		reportMsg = "BadBoy: >>> |cfffe2ec8|Hbadboy:%s:%d|h[Spam geblockt, zum Melden klicken!]|h|r <<<"
+		throttleMsg = "|cFF33FF99BadBoy|r: Bitte warte ca. 4 Sekunden zwischen Meldungen um einen Disconnect zu verhindern (Blizzard Bug)"
+	elseif L == "zhTW" then
+		reportMsg = "BadBoy: >>> |cfffe2ec8|Hbadboy:%s:%d|h[發出的垃圾訊息已被阻擋, 點擊以舉報 !]|h|r <<<"
+		throttleMsg = "|cFF33FF99BadBoy|r: 請等候~4秒在回報時，為了防止斷線(暴雪的bug)"
+	elseif L == "zhCN" then
+		reportMsg = "BadBoy: >>> |cfffe2ec8|Hbadboy:%s:%d|h[垃圾信息已被阻挡，点击举报!]|h|r"
+		throttleMsg = "|cFF33FF99BadBoy|r: 请在举报时等待~4 秒以防断线（暴雪的bug）"
+	elseif L == "esES" then
+		reportMsg = "BadBoy: >>> |cfffe2ec8|Hbadboy:%s:%d|h[Spam bloqueado. Clic para informar!]|h|r <<<"
+		throttleMsg = "|cFF33FF99BadBoy|r: Por favor espere ~4 segundos entre los informes para evitar que se desconecte (error de Blizzard)"
+	elseif L == "esMX" then
+		reportMsg = "BadBoy: >>> |cfffe2ec8|Hbadboy:%s:%d|h[Spam bloqueado. Clic para informar!]|h|r <<<"
+		throttleMsg = "|cFF33FF99BadBoy|r: Por favor espere ~4 segundos entre los informes para evitar que se desconecte (error de Blizzard)"
+	elseif L == "ruRU" then
+		reportMsg = "BadBoy: >>> |cfffe2ec8|Hbadboy:%s:%d|h[Спам заблокирован. Нажмите, чтобы сообщить!]|h|r <<<"
+		throttleMsg = "|cFF33FF99BadBoy|r: Пожалуйста, подождите ~4 секунды между отчетами, чтобы избежать попадания отключен (ошибка Blizzard)"
+	elseif L == "koKR" then
+		reportMsg = "BadBoy: >>> |cfffe2ec8|Hbadboy:%s:%d|h[Spam blocked, click to report!]|h|r <<<"
+		throttleMsg = "|cFF33FF99BadBoy|r: Please wait ~4 seconds between reports to prevent being disconnected (Blizzard bug)"
+	elseif L == "ptBR" then
+		reportMsg = "BadBoy: >>> |cfffe2ec8|Hbadboy:%s:%d|h[Spam bloqueado, clique para denunciar!]|h|r <<<"
+		throttleMsg = "|cFF33FF99BadBoy|r: Por favor aguarde ~4 segundos entre denúncias para evitar ser desconectado (erro de Blizzard)"
+	elseif L == "itIT" then
+		reportMsg = "BadBoy: >>> |cfffe2ec8|Hbadboy:%s:%d|h[Spam bloccata, clic qui per riportare!]|h|r <<<"
+		throttleMsg = "|cFF33FF99BadBoy|r: Prego aspetta 4 secondi tra una segnalazione e l'altra per far si che tu non venga disconnesso (bug della Blizzard)"
+	end
+end
 
 --These entries add +1 point
 local commonList = {
@@ -35,7 +51,7 @@ local commonList = {
 	"deliver",
 	"discount",
 	"express",
-	"gold",
+	"g[0o]ld",
 	"lowest",
 	"order",
 	"powerle?ve?l",
@@ -47,13 +63,14 @@ local commonList = {
 	"server",
 	"service",
 	"stock",
+	"trusted",
 	"well?come",
 
 	--French
 	"livraison", --delivery
 	"moinscher", --least expensive
 	"prix", --price
-	"vendons", --sell
+	"commande", --order
 
 	--German
 	"billigster", --cheapest
@@ -84,32 +101,38 @@ local commonList = {
 	"пoкупкe", --buy/buying/purchase [russian]
 	"купи", --buy [serbian]
 	"быcтрo", --fast/quickly
-	"ищeмпocтaвщикoв", --ищем поставщиков --looking for suppliers
+	"ищemпocтaвщикoв", --ищем поставщиков --looking for suppliers
 	"[%.,]ru", --really can't risk any more TLDs for 2 points (Heavy Strict) until Blizz implements my requests to reduce FPs, which will probably be never
 }
 
 --These entries add +2 points
 local heavyList = {
-	"ourgamecenterc[o0]m", --March 12
-	"[\226\130\172%$\194\163]+%d+[%.%-]?%d*[fp][oe]r%d+%.?%d*[kg]", --Add separate line if they start approx prices
-	"[\226\130\172%$\194\163]+%d+%.?%d*[/\\=]%d+%.?%d*[kg]",
-	"%d+%.?%d*eur?o?s?[fp][oe]r%d+%.?%d*[kg]",
-	"%d+%.?%d*[\226\130\172%$\194\163]+[/\\=%-]>?%d+%.?%d*[kg]",
-	"%d+%.?%d*[kg][/\\=][\226\130\172%$\194\163]+%d+",
-	"%d+%.?%d*[kg][/\\=]%d+%.?%d*[\226\130\172%$\194\163]+",
-	"%d+%.?%d*[kg][/\\=]%d+[%.,]?%d*eu",
-	"%d+%.?%d*[kg]%.?only%d+[%.,]?%d*eu",
-	"%d+o?[kg][/\\=]%$?%d+%.%d+", --1OK=9.59
-	"%d+%.?%d*eur?[o0]?s?[/\\=]%d+%.?[%do]*[kg]",
-	"%d+%.?%d*usd[/\\=]%d+%.?%d*[kg]",
-	"%d+%.?%d*usd[fp][oe]r%d+%.?%d*[kg]",
-	"%d+%.?%d*[кр]+зa%d+%.?%d*[рк]+", --14к за 21р / 17р за 1к
+	"ourgamecenter[<c][o0@]m", --March 12
+	"cicigamec[o0@]m", --April 12
+	"[\226\130\172%$\194\163]+%d+.?%d*[fp][oe]r%d+[%.,]?%d*[kg]", --Add separate line if they start approx prices
+	"[\226\130\172%$\194\163]+%d+[%.,]?%d*[/\\=]%d+[%.,]?%d*[kg]",
+	"%d+[%.,]?%d*eur?o?s?[fp][oe]r%d+[%.,]?%d*[kg]",
+	"%d+[%.,]?%d*[\226\130\172%$\194\163]+[/\\=>]+%d+[%.,]?%d*[kg]",
+	"%d+[%.,]?%d*[kg][/\\=][\226\130\172%$\194\163]+%d+",
+	"%d+[%.,]?%d*[kg][/\\=]%d+[%.,]?%d*[\226\130\172%$\194\163]+",
+	"%d+[%.,]?%d*[kg][/\\=]%d+[%.,]?%d*e[uv]",
+	"%d+[%.,]?%d*[kg][%.,]?only%d+[%.,]?%d*eu",
+	"%d+[%.,]?%d*[kg]for%d+[%.,]?%d*eu",
+	"%d+o?[kg][/\\=]%$?%d+[%.,]%d+", --1OK=9.59
+	"%d+[%.,]?[%do]*[/\\=]%d+[%.,]?%d*[kge]",
+	"%d+[%.,]?%d*eur?[o0]?s?[/\\=<>]+%d+[%.,]?[%do]*[kg]",
+	"%d+[%.,]?%d*eur?[o0]?s?[/\\=<>]+l[0o]+[kg]",
+	"%d+[%.,]?%d*usd[/\\=]%d+[%.,]?%d*[kg]",
+	"%d+[%.,]?%d*usd[fp][oe]r%d+[%.,]?%d*[kg]",
+	"%d+[%.,]?%d*[kg][/\\=]%d+[%.,]?%d*usd",
+	"%d+[%.,]?[o%d]*[kg]%d+bonus[/\\=]%d+[%.,]?[o%d]+",
+	"%d+[%.,]?%d*[кр]+зa%d+[%.,]?%d*[рк]+", --14к за 21р / 17р за 1к
 }
 
 --These entries add +2 points, but only 1 entry will count
 local heavyRestrictedList = {
 	"www[%.,●]+",
-	"[%.,●]+c[o0@]m",
+	"[%.,●]+c[%.,]*[o0@][%.,]*m",
 	"[%.,●]+net",
 	"dotc[o0@]m",
 }
@@ -127,6 +150,7 @@ local restrictedIcons = {
 	"{cross}",
 	"{x}",
 	"{skull}",
+	"{diamant}",
 }
 
 --These entries add +1 point to the phishing count
@@ -161,12 +185,45 @@ local phishingList = {
 	"qualifiziert", --qualified
 }
 
+--These entries remove -2 points
+local whiteList = {
+	"recrui?t",
+	"dkp",
+	"lookin?g", --guild
+	"lf[gm]",
+	"|cff",
+	"raid",
+	"roleplay",
+	"apply",
+	"enjin",
+	"guildlaunch",
+	"wowstead",
+	"social",
+	"fortunecard",
+	"house",
+	"progres",
+	"transmor?g",
+	"arena",
+	"boost",
+	"player",
+	"portal",
+	"town",
+	"vialofthe",
+	"[235]v[235]",
+	"sucht", --de
+	"gilde", --de
+	"rekryt", --se
+	"soker", --se
+	"kilta", --fi
+	"etsii", --fi
+	"sosyal", --tr
+}
+
 --Any entry here will instantly report/block
 local instantReportList = {
 	--[[  Personal Whispers  ]]--
 	"so?rr?y.*%d+[kg].*stock.*buy", --sry to bother, we have 60k g in stock today. do u wanna buy some?:)
 	"server.*purchase.*gold.*deliv", --sorry to bother,currently we have 29200g on this server, wondering if you might purchase some gold today? 15mins delivery:)
-	"%d+.*lfggameteam", --actually we have 10kg in stock from Lfggame team ,do you want some?
 	"free.*powerleveling.*level.*%d+.*interested", --Hello there! I am offering free powerleveling from level 70-80! Perhaps you are intrested? :)v
 	"friend.*price.*%d+k.*gold", --dear friend.. may i tell you the price for 10k wow gold ?^^
 	"we.*%d+k.*stock.*realm", --hi, we got 25k+++ in stock on this realm. r u interested?:P
@@ -196,18 +253,22 @@ local instantReportList = {
 	"may.*ask.*whether.*interest.*ing.*boe.*stuff.*rocket", --hmm, may i ask whether u r interested in g or boe stuffs such as X-53 Touring Rocket:P
 
 	--[[  Casino  ]]--
-	"%d+%-%d+.*d[ou][ub]ble.*%d+%-%d+.*trip", --10 minimum 400 max\roll\61-97 double, 98-100 triple, come roll,
+	"%d+.*d[ou][ub]ble.*%d+.*trip", --10 minimum 400 max\roll\61-97 double, 98-100 triple, come roll,
 	"casino.*%d+x2.*%d+x3", --{star} CASINO {star} roll 64-99x2 your wager roll 100x3 your wager min bet 50g max 10k will show gold 100% legit (no inbetween rolls plz){diamond} good luck {diamond}
 	"casino.*%d+.*double.*%d+.*tripp?le", --The Golden Casino is offering 60+ Doubles, and 80+ Tripples!
 	"casino.*whisper.*info", --<RollReno's Casino> <Whisper for more information!>
-	"d[ou][ub]ble.*%d+%-%d+.*%d+%-%d+.*tripp?le", --come too the Free Roller  gaming house!  and have ur luck of winning gold! :) pst me for invite:)  double is  62-96 97-100 tripple we also play blackjack---- u win double if you beat the host in blackjack
-	"d[ou][ub]ble.*%d+%-%d+.*tripp?le.*%d+%-%d+", --come to free roller gaming house! and have u luck of winning gold :) pst for invite :) double is 62-96 triple is 97-100. we also play blacjack---u win doubleif u beat host in blacjack
-	"casino.*bet.*%d+%-%d+", --Casino time. You give me your bet, Than You roll from 1-11 unlimited times.Your rolls add up. If you go over 21 you lose.You can stop before 21.When you stop I do the same, and if your closer to 21 than me than you get back 2 times your bet
+	"d[ou][ub]ble.*%d+.*tripp?le", --come too the Free Roller  gaming house!  and have ur luck of winning gold! :) pst me for invite:)  double is  62-96 97-100 tripple we also play blackjack---- u win double if you beat the host in blackjack
+	"casino.*bet.*%d+", --Casino time. You give me your bet, Than You roll from 1-11 unlimited times.Your rolls add up. If you go over 21 you lose.You can stop before 21.When you stop I do the same, and if your closer to 21 than me than you get back 2 times your bet
 	"roll.*%d+.*roll.*%d+.*bet", --Roll 63+ x2 , Roll 100 x3, Roll 1 x4 NO MAX BETS
+	"casino.*roll.*double", --CASINO IS BACK IN TOWN COME PAY ME ROLL +65 AND GET DOUBLE
+	"casino.*roll.*%d+.*roll.*%d+", --Casino is back in town !! Roll over 65 + and get your gold back 2X !!  Roll 100 and get your gold back 3X !!
+	"double.*tripp?le.*casino", --Hey there wanna double your money in casino? or triple or even quad it? give me a whisp if you want to join my casino :)
 
 	--[[  Runescape Trading  ]]--
 	--WTB RS gold paying WoW GOLD
 	"wt[bs]rsgold.*wowgold", --WTB rs gold trading wow gold PST
+	"wt[bs]wowgold.*rsgold", --WTS Wow gold for rs gold
+	"wt[bs]wowgold.*rscoint?s", --WTS Wow gold for rs coints
 	--WTS RUNESCAPE GOLD !~!~!~ PST
 	--WTB RUNESCAPE GOLD WITH WOW GOLD PST
 	"wt[bs]runescapegold", --WTB Runescape Gold, Trading WOW Gold, PST -- I will trade first.
@@ -215,10 +276,116 @@ local instantReportList = {
 	--WTS level 25 guild with 80k gold for runescape gold
 	"goldforrunescapegold", --Exchanging WoW gold for Runescape gold pst me better price for higher amount.
 	"buying?runescapeg", --buyin runescape g
+	"wt[bs]runescapeaccount", --WTB runescape accounts ( pure only ) or money! i pay with wow gold. GOT 170k gold atm.
+	"wt[bs]runescapepure", --WTB runescape pure ( STR PURE IS A $$ PAYING EXTRA FOR STR PURE )!
+	--WTB big amount of runescape money. 2mil = 1k gold. ONLY LEGIT PEOPLE.
+	"wt[bs].*runescapemoney.*%d+k", --WTB runescape money. 3mil = 1k in wow! easy money making.
+	"^wt[bs]rsaccount", --wts rs acount 10k .... lvl 95 with items for over 15 mil with 6 year old holiday
+
+	--[[  Steam  ]]--
+	"^wtssteamaccount", --WTS Steam account with 31 games (full valve pack+more) /w me with offers
+
+	--[[  League of Legends  ]]--
+	"^wt[bs]lolacco?u?n?t?$", --WTB LoL acc
+	"^wt[bs]%d?x?leagueoflegends?account", --WTS 2x League of Legend accounts for 1 price !
+
+	--[[  Account Buy/Sell  ]]--
+	"wtsnonemergeacc.*lvl?%d+char", --!WTS none-merge acc(can get a lv80 char)./W me for more info!
+	--! WTS lvl 80 char.{all class}.Diablo3 g0ld /W me for more info !
+	--^{diamond}lv80 char all class./w me for more info if you WTB^
+	"lvl?%d+char%.?allclass.*info", --^{Square} WTS lvl 80 char all class ! /w me for more info{square}^
+	"lvl?%d+char.*fast.*g[o0]ld", --# WTS lvl 80 char .TCG mount.cheap fast D3 g0ld/w me for more #
+	"%d+lvloldaccounts?tosell", --80lvl old account to sell
+	"wtswowaccount.*epic", --y WTS WOW ACCOUNT 401 ITEM LEVEL ROGUES WITH FIRST STAGE LEGENDARY FULL CATA!! WITH 1X VIAL OF SANDS/CRIMSON DEATHCHARGER FULL EPIC GEMED 1X ROGUE 1 X WARRIOR PVP AIMED ADD SKYPE * AND I ALSO HAVE FULL HIERLOOM FOR EVER SINGLE CHARACTER A
+	"^wanttotradeaccount", --Want to trade account full cata rogue on * with full epic 50 agil gems(vial of the sands and crimson dk and warrior with 1 cata and mechanohog it is on * wt t for a class with full cata on * /w me!!!!!
+	"^wttacc.*epic.*mount.*/w", --WTT ACC MINE HAS FULL CATA+FULL EPIC GEMS  ROGUE WITH NICE MOUNTS WTT FOR AND ACC WITH FULL CATA  RESTO SHAMAN!! /W ME!!
+	"^wttacc?ount.*gear.*char", --WTT Acount Resto/Enha shaman / Resto / Balance druid / Prot warr / Mage / Paladin for just one full cata geared pvp character /w me with info
+	--WTS wow account 85human Rogue with LEGENDARIES + JC BS.  u pay with gold./w me for more info
+	"^wt[st]wowaccount", --WTT Wow account /w me for more info
+	"^wtsaccount.*gametime", --WTS Account with free lvl 80 And GAME  TIME!! /w me
+
+	--[[  Diablo 3  ]]--
+	"^wttrade%d+kgold.*diablo", --WT trade 6k gol;d for 300k in diablo 3. /w me
+	"^wttwowgold.*diablo", --WTT wow gold for diablo gold. /w if interested.
+	"^wtbd3forgold", --WTB D3 for gold!
+	--SELLING DIABLO 3 / 60 DAYS PREPAIDGAMECARD - PRICES IN DND!! CHEAP
+	"^sellingdiablo3", --Selling Diablo 3 CD Key.Fast & Smooth Deal.
+	"^sellingd3account", --Selling D3 account cheap /w for more !
+	"^wtscheapfastd3g", --*WTS cheap fast D3 G,/W for skype*
+	"^wt[bs]d3key", --WTs D3 key Wisp me for info and price!
+	"^wts.*%d+day.*diablo.*account", --WTS [Winged Guardian] [Heart of the Aspects] [Celestial Steed]Each 22k gc90days=30Kdiablo III Account for=70k
+	"tradediablo3?goldforwowgold", --anyone want to trade diablo gold for wow gold?
+	--SELLING 60 DAYS GAMECARD - VERY CHEAP - ALSO SELL DIABLO ! -SAFE
+	"^selling.*gamecard.*diablo", --SELLING 60 DAY GAMECARDS & DIABLO 3!!!!
+	"^wt[bs]d3account", --WTS D3 account /w for more !
+	"^wtsd3.*transfer.*item", --WTS D3/faction/race change server transfer and other items!
+	--WTS Diablo 3 code 30 K !!
+	--WTS Diablo 3 CD KEY
+	--WTB Diablo 3 key cheap
+	--WTB Diablo3 Gold for WoW Gold! /w me D3Gold per WoWGold!
+	"^wt[bs]diablo3", --WTB Diablo 3 Gold!
+
+	--[[  Illegal Items ]]--
+	"%[.*%].*%[.*%].*facebook.com/buyboe", --Win Free[Volcano][Spire of Scarlet Pain][Obsidium Cleaver]from a simple contest, go www.facebook.com/buyboe now!
+	--WTS 6PETS [Cenarion Hatchling],Lil'Rag,XT,KT,Moonkin,Panda 8K each;Prepaid gametimecard 10K;Flying Mounts[Winged Guardian],[Celestial Steed]20K each.
+	"wts.*gamet?i?m?e?card.*mount", --WTS 90 Day Pre-Paid Game Card 35K Also selling mount from BLZ STORE,25k for golden dragon/lion
+	--if you want buy pets/ mounts/gametimecard/ Spectral Tiger/whisper me!^^
+	"pets.*mount.*gametimecard", --wts 6pets .mounts .rocket. gametimecard .Change camp. variable race. turn area. change a name. ^_^!
+	"wts.*gametime.*mount.*pet", --WTS Prepaid gametime code 8k per month. the mount [Winged Guardian]'[Celestial Steed] 15K each and the pets 6k each, if u are interested,PST
+	"wts.*monthgametime.*%d+k", --WTS 1 Month Gametime 10k. 3 Month Gameitme 25k. 6 Month Gametime 40k
+	"wts.*gamet?i?m?e?card.*gold", --wts 60days gamecard for gold /w for more info.
+	--[Winged Guardian] 25k  [Heart of the Aspects]25k  [Celestial Steed]20k and prepaid gametimecard
+	"%[.*%].*%[.*%].*gamet?i?m?e?card", --wts [Heart of the Aspects]25k [Winged Guardian]25k and prepaid gametimecard
+	--WTS [Heart of the Aspects]25K [Winged Guardian]25K [Celestial Steed]20K AND prepaid gametimecard
+	--WTS [Celestial Steed]  [Winged Guardian]  [Heart of the Aspects] and prepaid gametimecard / 60k for half year
+	"wts.*steed.*gamet?i?m?e?card", --{skull} WTS Winged Guardian 15K.Heart of the Aspects 15K Celestial Steed 15K 90 Day Pre-Paid Game Card 35K {skull}
+	--VK [Phiole der Sande][Theresas Leselampe][Maldos Shwertstock],25 Minuten Lieferung auf <buyboe(dot)de>
+	"%[.*%].*buyboe.*dot.*[fcd][ro0e]", --WTS [Theresa's Booklight] [Vial of the Sands] [Heaving Plates of Protection] 15mins delivery on<buyboe dot com>
+	"code.*hatchling.*gamet?i?m?e?card", --WTS Codes redeem:6PETS [Cenarion Hatchling],Lil Rag,KT,XT,Moonkin,Pandaren 5k each;Prepaid gametimecard 6K;Flying mount[Celestial Steed] 15K.PST
+	"gamet?i?m?e?card.*deliver", --{rt6}{rt1} 19=10k,90=51K+gamecard+rocket? deliver10mins
+	--40$ for 10k gold or 45$ for  10k gold + 1 rocket  + one month  time card  .   25$ for  a  rocket .  we have  all boe items and 264 gears selled . if u r interested in .  plz whsiper me . :) ty
+	--$45=10k + one X-53 Touring Rocket, $107=30K + X-53 Touring Rocket, the promotion will be done in 10 minutes, if you like it, plz whisper me :) ty
+	"%$.*rocket.*%$.*rocket.*ple?a?[sz]", --$45 for 10k with a rocket {star} and 110$ for 30k with a Rocket{moon},if you like,plz pst
+	--WTS X-53 Touring Rocket.( the only 2 seat flying mount you can aslo get a free month game time) .. pst
+	--WTS [X-53 Touring Rocket], the only 2seats flying mount, PST
+	"wts.*touringrocket.*mount", --!!!!!! WTS*X-53 TOURING ROCKET Mount(2seats)for 10000G (RAF things), you also can get a free month game time,PST me !!!
+	"^wts.*x53touringrocket", --WTS[Celestial Steed],[X-53 Touring Rocket],Race,Xfer 15K,TimeCard 6K,[Cenarion Hatchling]*Rag*KT*XT*Moonk*Panda 5K
+	"wts.*g[o0][1l]d.*tcgmounts.*tabard", --WTS gO1d and TCG mounts and Tabard of the Lightbringer and maig rooster egg^^/w me:)
+	"sell.*rocket.*pet.*gametimecard", --sell  [X-53 Touring Rocket] &2mounts,6pets,gametimecard,CATA/WLK CD-key
+	--WTS[Bladeshatter Treads][Splinterfoot Sandals][Rooftop Griptoes]&all 397 epic boot on <g2500 dot com>.
+	"wts.*%[.*%].*g2500.*com", --WTS[Foundations of Courage][Leggings of Nature's Champion]Search for more wow items on <g2500 dot com>. With discount code G2500OKYO5097 to order now.
+	"wts.*%[.*%].*good4game", --WTS[Blazing Hippogryph][Amani Dragonhawk][Big Battle Bear]buy TCG Mounts on good4game.c{circle}m
+	"wts.*%[.*%].*%[.*%].*wealso.*cheapestg", --WTS [Reins of the Crimson Deathcharger] [Mechano-Hog] [Big Battle Bear]and we also have the cheapest G
+	"wts.*%[.*%].*%d+usd.*%d+k", --WTS [Reins of the Crimson Deathcharger] [Vial of the Sands] [Reins of Poseidus],170usd=100k+a rocket for free
+	"boe.*sale.*upitems", --wts [Krol Decapitator] we have all the Boe items,mats and 378 items for sale .<www.upitems.com>!!
+	"wts.*%[.*%].*$%d+.*%[.*%].*$%d+", --wts[Blauvelt's Family Crest]$34.00[Gilnean Ring of Ruination]$34.99[Signet of High Arcanist Savor]$34.90pst
+	"pet.*panda.*gametimecard", --Vends 6PETS [Bébé hippogriffe cénarien],Mini'Rag,XT,KT,Sélénien,Panda 12K each;payé d'avance gametimecard 15K;Bâtis volants[Gardien ailé],[Palefroi célest
+	"wts.*deliver.*cheap.*price", --WTS [Reins of Poseidus],deliver fast,cheaper price ,pst,plz
+	"wts.*%[.*%].*%[.*%].*cheap.*stock", --wts [Reins of the Swift Spectral Tiger] [Reins of the Spectral Tiger] [Vial of the Sands],cheapst ,in stock ,pst
+	"wts.*%[.*%].*%[.*%].*cheap.*safe", --WTS [Reins of the Swift Spectral Tiger] [Tabard of the Lightbringer] [Magic Rooster Egg]Cheapest & Safest Online Trad
+	"^wts.*spectraltiger.*alsootheritems$", --WTS [Magic Rooster Egg] [Reins of the Spectral Tiger] [Reins of the Swift Spectral Tiger] Also other items
+	--WTS [Magic Rooster Egg] [Reins of the Spectral Tiger]  [Reins of the Swift Spectral Tiger]cheap mount and gold
+	"^wts.*%[.*%].*%[.*%].*cheapmounta?n?d?gold", --WTS [Magic Rooster Egg] [Reins of the Spectral Tiger]  [Reins of the Swift Spectral Tiger]cheap mount&gold
+	--WTS Blizzard Store Mounts (25k) and Blizzard Store Pets (10k)
+	"wts.*mount.*pet.*%d+k", --WTS {star}flying mounts:[Celestial Steed] and [Winged Guardian]30k each {star}PETS:Lil'Ragnaros/Lil'XT/Lil'K.T./Moonkin/Pandaren/Cenarion Hatchling 12k each,{star}prepaid timecards 15k each.{star}
+	"wts.*%[.*%].*powerle?ve?l.*chea", --wts [Reins of the Swift Spectral Tiger] [Reins of the Spectral Tiger] [Wooly White Rhino],and g ,powerlvling ,chea
+	"selling%d+.*prepaidtimecard", --selling 60 day prepaid time card /w me for the price
+	"need.*gametime.*rocket.*info", --Does someone need WoW Gametime & X53 Rocket's Mount  /w me for more info
+	"^wts%d+days?gamecard", --wts 60 days game card /w me
+	"wts.*steed.*prepaidgame", --WTS [Winged Guardian]25K [Heart of the Aspects]25K [Celestial Steed]20K prepaid game
+	"gamecard.*gold.*money.*info", -- I am offer Game Card for gold or money, for more info /w me
+	"^wtsgametimesubsc", --WTS Gametime-Subscribtion /w me
+	--WTB Game Time CODE Buy gold
+	--WTS Game time/Diablo and Unmarged accounts for gold!
+	"wt[bs].*gametime.*gold", --WTB 1 Month Game Time CODE Buy gold
+	"^wt[bs]gametime.*/w", --WTS G A M E T I M E /W
+	"steed.*gc%d+day.*sale", --WTS [Winged Guardian] [Heart of the Aspects] [Celestial Steed]Each 15k gc90days=25KPet sales
+	"wts.*mount.*gametimecard", --WTS Mounts[Heart of the Aspects] and Pets/ GameTimecard
+	"raiditems.*buy.*email.*price.*wowpve%.c", --{rt1}{rt1}T{rt1}{rt1}S raid items ，397/410/416 token ，achive dragon (ICC,ULD,CATA,FL),416 weapons and so on.If u want to buy,our team will carry u to the instance to get it. U can email me anytime,I will give u a price. [wowpve.com]
 
 	--[[  Russian  ]]--
 	--[skull]Ovoschevik.rf[skull] continues to harm the enemy, to please you with fresh [circle]vegetables! BC 450. Operators of girls waiting for you!
-	"oвoщeвик%.рф.*cвeжими", --[skull]Овощевик.рф[skull] продолжает, на зло врагaм, радовaть вас свежими [circle]oвoщaми! Бл 450. oператoры девyшки ждyт вaс!
+	"oвoщeвик%.рф.*cвeжиmи", --[skull]Овощевик.рф[skull] продолжает, на зло врагaм, радовaть вас свежими [circle]oвoщaми! Бл 450. oператoры девyшки ждyт вaс!
 	-- [[MMOSHOP.RU]] [circle] ot23r] real price [WM BL:270] [ICQ:192625006 Skype:MMOSHOP.RU, chat on the site] [Webmoney,Yandex,other]
 	"mmoshop%.ru.*цeнa.*skype", -- [ [MMOSHOP.RU]] [circle] от23р] реальная цена [WM BL:270] [ICQ:192625006 Skype:MMOSHOP.RU, Чат на сайте] [Вебмани,Яндекс,другие]
 	--[square] [RPGdealer.ru] [square] gives you quick access to wealth. Always on top!
@@ -228,11 +395,11 @@ local instantReportList = {
 	--Buy MERRY COINS on the funny-money.rf Funny price:)
 	--Купи ВЕСЕЛЫЕ МОНЕТКИ на фани-мани.рф Смешные цены:)
 	--Buy GOLD at [circle]funny-money.rf[circle] Price Calculator on the site.
-	"купи.*фaни-мaни%.рф", --Купи ЗОЛОТО на [circle]фани-мани.рф[circle] Калькулятор цен на сайте.
+	"купи.*фaни-maни%.рф", --Купи ЗОЛОТО на [circle]фани-мани.рф[circle] Калькулятор цен на сайте.
 	--[COINS] of 23 per 1OOO | website | INGMONEY. RU | | SALE + Super Award - Spectral Tiger! ICQ 77-21-87 | | Skype INGMONEY. RU
 	"ingmoney%.ru.*skype", --[МОНЕТЫ]  от 23 за 1OOO | сайт | INGMONEY. RU ||АКЦИЯ + Супер Приз - Спектральный Тигр! ICQ 77-21-87 || Skype INGMONEY. RU
 	--Sell 55kg of potatoes at a low price quickly! Skype v_techno_delo [circle] 8 = 1kg
-	"прoдaм.*кaртoшки.*cрoчнo.*cкaйп", --Продам 55кг картошки по дешевке  срочно! скайп v_techno_delo  [circle] 8 = 1кг
+	"прoдam.*кaртoшки.*cрoчнo.*cкaйп", --Продам 55кг картошки по дешевке  срочно! скайп v_techno_delo  [circle] 8 = 1кг
 	--Gold Exchange Invitation to participate suppliers and shops. With our more than 800 suppliers and 100 stores. GexDex.ru
 	"з[o0]л[o0]т[ao0].*gexdex%.ru", --[skull][skull][skull] Биржа золота приглaшaет к учaстию постaвщиков и магазины. С нами болee 800 постaвщиков и 100 магaзинов. GеxDеx.ru
 	--Cheapest price only here! Price 1000 gold-20R, from 40k-18r on, from-60k to 17p! Website [playwowtime.vipshop.ru]! ICQ 196-353-353, skype nickname playwowtime2011!
@@ -255,6 +422,8 @@ local instantReportList = {
 	"wts.*%[.*%].*gear.*%d+k.*gift", --WTS大卖 [Dragonbelly Bracers] [Boots of Fungoid Growth] lvl384 or 397 pattern gear Gem 150$=100k+a free gift,17$=10k, pst withi more offer
 	"wts.*%[.*%].*cheap.*囤货甩卖", --WTS [Savage Raptor] [Blazing Hippogryph] [X-51 Nether-Rocket X-TREME] cheap pst,囤货甩卖，需要的
 	"wts.*%[.*%].*cheapgold.*%d+k", --WTS大卖 [Pattern: Bladeshadow Wristguards] [Pattern: World Mender's Pants] and cheap gold 10k for 15,100k for 140 pst
+	--WOW龙魂8H效率团低价出售橙匕+WOW各版本橙武。 397/403/410/416装备。带刷成就龙(ICC,ULD,CATA,FL)。帅气坐骑.死翼坐骑/火鹰/等。带刷RBG荣誉.1-85手工代练美金消费欢迎咨询QQ: 1416781477
+	"出售.*成就.*欢迎.*qq", --WOW龙魂8H美金消费团出售橙匕+WOW各版本橙武。 397/403/410/416装备。带刷成就龙(ICC,ULD,CATA,FL)。低价出售帅气坐骑.死翼坐骑/火鹰/等。带刷RBG荣誉.1-85手工代练欢迎咨询QQ: 1416781477
 
 	--[[  Advanced URL's/Misc  ]]--
 	"%d+eu.*deliver.*credible.*kcq[%.,]", --12.66EUR/10000G 10 minutes delivery.absolutely credible. K C Q .< 0 M
@@ -263,13 +432,6 @@ local instantReportList = {
 	"service.*pst.*info.*%d+k.*usd", --24 hrs on line servicer PST for more infor. Thanks ^_^  10k =32 u s d  -happy friday :)
 	"okgolds.*only.*%d+.*euro", --WWW.okgolds.COM,10000G+2000G.only.15.99EURO}/2
 	"mmo4store.*%d+[kg].*good.*choice", --{square}MMO4STORE.C0M{square}14/10000G{square}Good Choice{square}
-	--40$ for 10k gold or 45$ for  10k gold + 1 rocket  + one month  time card  .   25$ for  a  rocket .  we have  all boe items and 264 gears selled . if u r interested in .  plz whsiper me . :) ty
-	--$45=10k + one X-53 Touring Rocket, $107=30K + X-53 Touring Rocket, the promotion will be done in 10 minutes, if you like it, plz whisper me :) ty
-	"%$.*rocket.*%$.*rocket.*ple?a?[sz]", --$45 for 10k with a rocket {star} and 110$ for 30k with a Rocket{moon},if you like,plz pst
-	--WTS X-53 Touring Rocket.( the only 2 seat flying mount you can aslo get a free month game time) .. pst
-	--WTS [X-53 Touring Rocket], the only 2seats flying mount, PST
-	"wts.*touringrocket.*mount.*pst", --!!!!!! WTS*X-53 TOURING ROCKET Mount(2seats)for 10000G (RAF things), you also can get a free month game time,PST me !!!
-	"wts.*touringrocket.*%d+k", --WTS[Celestial Steed],[X-53 Touring Rocket],Race,Xfer 15K,TimeCard 6K,[Cenarion Hatchling]*Rag*KT*XT*Moonk*Panda 5K
 	"promotion.*serve.*%d+k", --Special promotion in this serve now, 21$ for 10k
 	"pkpkg.*gear.*pet", --WWW.PkPkg.C{circle}M more gears,mount,pet and items on
 	"euro.*gold.*safer.*trade", --Only 1.66 Euros per 1000 gold, More safer trade model.
@@ -280,84 +442,72 @@ local instantReportList = {
 	"skillcopper.*wow.*mount.*gold", --skillcopper.eu Oldalunk ujabb termekekel bovult WoWTCG Loot Card-okal pl.:(Mount: Spectral Tiger, pet: Tuskarr Kite, Spectral Kitten Fun cuccok: Papa Hummel es meg sok mas) Gold, GC, CD kulcsok Akcio! Latogass el oldalunkra skillcopper.eu
 	"meingd[%.,]de.*eur.*gold", --[MeinGD.de] - 0,7 Euro - 1000 Gold - [MeinGD.de]
 	"%$.*boe.*deliver.*interest", --{rt3}{rt1} WTS WOW G for $$. 10k for 20$, 52k for 100$. 105k for 199$. all item level 359 BOE gear. instant delivery! PST if ya have insterest in it. ^_^
-	--WTS [Theresa's Booklight] [Vial of the Sands] [Heaving Plates of Protection]and others pls go <buyboe dot com> 
-	--WTS [Heaving Plates of Protection] [Vial of the Sands] [Theresa's Booklight], best service on<buyboe dot com> 
-	--WTS[Krol Decapitator][Vitreous Beak of Julak-Doom][Pauldrons of Edward the Odd]cheapest on <buyboe dot com>
-	--WTS[Gloves of Unforgiving Flame]order multiple lv378 epics to get a pet or 365 epic free on<buyboe dot com>. 
-	--Free[Parrot Cage (Hyacinth Macaw)][Disgusting Oozeling][Masterwork Elementium Deathblade]on<buyboe dot com>. 
-	--VK[Vial of the Sands]kauf mehr als 50k bekommt 20%-30% extra gold on <buyboe dot de>.
-	--VK [Phiole der Sande][Theresas Leselampe][Maldos Shwertstock],25 Minuten Lieferung auf <buyboe(dot)de>
-	"%[.*%].*buyboe.*dot.*[fcd][ro0e]", --WTS [Theresa's Booklight] [Vial of the Sands] [Heaving Plates of Protection] 15mins delivery on<buyboe dot com>
-	"code.*hatchling.*card.*%d%d+[kg]", --WTS Codes redeem:6PETS [Cenarion Hatchling],Lil Rag,KT,XT,Moonkin,Pandaren 5k each;Prepaid gametimecard 6K;Flying mount[Celestial Steed] 15K.PST
-	"%d+k.*card.*rocket.*deliver", --{rt6}{rt1} 19=10k,90=51K+gamecard+rocket? deliver10mins
-	"%d%d+[kg].*g4pgold@com.*discount", --Speedy!10=5000G,g4pgold@com,discount code:Manager
-	"%[.*%].*%[.*%].*facebook.com/buyboe", --Win Free[Volcano][Spire of Scarlet Pain][Obsidium Cleaver]from a simple contest, go www.facebook.com/buyboe now!
-	"wts.*pets.*card.*mount", --WTS 6PETS [Cenarion Hatchling],Lil'Rag,XT,KT,Moonkin,Panda 8K each;Prepaid gametimecard 10K;Flying Mounts[Winged Guardian],[Celestial Steed]20K each.
-	"wts.*pets.*mount.*card", --wts 6pets .mounts .rocket. gametimecard .Change camp. variable race. turn area. change a name. ^_^!
-	"wts.*gametime.*mount.*pet", --WTS Prepaid gametime code 8k per month. the mount [Winged Guardian]'[Celestial Steed] 15K each and the pets 6k each, if u are interested,PST
-	"wts.*monthgametime.*%d+k", --WTS 1 Month Gametime 10k. 3 Month Gameitme 25k. 6 Month Gametime 40k
-	--WTS Blizzard Store Mounts (25k) and Blizzard Store Pets (10k)
-	"wts.*mount.*pet.*%d+k", --WTS {star}flying mounts:[Celestial Steed] and [Winged Guardian]30k each {star}PETS:Lil'Ragnaros/Lil'XT/Lil'K.T./Moonkin/Pandaren/Cenarion Hatchling 12k each,{star}prepaid timecards 15k each.{star}
-	"wowhelp%.1%-click%.hu", --{square}Have a nice day, enjoy the game!{square} - {star} [http://wowhelp.1-click.hu/] - One click for all WoW help! {star}
-	"g4p.*gold.*discount", --Saray Daily Greetings ? thanks for your previous support on G4P,here I am reminding you of our info, you may need it again :web:G4Pgold,Discount code:saray,introducer ID:saray 
-	"wts.*rocket.*gametime", --WTS{rt3}"[X-53 Touring Rocket]&[Winged Guardian]&Celestial Steed&xt,kt,mo nk,cen.rag.moonkin and game time"{rt3}pst for more info.
+	"^wtscheapergold/whisper$", --{square} WTS CHeaper gold /whisper {square}
+	"wowhelp%.1click%.hu", --{square}Have a nice day, enjoy the game!{square} - {star} [http://wowhelp.1-click.hu/] - One click for all WoW help! {star}
+	"g4p.*gold.*discount", --Saray Daily Greetings ? thanks for your previous support on G4P,here I am reminding you of our info, you may need it again :web:G4Pgold,Discount code:saray,introducer ID:saray
 	"%d+k.*deliver.*item", --$20=10K, $100=57k,$200=115k with instant delivery,all lvl378 items,pst
 	"money.*gold.*gold2sell", --Ingame gold for real money! Real gold for Ingame gold! Ingame gold for a account key! If you're intrested, then check out: "gold2sell.org" now!
-	"pet.*rag.*panda.*gametimecard", --Vends 6PETS [Bébé hippogriffe cénarien],Mini'Rag,XT,KT,Sélénien,Panda 12K each;payé d'avance gametimecard 15K;Bâtis volants[Gardien ailé],[Palefroi célest 
-	"wts.*deliver.*cheap.*price", --WTS [Reins of Poseidus],deliver fast,cheaper price ,pst,plz 
+	"%d+=%d+k.*cheap.*fast.*boe", --WTS RBG 2400 Rating,3.88=10k, cheap and fast. Also kinds of BOE in store. Pst me for detail
+	"wtsgold.*mount.*tar?bard.*acc", --WTS gold and some TCG mounts and Tarbard of the lightbringer and 80lvl acc
 	"%d+[/\\=]%d+.*gold4power", --?90=5oK Google:Gold4Power, Introducer ID:saray
-	"wts.*mount.*rocket.*gift", --WTS 2 seat flying mount the X-53 Touring rocket , you can also get a gift--one month game , PST 
 	"k%.?4g[o0]ldcom.*code", --{star}.W{star}.W{star}W {square} k{triangle}.4{triangle}g{triangle}o{triangle}l{triangle}d {square} c{star}o{star}m -------{square}- c{star}o{star}d{star}e : CF \ CO \ CK
 	"kb8g[o0]ld.*%d+.*st[o0]ck", --KB8GOLD com 8.5EUR = 10000,269K IN STOCK NOW!
-	"reins.*vial.*%d+.*rocket", --WTS [Reins of the Crimson Deathcharger] [Vial of the Sands] [Reins of Poseidus],170usd=100k+a rocket for free
-	"boe.*sale.*upitems", --wts [Krol Decapitator] we have all the Boe items,mats and 378 items for sale .<www.upitems.com>!!
-	"wts.*rocket.*deliver", --WTSx-53 touring rocketinstant delivery,pst！！！！！
-	"wts.*%[.*%].*$%d+.*%[.*%].*$%d+", --wts[Blauvelt's Family Crest]$34.00[Gilnean Ring of Ruination]$34.99[Signet of High Arcanist Savor]$34.90pst
-	--@@@@@@ only 10K=5.99EURO 100K+10K=55.99EURO @@@@@@www luckygolds c@m @@@@@@
-	"%d+k.*luckygolds", --@@@@@@@@@ www  luckygolds  c@m   only 10K=6.99EURO 100K+10K=65.99EUROwww  luckygolds  c@m @@@@@@@@@
-	--@@@@@__www luckyg@lds c@m @nly_1oK=5.99EURO 1ooK+1oK=55.99EUR (@=o) 
-	--vv vv vv  luckyg@lds  c@m  only l0K=5.99 � 1OO K+1O K=55.99 � (@=O)
-	--vv vv vv  lùckygólds cóm  ónly  1O K=4.99 éùr    1OO K+1O K=45.99 éùr   10 mìn délìvéry (ó=O)(ù=U)
-	--{Diamond}vv~vv~vv lùckygòlds còm ònly lò K=3.49èù?> lòò K+lò K=34.99èù? 1ò mìn délìvéry (ò=O=0){Diamond} 
-	"luckyg[o@]lds.*[%do]k", --@@@@@@@ www luckygolds c@m only 10K=5.99EURO 100K+10K=55.99EURO @@@@@@@ 
 	--www K4power c@m.Lowest Price + 10% Free G.{Code:4Power}--
-	"k4p[o0]wer.*%d+", --WWW K4POWER C0M {Code:Xmas}->>Xmas Promotions{18th Dec-26th Dec}->35% Free,0rder 50k More->X-53 Rocket Mount For Free!
-	"sell.*rocket.*pet.*gametimecard", --sell  [X-53 Touring Rocket] &2mounts,6pets,gametimecard,CATA/WLK CD-key
-	--WTS[Bladeshatter Treads][Splinterfoot Sandals][Rooftop Griptoes]&all 397 epic boot on <g2500 dot com>. 
-	"wts.*%[.*%].*g2500.*com", --WTS[Foundations of Courage][Leggings of Nature's Champion]Search for more wow items on <g2500 dot com>. With discount code G2500OKYO5097 to order now.
-	"wts.*%[.*%].*good4game", --WTS[Blazing Hippogryph][Amani Dragonhawk][Big Battle Bear]buy TCG Mounts on good4game.c{circle}m
-	"wts.*%[.*%].*%[.*%].*wealso.*cheapestg", --WTS [Reins of the Crimson Deathcharger] [Mechano-Hog] [Big Battle Bear]and we also have the cheapest G
-	--@@@@@@@@@www.happygôlds.c@m.côm@@@@www.happygôlds.c@m.côm@<o=ô>@@@@10000G.ônly6.99EURô@@@@@@Lvl 397 items are on sale
-	"happygolds.*%d+[gk]", --@@@@@@@@@ www happygolds c@m @@@@@@@@@ www happygolds c@m @@@@@@@@@ 10000G.only 7.99 EUR @@@@@@@@@
-	--vv~vv~vv wòw4wòw còm ónly 1O K=4.99èùr 1OO K=45.99èùr 1O min dèlivèry(ò=O)
-	--................w.o.w4.w.o.w. c.o.m 3.99 E.u.r.o=1O K 1O m.i.n D.e.l.i.v.e
-	"w%.?o%.?w%.?4%.?w%.?o%.?w.*d%.?e%.?[l1]%.?i%.?v%.?e", --@@@@@@vvvvvv wow4wow c@m only 1OK=4.99EUR 1OOK=45.99EUR 10 min delivery
+	--~~K.4.p.0.W.e.r,C,o,m~~ 4.€.~1O0O0
+	"k[%.,]*4[%.,]*p[%.,]*[o0][%.,]*w[%.,]*e[%.,]*r.*%d[%do]+", --WWW K4POWER C0M {Code:Xmas}->>Xmas Promotions{18th Dec-26th Dec}->35% Free,0rder 50k More->X-53 Rocket Mount For Free!
+	"%d[%do]+.*k[%.,]*4[%.,]*p[%.,]*[o0][%.,]*w[%.,]*e[%.,]*r", --4e<> 10O0O @ k4põwér C'Q'M @
 	"deliver.*g[@o]ldw[@o]w2012", --$$ Lv 1-85=127EUR+7days $$ 397-410 professional equipment,TCG Loot card,rare mount $$ fast delivery within 24 horus $$ g@ldW@W2012 C@M $$
 	"wts.*%[.*%].*cheap.*gold.*%d+%$", --WTS [Reins of the Swift Spectral Tiger] [Tabard of the Lightbringer]{rt3}{rt3}cheapest gold,110$=100k,pst with more offer,plz!!!!
 	"wts.*euro.*boe.*deliver", --WTS RBG 2400 RATING, 3.88 "euro"=10 K,Also kinds of BOE 11in store.fast delivery,Pst me for detail
-	--{Diamond}................l.u.c.k.y.g.o.l.d.s. c.o.m 3.99 E.u.r.o=1O K 1O m.i.n D.e.l.i.v.e.r.y
-	"[hl]%.?[au]%.?[pc]%.?[pk]%.?y%.?g%.?o%.?l%.?d%.?s.*d%.?e%.?[l1]%.?i%.?v%.?e", --.....H.a.p.p.y.g.o.l.d.s...C.ô.M..........4.99.E. U.R.O.=10.K 10.M.i.n.De.l.i.v.e.r.y..2172
-	"k%.?4%.?g%.?u%.?i%.?l%.?d.*d%.?e%.?[l1]%.?i%.?v%.?e", ----3.W,K.4.G.U.I.L.D,C.@.m 4.5 Êürõ--10k+1O%Disçòünt, Délìvèry 6 M.i.n.s
-	"g[0o]ld.*deliver.*bonus", --3WG0ldsDepot C0M SAVE UP 40% 15Mins DELIVERY 10000=5.99 NEW MEMEBER CAN GET 10% BONUS,NICE CUST0MER ASSISTANT say “NO” to “ ST0LEN G0LD “!!! 
-	"k%.?4%.?p%.?[o0]%.?w%.?e%.?r.*d%.?e%.?[l1]%.?i%.?v%.?e", --3.w,K.4.P.0.W.E.R,c.@.m 4 èü // 1Ok,Délìvèry 6 M.i.n.s
-	--[Gamepowa.net] 3.49e.u.r=5000p.o, le meilleur prix possible ! Recevez votre commande en 5mins. Nous vendons des po depuis plus de 3 ans, plus de 10000 personnes nous ont déjà fait confiance, merci.
+	"msn.*salliaes7587.*%d[%do]+", --1K 1TL ! MSN Adresi salliaes7587@hotmail.c@m !isteyene referans gosterilir :)MSNden eklemeniz yeterli!1OOk 9O TL :)
+	"gear.*%d+=%d+.*ourgamecenter", --WTS gear & item 410/416, 25m raid team{star}10000=8 ,50000=40{star}wwvv-OurGameCenter-< om{star}waiting for u!!!
+	"like.*facebook.*goldsdepot", --{diamant}anyone who {diamant}LIKE {diamant}our FACEBOOK{dreieck}goldsdepot{dreieck}can get 4000  free G !!!
+	"g[0o]ld.*deliver.*bonus", --3WG0ldsDepot C0M SAVE UP 40% 15Mins DELIVERY 10000=5.99 NEW MEMEBER CAN GET 10% BONUS,NICE CUST0MER ASSISTANT say “NO” to “ ST0LEN G0LD “!!!
+	--{square}G0lDSDEP0T C..0..M {square}{star}10mns.. {star}{diamond} 10k=5.99 {diamond}
+	"g[%.,]*[0o][%.,]*[l1][%.,]*d[%.,]*s[%.,]*d[%.,]*e[%.,]*p[%.,]*[o0][%.,]*t.*%d[%do]+[%.,]*[kg]", --{square}G01dsDepot{square}c..0..m {square}10k=5.99{square}Refuse St01en G01d{square}
+	"g[%.,]*[0o][%.,]*[l1][%.,]*d[%.,]*s[%.,]*d[%.,]*e[%.,]*p[%.,]*[o0][%.,]*t.*d[%.,]*e?[%.,]*[l1][%.,]*i[%.,]*v[%.,]*e?[%.,]*r", --{diamond} G.0.l.d.s.d.e.p.o.t,C,o,m {diamond}10m,in Dlivry,10000=5.99, 10% Extra G for Easter
+	"k[%.,]*4[%.,]*g[%.,]*u[%.,]*i[%.,]*l[%.,]*d.*d[%.,]*e[%.,]*[l1][%.,]*i[%.,]*v[%.,]*e", --3.W,K.4.G.U.I.L.D,C.@.m 4.5 Êürõ--10k+1O%Disçòünt, Délìvèry 6 M.i.n.s
+	"k[%.,]*4[%.,]*p[%.,]*[o0][%.,]*w[%.,]*e[%.,]*r.*d[%.,]*e[%.,]*[l1][%.,]*i[%.,]*v[%.,]*e", --3.w,K.4.P.0.W.E.R,c.@.m 4 èü // 1Ok,Délìvèry 6 M.i.n.s
+	--"w[%.,]*o[%.,]*w[%.,]*4[%.,]*w[%.,]*o[%.,]*w.*d[%.,]*e[%.,]*[l1][%.,]*i[%.,]*v[%.,]*e",
+	--"[hl][%.,]*[au][%.,]*[pc][%.,]*[pk][%.,]*y[%.,]*g[%.,]*o[%.,]*l[%.,]*d[%.,]*s.*d[%.,]*e[%.,]*[l1][%.,]*i[%.,]*v[%.,]*e",
+	--"[hl!|][%.,]*[au][%.,]*[pc][%.,]*[pk][%.,]*y[%.,]*g[%.,]*[o0q][%.,]*[l!|][%.,]*d[%.,]*s.*%d[%do]+",
+	--"%d[%do]+.*[hl!|][%.,]*[au][%.,]*[pc][%.,]*[pk][%.,]*y[%.,]*g[%.,]*[o0q][%.,]*[l!|][%.,]*d[%.,]*s",
+	--"[wv][%.,]*[o0q][%.,]*[wv]v?[%.,]*4[%.,]*[wv]v?[%.,]*[o0q][%.,]*[wv]v?.*%d[%do]+",
+	--"%d[%do]+.*[wv][%.,]*[o0q][%.,]*[wv]v?[%.,]*4[%.,]*[wv]v?[%.,]*[o0q][%.,]*[wv]v?",
+	--"^[wv][%.,]*[o0][%.,]*[wv]v?[%.,]*4[%.,]*[wv]v?[%.,]*[o0][%.,]*[wv]v?[%.,]*c[%.,]*[o0][%.,]*m$",
+	--"^[hl][%.,]*[au][%.,]*[pc][%.,]*[pk][%.,]*y[%.,]*g[%.,]*[o0][%.,]*l[%.,]*d[%.,]*s[%.,]*c[%.,]*[o0][%.,]*m$",
+	--"[hl!|][%.,]*[au][%.,]*[pc][%.,]*[pk][%.,]*y[%.,]*g[%.,]*[o0q][%.,]*[l!|][%.,]*d[%.,]*s.*s[%.,]*[ae][%.,]*[l!|][%.,]*[l!|e]",
+	--"[wv][%.,]*[o0q][%.,]*[wv]v?[%.,]*4[%.,]*[wv]v?[%.,]*[o0q][%.,]*[wv]v?.*s[%.,]*[ae][%.,]*[l!|][%.,]*[l!|e]",
+	--"s[%.,]*[ae][%.,]*[l!|][%.,]*[l!|e].*[hl!|][%.,]*[au][%.,]*[pc][%.,]*[pk][%.,]*y[%.,]*g[%.,]*[o0q][%.,]*[l!|][%.,]*d[%.,]*s",
+	--"s[%.,]*[ae][%.,]*[l!|][%.,]*[l!|e].*[wv][%.,]*[o0q][%.,]*[wv]v?[%.,]*4[%.,]*[wv]v?[%.,]*[o0q][%.,]*[wv]v?",
+	--"\\/\\/[o0]\\/\\/4\\/\\/[o0]\\/\\/.*%d[%dqo]+",
+	--"%d[%dqo]+.*\\/\\/[o0]\\/\\/4\\/\\/[o0]\\/\\/",
+	--"\\/\\/[o0]\\/\\/4\\/\\/[o0]\\/\\/.*s[%.,]*[ae][%.,]*[l!|][%.,]*[l!|e]",
+	--"s[%.,]*[ae][%.,]*[l!|][%.,]*[l!|e].*\\/\\/[o0]\\/\\/4\\/\\/[o0]\\/\\/",
+	--Vend RBG 2400{star} 3.88“euro”=10k{moon}rapide et sûre.{star}D'autres types de BOE est également en vente.
+	"vend.*prix.*livraison.*wow%.po", --Vend Po à prix interessant Livraison instantanée. Paiement par SMS/Tel ou Paypal, me contacter Skype: wow.po
+	"verkauf.*hotgolds.*%d+g", --Gréat Vérkauf! .Hôtgôlds.côrn10000G.only.2.éUR.Hôtgôlds.côrnWWWé habén 783k spéichért und k?nnén Sié érhaltén innérhalb von 5-10 Minutén.wénn Sié kaufén ,  4403
+	"%d[%do]+=%d+%.?%d*e.*bonus.*skype", --@1òòòO=5.52ё.5% BòNuS.5-15mins can Gёt./w me for skype@
+	"hotg01ds.*%d[%do]+k", --Hôtg01ds. côrn 1Ok=2.99 8081
+	--{star}www.OurGameCenter.com{star} 10000=4.69 WTS Smoldering Egg of Millagazor and all 410/416 items droped from DS {star} including achieve,mount,legendary dagger,etc.( 8/8H DS &7/7H FL)
+	"ourgamecenter.*wts.*legendary", --www.OurGameCenter.com10K=4.69 we have 8/8H DS 25m raid team ,WTS 410/416lvl BOP items,achiev,mount,legendary dagger,etc. {star} Smoldering Egg of Millagazor
 }
 
 --This is the replacement table. It serves to deobfuscate words by replacing letters with their English "equivalents".
 local repTbl = {
 	["а"]="a", ["à"]="a", ["á"]="a", ["ä"]="a", ["â"]="a", ["ã"]="a", ["å"]="a", --First letter is Russian "\208\176". Convert > \97
 	["с"]="c", ["ç"]="c", --First letter is Russian "\209\129". Convert > \99
-	["е"]="e", ["è"]="e", ["é"]="e", ["ë"]="e", ["ê"]="e", --First letter is Russian "\208\181". Convert > \101
+	["е"]="e", ["è"]="e", ["é"]="e", ["ë"]="e", ["ё"]="e",["ê"]="e", --First letter is Russian "\208\181". Convert > \101
 	["ì"]="i", ["í"]="i", ["ï"]="i", ["î"]="i", --Convert > \105
-	["Μ"]="m", --First letter is capital Greek μ "\206\156". Convert > \109
+	["Μ"]="m", ["м"]="m",--First letter is capital Greek μ "\206\156". Convert > \109
 	["о"]="o", ["ò"]="o", ["ó"]="o", ["ö"]="o", ["ō"]="o", ["ô"]="o", ["õ"]="o", --First letter is Russian "\208\190". Convert > \111
 	["ù"]="u", ["ú"]="u", ["ü"]="u", ["û"]="u", --Convert > \117
 }
 
-local fnd = string.find
+local strfind = string.find
 local IsSpam = function(msg, num)
 	for i=1, #instantReportList do
-		if fnd(msg, instantReportList[i]) then
+		if strfind(msg, instantReportList[i]) then
 			if myDebug then print("Instant", instantReportList[i]) end
 			return true
 		end
@@ -365,26 +515,26 @@ local IsSpam = function(msg, num)
 
 	local points, phishPoints = num, num
 	for i=1, #whiteList do
-		if fnd(msg, whiteList[i]) then
+		if strfind(msg, whiteList[i]) then
 			points = points - 2
 			phishPoints = phishPoints - 2 --Remove points for safe words
 			if myDebug then print(whiteList[i], points, phishPoints) end
 		end
 	end
 	for i=1, #commonList do
-		if fnd(msg, commonList[i]) then
+		if strfind(msg, commonList[i]) then
 			points = points + 1
 			if myDebug then print(commonList[i], points, phishPoints) end
 		end
 	end
 	for i=1, #heavyList do
-		if fnd(msg, heavyList[i]) then
+		if strfind(msg, heavyList[i]) then
 			points = points + 2 --Heavy section gets 2 points
 			if myDebug then print(heavyList[i], points, phishPoints) end
 		end
 	end
 	for i=1, #heavyRestrictedList do
-		if fnd(msg, heavyRestrictedList[i]) then
+		if strfind(msg, heavyRestrictedList[i]) then
 			points = points + 2
 			phishPoints = phishPoints + 1
 			if myDebug then print(heavyRestrictedList[i], points, phishPoints) end
@@ -392,7 +542,7 @@ local IsSpam = function(msg, num)
 		end
 	end
 	for i=1, #phishingList do
-		if fnd(msg, phishingList[i]) then
+		if strfind(msg, phishingList[i]) then
 			phishPoints = phishPoints + 1
 			if myDebug then print(phishingList[i], points, phishPoints) end
 		end
@@ -403,24 +553,24 @@ local IsSpam = function(msg, num)
 end
 
 --[[ Chat Scanning ]]--
-local gsub, orig, prevLineId, result, prevMsg, prevPlayer, prevWarn = gsub, COMPLAINT_ADDED, 0, nil, nil, nil, 0
+local gsub, prevLineId, result, chatLines, chatPlayers, prevWarn = gsub, 0, nil, {}, {}, 0
 local filter = function(_, event, msg, player, _, _, _, flag, channelId, _, _, _, lineId)
 	if lineId == prevLineId then
 		return result --Incase a message is sent more than once (registered to more than 1 chatframe)
 	else
 		if not lineId then --Still some addons floating around breaking stuff :-/
 			local t = GetTime()
-			if t-prevWarn > 5 then --Throttle this warning as I imagine it could get quite spammy
+			if t-prevWarn > 30 then --Throttle this warning as I imagine it could get quite spammy
 				prevWarn = t
 				print("|cFF33FF99BadBoy|r: One of your addons is breaking critical chat data I need to work properly :(")
-				return
 			end
+			return
 		end
-		prevLineId = lineId
-		if event == "CHAT_MSG_CHANNEL" and channelId == 0 then result = nil return end --Only scan official custom channels (gen/trade)
-		if not CanComplainChat(lineId) or UnitIsInMyGuild(player) or UnitInRaid(player) or UnitInParty(player) then result = nil return end --Don't scan ourself/friends/GMs/guildies or raid/party members
+		prevLineId, result = lineId, nil
+		if event == "CHAT_MSG_CHANNEL" and channelId == 0 then return end --Only scan official custom channels (gen/trade)
+		if not CanComplainChat(lineId) or UnitIsInMyGuild(player) or UnitInRaid(player) or UnitInParty(player) then return end --Don't scan ourself/friends/GMs/guildies or raid/party members
 		if event == "CHAT_MSG_WHISPER" then --These scan prevention checks only apply to whispers, it would be too heavy to apply to all chat
-			if flag == "GM" then result = nil return end --GM's can't get past the CanComplainChat call but "apparently" someone had a GM reported by the phishing filter which I don't believe, no harm in having this check I guess
+			if flag == "GM" or flag == "DEV" then return end --GM's can't get past the CanComplainChat call but "apparently" someone had a GM reported by the phishing filter which I don't believe, no harm in having this check I guess
 			--RealID support, don't scan people that whisper us via their character instead of RealID
 			--that aren't on our friends list, but are on our RealID list. CanComplainChat should really support this...
 			for i=1, select(2, BNGetNumFriends()) do
@@ -430,29 +580,18 @@ local filter = function(_, event, msg, player, _, _, _, flag, channelId, _, _, _
 					--don't bother checking server anymore as bnet has been bugging up a lot lately
 					--returning "" as server/location (probably other things too) making the check useless
 					if rName == player and rGame == "WoW" then
-						result = nil return
+						return
 					end
 				end
 			end
 		end
 	end
 	local debug = msg --Save original message format
-	msg = (msg):lower() --Lower all text, remove capitals
-	msg = gsub(msg, "[%)\"`' ]", "") --Remove spaces, etc
-
-	--They like to replace English letters with UTF-8 "equivalents" to avoid detection
-	if fnd(msg, "[аàáäâãåсçеèéëêìíïîΜоòóöōôõùúüû]+") then --Only run the string replacement if the chat line has letters that need replaced
-		--This is no where near as resource intensive as I originally thought, it barely uses any CPU
-		for k,v in pairs(repTbl) do --Parse over the 'repTbl' table and replace strings
-			msg = gsub(msg, k, v)
-		end
-		if myDebug then print("Running replacements") end
-	end
-	--End string replacements
+	msg = msg:lower() --Lower all text, remove capitals
 
 	--They like to use raid icons to avoid detection
 	local icon = 0
-	if fnd(msg, "{") then --Only run the icon removal code if the chat line has raid icons that need removed
+	if strfind(msg, "{", nil, true) then --Only run the icon removal code if the chat line has raid icons that need removed
 		local found = 0
 		for i=1, #restrictedIcons do
 			msg, found = gsub(msg, restrictedIcons[i], "")
@@ -463,38 +602,105 @@ local filter = function(_, event, msg, player, _, _, _, flag, channelId, _, _, _
 		if myDebug and icon == 1 then print("Removing icons, adding 1 point.") end
 	end
 	--End icon removal
+	msg = gsub(msg, "[“”%*%-%(%)\"`'_%+#%%%^&;:~{} ]+", "") --Remove spaces, symbols, etc
 
-	--Simple 'previous-line' anti-spam, check the previous line, filter if duplicate
-	if msg == prevMsg and player == prevPlayer then result = true return true end
-	prevMsg = msg prevPlayer = player
-	--end check
+	--They like to replace English letters with UTF-8 "equivalents" to avoid detection
+	if strfind(msg, "[аàáäâãåсçеèéëёêìíïîΜмоòóöōôõùúüû]+") then --Only run the string replacement if the chat line has letters that need replaced
+		--This is no where near as resource intensive as I originally thought, it barely uses any CPU
+		for k,v in pairs(repTbl) do --Parse over the 'repTbl' table and replace strings
+			msg = gsub(msg, k, v)
+		end
+		if myDebug then print("Running replacements") end
+	end
+	--End string replacements
+
+	--20 line text buffer, this checks the current line, and blocks it if it's the same as one of the previous 20
+	for i=1, #chatLines do
+		if chatLines[i] == msg and chatPlayers[i] == player then --If message same as one in previous 20 and from the same person...
+			result = true return true --...filter!
+		end
+		if i == 20 then tremove(chatLines, 1) tremove(chatPlayers, 1) end --Don't let the DB grow larger than 20
+	end
+	tinsert(chatLines, msg) tinsert(chatPlayers, player)
+	--End text buffer
 
 	if IsSpam(msg, icon) then
-		if BadBoyLogger and not myDebug then
-			BadBoyLogger("BadBoy", event, player, debug)
+		if BadBoyLog and not myDebug then
+			BadBoyLog("BadBoy", event, player, debug)
 		end
 		if myDebug then
 			print("|cFF33FF99BadBoy_REPORT|r: ", debug, "-", event, "-", player)
 		else
-			COMPLAINT_ADDED = "|cFF33FF99BadBoy|r: "..orig.." |Hplayer:"..player.."|h["..player.."]|h" --Add name to reported message
 			if BADBOY_POPUP then --Manual reporting via popup
 				--Add original spam line to Blizzard popup message
 				StaticPopupDialogs["CONFIRM_REPORT_SPAM_CHAT"].text = "BadBoy: ".. REPORT_SPAM_CONFIRMATION .."\n\n".. gsub(debug, "%%", "%%%%")
 				local dialog = StaticPopup_Show("CONFIRM_REPORT_SPAM_CHAT", player)
 				dialog.data = lineId
 			else
-				ComplainChat(lineId) --Automatically report
+				--Show block message
+				if not BADBOY_NOREPORT then
+					ChatFrame1:AddMessage(reportMsg:format(player, lineId), 0.2, 1, 0.6)
+				end
 			end
 		end
 		result = true
 		return true
 	end
-	result = nil
 end
 
---[[ Configure manual reporting ]]--
-StaticPopupDialogs["CONFIRM_REPORT_SPAM_CHAT"].OnHide = function(self)
-	self.text:SetText(REPORT_SPAM_CONFIRMATION) --Reset popup message to default for manual reporting
+--[[ Configure report links ]]--
+do
+	local oldShow, addMsg, prevReport = ChatFrame_OnHyperlinkShow, ChatFrame1.AddMessage, 0
+	ChatFrame_OnHyperlinkShow = function(self, data, ...)
+		local badboy, player, lineId = strsplit(":", data)
+		if badboy and badboy == "badboy" then
+			lineId = tonumber(lineId)
+			if CanComplainChat(lineId) then
+				local t = GetTime()
+				if (t-prevReport) > 4 then --Throttle reports to try and prevent disconnects, please fix it Blizz.
+					prevReport = t
+					ReportPlayer("spam", lineId)
+
+					--Let's remove the chat line(s) asking to report that player
+					local f, tbl, msg = ChatFrame1, {}, COMPLAINT_ADDED
+					--Save all chat
+					local _, size = f:GetFont()
+					FCF_SetChatWindowFontSize(f, f, 0.01)
+					for i = select("#", f:GetRegions()), 1, -1 do
+						local region = select(i, f:GetRegions())
+						if region:GetObjectType() == "FontString" then
+							local text = region:GetText()
+							--Skip the complaint registered message and the BadBoy report player message
+							if text ~= msg and not strfind(text, msg, nil, true) and not strfind(text, "badboy:"..player..":", nil, true) and not strfind(text, "BadBoy|", nil, true) then
+								tinsert(tbl, {text, region:GetTextColor()})
+							end
+						end
+					end
+					FCF_SetChatWindowFontSize(f, f, size)
+
+					--Clear the chat window of all text
+					f:Clear()
+
+					--Restore all chat
+					for _,w in pairs(tbl) do
+						addMsg(f, unpack(w))
+						wipe(w)
+					end
+					wipe(tbl)
+					tbl=nil
+				else
+					print(throttleMsg)
+				end
+			end
+			return
+		end
+		oldShow(self, data, ...)
+	end
+end
+
+--[[ Configure popup reporting ]]--
+StaticPopupDialogs["CONFIRM_REPORT_SPAM_CHAT"].OnHide = function()
+	StaticPopupDialogs["CONFIRM_REPORT_SPAM_CHAT"].text = REPORT_SPAM_CONFIRMATION --Reset popup message to default for manual reporting
 end
 
 --[[ Add Filters ]]--
@@ -506,19 +712,5 @@ ChatFrame_AddMessageEventFilter("CHAT_MSG_EMOTE", filter)
 ChatFrame_AddMessageEventFilter("CHAT_MSG_DND", filter)
 ChatFrame_AddMessageEventFilter("CHAT_MSG_AFK", filter)
 
-ChatFrame_AddMessageEventFilter("CHAT_MSG_SYSTEM", function(_, _, msg)
-	--Function for disabling BadBoy reports and misc required functions
-	if msg == orig then
-		return --Manual spam report, back down
-	elseif fnd(msg, "BadBoy") then
-		COMPLAINT_ADDED = orig --Reset reported message to default for manual reporting
-		if BADBOY_SILENT then
-			return true --Filter out the report if enabled
-		end
-	else
-		--Ninja this in here to prevent creating a login function & frame
-		--We force this on so we don't have spam that would have been filtered, reported on the forums
-		SetCVar("spamFilter", 1)
-	end
-end)
+SetCVar("spamFilter", 1)
 

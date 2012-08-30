@@ -126,19 +126,19 @@ L["STOP_NAG"] = "|cffff4411BugGrabber no te recordar\195\161 sobre el desapareci
 L["USAGE"] = "Uso: /buggrabber <1-%d>."
 
 	elseif locale == "ptBR" then
-L["ADDON_CALL_PROTECTED"] = "[%s] O AddOn '%s' tentou chamar a fun\195\167\195\163o protegida '%s'." -- Needs review
-L["ADDON_CALL_PROTECTED_MATCH"] = "^%[(.*)%] (AddOn '.*' tentou chamar a fun\195\167\195\163o protegida '.*'.)$" -- Needs review
-L["ADDON_DISABLED"] = "|cffffff7fBugGrabber|r e |cffffff7f%s|r n\195\163o podem existir juntos. |cffffff7f%s|r foi desabilitado por causa disso. Se voc\195\170 quiser, voc\195\170 pode sair, desabilitar o |cffffff7fBugGrabber|r e habilitar o |cffffff7f%s|r." -- Needs review
-L["BUGGRABBER_RESUMING"] = "|cffffff7fBugGrabber|r est\195\161 capturando erros novamente." -- Needs review
-L["BUGGRABBER_STOPPED"] = "|cffffff7fBugGrabber|r parou de capturar erros, j\195\161 que capturou mais de %d erros por segundo. A captura ser\195\161 resumida em %d segundos." -- Needs review
-L["CMD_CREATED"] = "Um erro foi detectado, utilize /buggrabber para imprimi-lo." -- Needs review
-L["ERROR_INDEX"] = "O \195\173ndice fornecido deve ser um n\195\186mero," -- Needs review
-L["ERROR_UNKNOWN_INDEX"] = "O \195\173ndice %d n\195\163o existe na tabela de carregamento de erros." -- Needs review
-L["NO_DISPLAY_1"] = "|cffff4411Aparentemente voc\195\170 est\195\161 usando !BugGrabber sem nenhum addon de exibi\195\167\195\163o para acompanh\195\161-lo. Apesar de que o !BugGrabber fornece um comando para acessar os erros dentro do jogo, um addon de exibi\195\167\195\163o pode ajudar voc\195\170 a gerenciar esses erros de uma forma mais conveniente.|r" -- Needs review
-L["NO_DISPLAY_2"] = "|cffff4411O exibidor padr\195\163o do !BugGrabber \195\169 conhecido por |r|cff44ff44BugSack|r|cffff4411, e voc\195\170 pode, provavelmente, encontrar no mesmo site onde voc\195\170 achou o !BugGrabber.|r" -- Needs review
-L["NO_DISPLAY_STOP"] = "|cffff4411Se voc\195\170 n\195\163o deseja ser lembrado disso novamente, por favor utilize o comando |cff44ff44/stopnag|r|cffff4411.|r" -- Needs review
-L["STOP_NAG"] = "|cffff4411!BugGrabber n\195\163o ir\195\161 perturbar sobre n\195\163o ter detectado o |r|cff44ff44BugSack|r|cffff4411 at\195\169 a pr\195\179xima atualiza\195\167\195\163o.|r" -- Needs review
-L["USAGE"] = "Uso: /buggraber <1-%d>" -- Needs review
+L["ADDON_CALL_PROTECTED"] = "[%s] O AddOn '%s' tentou chamar a fun\195\167\195\163o protegida '%s'."
+L["ADDON_CALL_PROTECTED_MATCH"] = "^%[(.*)%] (AddOn '.*' tentou chamar a fun\195\167\195\163o protegida '.*'.)$"
+L["ADDON_DISABLED"] = "|cffffff7fBugGrabber|r e |cffffff7f%s|r n\195\163o podem existir juntos. |cffffff7f%s|r foi desabilitado por causa disso. Se voc\195\170 quiser, voc\195\170 pode sair, desabilitar o |cffffff7fBugGrabber|r e habilitar o |cffffff7f%s|r."
+L["BUGGRABBER_RESUMING"] = "|cffffff7fBugGrabber|r est\195\161 capturando erros novamente."
+L["BUGGRABBER_STOPPED"] = "|cffffff7fBugGrabber|r parou de capturar erros, j\195\161 que capturou mais de %d erros por segundo. A captura ser\195\161 resumida em %d segundos."
+L["CMD_CREATED"] = "Um erro foi detectado, utilize /buggrabber para imprimi-lo."
+L["ERROR_INDEX"] = "O \195\173ndice fornecido deve ser um n\195\186mero,"
+L["ERROR_UNKNOWN_INDEX"] = "O \195\173ndice %d n\195\163o existe na tabela de carregamento de erros."
+L["NO_DISPLAY_1"] = "|cffff4411Aparentemente voc\195\170 est\195\161 usando !BugGrabber sem nenhum addon de exibi\195\167\195\163o para acompanh\195\161-lo. Apesar de que o !BugGrabber fornece um comando para acessar os erros dentro do jogo, um addon de exibi\195\167\195\163o pode ajudar voc\195\170 a gerenciar esses erros de uma forma mais conveniente.|r"
+L["NO_DISPLAY_2"] = "|cffff4411O exibidor padr\195\163o do !BugGrabber \195\169 conhecido por |r|cff44ff44BugSack|r|cffff4411, e voc\195\170 pode, provavelmente, encontrar no mesmo site onde voc\195\170 achou o !BugGrabber.|r"
+L["NO_DISPLAY_STOP"] = "|cffff4411Se voc\195\170 n\195\163o deseja ser lembrado disso novamente, por favor utilize o comando |cff44ff44/stopnag|r|cffff4411.|r"
+L["STOP_NAG"] = "|cffff4411!BugGrabber n\195\163o ir\195\161 perturbar sobre n\195\163o ter detectado o |r|cff44ff44BugSack|r|cffff4411 at\195\169 a pr\195\179xima atualiza\195\167\195\163o.|r"
+L["USAGE"] = "Uso: /buggraber <1-%d>"
 
 	end
 end

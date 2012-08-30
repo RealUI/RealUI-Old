@@ -1,4 +1,4 @@
-﻿## Interface: 40300
+﻿## Interface: 50001
 ## Title: BugGrabber
 ## Version: 3.0
 ## Notes: Grabs bugs for the bug sack.
@@ -8,7 +8,7 @@
 ## X-Category: Development Tools
 ## X-Email: rabbit.magtheridon@gmail.com
 ## SavedVariables: BugGrabberDB
-## X-Curse-Packaged-Version: r185
+## X-Curse-Packaged-Version: r188
 ## X-Curse-Project-Name: !BugGrabber
 ## X-Curse-Project-ID: bug-grabber
 ## X-Curse-Repository-ID: wow/bug-grabber/mainline

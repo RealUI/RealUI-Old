@@ -24,7 +24,7 @@ local statuscolorGraphic
 local statuscolorText
 
 GridStatusThreat.defaultDB = {
-	debug = false,
+	debug = nil,
 	color_fix_t = { r = 1, g = 0.5, b = 0, a = 1 },
 	color_fix_m = { r = 0.5, g = 1, b = 0.5, a = 1 },
 	color_fix_l = { r = 0.6, g = 0.6, b = 0.6, a = 1 },

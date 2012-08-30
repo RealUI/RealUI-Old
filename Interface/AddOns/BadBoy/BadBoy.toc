@@ -1,23 +1,24 @@
-## Interface: 40300
-## Version: v8.000
+## Interface: 50001
+## Version: 10.016
 ## Title: BadBoy
 ## Notes: A light, automatic spam blocker & reporter.
-## Notes-deDE: A light, automatic spam blocker & reporter.
+## Notes-deDE: Automatischer Spam Blocker & Reporter.
 ## Notes-ruRU: A light, automatic spam blocker & reporter.
-## Notes-zhCN: A light, automatic spam blocker & reporter.
-## Notes-zhTW: A light, automatic spam blocker & reporter.
+## Notes-zhCN: 一个轻巧，自动阻挡和举报垃圾信息的插件。
+## Notes-zhTW: 一個輕量級，自動阻擋垃圾訊息與舉報的插件。
 ## Notes-koKR: A light, automatic spam blocker & reporter.
 ## Notes-frFR: Un simple anti-spam & signalement des abus.
 ## Notes-esES: Ligero bloqueador y reportador de spam automático.
 ## Notes-esMX: A light, automatic spam blocker & reporter.
 ## Notes-ptBR: Um leve bloqueador automático de spam e reportador.
+## Notes-itIT: Un blocco spam automatico e leggero.
 ## Author: Funkydude
-## SavedVariables: BADBOY_POPUP, BADBOY_SILENT
+## SavedVariables: BADBOY_POPUP, BADBOY_NOREPORT
 ## X-Credits: Shadowed(API hunting), Ellipsis(remembering odd things), Anea(original SpamSentry blacklist in BadBoy v1), WoW Community(for reporting spam)
 ## X-Category: Chat/Communication
 ## X-License: All Rights Reserved
-## X-Curse-Packaged-Version: v8.000
-## X-Curse-Project-Name: BadBoy: Anti Spam Automatic Reporter
+## X-Curse-Packaged-Version: v10.016
+## X-Curse-Project-Name: BadBoy: Spam Blocker & Reporter
 ## X-Curse-Project-ID: bad-boy
 ## X-Curse-Repository-ID: wow/bad-boy/mainline
 

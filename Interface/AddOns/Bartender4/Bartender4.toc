@@ -1,5 +1,5 @@
 ## Interface: 50001
-## X-Curse-Packaged-Version: 4.5-MoP-beta3
+## X-Curse-Packaged-Version: 4.5.0
 ## X-Curse-Project-Name: Bartender4
 ## X-Curse-Project-ID: bartender4
 ## X-Curse-Repository-ID: wow/bartender4/mainline
@@ -7,17 +7,17 @@
 ## Title: Bartender4
 ## Notes: Simple and Advanced combined - Bartender4 ActionBar AddOn
 
-## Version: 4.5-MoP-beta3
+## Version: 4.5.0
 
 ## Author: Nevcairiel
 ## X-Email: h.leppkes at gmail dot com
 
 ## X-Category: Action Bars
-## X-Website: http://www.wowace.com/projects/bartender4/
+## X-Website: http://www.wowace.com/addons/bartender4/
 ## X-License: All rights reserved.
 
 ## SavedVariables: Bartender4DB
-## OptionalDeps: Ace3, ButtonFacade, Masque, LibActionButton-1.0, LibKeyBound-1.0, LibDBIcon-1.0, LibWindow-1.1
+## OptionalDeps: Ace3, ButtonFacade, Masque, LibActionButton-1.0, LibKeyBound-1.0, LibDBIcon-1.0, LibWindow-1.1, LibDualSpec-1.0
 
 #@no-lib-strip@
 libs\LibStub\LibStub.lua
@@ -37,10 +37,11 @@ libs\AceLocale-3.0\AceLocale-3.0.xml
 libs\AceGUI-3.0\AceGUI-3.0.xml
 libs\AceConfig-3.0\AceConfig-3.0.xml
 
-libs\LibActionButton-1.0\LibActionButton-1.0.lua
 libs\LibKeyBound-1.0\lib.xml
+libs\LibActionButton-1.0\LibActionButton-1.0.lua
 libs\LibDBIcon-1.0\LibDBIcon-1.0.lua
 libs\LibWindow-1.1\LibWindow-1.1.lua
+libs\LibDualSpec-1.0\LibDualSpec-1.0.lua
 #@end-no-lib-strip@
 
 libs\SimpleSticky.lua
@@ -57,7 +58,6 @@ StateBar.lua
 ActionBar.lua
 
 ## Buttons ##
-## ActionButton.lua
 PetButton.lua
 
 ## Modules ##

@@ -3,7 +3,7 @@
 	please see the included License.txt file.
 
 	* File.....: Masque.lua
-	* Revision.: 381
+	* Revision.: 384
 	* Author...: StormFX
 
 	Add-On Setup
@@ -60,7 +60,6 @@ function Masque:OnInitialize()
 					Gloss = 0,
 					Backdrop = false,
 					Colors = {},
-					Fonts = false,
 				},
 			},
 			LDB = {

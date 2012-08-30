@@ -361,6 +361,8 @@ function ArkInventory:LISTEN_COMBAT_LEAVE( )
 		
 	end
 	
+	ArkInventory.LDB.Mounts:Update( )
+	
 end
 
 
@@ -934,13 +936,8 @@ function ArkInventory:LISTEN_MERCHANT_LEAVE( )
 end
 
 function ArkInventory:LISTEN_COMPANION_UPDATE( event )
-	--ArkInventory.Output( "LISTEN_COMPANION_UPDATE( ", event, " )" )
-	ArkInventory:SendMessage( "LISTEN_COMPANION_UPDATE_BUCKET" )
-end
-
-function ArkInventory:LISTEN_COMPANION_UPDATE_BUCKET( )
 	
-	--ArkInventory.Output( "LISTEN_COMPANION_UPDATE_BUCKET" )
+	--ArkInventory.Output( "LISTEN_COMPANION_UPDATE( ", event, " )" )
 	
 	local loc_id
 	
@@ -1040,7 +1037,9 @@ function ArkInventory:LISTEN_ZONE_CHANGED( )
 end
 
 function ArkInventory:LISTEN_ACTIONBAR_UPDATE_USABLE_BUCKET( )
-	ArkInventory.LDB.Mounts:Update( )
+	if not ArkInventory.Global.Mode.Combat then
+		ArkInventory.LDB.Mounts:Update( )
+	end
 end
 
 function ArkInventory:LISTEN_ACTIONBAR_UPDATE_USABLE( event )
@@ -1077,6 +1076,9 @@ function ArkInventory:LISTEN_SPELLS_CHANGED( event )
 	ArkInventory:SendMessage( "LISTEN_SPELLS_CHANGED_BUCKET" )
 	
 end
+
+
+
 
 function ArkInventory:LISTEN_RESCAN_LOCATION_BUCKET( arg1 )
 	
@@ -1479,7 +1481,7 @@ function ArkInventory.ScanBag( blizzard_id )
 		if h then
 			
 			texture, count, locked, quality, readable = GetContainerItemInfo( blizzard_id, slot_id )
-			--ArkInventory.Output( "h=", h, ", texture[", texture, "], count[", count, "], q[", quality, "], read[", readable, "]" )
+			--ArkInventory.Output( "h=", h, ", count[", count, "], q[", quality, "], read[", readable, "]" )
 			
 			ArkInventory.TooltipSetItem( ArkInventory.Global.Tooltip.Scan, blizzard_id, slot_id )
 			for _, v in pairs( ArkInventory.Const.Soulbound ) do
@@ -2047,7 +2049,7 @@ function ArkInventory.ScanMail( )
 end
 
 function ArkInventory.ScanCompanion( type_id )
-	
+
 	--ArkInventory.Output( "ScanCompanion( ", type_id, " ) start" )
 	
 	local blizzard_id
@@ -2076,8 +2078,7 @@ function ArkInventory.ScanCompanion( type_id )
 	
 	local old_bag_count = bag.count
 	
-	--bag.count = GetNumCompanions( type_id )
-	bag.count = 0
+	bag.count = GetNumCompanions( type_id )
 	bag.empty = 0
 	bag.type = ArkInventory.BagType( blizzard_id )
 	bag.status = ArkInventory.Const.Bag.Status.Active
@@ -3108,7 +3109,6 @@ function ArkInventory.ObjectStringDecode( h )
 	
 	-- item:itemId:enchantId:jewelId1:jewelId2:jewelId3:jewelId4:suffixId:uniqueId:linkLevel:reforgeId
 
-	-- battlepet:speciesID:level:breedQuality:maxHealth:power:speed:?
 	-- spell:spellID
 	-- token:name:texture
 	

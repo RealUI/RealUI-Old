@@ -1,5 +1,5 @@
 --[[
-	Copyright (c) 2009, Hendrik "Nevcairiel" Leppkes < h.leppkes at gmail dot com >
+	Copyright (c) 2009-2012, Hendrik "Nevcairiel" Leppkes < h.leppkes at gmail dot com >
 	All rights reserved.
 ]]
 --[[ Generic Template for a ButtonBar with state control ]]
@@ -159,7 +159,9 @@ function StateBar:UpdateStates(returnOnly)
 		statedriver = self:GetStateOption("custom")
 	end
 
-	statedriver = statedriver:gsub("%[bonusbar:5%]11", "[possessbar]12")
+	if statedriver then
+		statedriver = statedriver:gsub("%[bonusbar:5%]11", "[possessbar]12")
+	end
 
 	self:SetAttribute("_onstate-page", [[
 		self:SetAttribute("state", newstate)

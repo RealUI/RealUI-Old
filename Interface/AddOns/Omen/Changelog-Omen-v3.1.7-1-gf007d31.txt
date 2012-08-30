@@ -1,0 +1,2 @@
+Xinhuan:
+	- Add itIT and ptBR localization files. These localizations need some updating.

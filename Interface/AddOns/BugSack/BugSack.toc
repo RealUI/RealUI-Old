@@ -1,4 +1,4 @@
-﻿## Interface: 40300
+﻿## Interface: 50001
 ## Title: BugSack
 ## Version: 5.0
 ## Notes: Toss those bugs inna sack.
@@ -15,7 +15,7 @@
 ## X-License: GPL v2 or later.
 ## X-Email: rabbit.magtheridon@gmail.com
 ## X-BugGrabber-Display: BugSack
-## X-Curse-Packaged-Version: r260
+## X-Curse-Packaged-Version: r262
 ## X-Curse-Project-Name: BugSack
 ## X-Curse-Project-ID: bugsack
 ## X-Curse-Repository-ID: wow/bugsack/mainline

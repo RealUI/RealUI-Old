@@ -172,24 +172,12 @@ end
 
 -- Initialize cooldown info from spellbook, should be called whenever spell book changes
 function MOD:SetCooldownDefaults()
-	table.wipe(MOD.cdSpells)
-	
-	local name, _, icon
-	for spell, p in pairs(cooldownSpells) do
-		if p.id and (IsSpellKnown(p.refer or p.id) or (MOD.myRace == "Draenei" and p.id == 59545)) then -- only include known spells
-			name, _, icon = GetSpellInfo(p.id)
-			MOD.cdSpells[name] = { name = name, id = p.id, school = p.school, icon = icon, link = GetSpellLink(p.id) }
-		end
-	end
-	
 	local numSpells = 0
 	for i = 1, 2 do local _, _, _, n = GetSpellTabInfo(i); numSpells = numSpells + n end
 	
 	for i = 1, numSpells do
-		name, _, icon = GetSpellInfo(i, "spell")
+		local name, _, icon = GetSpellInfo(i, "spell") -- doesn't account for "FLYOUT" spellbook entries, but not an issue currently
 		if name then
-			local cd = MOD.cdSpells[name]
-			if cd then cd.index = i; cd.link = GetSpellLink(i, "spell") end -- annotate cooldown list with spellbook index
 			local ls = MOD.lockSpells[name]
 			if ls then
 				ls.index = i
@@ -732,6 +720,7 @@ MOD.DefaultProfile = {
 	profile = {
 		enabled = true,					-- enable Raven
 		hideBlizz = true,				-- enable hiding the Blizzard buff and temp enchant frames
+		hideConsolidated = true,		-- enable hiding the Blizzard consolidated buffs frame
 		hideRunes = true,				-- enable hiding the Blizzard runes frame
 		muteSFX = false,				-- enable muting of Raven's sound effects
 		Durations = {},					-- spell durations (use profile instead of global for better per-character info)

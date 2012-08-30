@@ -1,5 +1,5 @@
 --[[
-	Copyright (c) 2009, Hendrik "Nevcairiel" Leppkes < h.leppkes at gmail dot com >
+	Copyright (c) 2009-2012, Hendrik "Nevcairiel" Leppkes < h.leppkes at gmail dot com >
 	All rights reserved.
 ]]
 local L = LibStub("AceLocale-3.0"):GetLocale("Bartender4")
@@ -20,6 +20,7 @@ end
 
 local KB = LibStub("LibKeyBound-1.0")
 local LDBIcon = LibStub("LibDBIcon-1.0", true)
+local LibDualSpec = LibStub("LibDualSpec-1.0", true)
 
 local function generateOptions()
 	Bartender4.options = {
@@ -308,6 +309,9 @@ local function generateOptions()
 		if v.SetupOptions then
 			v:SetupOptions()
 		end
+	end
+	if LibDualSpec then
+		LibDualSpec:EnhanceOptions(Bartender4.options.plugins.profiles.profiles, Bartender4.db)
 	end
 end
 

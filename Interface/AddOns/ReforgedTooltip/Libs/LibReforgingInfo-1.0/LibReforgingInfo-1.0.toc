@@ -1,11 +1,11 @@
-## Interface: 40200
-## Title: Lib: ReforgingInfo-1.0 
+## Interface: 50001
+## Title: Lib: ReforgingInfo-1.0
 ## Notes: Database of reforging IDs
 ## Author: emelio
 ## DefaultState: enabled
-## Version: 1.0.5
+## Version: 1.0.7
 ## X-Category: Library
-## X-Curse-Packaged-Version: 1.0.5
+## X-Curse-Packaged-Version: 1.0.7
 ## X-Curse-Project-Name: LibReforgingInfo-1.0
 ## X-Curse-Project-ID: libreforginginfo-1-0
 ## X-Curse-Repository-ID: wow/libreforginginfo-1-0/mainline

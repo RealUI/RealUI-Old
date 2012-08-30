@@ -1,7 +1,7 @@
 -- Raven is an addon to monitor auras and cooldowns, providing timer bars, action bar highlights, and helpful notifications.
 
--- Bars.lua supports mapping auras to bars and grouping bars into multiple moveable frames using LibBars-1.0.
--- It has special case code for tooltips, test bars, and Death Knight runes.
+-- Bars.lua supports mapping auras to bars and grouping bars into multiple moveable frames.
+-- It has special case code for tooltips, test bars, shaman totems, and death knight runes.
 -- There are no exported functions at this time other than those called to initialize and update bars.
 
 local MOD = Raven
@@ -799,7 +799,7 @@ local function UpdateBar(bp, vbp, bg, b, icon, timeLeft, duration, count, btype,
 	local iconCount = nil
 	if count then
 		count = math.floor(count + 0.001)
-		if count > 1 then
+		if b.barType == "Cooldown" or (count > 1) then
 			if not vbp.hideCount then label = string.format("%s (%d)", label, count) end
 			if not vbp.hideIcon then iconCount = count end
 		end
@@ -1192,7 +1192,7 @@ local function DetectNewCooldowns(n, cd, bp, vbp, bg)
 		b.action = n; b.spellID = cd[8]; b.barType = "Cooldown"; b.barLabel = label; b.uniqueID = "Cooldown"; b.group = nil
 		b.barSource = GetSpellSource(cdt[n])
 		if CheckSharedCooldowns(n, b, bp) then
-			UpdateBar(bp, vbp, bg, b, cd[2], cd[1], cd[4], nil, nil, cd[5], cd[6], nil, nil, true)
+			UpdateBar(bp, vbp, bg, b, cd[2], cd[1], cd[4], cd[9], nil, cd[5], cd[6], nil, nil, true)
 		end
 	end
 end
@@ -1272,7 +1272,7 @@ local function UpdateBarGroupBars(bp, vbp, bg)
 						if cd and (cd[1] ~= nil) then
 							if CheckTimeAndDuration(bp, cd[1], cd[4]) then
 								bar.startReady = nil; bar.spellID = cd[8]
-								UpdateBar(bp, vbp, bg, bar, cd[2], cd[1], cd[4], nil, nil, cd[5], cd[6], nil, nil, true)
+								UpdateBar(bp, vbp, bg, bar, cd[2], cd[1], cd[4], cd[9], nil, cd[5], cd[6], nil, nil, true)
 							end
 						elseif bar.enableReady and (bar.readyNotUsable or IsUsableSpell(aname) or IsUsableItem(aname)) then -- see if need to create a ready bar
 							if not bar.readyTime then bar.readyTime = 0 end

@@ -146,8 +146,8 @@ end
 
 
 -- ****************************************************************************
--- Returns a number separated into groups of 3 and separated according to the
--- current locale's separator.
+-- Returns a number separated into groups of 3 according to the current
+-- locale's separator.
 -- ****************************************************************************
 local function SeparateNumber(number)
  if (type(number) ~= "number") then number = tonumber(number) end

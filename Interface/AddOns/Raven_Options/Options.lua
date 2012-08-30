@@ -1623,6 +1623,12 @@ MOD.OptionsTable = {
 							get = function(info) return MOD.db.profile.hideBlizz end,
 							set = function(info, value) MOD.db.profile.hideBlizz = value end,
 						},
+						HideConsolidatedBuffsGroup = {
+							type = "toggle", order = 21, name = L["Hide Consolidated"],
+							desc = L["If checked, Raven will hide the default consolidated buffs. Note that you enable/disable consolidated buffs in the game's Interface options under Buffs and Debuffs."],
+							get = function(info) return MOD.db.profile.hideConsolidated end,
+							set = function(info, value) MOD.db.profile.hideConsolidated = value end,
+						},
 						HideBlizzRunesGroup = {
 							type = "toggle", order = 25, name = L["Hide Blizzard Runes"],
 							desc = L["If checked, Raven will hide the default user interface for runes."],

@@ -1,5 +1,21 @@
 Description:
 
+ArkInventory (AI or ARKINV) is an inventory mod that was based off EngInventory when the BtS 2.0.0 patch came out and I needed a working replacement.
+
+AI's display windows are built from "virtual bars", you assign categories to bars so that items in that category are displayed on the specific bars you want. There is no limit to the number of bars you can have inside a window but obviously you only have so much screen real estate before it becomes "too many".
+
+AI allows you to view all your Inventory locations, eg the Bank or Vault, without having to be there (offline mode).  It will also allow you to view the Inventory of your other characters as well.
+
+AI uses several methods to assign a default category to an item such as what professions you have, tooltip scanning, basic type/subtype and PeriodicTable. You then assign those categories to a virtual bar.
+
+
+You can also over-ride the default category by creating a rule that matches either a single or multiple items.
+
+
+
+
+
+
 to see how you need to setup sorting go here http://code.google.com/p/arkinventory/wiki/UserGuide_HowTo_Sorting
 to see how to setup rules go here http://code.google.com/p/arkinventory/wiki/RuleFunction
 the FAQ is here http://code.google.com/p/arkinventory/wiki/FAQ

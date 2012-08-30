@@ -76,6 +76,7 @@ L["Create a copy of the auto-generated conditionals in the custom configuration 
 L["CTRL"] = true
 L["Custom Conditionals"] = true
 L["Default Bar State"] = true
+L["Direction of the button flyouts on this bar (eg. summon demon/pet)"] = true
 L["Disable any reaction to mouse events on this bar, making the bar click-through."] = true
 L["Disabled"] = true
 L["Disabled in Combat"] = true
@@ -107,6 +108,7 @@ L["Fade Out"] = true
 L["Fade Out Alpha"] = true
 L["Fade Out Delay"] = true
 L["FAQ"] = true
+L["Flyout Direction"] = true
 L["Focus-Cast by modifier"] = true
 L["Focus-Cast Modifier"] = true
 L["Frequently Asked Questions"] = true

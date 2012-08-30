@@ -22,7 +22,7 @@ local L = MikSBT.translations;
 -- Constants.
 -------------------------------------------------------------------------------
 
-local WINDOW_TITLE = "Mik's Scrolling Battle Text Beta " .. MikSBT.VERSION_STRING;
+local WINDOW_TITLE = "Mik's Scrolling Battle Text " .. MikSBT.VERSION_STRING;
 
 
 -------------------------------------------------------------------------------

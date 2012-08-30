@@ -1,12 +1,7 @@
 --[[
-	Copyright (c) 2009, Hendrik "Nevcairiel" Leppkes < h.leppkes at gmail dot com >
+	Copyright (c) 2009-2012, Hendrik "Nevcairiel" Leppkes < h.leppkes at gmail dot com >
 	All rights reserved.
 ]]
-
-if select(4, GetBuildInfo()) < 40300 then
-	return
-end
-
 local L = LibStub("AceLocale-3.0"):GetLocale("Bartender4")
 -- register module
 local ExtraActionBarMod = Bartender4:NewModule("ExtraActionBar", "AceHook-3.0")

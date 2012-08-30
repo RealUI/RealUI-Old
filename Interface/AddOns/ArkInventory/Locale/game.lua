@@ -71,6 +71,11 @@ L["WOW_SKILL_FIRST_AID"] = PROFESSIONS_FIRST_AID or true
 L["WOW_SKILL_FISHING"] = PROFESSIONS_FISHING or true
 
 
+-- locations
+L["LOCATION_MOUNT"] = MOUNT or true
+L["LOCATION_PET"] = PET or true
+
+
 --	category descriptions
 L["CATEGORY_CLASS"] = CLASS or true
 L["CATEGORY_CUSTOM"] = CUSTOM or true
@@ -151,6 +156,7 @@ local auctionTable = {
 	{ "WOW_ITEM_TYPE_GLYPH", 5 },
 	{ "WOW_ITEM_TYPE_MISC", 9 },
 	{ "WOW_ITEM_TYPE_MISC_MOUNT", 9, 6 },
+	{ "WOW_ITEM_TYPE_MISC_PET", 9, 3 },
 	{ "WOW_ITEM_TYPE_MISC_REAGENT", 9, 2 },
 	{ "WOW_ITEM_TYPE_QUEST", 10 },
 	{ "WOW_ITEM_TYPE_RECIPE", 7 },
@@ -179,12 +185,12 @@ local auctionTable = {
 	{ "WOW_SKILL_TAILORING", 7, 3 },
 	
 	{ "LOCATION_MOUNT", 9, 6 },
-	{ "LOCATION_PET", 9, 3 },
-
+	{ "CATEGORY_SYSTEM_BATTLEPET", 11 },
+	
 	{ "CATEGORY_CONSUMABLE", 4 },
 	{ "CATEGORY_TRADE_GOODS", 6 },
 	{ "CATEGORY_OTHER", 4, 8 },
-
+	
 }
 
 for _, v in ipairs( auctionTable ) do
@@ -271,10 +277,8 @@ L["WOW_SKILL_LEATHERWORKING"] = true
 L["WOW_SKILL_MINING"] = true
 L["WOW_SKILL_SKINNING"] = true
 L["WOW_SKILL_TAILORING"] = true
-	
-L["LOCATION_MOUNT"] = true
-L["LOCATION_PET"] = true
 
 L["CATEGORY_CONSUMABLE"] = true
 L["CATEGORY_TRADE_GOODS"] = true
 L["CATEGORY_OTHER"] = true
+L["CATEGORY_SYSTEM_BATTLEPET"] = true

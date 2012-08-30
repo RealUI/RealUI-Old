@@ -1,4 +1,4 @@
-## Interface: 40300
+## Interface: 50001
 ## Title: Chatter
 ## Notes: Lightweight Chat Improvements
 ## Notes-zhTW: 一個輕量級的聊天增強插件
@@ -8,7 +8,7 @@
 ## X-Category: Chat/Communication
 ## Version: 1.0
 ## SavedVariables: ChatterDB
-## X-Curse-Packaged-Version: v.1.3.3-7-geaaf3ba
+## X-Curse-Packaged-Version: v.1.3.4
 ## X-Curse-Project-Name: Chatter
 ## X-Curse-Project-ID: chatter
 ## X-Curse-Repository-ID: wow/chatter/mainline

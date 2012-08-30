@@ -27,7 +27,7 @@ local icontextcolor = {
 }
 
 GridStatusRaidIcons.defaultDB = {
-	debug = false,
+	debug = nil,
 	raidicon_player = {
 		[1] = true,
 		[2] = true,
