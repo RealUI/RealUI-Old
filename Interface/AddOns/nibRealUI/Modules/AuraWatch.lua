@@ -155,7 +155,7 @@ local Defaults = {
 						},
 						negspells = {
 							[20217] = true,	-- Blessing of Kings
-							[90363] = true,	-- Embrace of the Shale Spider (pet)
+							[90363] = true,	-- Embrace of the Shale Spider (Shale Spider)
 							[115921] = true, -- Legacy of the Emperor
 						},
 						show = {
@@ -339,6 +339,49 @@ local Defaults = {
 							time = 10,
 						},
 					},
+					[2] = {
+						enabled = true,
+						inactive = true,
+						personal = false,
+						incombat = true,
+						level = 1,
+						spells = {
+							[1459] = true,	-- Arcane Brilliance
+							[61316] = true,	-- Dalaran Brilliance
+						},
+						negspells = {
+							[77747] = true,	-- Burning Wrath
+							[109773] = true, -- Dark Intent
+							[126309] = true, -- Still Water (Waterstrider)
+						},
+						show = {
+							group = {
+								party = true,
+								raid = true,
+								solo = false,
+							},
+							location = {
+								instance = true,
+								pvp = false,
+								outinstance = false,
+							},
+							role = {
+								enabled = false,
+								dps = false,
+								heal = false,
+								tank = false,
+							},
+							spec = {
+								[1] = true,
+								[2] = true,
+								[3] = true,
+							},
+						},
+						expire = {
+							enabled = false,
+							time = 10,
+						},
+					},
 				},
 			},
 			["MONK"] = {
@@ -358,14 +401,18 @@ local Defaults = {
 				auras = {
 					[1] = {
 						enabled = true,
-						inactive = false,
+						inactive = true,
 						incombat = true,
 						level = 1,
-						personal = true,
+						personal = false,
 						spells = {
-						--	[5118] = true,	-- aspect of the cheetah
+							[115921] = true, -- Legacy of the Emperor
 						},
-						negspells = {},
+						negspells = {
+							[1126] = true,	-- Mark of the Wild
+							[20217] = true,	-- Blessing of Kings
+							[90363] = true,	-- Embrace of the Shale Spider (Shale Spider)
+						},
 						show = {
 							group = {
 								party = true,
@@ -399,13 +446,19 @@ local Defaults = {
 						inactive = true,
 						incombat = true,
 						level = 1,
-						personal = true,
+						personal = false,
 						spells = {
-						--	[13165] = true,	-- hawk
-						--	[20043] = true,	-- wild
-						--	[82661] = true,	-- fox	
+							[116781] = true, -- Legacy of the White Tiger
 						},
-						negspells = {},
+						negspells = {
+							[1459] = true,	-- Arcane Brilliance
+							[61316] = true,	-- Dalaran Brilliance
+							[17007] = true,	-- Leader of the Pack
+							[24604] = true,	-- Furious Howl (Wolf)
+							[90309] = true, -- Terrifying Roar (Devilsaur)
+							[126373] = true, -- Terrifying Roar (Devilsaur)
+							[126309] = true, -- Still Water (Waterstrider)
+						},
 						show = {
 							group = {
 								party = true,
@@ -530,6 +583,48 @@ local Defaults = {
 							time = 10,
 						},
 					},
+					[3] = {
+						enabled = true,
+						inactive = true,
+						incombat = true,
+						level = 1,
+						personal = false,
+						spells = {
+							[20217] = true,	-- Blessing of Kings
+						},
+						negspells = {
+							[1126] = true,	-- Mark of the Wild
+							[90363] = true,	-- Embrace of the Shale Spider (Shale Spider)
+							[115921] = true, -- Legacy of the Emperor
+						},
+						show = {
+							group = {
+								party = true,
+								raid = true,
+								solo = false,
+							},
+							location = {
+								instance = true,
+								pvp = false,
+								outinstance = false,
+							},
+							role = {
+								enabled = false,
+								dps = false,
+								heal = false,
+								tank = false,
+							},
+							spec = {
+								[1] = true,
+								[2] = true,
+								[3] = true,
+							},
+						},
+						expire = {
+							enabled = false,
+							time = 10,
+						},
+					},
 				},
 			},
 			["PRIEST"] = {
@@ -583,6 +678,48 @@ local Defaults = {
 						},
 						expire = {
 							enabled = true,
+							time = 10,
+						},
+					},
+					[2] = {
+						enabled = true,
+						inactive = true,
+						personal = false,
+						incombat = true,
+						level = 1,
+						spells = {
+							[21562] = true,	-- Power Word: Fortitude
+						},
+						negspells = {
+							[103127] = true, -- Blood Pact (Imp)
+							[469] = true, -- Commanding Shout
+							[90364] = true, -- Still Water (Silithid)
+						},
+						show = {
+							group = {
+								party = true,
+								raid = true,
+								solo = false,
+							},
+							location = {
+								instance = true,
+								pvp = false,
+								outinstance = false,
+							},
+							role = {
+								enabled = false,
+								dps = false,
+								heal = false,
+								tank = false,
+							},
+							spec = {
+								[1] = true,
+								[2] = true,
+								[3] = true,
+							},
+						},
+						expire = {
+							enabled = false,
 							time = 10,
 						},
 					},
@@ -648,7 +785,8 @@ local Defaults = {
 						incombat = true,
 						level = 10,
 						spells = {
-							[SpecialIDTable["Main Hand Poison"]] = true,
+							[2823] = true, -- Deadly Poison
+							[8679] = true, -- Wound Poison
 						},
 						negspells = {},
 						show = {
@@ -686,7 +824,8 @@ local Defaults = {
 						incombat = true,
 						level = 10,
 						spells = {
-							[SpecialIDTable["Off Hand Poison"]] = true,
+							[3408] = true, -- Crippling Poison
+							[5761] = true, -- Mind-numbing Poison
 						},
 						negspells = {},
 						show = {
@@ -867,6 +1006,49 @@ local Defaults = {
 							time = 10,
 						},
 					},
+					[2] = {
+						enabled = true,
+						inactive = true,
+						personal = false,
+						incombat = true,
+						level = 1,
+						spells = {
+							[109773] = true, -- Dark Intent
+						},
+						negspells = {
+							[1459] = true,	-- Arcane Brilliance
+							[61316] = true,	-- Dalaran Brilliance
+							[77747] = true,	-- Burning Wrath
+							[126309] = true, -- Still Water (Waterstrider)
+						},
+						show = {
+							group = {
+								party = true,
+								raid = true,
+								solo = false,
+							},
+							location = {
+								instance = true,
+								pvp = false,
+								outinstance = false,
+							},
+							role = {
+								enabled = false,
+								dps = false,
+								heal = false,
+								tank = false,
+							},
+							spec = {
+								[1] = true,
+								[2] = true,
+								[3] = true,
+							},
+						},
+						expire = {
+							enabled = false,
+							time = 10,
+						},
+					},
 				},
 			},
 			["WARRIOR"] = {
@@ -891,13 +1073,12 @@ local Defaults = {
 						incombat = true,
 						level = 1,
 						spells = {
-							[469] = true,	-- commanding shout
+							[469] = true, -- Commanding Shout
 						},
 						negspells = {
-							[6307] = true,	-- blood pact
-							[90364] = true,	-- qiraji fortitude
-							[72590] = true,	-- drums of fortitude
-							[21562] = true,	-- fortitude				
+							[21562] = true,	-- Power Word: Fortitude
+							[103127] = true, -- Blood Pact (Imp)
+							[90364] = true, -- Still Water (Silithid)
 						},
 						show = {
 							group = {
@@ -911,50 +1092,8 @@ local Defaults = {
 								outinstance = false,
 							},
 							role = {
-								enabled = true,
+								enabled = false,
 								dps = false,
-								heal = false,
-								tank = true,
-							},
-							spec = {
-								[1] = true,
-								[2] = true,
-								[3] = true,
-							},
-						},
-						expire = {
-							enabled = true,
-							time = 10,
-						},
-					},
-					[2] = {
-						enabled = true,
-						inactive = true,
-						personal = false,
-						incombat = true,
-						level = 1,
-						spells = {
-							[6673] = true,	-- battle shout
-						},
-						negspells = {
-							[8076] = true,	-- strength of earth
-							[57330] = true,	-- horn of winter
-							[93435] = true,	-- roar of courage (hunter pet)			
-						},
-						show = {
-							group = {
-								party = true,
-								raid = true,
-								solo = false,
-							},
-							location = {
-								instance = true,
-								pvp = false,
-								outinstance = false,
-							},
-							role = {
-								enabled = true,
-								dps = true,
 								heal = false,
 								tank = false,
 							},
@@ -965,7 +1104,48 @@ local Defaults = {
 							},
 						},
 						expire = {
-							enabled = true,
+							enabled = false,
+							time = 10,
+						},
+					},
+					[1] = {
+						enabled = true,
+						inactive = true,
+						personal = false,
+						incombat = true,
+						level = 1,
+						spells = {
+							[6673] = true,	-- Battle Shout
+						},
+						negspells = {
+							[57330] = true,	-- Horn of Winter
+							[19506] = true,	-- Trueshot Aura
+						},
+						show = {
+							group = {
+								party = true,
+								raid = true,
+								solo = false,
+							},
+							location = {
+								instance = true,
+								pvp = false,
+								outinstance = false,
+							},
+							role = {
+								enabled = false,
+								dps = false,
+								heal = false,
+								tank = false,
+							},
+							spec = {
+								[1] = true,
+								[2] = true,
+								[3] = true,
+							},
+						},
+						expire = {
+							enabled = false,
 							time = 10,
 						},
 					},
@@ -2667,7 +2847,7 @@ function AuraWatch:OnEnable()
 	self:RegisterEvent("PLAYER_REGEN_DISABLED", "UpdateCombatStatus")
 	self:RegisterEvent("PLAYER_XP_UPDATE", "UpdatePlayerLevel")
 	self:RegisterEvent("LEARNED_SPELL_IN_TAB", "UpdateKnownSpells")
-	if uClass == "SHAMAN" or uClass == "ROGUE" then
+	if uClass == "SHAMAN" then
 		self:RegisterBucketEvent("UNIT_INVENTORY_CHANGED", 2, "UpdateAuras")
 		self:RegisterBucketEvent("PLAYER_EQUIPMENT_CHANGED", 2, "UpdateWeapons")
 	end

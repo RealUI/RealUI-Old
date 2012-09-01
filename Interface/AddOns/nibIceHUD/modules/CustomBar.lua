@@ -11,10 +11,50 @@ local GetTime = _G.GetTime
 
 local validUnits = {"player", "target", "focus", "pet", "vehicle", "targettarget", "main hand weapon", "off hand weapon"}
 local buffOrDebuff = {"buff", "debuff"}
-local customClassSelect = {"ALL", "DEATHKNIGHT", "DRUID", "HUNTER", "MAGE", "MONK", "PALADIN", "PRIEST", "ROGUE", "SHAMAN", "WARLOCK", "WARRIOR"}
+local customClassSelect = {"ALL"}
 local validBuffTimers = {"none", "seconds", "minutes:seconds", "minutes"}
 
-local _, uClass = UnitClass("player")
+local classDisplayName, classTag, classID
+local numClasses = GetNumClasses();
+for i = 1, numClasses do
+	classDisplayName = GetClassInfo(i);
+	tinsert(customClassSelect, classDisplayName)
+end
+
+local uClass, _, uClassID = UnitClass("player")
+
+local specList = {}
+local function GetSpecList(element)
+--	local tbl = {}
+
+	wipe(specList)
+	local cnt = 0
+	print("element: "..tostring(element))
+	for k, v in pairs(customClassSelect) do
+		cnt = cnt + 1
+		if customClassSelect[k] == element then
+			classID = k - 1 
+		end
+	end
+	print("ClassID: "..tostring(classID))
+	if classID == 0 then return specList end
+	local numSpecs = GetNumSpecializationsForClassID(classID)
+	for i = 1, numSpecs do
+		local _, name = GetSpecializationInfoForClassID(classID, i)
+		tinsert(specList, name)
+	end
+	return specList
+end
+
+local function GetSpecEnabled(element, k, v)
+	print("element1: "..tostring(element).."k1: "..tostring(k).."; v1: "..tostring(v))
+	return element["spec"..k]
+end
+
+local function SetSpecEnabled(element, k, v)
+	print("element2: "..tostring(element).."k2: "..tostring(k).."; v2: "..tostring(v))
+	element["spec"..k] = v
+end
 
 IceCustomBar.prototype.auraDuration = -1
 IceCustomBar.prototype.auraEndTime = -1
@@ -91,7 +131,7 @@ function IceCustomBar.prototype:GetDefaultSettings()
 	settings["buffToTrack"] = ""
 	settings["myUnit"] = "player"
 	settings["buffOrDebuff"] = "buff"
-	settings["talentGroups"] = 7
+	settings["spec"] = {spec1 = false, spec2 = false, spec3 = false, spec4 = false, }
 	settings["class"] = "ALL"
 	settings["barColor"] = {r=1, g=0, b=0, a=1}
 	settings["trackOnlyMine"] = true
@@ -122,12 +162,6 @@ function IceCustomBar.prototype:GetOptions()
 	opts.textSettings.args.lowerTextString.hidden = false
 	opts.lowThresholdColor = nil
 
-	opts["customHeader"] = {
-		type = 'header',
-		name = L["Custom bar settings"],
-		order = 30.1,
-	}
-
 	opts["deleteme"] = {
 		type = 'execute',
 		name = L["Delete me"],
@@ -156,7 +190,13 @@ function IceCustomBar.prototype:GetOptions()
 		name = string.format("%s %s", L["Module type:"], tostring(self:GetBarTypeDescription("Bar"))),
 		order = 21,
 	}
-
+-------
+	opts["customHeader"] = {
+		type = 'header',
+		name = L["Custom bar settings"],
+		order = 30.1,
+	}
+-------
 	opts["name"] = {
 		type = 'input',
 		name = L["Bar name"],
@@ -173,49 +213,46 @@ function IceCustomBar.prototype:GetOptions()
 			return not self.moduleSettings.enabled
 		end,
 		usage = "<a name for this bar>",
-		order = 30.3,
+		order = 30.2,
 	}
 
-	opts["unitToTrack"] = {
-		type = 'select',
-		values = validUnits,
-		name = L["Unit to track"],
-		desc = L["Select which unit that this bar should be looking for buffs/debuffs on"],
-		get = function(info)
-			return nibIceHUD:GetSelectValue(info, self.moduleSettings.myUnit)
+	opts["trackOnlyMine"] = {
+		type = 'toggle',
+		name = L["Only track auras by me"],
+		desc = L["Checking this means that only buffs or debuffs that the player applied will trigger this bar"],
+		get = function()
+			return self.moduleSettings.trackOnlyMine
 		end,
 		set = function(info, v)
-			self.moduleSettings.myUnit = info.option.values[v]
-			self.unit = info.option.values[v]
-			self:Redraw()
-			self:UpdateCustomBar(self.unit)
-			nibIceHUD:NotifyOptionsChange()
-		end,
-		disabled = function()
-			return not self.moduleSettings.enabled
-		end,
-		order = 30.4,
-	}
-
-	opts["buffOrDebuff"] = {
-		type = 'select',
-		values = buffOrDebuff,
-		name = L["Buff or debuff?"],
-		desc = L["Whether we are tracking a buff or debuff"],
-		get = function(info)
-			return nibIceHUD:GetSelectValue(info, self.moduleSettings.buffOrDebuff)
-		end,
-		set = function(info, v)
-			self.moduleSettings.buffOrDebuff = info.option.values[v]
+			self.moduleSettings.trackOnlyMine = v
 			self:Redraw()
 			self:UpdateCustomBar(self.unit)
 		end,
 		disabled = function()
 			return not self.moduleSettings.enabled or self.unit == "main hand weapon" or self.unit == "off hand weapon"
 		end,
-		order = 30.5,
+		order = 30.3,
 	}
 
+	opts["barColor"] = {
+		type = 'color',
+		name = L["Bar color"],
+		desc = L["The color for this bar"],
+		get = function()
+			return self:GetBarColor()
+		end,
+		set = function(info, r,g,b)
+			self.moduleSettings.barColor.r = r
+			self.moduleSettings.barColor.g = g
+			self.moduleSettings.barColor.b = b
+			self.barFrame.bar:SetVertexColor(self:GetBarColor())
+		end,
+		disabled = function()
+			return not self.moduleSettings.enabled
+		end,
+		order = 30.4,
+	}
+-------
 	opts["buffToTrack"] = {
 		type = 'input',
 		name = L["Aura to track"],
@@ -242,58 +279,40 @@ function IceCustomBar.prototype:GetOptions()
 			return not self.moduleSettings.enabled or self.unit == "main hand weapon" or self.unit == "off hand weapon"
 		end,
 		usage = "<which buff to track>",
+		order = 30.5,
+	}
+	
+	opts["unitToTrack"] = {
+		type = 'select',
+		values = validUnits,
+		name = L["Unit to track"],
+		desc = L["Select which unit that this bar should be looking for buffs/debuffs on"],
+		get = function(info)
+			return nibIceHUD:GetSelectValue(info, self.moduleSettings.myUnit)
+		end,
+		set = function(info, v)
+			self.moduleSettings.myUnit = info.option.values[v]
+			self.unit = info.option.values[v]
+			self:Redraw()
+			self:UpdateCustomBar(self.unit)
+			nibIceHUD:NotifyOptionsChange()
+		end,
+		disabled = function()
+			return not self.moduleSettings.enabled
+		end,
 		order = 30.6,
 	}
-	
-	opts["talentGroups"] = {
-		type = 'input',
-		name = "Talent Groups",
-		desc = "Which Talent Groups to show this Bar in. This is a Binary option. 7 = all talent groups.",
-		get = function()
-			return tostring(self.moduleSettings.talentGroups)
-		end,
-		set = function(info, v)
-			if v == nil then v = 7 end
-			v = tonumber(v) or 7
-			v = min(v, 7)
-			v = max(v, 1)
 
-			self.moduleSettings.talentGroups = v
-			self:UpdateCustomBar(self.unit)
-		end,
-		disabled = function()
-			return not self.moduleSettings.enabled
-		end,
-		order = 30.65,
-	}
-	
-	opts["class"] = {
+	opts["buffOrDebuff"] = {
 		type = 'select',
-		name = "Class",
-		desc = "Which Class to show this bar in.",
-		values = customClassSelect,
+		values = buffOrDebuff,
+		name = L["Buff or debuff?"],
+		desc = L["Whether we are tracking a buff or debuff"],
 		get = function(info)
-			return nibIceHUD:GetSelectValue(info, self.moduleSettings.class)
+			return nibIceHUD:GetSelectValue(info, self.moduleSettings.buffOrDebuff)
 		end,
 		set = function(info, v)
-			self.moduleSettings.class = customClassSelect[v]
-			self:UpdateCustomBar(self.unit)
-		end,
-		disabled = function()
-			return not self.moduleSettings.enabled
-		end,
-		order = 30.66,
-	}
-
-	opts["trackOnlyMine"] = {
-		type = 'toggle',
-		name = L["Only track auras by me"],
-		desc = L["Checking this means that only buffs or debuffs that the player applied will trigger this bar"],
-		get = function()
-			return self.moduleSettings.trackOnlyMine
-		end,
-		set = function(info, v)
-			self.moduleSettings.trackOnlyMine = v
+			self.moduleSettings.buffOrDebuff = info.option.values[v]
 			self:Redraw()
 			self:UpdateCustomBar(self.unit)
 		end,
@@ -302,26 +321,44 @@ function IceCustomBar.prototype:GetOptions()
 		end,
 		order = 30.7,
 	}
-
-	opts["barColor"] = {
-		type = 'color',
-		name = L["Bar color"],
-		desc = L["The color for this bar"],
-		get = function()
-			return self:GetBarColor()
+-------
+	opts["class"] = {
+		type = 'select',
+		name = CLASS,
+		desc = "Which Class to show this bar in.",
+		values = customClassSelect,
+		get = function(info)
+			return nibIceHUD:GetSelectValue(info, self.moduleSettings.class)
 		end,
-		set = function(info, r,g,b)
-			self.moduleSettings.barColor.r = r
-			self.moduleSettings.barColor.g = g
-			self.moduleSettings.barColor.b = b
-			self.barFrame.bar:SetVertexColor(self:GetBarColor())
+		set = function(info, v)
+			self.moduleSettings.class = customClassSelect[v]
+--			GetSpecList(self, info, v)
+			self:UpdateCustomBar(self.unit)
 		end,
 		disabled = function()
 			return not self.moduleSettings.enabled
 		end,
-		order = 30.8,
+		order = 30.65,
 	}
 
+	opts["spec"] = {
+		type = 'multiselect',
+		name = SPECIALIZATION,
+		desc = "Which Spec to show this Bar in.",
+		get = function(info, k)
+			return GetSpecEnabled(self.moduleSettings.spec, k, v)
+		end,
+		set = function(info, k, v)
+			SetSpecEnabled(self.moduleSettings.spec, k, v)
+			self:UpdateCustomBar(self.unit)
+		end,
+		values = function(info) return GetSpecList(self.moduleSettings.class) end,
+		disabled = function()
+			return not self.moduleSettings.enabled
+		end,
+		order = 30.66,
+	}
+	
 	opts["buffTimerDisplay"] = {
 		type = 'select',
 		name = L["Buff timer display"],
@@ -616,6 +653,7 @@ local hex2bin = {
 	[6] = "011",
 	[7] = "111",
 }
+
 function IceCustomBar.prototype:RetrieveTableFromBinary(v)
 	if v == nil then v = 7 end
 	v = min(v, 7)
@@ -641,14 +679,19 @@ function IceCustomBar.prototype:Show(bShouldShow)
 		return
 	end
 	
-	local HideTalent = false
-	local TalentTree = GetSpecialization() or 0
-	local TalentGroups = self:RetrieveTableFromBinary(self.moduleSettings.talentGroups)
-	if TalentTree > 0 then
-		if not TalentGroups[TalentTree] then HideTalent = true end
+	local showTalent = false
+	local activeSpec = GetSpecialization() or 0
+	--local spec = self:RetrieveTableFromBinary()
+	for k, v in pairs(self.moduleSettings.spec) do
+		print("Name: "..self.elementName.."; spec: "..activeSpec.."; k: "..k.."; v: "..tostring(v))
+		print("same? "..tostring(k == "spec"..activeSpec))
+		if (k == "spec"..activeSpec) and v then
+			showTalent = true
+			break
+		end
 	end
 	
-	if HideTalent then
+	if not showTalent then
 		IceCustomBar.super.prototype.Show(self, false)
 	else
 		if self.moduleSettings.displayWhenEmpty then

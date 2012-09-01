@@ -71,7 +71,6 @@ local function SetDefaultCVars()
 	-- Help
 	SetCVar("showGameTips", 0)						-- Turn off Loading Screen Tips
 	SetCVar("showTutorials", 0)						-- Turn off Tutorials
---	SetCVar("showNewbieTips", 0)					-- Turn off Begginer Tooltips
 	SetCVar("UberTooltips", 1)						-- Turn on Enhanced Tooltips
 	SetCVar("scriptErrors", 1)						-- Turn on Display Lua Errors
 	-- Controls
