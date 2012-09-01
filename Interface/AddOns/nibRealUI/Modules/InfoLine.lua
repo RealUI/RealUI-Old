@@ -1706,8 +1706,8 @@ local FriendsTabletData
 local FriendsTabletDataNames
 local FriendsOnline = 0
 
-local function Friends_TabletClickFunc(name, iname)
-	print("Name: "..name.." iName: "..iname)
+local function Friends_TabletClickFunc(name, iname, BNid)
+	--print("Name: "..name.." iName: "..iname.." BNid: "..BNid)
 	if not name then return end
 	if IsAltKeyDown() then
 		if iname == "" then
@@ -1715,8 +1715,10 @@ local function Friends_TabletClickFunc(name, iname)
 		else
 			InviteUnit(iname)
 		end
+	elseif BNid then
+		SetItemRef("BNplayer:"..name..":"..BNid, "|HBNplayer:"..name.."|h["..name.."|h", "LeftButton")
 	else
-		SetItemRef("player:"..name, "|Hplayer:"..name.."|h["..name.."|h", "LeftButton")
+		SetItemRef("player:"..name, "|Hplayer:"..name.."|h["..name.."]|h", "LeftButton")
 	end
 end
 
@@ -1746,7 +1748,7 @@ local function Friends_UpdateTablet()
 				if i == 1 then	-- Name
 					line["text"] = val[i]
 					line["justify"] = "LEFT"
-					line["func"] = function() Friends_TabletClickFunc(val[6],val[8]) end
+					line["func"] = function() Friends_TabletClickFunc(val[6],val[8],val[9]) end
 					line["size"] = 11 + resSizeExtra
 				elseif i == 2 then	-- Level
 					line["text"..i] = val[2]
@@ -1845,7 +1847,7 @@ local function Friends_Update(self)
 	-- Battle.net Friends
 	for t = 1, BNGetNumFriends() do
 		local BNid, BNname, battletag, isBattleTagPresence, toonname, toonid, client, online, lastonline, isafk, isdnd, broadcast, note = BNGetFriendInfo(t)
-		
+		--print("BNname: "..BNname.." BNid: "..BNid)
 		-- WoW friends
 		if ( online and client=="WoW" ) then
 			if ( not FriendsTabletData or FriendsTabletData == nil ) then FriendsTabletData = {} end
@@ -1891,7 +1893,7 @@ local function Friends_Update(self)
 			end
 			
 			-- Add Friend to list
-			tinsert(FriendsTabletData, { cname, lvl, area, faction, client, BNname, note, name })
+			tinsert(FriendsTabletData, { cname, lvl, area, faction, client, BNname, note, name, BNid })
 			
 		-- SC2 friends
 		elseif ( online and client=="S2" ) then
@@ -1916,7 +1918,7 @@ local function Friends_Update(self)
 			end
 			
 			-- Add Friend to list
-			tinsert(FriendsTabletData, { cname, "", gametext, "", client, BNname, note, "" })
+			tinsert(FriendsTabletData, { cname, "", gametext, "", client, BNname, note, "", BNid })
 		-- D3 friends
 		elseif ( online and client=="D3" ) then
 			if ( not FriendsTabletData or FriendsTabletData == nil ) then FriendsTabletData = {} end
@@ -1940,7 +1942,7 @@ local function Friends_Update(self)
 			end
 			
 			-- Add Friend to list
-			tinsert(FriendsTabletData, { cname, lvl, gametext, class, client, BNname, note, "" })
+			tinsert(FriendsTabletData, { cname, lvl, gametext, class, client, BNname, note, "", BNid })
 		end
 	end
 	
