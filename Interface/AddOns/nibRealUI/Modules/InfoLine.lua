@@ -1707,6 +1707,7 @@ local FriendsTabletDataNames
 local FriendsOnline = 0
 
 local function Friends_TabletClickFunc(name, iname)
+	print("Name: "..name.." iName: "..iname)
 	if not name then return end
 	if IsAltKeyDown() then
 		if iname == "" then
@@ -1889,15 +1890,8 @@ local function Friends_Update(self)
 				cname = strform("%s %s", CHAT_FLAG_DND, cname)
 			end
 			
-			-- Faction
-			if faction == 0 then
-				faction = "Alliance"
-			else
-				faction = "Horde"
-			end
-
 			-- Add Friend to list
-			tinsert(FriendsTabletData, { cname, lvl, area, faction, client, realname, note, name })
+			tinsert(FriendsTabletData, { cname, lvl, area, faction, client, BNname, note, name })
 			
 		-- SC2 friends
 		elseif ( online and client=="S2" ) then
@@ -1909,11 +1903,10 @@ local function Friends_Update(self)
 			
 			-- Name
 			local cname
-			local realname = strform("%s %s", BNname, battletag)
 			cname = strform(
 				"|cff%02x%02x%02x%s|r |cffcccccc(%s)|r",
 				FRIENDS_BNET_NAME_COLOR.r * 255, FRIENDS_BNET_NAME_COLOR.g * 255, FRIENDS_BNET_NAME_COLOR.b * 255,
-				realname,
+				BNname,
 				toonname
 			)
 			if ( isafk and toonname ) then
@@ -1923,7 +1916,7 @@ local function Friends_Update(self)
 			end
 			
 			-- Add Friend to list
-			tinsert(FriendsTabletData, { cname, "", gametext, "", client, realname, note })
+			tinsert(FriendsTabletData, { cname, "", gametext, "", client, BNname, note, "" })
 		-- D3 friends
 		elseif ( online and client=="D3" ) then
 			if ( not FriendsTabletData or FriendsTabletData == nil ) then FriendsTabletData = {} end
@@ -1934,11 +1927,10 @@ local function Friends_Update(self)
 			
 			-- Name
 			local cname
-			local realname = strform("%s %s", BNname, battletag)
 			cname = strform(
 				"|cff%02x%02x%02x%s|r |cffcccccc(%s)|r",
 				FRIENDS_BNET_NAME_COLOR.r * 255, FRIENDS_BNET_NAME_COLOR.g * 255, FRIENDS_BNET_NAME_COLOR.b * 255,
-				realname,
+				BNname,
 				toonname
 			)
 			if ( isafk and toonname ) then
@@ -1948,7 +1940,7 @@ local function Friends_Update(self)
 			end
 			
 			-- Add Friend to list
-			tinsert(FriendsTabletData, { cname, "", gametext, "", client, realname, note })
+			tinsert(FriendsTabletData, { cname, lvl, gametext, class, client, BNname, note, "" })
 		end
 	end
 	
