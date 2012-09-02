@@ -105,6 +105,6 @@ function BurningEmbersBar.prototype:MyOnUpdate()
 end
 
 local _, unitClass = UnitClass("player")
-if unitClass == "WARLOCK"then-- and GetSpecialization() == 3 
+if unitClass == "WARLOCK" then
 	nibIceHUD.BurningEmbersBar = BurningEmbersBar:new()
 end

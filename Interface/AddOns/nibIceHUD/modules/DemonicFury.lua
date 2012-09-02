@@ -119,11 +119,10 @@ function DemonicFuryBar.prototype:MyOnUpdate()
 	self:Update()
 
 	self:UpdateDemonicFury()
---	self:UpdateBar(0.5, self.barUpdateColor, 1)
 	self:UpdateAlpha()
 end
 
 local _, unitClass = UnitClass("player")
-if unitClass == "WARLOCK" and GetSpecialization() == 2 then
+if unitClass == "WARLOCK" then
 	nibIceHUD.DemonicFuryBar = DemonicFuryBar:new()
 end
