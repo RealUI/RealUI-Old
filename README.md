@@ -10,7 +10,6 @@ The following addons have been modified to suit RealUI and should not be updated
 
 Installation Procedure
 ----------------------
-
 ### Note: WoW Installation location ###
 
 It is best to NOT have World of Warcraft installed in either "Program Files" or a User folder.
@@ -53,12 +52,10 @@ Other options can be changed in the RealUI Options window (/realui).
 
 RealUI is now fully installed.
 ------------------------------
-
 To access the RealUI options window, click the small icon at the bottom left of the screen.
 
 
 Troubleshooting/comments/questions?
 -----------------------------------
-
-Find a bug? Please use my Github Issue tracker. Please visit:
-http://www.wowinterface.com/downloads/info16068-RealUI.html
+Find a bug? Please use my Github Issue tracker. 
+https://github.com/Gethe/RealUI/issues?state=open
