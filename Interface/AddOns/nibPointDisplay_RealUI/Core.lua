@@ -27,7 +27,7 @@ nibPointDisplay_RealUI.Types = {
 	["HUNTER"] = {
 		name = "Hunter",
 		points = {
-			[1] = {name = "Ready Set Aim", id = "rsa", barcount = 5},
+			[1] = {name = "Ready Set Aim", id = "rsa", barcount = 3},
 			[2] = {name = "Frenzy Effect", id = "fe", barcount = 5},
 		},
 	},
@@ -89,6 +89,7 @@ nibPointDisplay_RealUI.Types = {
 			[1] = {name = "Thunderstruck", id = "ts", barcount = 3},
 			[2] = {name = "Meat Cleaver", id = "mc", barcount = 3},
 			[3] = {name = "Sunder Armor", id = "sa", barcount = 3},
+			[4] = {name = "Taste for Blood", id = "tb", barcount = 5},
 		},
 	},
 }
@@ -190,6 +191,7 @@ local SpellInfo = {
 	["ts"] = nil,
 	["mc"] = nil,
 	["sa"] = nil,
+	["tb"] = nil,
 }
 
 -- Point Display tables
@@ -586,6 +588,9 @@ function nibPointDisplay_RealUI:GetPoints(CurClass, CurType)
 		-- Sunder Armor
 		elseif CurType == "sa" then
 			NewPoints = GetDebuffCount(SpellInfo[CurType])
+		-- Taste for Blood
+		elseif CurType == "tb" then
+			NewPoints = GetBuffCount(SpellInfo[CurType])
 		end
 	end
 	Points[CurType] = NewPoints
@@ -974,6 +979,7 @@ function nibPointDisplay_RealUI:PLAYER_LOGIN()
 	SpellInfo["ts"] = GetSpellInfo(87096)		-- Thunderstruck
 	SpellInfo["mc"] = GetSpellInfo(85739)		-- Meat Cleaver
 	SpellInfo["sa"] = GetSpellInfo(58567)		-- Sunder Armor
+	SpellInfo["tb"] = GetSpellInfo(56638)
 		
 	-- Hide Elements
 	nibPointDisplay_RealUI:HideUIElements()

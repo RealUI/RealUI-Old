@@ -37,7 +37,7 @@ local function GetSpecList(element)
 		end
 	end
 	print("ClassID: "..tostring(classID))
-	if classID == 0 then return specList end
+	if classID == 0 or nil then return specList end
 	local numSpecs = GetNumSpecializationsForClassID(classID)
 	for i = 1, numSpecs do
 		local _, name = GetSpecializationInfoForClassID(classID, i)

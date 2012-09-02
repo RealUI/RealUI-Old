@@ -19,7 +19,7 @@ function WeakenedBlows.prototype:init()
 	self.endTime = 0
 	self.duration = 0
 	self.remaining = 0
-	self.name = GetSpellInfo(115798)
+	self.name = "Weakened Blows"
 	self.isAura = false
 	self.isTank = false
 end
@@ -95,7 +95,7 @@ function WeakenedBlows.prototype:UpdateShown()
 end
 
 function WeakenedBlows.prototype:isActive()
-	if ( UnitDebuff("target", self.name) ) then
+	if ( UnitDebuff("target", "Weakened Blows") ) then
 		return true
 	else
 		return false
@@ -104,7 +104,7 @@ end
 
 function WeakenedBlows.prototype:GetBuffInfo(unitName, buffName)
 	local name, _, _, _, _, duration, endTime = UnitDebuff(unitName, buffName)
-	print(name.." : "..duration.." : "..endTime)
+	--print(name.." : "..duration.." : "..endTime)
 	if name then
 		return duration, endTime - GetTime(), endTime
 	end

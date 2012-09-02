@@ -307,7 +307,8 @@ function nibMinimap:UpdateInfoPosition()
 			MMFrames.info.mail:Hide()
 		end
 		
-		-- Queue
+		-- 
+		-- Dungeon Finder Queue
 		if InfoShown.queue then
 			MMFrames.info.queue:ClearAllPoints()
 			MMFrames.info.queue:SetPoint(point, "Minimap", rpoint, xofs, yofs)
@@ -317,12 +318,36 @@ function nibMinimap:UpdateInfoPosition()
 		else
 			MMFrames.info.queue:Hide()
 		end
+		
+			-- Raid Finder Queue
+		if InfoShown.RFqueue then
+			MMFrames.info.RFqueue:ClearAllPoints()
+			MMFrames.info.RFqueue:SetPoint(point, "Minimap", rpoint, xofs, yofs)
+			MMFrames.info.RFqueue.text:SetFont(font, db.information.font.size / scale, db.information.font.outline)
+			MMFrames.info.RFqueue:Show()
+			yofs = yofs + yadj
+		else
+			MMFrames.info.RFqueue:Hide()
+		end
+		
+			-- Scenarios Queue
+		if InfoShown.Squeue then
+			MMFrames.info.Squeue:ClearAllPoints()
+			MMFrames.info.Squeue:SetPoint(point, "Minimap", rpoint, xofs, yofs)
+			MMFrames.info.Squeue.text:SetFont(font, db.information.font.size / scale, db.information.font.outline)
+			MMFrames.info.Squeue:Show()
+			yofs = yofs + yadj
+		else
+			MMFrames.info.Squeue:Hide()
+		end
 	else
 		MMFrames.info.location:Hide()
 		MMFrames.info.coords:Hide()
 		MMFrames.info.dungeondifficulty:Hide()
 		MMFrames.info.mail:Hide()
 		MMFrames.info.queue:Hide()
+		MMFrames.info.RFqueue:Hide()
+		MMFrames.info.Squeue:Hide()
 	end
 end
 
@@ -691,12 +716,30 @@ function nibMinimap:UpdatePOIEnabled()
 	end
 end
 
+function nibMinimap:GetLFGQueue()
+	for i=1, NUM_LE_LFG_CATEGORYS do
+		local mode, submode = GetLFGMode(i);
+		if ( mode ) then
+			self:QueueTimeUpdate(i);
+--			entry:Show();
+--			totalHeight = totalHeight + entry:GetHeight();
+--			nextEntry = nextEntry + 1;
+
+--			showMinimapButton = true;
+--			if ( mode == "queued" ) then
+--				animateEye = true;
+--			end
+		end
+	end
+end
+
 ---- Queue Time ----
-function nibMinimap:QueueTimeUpdate()
-	local lfgMode = GetLFGMode(LE_LFG_CATEGORY_LFR)
-	if lfgMode == "queued" then
+function nibMinimap:QueueTimeUpdate(category)
+	local mode, submode = GetLFGMode(category)
+	if mode == "queued" then
 		local queueStr = ""
-		local hasData, _,_,_,_,_,_,_,_,_,_,_,_,_,_, myWait, queuedTime = GetLFGQueueStats()
+		local hasData, _, _, _, _, _, _, _, _, _, _, _, _, _, _, myWait, queuedTime = GetLFGQueueStats(category);
+--		local hasData, _, _, _, _, _, _, _, _, _, _, _, _, _, _, myWait, queuedTime = GetLFGQueueStats()
 		
 		if not hasData then
 			queueStr = LESS_THAN_ONE_MINUTE
@@ -706,15 +749,25 @@ function nibMinimap:QueueTimeUpdate()
 			local awtStr = strform("%s", myWait == -1 and TIME_UNKNOWN or SecondsToTime(myWait, false, false, 1))
 			queueStr = strform("%s |cffc0c0c0(%s)|r", tiqStr, awtStr)
 		end
-
-		MMFrames.info.queue.text:SetText("|cffffa000Q:|r "..queueStr)
-		MMFrames.info.queue:SetWidth(MMFrames.info.queue.text:GetStringWidth() + 12)
 		
-		-- Set to show Queue time
-		InfoShown.queue = true
+		if category == 1 then -- Dungeon Finder
+			MMFrames.info.queue.text:SetText("|cffffa000DF:|r "..queueStr)
+			MMFrames.info.queue:SetWidth(MMFrames.info.queue.text:GetStringWidth() + 12)
+			InfoShown.queue = true
+		elseif category == 3 then -- Raid Finder
+			MMFrames.info.RFqueue.text:SetText("|cffffa000RF:|r "..queueStr)
+			MMFrames.info.RFqueue:SetWidth(MMFrames.info.RFqueue.text:GetStringWidth() + 12)
+			InfoShown.RFqueue = true
+		elseif category == 4 then -- Scenarios
+			MMFrames.info.Squeue.text:SetText("|cffffa000S:|r "..queueStr)
+			MMFrames.info.Squeue:SetWidth(MMFrames.info.Squeue.text:GetStringWidth() + 12)
+			InfoShown.Squeue = true
+		end
 	else
 		-- Set to hide Queue time
 		InfoShown.queue = false
+		InfoShown.RFqueue = false
+		InfoShown.Squeue = false
 	end
 	if not UpdateProcessing then
 		self:UpdateInfoPosition()
@@ -722,8 +775,8 @@ function nibMinimap:QueueTimeUpdate()
 end
 
 function nibMinimap:QueueTimeFrequentCheck()
-	if InfoShown.queue then
-		self:QueueTimeUpdate()
+	if InfoShown.queue or InfoShown.RFqueue or InfoShown.Squeue then
+		self:GetLFGQueue()
 	end
 end
 
@@ -1280,9 +1333,9 @@ function nibMinimap:RegEvents()
 	
 	
 	-- Queue
-	self:RegisterEvent("LFG_UPDATE", "QueueTimeUpdate")
-	self:RegisterEvent("LFG_PROPOSAL_SHOW", "QueueTimeUpdate")
-	self:RegisterEvent("LFG_QUEUE_STATUS_UPDATE", "QueueTimeUpdate")
+	self:RegisterEvent("LFG_UPDATE", "GetLFGQueue")
+	self:RegisterEvent("LFG_PROPOSAL_SHOW", "GetLFGQueue")
+	self:RegisterEvent("LFG_QUEUE_STATUS_UPDATE", "GetLFGQueue")
 	self:ScheduleRepeatingTimer("QueueTimeFrequentCheck", 1)
 	
 	-- Mail
@@ -1449,6 +1502,8 @@ local function CreateFrames()
 	MMFrames.info.mail = NewInfoFrame("nibMinimap_Mail", Minimap)
 	MMFrames.info.dungeondifficulty = NewInfoFrame("nibMinimap_DungeonDifficulty", Minimap)	
 	MMFrames.info.queue = NewInfoFrame("nibMinimap_Queue", Minimap)	
+	MMFrames.info.RFqueue = NewInfoFrame("nibMinimap_RFQueue", Minimap)	
+	MMFrames.info.Squeue = NewInfoFrame("nibMinimap_SQueue", Minimap)	
 	
 	-- Update Fonts
 	nibMinimap:UpdateFonts()
