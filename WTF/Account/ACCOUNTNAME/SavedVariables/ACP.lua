@@ -1,6 +1,6 @@
 
 ACP_Data = {
-	["sorter"] = "Group By Name",
+	["sorter"] = "Titles",
 	["NoRecurse"] = false,
 	["NoChildren"] = true,
 	["collapsed"] = {

@@ -29,14 +29,14 @@ local function GetSpecList(element)
 
 	wipe(specList)
 	local cnt = 0
-	print("element: "..tostring(element))
+	--print("element: "..tostring(element))
 	for k, v in pairs(customClassSelect) do
 		cnt = cnt + 1
 		if customClassSelect[k] == element then
 			classID = k - 1 
 		end
 	end
-	print("ClassID: "..tostring(classID))
+	--print("ClassID: "..tostring(classID))
 	if classID == 0 or nil then return specList end
 	local numSpecs = GetNumSpecializationsForClassID(classID)
 	for i = 1, numSpecs do
@@ -47,12 +47,12 @@ local function GetSpecList(element)
 end
 
 local function GetSpecEnabled(element, k, v)
-	print("element1: "..tostring(element).."k1: "..tostring(k).."; v1: "..tostring(v))
+	--print("element1: "..tostring(element).."k1: "..tostring(k).."; v1: "..tostring(v))
 	return element["spec"..k]
 end
 
 local function SetSpecEnabled(element, k, v)
-	print("element2: "..tostring(element).."k2: "..tostring(k).."; v2: "..tostring(v))
+	--print("element2: "..tostring(element).."k2: "..tostring(k).."; v2: "..tostring(v))
 	element["spec"..k] = v
 end
 
@@ -683,8 +683,8 @@ function IceCustomBar.prototype:Show(bShouldShow)
 	local activeSpec = GetSpecialization() or 0
 	--local spec = self:RetrieveTableFromBinary()
 	for k, v in pairs(self.moduleSettings.spec) do
-		print("Name: "..self.elementName.."; spec: "..activeSpec.."; k: "..k.."; v: "..tostring(v))
-		print("same? "..tostring(k == "spec"..activeSpec))
+		--print("Name: "..self.elementName.."; spec: "..activeSpec.."; k: "..k.."; v: "..tostring(v))
+		--print("same? "..tostring(k == "spec"..activeSpec))
 		if (k == "spec"..activeSpec) and v then
 			showTalent = true
 			break
