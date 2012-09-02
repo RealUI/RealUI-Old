@@ -11,18 +11,14 @@ local nibRealUICharacter_defaults = {
 
 -- Minipatch list. These get flagged on a PrimaryInstall as not being required.
 local table_MiniPatches = {
-	"71r2",
-	"71r3",
-	"71r4",
-	"71r7",
-	"71r8",
-	"71r9",
-	"71r10b",
+	"72r1",
 }
 
 local table_Addons = {
+	{"ACP", "ACP_Data"},
 	{"ArkInventory", "ARKINVDB"},
 	{"Bartender4", "Bartender4DB"},
+	{"BugSack", "BugSackDB"},
 	{"DXE", "DXEDB"},
 	{"Grid", "GridDB"},
 	{"Mapster", "MapsterDB"},
@@ -483,64 +479,22 @@ end
 -- Mini Patch
 local function MiniPatchInstallation()
 	local CurVer = dbg.verinfo
-	if CurVer[1] == 7 and CurVer[2] == 1 then
+	if CurVer[1] == 7 and CurVer[2] == 2 then
 		-- Find out which Mini Patches are needed
 		local NP = {
 			[2] = true,
-			[3] = true,
-			[4] = true,
-			[7] = true,
-			[8] = true,
-			[9] = true,
-			[10] = true,
 		}
 		if dbg.minipatches ~= nil then
 			for k,v in pairs(dbg.minipatches) do
-				if v == "71r2" then NP[2] = false end
-				if v == "71r3" then NP[3] = false end
-				if v == "71r4" then NP[4] = false end
-				if v == "71r7" then NP[7] = false end
-				if v == "71r8" then NP[8] = false end
-				if v == "71r9" then NP[9] = false end
-				if v == "71r10b" then NP[10] = false end
+				if v == "72r1" then NP[2] = false end
 			end
 		end
 		
 		-- Run through MiniPatches
 		local HasMPatched = false
 		if NP[2] then
-			nibRealUI:MiniPatch("71r2")
-			tinsert(dbg.minipatches, "71r2")
-			HasMPatched = true
-		end
-		if NP[3] then
-			nibRealUI:MiniPatch("71r3")
-			tinsert(dbg.minipatches, "71r3")
-			HasMPatched = true
-		end
-		if NP[4] then
-			nibRealUI:MiniPatch("71r4")
-			tinsert(dbg.minipatches, "71r4")
-			HasMPatched = true
-		end
-		if NP[7] then
-			nibRealUI:MiniPatch("71r7")
-			tinsert(dbg.minipatches, "71r7")
-			HasMPatched = true
-		end
-		if NP[8] then
-			nibRealUI:MiniPatch("71r8")
-			tinsert(dbg.minipatches, "71r8")
-			HasMPatched = true
-		end
-		if NP[9] then
-			nibRealUI:MiniPatch("71r9")
-			tinsert(dbg.minipatches, "71r9")
-			HasMPatched = true
-		end
-		if NP[10] then
-			nibRealUI:MiniPatch("71r10")
-			tinsert(dbg.minipatches, "71r10b")
+			nibRealUI:MiniPatch("72r1")
+			tinsert(dbg.minipatches, "72r1")
 			HasMPatched = true
 		end
 		

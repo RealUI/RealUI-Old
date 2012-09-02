@@ -264,9 +264,6 @@ IceCoreRealUIDB = {
 						["b"] = 1,
 					},
 					["spec"] = {
-						true, -- [1]
-						true, -- [2]
-						true, -- [3]
 						["spec3"] = true,
 						["spec4"] = false,
 						["spec1"] = true,
@@ -283,10 +280,8 @@ IceCoreRealUIDB = {
 					["enabled"] = true,
 					["spec"] = {
 						["spec4"] = false,
-						[3] = true,
 						["spec3"] = true,
 						["spec1"] = false,
-						[2] = true,
 						["spec2"] = true,
 					},
 					["barColor"] = {
@@ -348,7 +343,6 @@ IceCoreRealUIDB = {
 					["desiredLerpTime"] = 0,
 					["enabled"] = true,
 					["spec"] = {
-						true, -- [1]
 						["spec3"] = false,
 						["spec4"] = false,
 						["spec1"] = true,
@@ -536,7 +530,7 @@ IceCoreRealUIDB = {
 					["barVerticalOffset"] = 27.5,
 					["scale"] = 0.775,
 					["side"] = "LEFT",
-					["buffToTrack"] = "77495",
+					["buffToTrack"] = "100977",
 					["exactMatch"] = true,
 					["textVisible"] = {
 						["lower"] = false,
@@ -1676,6 +1670,12 @@ IceCoreRealUIDB = {
 					["customBarType"] = "Bar",
 					["upperText"] = "DH",
 					["lowerText"] = "",
+					["spec"] = {
+						["spec3"] = false,
+						["spec1"] = true,
+						["spec4"] = false,
+						["spec2"] = false,
+					},
 					["forceJustifyText"] = "RIGHT",
 					["auraIconXOffset"] = 40,
 					["upperTextColor"] = {
@@ -1687,7 +1687,7 @@ IceCoreRealUIDB = {
 					["trackOnlyMine"] = true,
 					["myTagVersion"] = 3,
 					["enabled"] = true,
-					["class"] = "MONK",
+					["class"] = "Monk",
 					["barVerticalOffset"] = 33,
 					["buffOrDebuff"] = "debuff",
 					["side"] = "RIGHT",
@@ -1741,6 +1741,12 @@ IceCoreRealUIDB = {
 					["customBarType"] = "Bar",
 					["upperText"] = "Sh",
 					["buffTimerDisplay"] = "seconds",
+					["spec"] = {
+						["spec3"] = false,
+						["spec1"] = true,
+						["spec4"] = false,
+						["spec2"] = false,
+					},
 					["scale"] = 0.745,
 					["auraIconXOffset"] = 40,
 					["alwaysFullAlpha"] = false,
@@ -1748,7 +1754,7 @@ IceCoreRealUIDB = {
 					["barFontSize"] = 8,
 					["myTagVersion"] = 3,
 					["enabled"] = true,
-					["class"] = "MONK",
+					["class"] = "Monk",
 					["barVerticalOffset"] = 33,
 					["buffOrDebuff"] = "buff",
 					["side"] = "LEFT",
