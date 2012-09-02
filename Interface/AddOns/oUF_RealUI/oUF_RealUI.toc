@@ -1,7 +1,7 @@
 ## Interface: 50001
 ## Title: oUF_RealUI
 ## Author: Nibelheim
-## Version: 7.1
+## Version: 7.2 r1
 ## Notes: UF layout for RealUI.
 ## Dependencies: oUF
 ## OptionalDeps: nibRealUI
