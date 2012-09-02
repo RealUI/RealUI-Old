@@ -1,9 +1,16 @@
 ------------------------------------------------------------------------
-r1518 | phanx | 2012-08-29 07:40:26 +0000 (Wed, 29 Aug 2012) | 1 line
+r1520 | phanx | 2012-08-31 01:14:54 +0000 (Fri, 31 Aug 2012) | 1 line
 Changed paths:
-   A /tags/5.0.4.1517 (from /trunk:1517)
+   A /tags/5.0.4.1520 (from /trunk:1519)
 
-Tagging as 5.0.4.1517
+Tagging as 5.0.4.1520
+------------------------------------------------------------------------
+r1519 | Phanx | 2012-08-31 00:27:17 +0000 (Fri, 31 Aug 2012) | 1 line
+Changed paths:
+   M /trunk/GridCore.lua
+   M /trunk/Statuses/GridStatusReadyCheck.lua
+
+- Fixed AceTimer wrapper WRT non-repeating timers (resolves ticket #626)
 ------------------------------------------------------------------------
 r1517 | Phanx | 2012-08-28 09:26:01 +0000 (Tue, 28 Aug 2012) | 3 lines
 Changed paths:

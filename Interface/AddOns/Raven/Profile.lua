@@ -268,17 +268,27 @@ local iconCache = {}
 local knownSpells = {}
 function MOD:SetIconDefaults()
 	table.wipe(knownSpells)
-	local tcount = GetNumSpellTabs()
-	for i = 1, tcount do
-		local tname, _, toffset, tspells = GetSpellTabInfo(i)		
-		for k = toffset + 1, toffset + tspells do
-			local name, icon
-			name = GetSpellBookItemName(k, BOOKTYPE_SPELL)
-			icon = GetSpellBookItemTexture(k, BOOKTYPE_SPELL)
-			iconCache[name] = icon
-			knownSpells[name] = icon -- this table just holds icons for spells in the spell book
+	for tab = 1, 2 do -- scan first two tabs of player spell book and create caches of known spells and icons
+		local _, _, offset, numSpells = GetSpellTabInfo(tab)
+		for i = 1, numSpells do
+			local index = i + offset
+			local stype, id = GetSpellBookItemInfo(index, "spell")
+			if stype == "SPELL" then -- use spellbook index to check for cooldown
+				local name, _, icon = GetSpellInfo(index, "spell")
+				if name then iconCache[name] = icon; knownSpells[name] = icon end
+			elseif stype == "FLYOUT" then -- use spell id to check for cooldown
+				local _, _, numSlots = GetFlyoutInfo(id)
+				for slot = 1, numSlots do
+					local spellID = GetFlyoutSlotInfo(id, slot)
+					if spellID then
+						local name, _, icon = GetSpellInfo(spellID)
+						if name then iconCache[name] = icon; knownSpells[name] = icon end
+					end
+				end
+			end
 		end
 	end
+	-- for name, icon in pairs(knownSpells) do print(name, icon) end
 	local _, _, iconGCD = GetSpellInfo(28730) -- cached for global cooldown (using same icon as Arcane Torrent)
 	iconCache[L["GCD"]] = iconGCD
 end

@@ -7,7 +7,7 @@ GridIndicatorCornerIcons_Locales:CreateLocaleTable(
 
 {
 	["Icon (Corners)"] = "Symbol (Ecken)",
-	["Options for Icon (Corners) indicators."] = "Optionen für die Symbol (Ecken) Indikatoren.",
+	["Options for Icon (Corners) indicators."] = "Optionen für den Indikator: Symbol (Ecken).",
 
 	["Top Left Corner Icon (Left)"] = "Symbol obere linke Ecke (Links)",
 	["Top Left Corner Icon (Right)"] = "Symbol obere linke Ecke (Rechts)",

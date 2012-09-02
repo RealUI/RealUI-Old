@@ -1389,9 +1389,11 @@ local function SetSelectedSpellEffect(index)
 		local ect = MOD.db.global.SpellEffects[effects.select]
 		effects.disable = ect.disable; effects.duration = ect.duration; effects.kind = ect.kind; effects.renew = ect.renew; effects.caster = ect.caster
 		effects.spell = ect.spell; effects.talent = ect.talent; effects.buff = ect.buff; effects.condition = ect.condition; effects.label = ect.label
+		effects.optbuff = ect.optbuff; effects.optduration = ect.optduration
 	else
 		effects.disable = nil; effects.duration = nil; effects.spell = nil; effects.kind = nil; effects.renew = nil; effects.caster = nil
 		effects.talent = nil; effects.buff = nil; effects.condition = nil; effects.label = nil; effects.select = nil
+		effects.optbuff = nil; effects.optduration = nil
 	end
 end
 
@@ -1415,19 +1417,24 @@ local function AddNewSpellEffect(name)
 			MOD.db.global.SpellEffects[n] = ect
 		end
 		effects.disable = ect.disable; effects.duration = ect.duration; effects.kind = ect.kind; effects.renew = ect.renew; effects.caster = ect.caster
-		effects.spell = ect.spell; effects.talent = ect.talent; effects.buff = ect.buff; effects.condition = ect.condition; effects.label = ect.label; effects.select = n
+		effects.spell = ect.spell; effects.talent = ect.talent; effects.buff = ect.buff; effects.condition = ect.condition; effects.label = ect.label
+		effects.optbuff = ect.optbuff; effects.optduration = ect.optduration; effects.select = n
 	else
 		effects.disable = nil; effects.duration = nil; effects.spell = nil; effects.kind = nil; effects.renew = nil; effects.caster = nil
 		effects.talent = nil; effects.buff = nil; effects.condition = nil; effects.label = nil; effects.select = nil
+		effects.optbuff = nil; effects.optduration = nil
 	end
 end
 
 local function SetSpellEffectSettings()
 	if effects.select then
 		local ect = MOD.db.global.SpellEffects[effects.select]
-		if ect then ect.disable = effects.disable and true or nil; ect.duration = tonumber(effects.duration); ect.kind = effects.kind; ect.renew = effects.renew
-		ect.caster = effects.caster; ect.spell = effects.spell; ect.talent = effects.talent; ect.buff = effects.buff; ect.condition = effects.condition
-		ect.id = MOD:GetSpellID(effects.spell or effects.select); ect.icon = MOD:GetIcon(effects.spell or effects.select); ect.label = effects.label end
+		if ect then
+			ect.disable = effects.disable and true or nil; ect.duration = tonumber(effects.duration); ect.kind = effects.kind; ect.renew = effects.renew
+			ect.caster = effects.caster; ect.spell = effects.spell; ect.talent = effects.talent; ect.buff = effects.buff; ect.condition = effects.condition
+			ect.id = MOD:GetSpellID(effects.spell or effects.select); ect.icon = MOD:GetIcon(effects.spell or effects.select); ect.label = effects.label
+			ect.optbuff = effects.optbuff; ect.optduration = effects.optduration
+		end
 	end
 end
 
@@ -3032,23 +3039,36 @@ MOD.OptionsTable = {
 									set = function(info, value) effects.kind = "cooldown"; SetSpellEffectSettings() end,
 								},
 								Space2 = { type = "description", name = "", order = 45 },
-								AssociatedTalent = {
-									type = "input", order = 50, name = L["Required Talent"],
-									desc = L["Enter name or numeric identifier for talent required for effect to happen (leave blank if no talent required)."],
-									get = function(info) return effects.talent end,
-									set = function(info, n) n = ValidateSpellName(n); effects.talent = n; SetSpellEffectSettings() end,
-								},
 								AssociatedBuff = {
-									type = "input", order = 55, name = L["Required Buff"],
+									type = "input", order = 50, name = L["Required Buff"],
 									desc = L["Enter name or numeric identifier for buff required to be active on player for effect to happen (leave blank if no buff required)."],
 									get = function(info) return effects.buff end,
 									set = function(info, n) n = ValidateSpellName(n); effects.buff = n; SetSpellEffectSettings() end,
+								},
+								AssociatedTalent = {
+									type = "input", order = 55, name = L["Required Talent"],
+									desc = L["Enter name or numeric identifier for talent required for effect to happen (leave blank if no talent required)."],
+									get = function(info) return effects.talent end,
+									set = function(info, n) n = ValidateSpellName(n); effects.talent = n; SetSpellEffectSettings() end,
 								},
 								AssociatedCondition = {
 									type = "input", order = 60, name = L["Required Condition"],
 									desc = L["Enter name of condition required to be true for effect to happen (leave blank if no condition required)."],
 									get = function(info) return effects.condition end,
 									set = function(info, value) local n = value; if n == "" then n = nil end; effects.condition = n; SetSpellEffectSettings() end,
+								},
+								Space3 = { type = "description", name = "", order = 61 },
+								OptionalBuff = {
+									type = "input", order = 62, name = L["Optional Buff"],
+									desc = L["Enter name or numeric identifier for buff that changes the duration of the effect when active on player (leave blank if no buff required)."],
+									get = function(info) return effects.optbuff end,
+									set = function(info, n) n = ValidateSpellName(n); effects.optbuff = n; SetSpellEffectSettings() end,
+								},
+								OptionalDuration = {
+									type = "input", order = 63, name = L["Optional Duration"],
+									desc = L["Enter duration of spell effect when optional buff is active on player."],
+									get = function(info) return effects.optduration and tostring(effects.optduration) or "" end,
+									set = function(info, value) effects.optduration = tonumber(value); SetSpellEffectSettings() end,
 								},
 								CastUnitGroup = {
 									type = "group", order = 65, name = L["Cast By"], inline = true, width = "full",
@@ -6496,31 +6516,6 @@ MOD.OptionsTable = {
 										},
 									},
 								},
-								FishingGroup = {
-									type = "group", order = 32, name = L["Fishing"], inline = true,
-									args = {
-										CheckFishing = {
-											type = "toggle", order = 1, name = L["Enable"],
-											desc = L["If checked, test if the player is fishing."],
-											get = function(info) return IsTestFieldOn("Player Status", "isFishing") end,
-											set = function(info, value) local v = Off if value then v = true end SetTestField("Player Status", "isFishing", v) end,
-										},
-										DoTrue = {
-											type = "toggle", order = 2, name = L["Is Fishing"],
-											desc = L["If checked, player must be ready to fish (i.e., trained with fishing pole equipped)."],
-											disabled = function(info) return IsTestFieldOff("Player Status", "isFishing") end,
-											get = function(info) return GetTestField("Player Status", "isFishing") == true end,
-											set = function(info, value) SetTestField("Player Status", "isFishing", true) end,
-										},
-										DoFalse = {
-											type = "toggle", order = 3, name = L["Not Fishing"],
-											desc = L["If checked, player must not be ready to fish."],
-											disabled = function(info) return IsTestFieldOff("Player Status", "isFishing") end,
-											get = function(info) return GetTestField("Player Status", "isFishing") == false end,
-											set = function(info, value) SetTestField("Player Status", "isFishing", false) end,
-										},
-									},
-								},
 								PvPGroup = {
 									type = "group", order = 33, name = L["PvP"], inline = true,
 									args = {
@@ -6738,7 +6733,7 @@ MOD.OptionsTable = {
 											set = function(info, value) SetTestField("Player Status", "checkLevel", value) end,
 										},
 										LevelRange = {
-											type = "range", order = 3, name = "", min = 1, max = 80, step = 1,
+											type = "range", order = 3, name = "", min = 1, max = 100, step = 1,
 											disabled = function(info) return IsTestFieldOff("Player Status", "checkLevel") end,
 											get = function(info) return GetTestField("Player Status", "level") end,
 											set = function(info, value) SetTestField("Player Status", "level", value) end,

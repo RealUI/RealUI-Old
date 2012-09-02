@@ -21,6 +21,7 @@ Raven.classSpells.PALADIN = {
 	{ "Blinding Light", DEBUFF, p.Yellow1, cooldown = true, school = "Holy", id = 115750 },
 	{ "Burden of Guilt", BUFF, p.Blue3, id = 110301 },
 	{ "Cleanse", nil, p.Yellow1, cooldown = true, school = "Holy", id = 4987 },
+	{ "Censure", DEBUFF, p.Yellow3, school = "Holy", id = 31803 },
 	{ "Consecration", DEBUFF, p.Yellow1, cooldown = true, school = "Holy", id = 26573 },
 	{ "Contemplation", BUFF, p.Green3, cooldown = true, school = "Holy", id = 121183 },
 	{ "Crusader Strike", nil, p.Yellow2, cooldown = true, shared = L["Crusader/Hammer"], id = 35395 },
@@ -125,7 +126,7 @@ Raven.classConditions.PALADIN = {
 	},
 	["Blessing Missing"] = {
 		tests = {
-			["Player Status"] = { enable = true, isResting = false, isMounted = false, isFishing = false, },
+			["Player Status"] = { enable = true, isResting = false, isMounted = false, },
 			["Spell Ready"] = { enable = true, spell = 19740 }, -- "Blessing of Might"
 			["Any Buffs"] = { enable = true, toggle = true, unit = "player",
 				auras = { 19740, 20217 }, }, -- "Blessing of Might", "Blessing of Kings"
@@ -133,9 +134,9 @@ Raven.classConditions.PALADIN = {
 	},
 	["Seal Missing"] = {
 		tests = {
-			["Player Status"] = { enable = true, isResting = false, isMounted = false, isFishing = false, checkLevel = true, level = 3 },
+			["Player Status"] = { enable = true, isResting = false, isMounted = false, checkLevel = true, level = 3 },
 			["Any Buffs"] = { enable = true, toggle = true, unit = "player",
-				auras = { 105361, 20165, 20164, 20154 }, }, -- "Seal of Command", "Seal of Insight", "Seal of Righteousness", "Seal of Truth"
+				auras = { 105361, 20165, 20164, 20154, 31801 }, }, -- "Seal of Command", "Seal of Insight", "Seal of Righteousness", "Seal of Truth"
 		},	
 	},
 }

@@ -266,7 +266,7 @@ function GridStatusRaidDebuff:ScanUnit(unitid, unitGuid)
 		local index = 0
 		while true do
 			index = index + 1
-			name, _, icon, count, debuffType, duration, expirationTime, caster, isStealable = UnitAura(unitid, index, "HARMFUL")
+			name, rank, icon, count, debuffType, duration, expirationTime, caster, isStealable = UnitAura(unitid, index, "HARMFUL")
 
 			if not name then
 				break
@@ -341,7 +341,7 @@ local function insertDb(zone, name, arg, value)
 end
 
 function GridStatusRaidDebuff:DebuffLocale(zone, first, second, icon_priority, color_priority, timer, stackable, color, default_disable, noicon)
-	local name, icon, id
+	local name, _, icon, id
 	local args, data, order
 	local detected
 
@@ -388,7 +388,8 @@ function GridStatusRaidDebuff:Debuff(en_zone, first, second, icon_priority, colo
 		-- If we only have the English zone and not the localized one
 		-- we can't store it
 		-- self:Debug("Debuff", realzone, "en_zone translation not found")
-		warn(("LibBabble translation for zone %q not found"):format(en_zone))
+		-- warn(("LibBabble translation for zone %q not found"):format(en_zone))
+		self:Debug(("LibBabble translation for zone %q not found"):format(en_zone))
 	end
 end
 
@@ -426,7 +427,8 @@ function GridStatusRaidDebuff:BossName(en_zone, order, en_boss)
 		-- If we only have the English zone and not the localized one
 		-- we can't store it
 		-- self:Debug("BossName", realzone, "zone translation not found")
-		warn(("LibBabble translation for zone %q not found"):format(en_zone))
+		-- warn(("LibBabble translation for zone %q not found"):format(en_zone))
+		self:Debug(("LibBabble translation for zone %q not found"):format(en_zone))
 	end
 end
 

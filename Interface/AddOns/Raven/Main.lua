@@ -18,7 +18,6 @@
 -- (done) Party/raid changes: rewrite code that tests if in party or raid, change party/raid-related condition checking
 -- (done) Presets: update all class presets with new spell ids and cooldown info
 -- (done) UI: change UIPanelButtonTemplate2 to UIPanelButtonTemplate
--- Buff consolidation: figure out how to work with new raid buff interface
 -- (done) Ranged slot: remove from buff and cooldown tracking, no ranged slot-related conditions
 -- (done) Vehicle/possess: change action bar slots
 
@@ -267,7 +266,7 @@ local function CombatLogTracker(event, timeStamp, e, hc, srcGUID, srcName, sf1, 
 				name = spellName; rank = ""; count = 1; bType = nil; duration = MOD:GetDuration(name)
 				if duration > 0 then expire = now + duration else duration = 0; expire = 0 end
 				caster = "player"; isStealable = nil; boss = nil
-				isBuff = (MOD.BuffTable[name] ~= nil) -- default to debuff unless the spell name is in the known buff table
+				isBuff = (MOD.BuffTable[name] ~= nil) or (bit.band(df1, COMBATLOG_OBJECT_REACTION_MASK) ~= COMBATLOG_OBJECT_REACTION_HOSTILE)
 			end
 			if name and caster == "player" and (isBuff or (srcGUID ~= dstGUID)) then
 				AddTracker(dstGUID, dstName, isBuff, name, rank, icon, count, btype, duration, expire, caster, isStealable, spellID, boss, apply, nil)
@@ -567,7 +566,7 @@ local function CheckBlizzFrames()
 		if not visible then BuffFrame:Show(); TemporaryEnchantFrame:Show(); BuffFrame:RegisterEvent("UNIT_AURA") end
 	end
 	visible = ConsolidatedBuffs:IsShown()
-	if MOD.db.profile.hideConsolidated then
+	if MOD.db.profile.hideConsolidated or (GetNumGroupMembers() == 0) then -- make sure hide when solo
 		if visible then ConsolidatedBuffs:Hide() end
 	else
 		if not visible then if GetCVarBool("consolidateBuffs") then ConsolidatedBuffs:Show() end end
@@ -923,12 +922,14 @@ end
 function MOD:DetectSpellEffect(name, caster)
 	local ect = MOD.db.global.SpellEffects[name] -- check for new spell effect triggered by this spell	
 	if ect and not ect.disable and MOD:CheckCastBy(caster, ect.caster or "player") then
+		local duration = ect.duration
 		if ect.talent and not RavenCheckTalent(ect.talent) then return end -- check required talent
 		if ect.buff then local auraList = MOD:CheckAura("player", ect.buff, true); if #auraList == 0 then return end end -- check required buff
+		if ect.optbuff then local auraList = MOD:CheckAura("player", ect.optbuff, true); if #auraList > 0 then duration = ect.optduration end end -- check optional buff
 		if ect.condition and not MOD:CheckCondition(ect.condition) then return end -- check required condition
 		local ec = spellEffects[name]
 		if ec and ect.renew then spellEffects[name] = ReleaseTable(ec); ec = nil end -- check if already active spell effect and optionally renew
-		if not ec then ec = AllocateTable(); ec.start = GetTime(); ec.expire = ec.start + ect.duration; ec.caster = caster;
+		if not ec then ec = AllocateTable(); ec.start = GetTime(); ec.expire = ec.start + duration; ec.caster = caster;
 			spellEffects[name] = ec; TriggerPlayerUpdate() end
 	end
 end
@@ -946,7 +947,21 @@ local function GetSpellEffectAuras()
 		if ect and not ect.disable and ect.kind ~= "cooldown" then
 			local spell = ect.spell or name
 			AddAura("player", spell, not ect.kind, ect.id, 1, nil, ect.duration, ec.caster, UnitName(ec.caster), nil, nil, ect.icon, nil, ec.expire, "effect", name)
-			MOD:SetDuration(spell, ect.duration)
+		end
+	end
+end
+
+-- Create an aura for current stance for warriors and paladins
+local function GetStanceAura()
+	if MOD.myClass == "WARRIOR" or MOD.myClass == "PALADIN" then
+		local stance = GetShapeshiftForm()
+		if stance and stance > 0 then
+			local _, name = GetShapeshiftFormInfo(stance)
+			if name then
+				local icon = GetSpellTexture(name)
+				local link = GetSpellLink(name)
+				AddAura("player", name, true, nil, 1, "Stance", 0, "player", nil, nil, nil, icon, nil, 0, "spell link", link)
+			end
 		end
 	end
 end
@@ -958,7 +973,7 @@ function MOD:UnitStatusUpdate(unit)
 		if status ~= 1 then unit = status end
 		if unitUpdate[unit] then -- need to do an update for this unit
 			ReleaseAuras(unit); GetBuffs(unit); GetDebuffs(unit)
-			if unit == "player" then GetTracking(); GetSpellEffectAuras() end
+			if unit == "player" then GetTracking(); GetSpellEffectAuras(); GetStanceAura() end
 			unitUpdate[unit] = false
 		end
 		return unit
@@ -1172,8 +1187,7 @@ local function CheckSpellEffectCooldowns()
 		local ect = MOD.db.global.SpellEffects[name]
 		if ect and not ect.disable and ect.kind == "cooldown" then
 			local spell = ect.spell or name
-			AddCooldown(spell, ect.id, ect.icon, ec.start, ect.duration, "effect", name, "player")
-			MOD:SetDuration(spell, ect.duration)
+			AddCooldown(spell, ect.id, ect.icon, ec.start, ec.expire - ec.start, "effect", name, "player")
 		end
 	end
 end

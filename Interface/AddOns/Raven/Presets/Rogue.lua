@@ -8,6 +8,7 @@ Raven.classSpells.ROGUE = {
 	{ "Adrenaline Rush", BUFF, p.Orange1, cooldown = true, id = 13750 },
 	{ "Blade Flurry", BUFF, p.Orange3, cooldown = true, id = 13877 },
 	{ "Blind", DEBUFF, p.Gray, cooldown = true, id = 2094 },
+	{ "Blindside", BUFF, p.Purple2, id = 121152 },
 	{ "Burst of Speed", BUFF, p.Green3, id = 108212 },
 	{ "Cheap Shot", DEBUFF, p.Blue3, id = 1833 },
 	{ "Cheat Death", BUFF, p.Orange3, id = 31230 },
@@ -39,7 +40,7 @@ Raven.classSpells.ROGUE = {
 	{ "Prey on the Weak", DEBUFF, p.Red1, id = 131511 },
 	{ "Recuperate", BUFF, p.Green2, id = 73651 },
 	{ "Redirect", nil, p.Orange2, cooldown = true, id = 73981 }, -- Cataclysm level 83
-	{ "Revealing Strike", DEBUFF, p.Brown3, id = 84617 },
+	{ "Revealing Strike", BUFF, p.Brown3, id = 84617 },
 	{ "Rupture", DEBUFF, p.Red1, id = 1943 },
 	{ "Sap", DEBUFF, p.Orange3,  id = 6770 },
 	{ "Shadow Blades", BUFF, p.Blue3, cooldown = true, id = 121471 },
@@ -72,7 +73,7 @@ Raven.classConditions.ROGUE = {
 	["Lethal Poison Missing"] = {
 		name = "Lethal Poison Missing", enabled = true, notify = true,
 		tests = {
-			["Player Status"] = { enable = true, isResting = false, isMounted = false, isFishing = false },
+			["Player Status"] = { enable = true, isResting = false, isMounted = false },
 			["Spell Ready"] = { enable = true, spell = 2823 }, -- "Deadly Poison"
 			["Any Buffs"] = { enable = true, toggle = true, unit = "player", auras = { 2823, 8679 }, }, -- "Deadly Poison", "Wound Poison"
 		},	
@@ -80,7 +81,7 @@ Raven.classConditions.ROGUE = {
 	["Non-Lethal Poison Missing"] = {
 		name = "Non-Lethal Poison Missing", enabled = true, notify = true,
 		tests = {
-			["Player Status"] = { enable = true, isResting = false, isMounted = false, isFishing = false },
+			["Player Status"] = { enable = true, isResting = false, isMounted = false },
 			["Spell Ready"] = { enable = true, spell = 3408 }, -- "Crippling Poison"
 			["Any Buffs"] = { enable = true, toggle = true, unit = "player",
 				auras = { 3408, 5761, 108215, 108211 }, }, -- "Crippling Poison", "Mind-numbing Poison", "Paralytic Poison", "Leeching Poison"

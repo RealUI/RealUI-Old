@@ -6,6 +6,7 @@ local L = GridIndicatorCornerIcons_Locales
 local media = LibStub("LibSharedMedia-3.0", true)
 
 local Grid = Grid
+
 local GridFrame = Grid:GetModule("GridFrame")
 local GridIndicatorCornerIcons = GridFrame:NewModule("GridIndicatorCornerIcons", "AceEvent-3.0")
 
@@ -26,12 +27,13 @@ GridIndicatorCornerIcons.defaultDB = {
 	OriginalSize = false,
 }
 
-GridIndicatorCornerIcons.options = {
+local options = {--GridIndicatorCornerIcons.options = {
 	type = "group",
+	--inline = true,
 	icon = "Interface\\AddOns\\GridIndicatorCornerIcons\\GridIndicatorCornerIcons-icon-TRTLBLBR",
 	name = L["Icon (Corners)"],
 	desc = L["Options for Icon (Corners) indicators."],
-	order = 107,
+	order = -0.571,--451,
 	args = {
 		["configuration"] = {
 			type = "toggle",
@@ -47,13 +49,15 @@ GridIndicatorCornerIcons.options = {
 		["header1"] = {
 			type = "header",
 			order = 15,
-			name = " ",
+			width = "full",
+			name = "",
 		},
 		["xoffset"] = {
 			type = "range",
 			name = L["Offset X-axis"],
 			desc = L["Adjust the offset of the X-axis."],
 			order = 20,
+			width = "double",
 			min = -20,
 			max = 20,
 			step = 1,
@@ -70,6 +74,7 @@ GridIndicatorCornerIcons.options = {
 			name = L["Offset Y-axis"],
 			desc = L["Adjust the offset of the Y-axis."],
 			order = 30,
+			width = "double",
 			min = -20,
 			max = 20,
 			step = 1,
@@ -84,13 +89,15 @@ GridIndicatorCornerIcons.options = {
 		["header2"] = {
 			type = "header",
 			order = 35,
-			name = " ",
+			width = "full",
+			name = "",
 		},
 		["originalsize"] = {
 			type = "toggle",
 			name = L["Same settings as Grid"],
 			desc = L["If enabled, the settings for the Icon (Corners) indicators are adjustable with the standard Grid options. If deactivated, you can set individual settings for the Icon (Corners) indicators."],
 			order = 40,
+			width = "double",
 			get = function()
 				return GridIndicatorCornerIcons.db.profile.OriginalSize
 			end,
@@ -100,11 +107,18 @@ GridIndicatorCornerIcons.options = {
 				if configMode then GridFrame:WithAllFrames(function(f) GridIndicatorCornerIcons:GridIndicatorCornerIconsConfig(f) end) end
 			end,
 		},
+		["header3"] = {
+			type = "header",
+			order = 45,
+			width = "full",
+			name = "",
+		},
 		["iconbordersize"] = {
 			type = "range",
 			name = L["Icon Border Size"],
 			desc = L["Adjust the size of the icon's border."],
 			order = 50,
+			width = "double",
 			disabled = function() return GridIndicatorCornerIcons.db.profile.OriginalSize end,
 			min = 0,
 			max = 4,
@@ -119,11 +133,18 @@ GridIndicatorCornerIcons.options = {
 				if configMode then GridFrame:WithAllFrames(function(f) GridIndicatorCornerIcons:GridIndicatorCornerIconsConfig(f) end) end
 			end,
 		},
+		["header4"] = {
+			type = "header",
+			order = 55,
+			width = "full",
+			name = "",
+		},
 		["iconcooldown"] = {
 			type = "toggle",
 			name = L["Enable Icon Cooldown Frame"],
 			desc = L["Toggle icon's cooldown frame."],
 			order = 60,
+			width = "double",
 			disabled = function() return GridIndicatorCornerIcons.db.profile.OriginalSize end,
 			get = function()
 				return GridIndicatorCornerIcons.db.profile.enableIconCooldown
@@ -139,6 +160,7 @@ GridIndicatorCornerIcons.options = {
 			name = L["Enable Icon Stack Text"],
 			desc = L["Toggle icon's stack count text."],
 			order = 70,
+			width = "double",
 			disabled = function() return GridIndicatorCornerIcons.db.profile.OriginalSize end,
 			get = function()
 				return GridIndicatorCornerIcons.db.profile.enableIconStackText
@@ -149,11 +171,18 @@ GridIndicatorCornerIcons.options = {
 				if configMode then GridFrame:WithAllFrames(function(f) GridIndicatorCornerIcons:GridIndicatorCornerIconsConfig(f) end) end
 			end,
 		},
+		["header5"] = {
+			type = "header",
+			order = 75,
+			width = "full",
+			name = "",
+		},
 		["iconstacktextfontsize"] = {
 			type = "range",
 			name = L["Icon Stack Text: Font Size"],
 			desc = L["Adjust the font size for Icon Stack Text."],
 			order = 80,
+			width = "double",
 			disabled = function() return not GridIndicatorCornerIcons.db.profile.enableIconStackText or GridIndicatorCornerIcons.db.profile.OriginalSize end,
 			min = 6,
 			max = 24,
@@ -171,6 +200,7 @@ GridIndicatorCornerIcons.options = {
 			name = L["Icon Stack Text: Offset XY-axis"],
 			desc = L["Adjust the offset for Icon Stack Text of the XY-axis."],
 			order = 90,
+			width = "double",
 			disabled = function() return not GridIndicatorCornerIcons.db.profile.enableIconStackText or GridIndicatorCornerIcons.db.profile.OriginalSize end,
 			min = -4,
 			max = 4,
@@ -183,12 +213,19 @@ GridIndicatorCornerIcons.options = {
 				GridFrame:WithAllFrames(function(f) GridIndicatorCornerIcons.SetIconSize(f, v) end)
 			end,
 		},
+		["header6"] = {
+			type = "header",
+			order = 95,
+			width = "full",
+			name = "",
+		},
 		["iconsizetopleftcorner"] = {
 			type = "range",
 			icon = "Interface\\AddOns\\GridIndicatorCornerIcons\\GridIndicatorCornerIcons-icon-TL",
 			name = L["Icon Size Top Left Corner"],
 			desc = L["Adjust the size of the 2 Top Left Corner Icons."],
 			order = 100,
+			width = "double",
 			disabled = function() return GridIndicatorCornerIcons.db.profile.OriginalSize end,
 			min = 5,
 			max = 50,
@@ -207,6 +244,7 @@ GridIndicatorCornerIcons.options = {
 			name = L["Icon Size Top Right Corner"],
 			desc = L["Adjust the size of the 2 Top Right Corner Icons."],
 			order = 110,
+			width = "double",
 			disabled = function() return GridIndicatorCornerIcons.db.profile.OriginalSize end,
 			min = 5,
 			max = 50,
@@ -225,6 +263,7 @@ GridIndicatorCornerIcons.options = {
 			name = L["Icon Size Bottom Left Corner"],
 			desc = L["Adjust the size of the 2 Bottom Left Corner Icons."],
 			order = 120,
+			width = "double",
 			disabled = function() return GridIndicatorCornerIcons.db.profile.OriginalSize end,
 			min = 5,
 			max = 50,
@@ -243,6 +282,7 @@ GridIndicatorCornerIcons.options = {
 			name = L["Icon Size Bottom Right Corner"],
 			desc = L["Adjust the size of the 2 Bottom Right Corner Icons."],
 			order = 130,
+			width = "double",
 			disabled = function() return GridIndicatorCornerIcons.db.profile.OriginalSize end,
 			min = 5,
 			max = 50,
@@ -257,6 +297,7 @@ GridIndicatorCornerIcons.options = {
 		}
 	}
 }
+Grid.options.args["GridIndicatorCornerIcons"] = options
 
 local indicators = GridFrame.prototype.indicators
 table.insert(indicators, { type = "iconTLcornerleft",  order = 7.21, name = L["Top Left Corner Icon (Left)"] })
@@ -320,7 +361,7 @@ function GridIndicatorCornerIcons:CleanOptionsMenu()
 		icon = "Interface\\AddOns\\GridIndicatorCornerIcons\\GridIndicatorCornerIcons-icon-TRTLBLBR",
 		name = L["Icon (Corners)"],
 		desc = L["Options for Icon (Corners) indicators."],
-		order = 57.2,
+		order = 8.2,
 		args = {
 			["iconTLcornerleft"]  = Grid.options.args.Indicators.args.iconTLcornerleft,
 			["iconTLcornerright"] = Grid.options.args.Indicators.args.iconTLcornerright,

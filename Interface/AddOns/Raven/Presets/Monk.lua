@@ -19,7 +19,7 @@ Raven.classSpells.MONK = {
 	{ "Dampen Harm", BUFF, p.Orange3, cooldown = true, id = 122278 }, 
 	{ "Dematerialize", BUFF, p.Purple3, id = 122464 }, 
 	{ "Detox", nil, p.Purple2, cooldown = true, id = 115450 },
-	{ "Diffuse Magic", BUFF, p.Purple2, school = "Nature", id = 122783 }, 
+	{ "Diffuse Magic", BUFF, p.Purple2, cooldown = true, school = "Nature", id = 122783 }, 
 	{ "Disable", DEBUFF, p.Orange2, id = 116095 }, 
 	{ "Dizzying Haze", DEBUFF, p.Orange3, id = 115180 }, 
 	{ "Elusive Brew", BUFF, p.Yellow3, cooldown = true, id = 115308 },
@@ -84,7 +84,7 @@ Raven.classSpells.MONK = {
 	{ "Vengeance", BUFF, p.Purple2, id = 120267 },
 	{ "Vital Mists", BUFF, p.Blue3, id = 118674 }, 
 	{ "Zen Flight", BUFF, p.Blue3, school = "Nature", id = 125883 }, 
-	{ "Zen Meditation", BUFF, p.Cyan, school = "Nature", id = 115176 }, 
+	{ "Zen Meditation", BUFF, p.Cyan, cooldown = true, school = "Nature", id = 115176 }, 
 	{ "Zen Pilgramage", nil, p.Blue1, school = "Nature", id = 126892 }, 
 	{ "Zen Sphere", BUFF, p.Cyan, school = "Nature", id = 124081 }, 
 }

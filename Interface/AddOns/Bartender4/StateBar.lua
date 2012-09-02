@@ -29,9 +29,17 @@ Bartender4.StateBar = {}
 Bartender4.StateBar.prototype = StateBar
 Bartender4.StateBar.defaults = defaults
 
+local _, playerclass = UnitClass("player")
+
 function Bartender4.StateBar:Create(id, config, name)
 	local bar = setmetatable(Bartender4.ButtonBar:Create(id, config, name), StateBar_MT)
 
+	if playerclass == "DRUID" or playerclass == "ROGUE" then
+		bar:RegisterEvent("PLAYER_TALENT_UPDATE")
+		bar:RegisterEvent("PLAYER_REGEN_ENABLED")
+		bar:RegisterEvent("GLYPH_UPDATED")
+		bar:SetScript("OnEvent", StateBar.OnEvent)
+	end
 	return bar
 end
 
@@ -42,6 +50,21 @@ function StateBar:ApplyConfig(config)
 	-- We cannot call UpdateStates or UpdateSelfCast now, because the buttons are not yet created *sad*
 end
 
+function StateBar:OnEvent(event, ...)
+	if event == "PLAYER_TALENT_UPDATE" or event == "GLYPH_UPDATED" then
+		if InCombatLockdown() then
+			self.updateStateOnCombatLeave = true
+		else
+			self:UpdateStates()
+		end
+	elseif event == "PLAYER_REGEN_ENABLED" then
+		if self.updateStateOnCombatLeave and not InCombatLockdown() then
+			self.updateStateOnCombatLeave = nil
+			self:UpdateStates()
+		end
+	end
+end
+
 --------------------------------------------------------------
 -- Stance Management
 
@@ -50,8 +73,6 @@ local table_concat = table.concat
 local fmt = string.format
 
 local modifiers = { "ctrl", "alt", "shift" }
-
-local _, playerclass = UnitClass("player")
 
 -- specifiy the available stances for each class
 local DefaultStanceMap = setmetatable({}, { __index = function(t,k)
@@ -69,11 +90,13 @@ local DefaultStanceMap = setmetatable({}, { __index = function(t,k)
 				-- prowl is virtual, no real stance
 			{ id = "prowl", name = ("%s (%s)"):format((GetSpellInfo(768)), (GetSpellInfo(5215))), index = false},
 			{ id = "moonkin", name = GetSpellInfo(24858), index = 4 },
-			{ id = "treeoflife", name = GetSpellInfo(33891), index = 2 },
+			{ id = "treeoflife", name = GetSpellInfo(33891), index = -1, type = "form" },
 		}
 	elseif k == "ROGUE" then
 		newT = {
-			{ id = "stealth", name = ("%s / %s"):format((GetSpellInfo(1784)), (GetSpellInfo(51713))), index = 1 },
+			-- shadowdance needs to be before stealth in the list, otherwise the condition is overwritten
+			{ id = "shadowdance", name = ("%s / %s"):format((GetSpellInfo(51713)), (GetSpellInfo(1856))), index = -1, type = "form" },
+			{ id = "stealth", name = GetSpellInfo(1784), index = 1 },
 		}
 	elseif k == "PRIEST" then
 		newT = {
@@ -82,6 +105,7 @@ local DefaultStanceMap = setmetatable({}, { __index = function(t,k)
 	elseif k == "WARLOCK" then
 		newT = {
 			{ id = "metamorphosis", name = GetSpellInfo(103958), index = 1, type = "form"},
+			--{ id = "darkapotheosis", name = GetSpellInfo(114168), index = 2, type = "form"}, -- this should work, but for some reason it doesn't.
 		}
 	elseif k == "MONK" then
 		newT = {
@@ -114,7 +138,7 @@ function StateBar:UpdateStates(returnOnly)
 
 		-- possessing will always be the most important change, if enabled
 		if self:GetStateOption("possess") then
-			table_insert(statedriver, "[possessbar]12")
+			table_insert(statedriver, "[overridebar][possessbar]possess")
 		end
 
 		-- highest priority have our temporary quick-swap keys
@@ -139,10 +163,18 @@ function StateBar:UpdateStates(returnOnly)
 				local state = self:GetStanceState(v)
 				if state and state ~= 0 and v.index then
 					-- hack for druid prowl, since its no real "stance", but we want to handle it anyway
-					if playerclass == "DRUID" and v.id == "cat" then
-						local prowl = self:GetStanceState("prowl")
-						if prowl and prowl ~= 0 then
-							table_insert(statedriver, fmt("[bonusbar:%s,stealth:1]%s", v.index, prowl))
+					if playerclass == "DRUID" then
+						if v.id == "cat" then
+							local prowl = self:GetStanceState("prowl")
+							if prowl and prowl ~= 0 then
+								table_insert(statedriver, fmt("[bonusbar:%s,stealth:1]%s", v.index, prowl))
+							end
+						elseif v.id == "incarnation" then
+							v.index = GetNumShapeshiftForms() + 1
+						end
+					elseif playerclass == "ROGUE" then
+						if v.id == "shadowdance" then
+							v.index = GetNumShapeshiftForms() + 1
 						end
 					end
 					table_insert(statedriver, fmt("[%s:%s]%s", v.type or "bonusbar", v.index, state))
@@ -160,10 +192,25 @@ function StateBar:UpdateStates(returnOnly)
 	end
 
 	if statedriver then
-		statedriver = statedriver:gsub("%[bonusbar:5%]11", "[possessbar]12")
+		statedriver = statedriver:gsub("%[bonusbar:5%]11", "[overridebar][possessbar]possess")
 	end
 
+	self:SetFrameRef("mainActionPageProvider", MainMenuBarArtFrame)
+	self:SetFrameRef("overrideActionPageProvider", OverrideActionBar)
+
 	self:SetAttribute("_onstate-page", [[
+		if newstate == "possess" or newstate == "11" then
+			local app = self:GetFrameRef("mainActionPageProvider")
+			newstate = app:GetAttribute("actionpage")
+			if newstate <= 10 then
+				app = self:GetFrameRef("overrideActionPageProvider")
+				newstate = app:GetAttribute("actionpage")
+			end
+			if newstate <= 10 then
+				print("Bartender4: Cannot determine possess/vehicle action bar page, please report this!")
+				newstate = 12
+			end
+		end
 		self:SetAttribute("state", newstate)
 		control:ChildUpdate("state", newstate)
 	]])
@@ -208,6 +255,7 @@ end
 
 function StateBar:GetStanceState(stance)
 	local stanceconfig = self.config.states.stance[playerclass]
+	local state
 	if type(stance) == "table" then
 		state = stanceconfig[stance.id]
 	else

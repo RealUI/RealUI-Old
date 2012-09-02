@@ -11,7 +11,7 @@ Raven.classSpells.MAGE = {
 	{ "Arcane Barrage", nil, p.Purple3, cooldown = true, school = "Arcane", id = 44425 }, 
 	{ "Arcane Blast", DEBUFF, p.Purple3, school = "Arcane", id = 30451 }, 
 	{ "Arcane Brilliance", BUFF, p.Cyan, school = "Arcane", id = 1459 }, 
-	{ "Arcane Charge", BUFF, p.Purple3, school = "Arcane", id = 36032 }, 
+	{ "Arcane Charge", DEBUFF, p.Purple3, school = "Arcane", id = 36032 }, 
 	{ "Arcane Explosion", nil, p.Purple3, lockout = true, school = "Arcane", id = 1449 }, 
 	{ "Arcane Missiles", nil, p.Blue1, school = "Arcane", id = 5143 }, 
 	{ "Arcane Missiles!", BUFF, p.Blue1, id = 79683 }, -- procs when Arcane Missiles is available 
@@ -36,7 +36,7 @@ Raven.classSpells.MAGE = {
 	{ "Fireball", nil, p.Orange2, school = "Fire", lockout = true, id = 133 }, 
 	{ "Flamestrike", DEBUFF, p.Orange1, cooldown = true, school = "Fire", id = 2120 }, 
 	{ "Frost Armor", BUFF, p.Blue1, school = "Frost", id = 7302 }, 
-	{ "Frost Bomb", BUFF, p.Blue2, cooldown = true, school = "Frost", id = 112948, refer = 125430 }, 
+	{ "Frost Bomb", DEBUFF, p.Blue2, cooldown = true, school = "Frost", id = 112948, refer = 125430 }, 
 	{ "Frost Jaw", DEBUFF, p.Cyan, cooldown = true, school = "Frost", id = 102051 }, 
 	{ "Frost Nova", DEBUFF, p.Blue2, cooldown = true, school = "Frost", id = 122 }, 
 	{ "Frostbolt", DEBUFF, p.Purple3, school = "Frost", lockout = true, id = 116 }, 
@@ -97,7 +97,7 @@ Raven.classSpells.MAGE = {
 Raven.classConditions.MAGE = {
 	["Armor Missing"] = {
 		tests = {
-			["Player Status"] = { enable = true, isResting = false, isMounted = false, isFishing = false },
+			["Player Status"] = { enable = true, isResting = false, isMounted = false },
 			["Spell Ready"] = { enable = true, spell = 30482 }, -- "Molten Armor"
 			["Any Buffs"] = { enable = true, toggle = true, isMine = true, unit = "player",
 				auras = { 7302, 6117, 30482 }, }, -- "Frost Armor", "Mage Armor", "Molten Armor"
@@ -106,7 +106,7 @@ Raven.classConditions.MAGE = {
 	},
 	["Brilliance Buff Missing"] = {	
 		tests = {
-			["Player Status"] = { enable = true, isResting = false, isMounted = false, isFishing = false },
+			["Player Status"] = { enable = true, isResting = false, isMounted = false },
 			["Spell Ready"] = { enable = true, spell = 1459 }, -- "Arcane Brilliance"
 			["Any Buffs"] = { enable = true, toggle = true, unit = "player",
 				auras = { 1459, 61316 }, }, -- "Arcane Brilliance", "Dalaran Brilliance",

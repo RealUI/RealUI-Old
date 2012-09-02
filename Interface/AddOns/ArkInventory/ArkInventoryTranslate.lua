@@ -174,9 +174,6 @@ local updateTable = {
 	["WOW_SKILL_BLACKSMITHING"] = function( value )
 		ArkInventory.Const.Category.Code.Skill[102].text = value
 	end,
-	["WOW_SKILL_COOKING"] = function( value )
-		ArkInventory.Const.Category.Code.Skill[103].text = value
-	end,
 	["WOW_SKILL_ENCHANTING"] = function( value )
 		ArkInventory.Const.Category.Code.Skill[105].text = value
 		ArkInventory.Const.Category.Code.Empty[306].text = value
@@ -189,9 +186,6 @@ local updateTable = {
 	end,
 	["WOW_SKILL_FIRST_AID"] = function( value )
 		ArkInventory.Const.Category.Code.Skill[106].text = value
-	end,
-	["WOW_SKILL_FISHING"] = function( value )
-		ArkInventory.Const.Category.Code.Skill[107].text = value
 	end,
 	["WOW_SKILL_HERBALISM"] = function( value )
 		ArkInventory.Const.Category.Code.Skill[108].text = value
@@ -360,20 +354,18 @@ end
 
 
 local spellTable = { -- key, spell id
-	{ "WOW_SKILL_ALCHEMY", 2259 }, --, 3101, 3464, 11611, 28596, 51304, 80731
-	{ "WOW_SKILL_BLACKSMITHING", 2018 }, -- , 3100, 3538, 9785, 29844, 51300, 76666
-	{ "WOW_SKILL_COOKING", 2550 }, -- 3102, 3413, 18260, 33359, 51296, 88053
-	{ "WOW_SKILL_ENCHANTING", 7411 }, -- 7412, 7413, 13920, 28029, 51313, 74258
-	{ "WOW_SKILL_ENGINEERING", 4036 }, -- 4037, 4038, 12656, 30350, 51306, 82774
-	{ "WOW_SKILL_FIRST_AID", 3273 }, -- 3274, 7924, 10846, 27028, 45542, 74559
-	{ "WOW_SKILL_FISHING", 7620 }, -- 7731, 7732, 18248, 33095, 51294, 88868
-	{ "WOW_SKILL_HERBALISM", 13614 }, -- 9134
-	{ "WOW_SKILL_INSCRIPTION", 45357 }, -- 45358, 45359, 45360, 45361, 45363, 86008
-	{ "WOW_SKILL_JEWELCRAFTING", 25229 }, -- 25230, 28894, 28895, 28897, 51311, 73318
-	{ "WOW_SKILL_LEATHERWORKING", 2108 }, -- 3104, 3811, 10662, 32549, 51302, 81199
-	{ "WOW_SKILL_MINING", 2575 }, -- 2576, 3564, 10248, 29354, 50310, 74517
+--	{ "WOW_SKILL_ALCHEMY", 2259 }, --, 3101, 3464, 11611, 28596, 51304, 80731
+--	{ "WOW_SKILL_BLACKSMITHING", 2018 }, -- , 3100, 3538, 9785, 29844, 51300, 76666
+--	{ "WOW_SKILL_ENCHANTING", 7411 }, -- 7412, 7413, 13920, 28029, 51313, 74258
+--	{ "WOW_SKILL_ENGINEERING", 4036 }, -- 4037, 4038, 12656, 30350, 51306, 82774
+--	{ "WOW_SKILL_FIRST_AID", 3273 }, -- 3274, 7924, 10846, 27028, 45542, 74559
+--	{ "WOW_SKILL_HERBALISM", 13614 }, -- 9134
+--	{ "WOW_SKILL_INSCRIPTION", 45357 }, -- 45358, 45359, 45360, 45361, 45363, 86008
+--	{ "WOW_SKILL_JEWELCRAFTING", 25229 }, -- 25230, 28894, 28895, 28897, 51311, 73318
+--	{ "WOW_SKILL_LEATHERWORKING", 2108 }, -- 3104, 3811, 10662, 32549, 51302, 81199
+--	{ "WOW_SKILL_MINING", 2575 }, -- 2576, 3564, 10248, 29354, 50310, 74517
 	{ "WOW_SKILL_SKINNING", 8613 }, -- 8617, 8618, 10768, 32678, 50305, 74522
-	{ "WOW_SKILL_TAILORING", 3908 }, -- 3909, 3910, 12180, 26790, 51309, 75156
+--	{ "WOW_SKILL_TAILORING", 3908 }, -- 3909, 3910, 12180, 26790, 51309, 75156
 }
 
 local function GetWowSpellNameHelper( id, key )
@@ -455,14 +447,14 @@ end
 local tooltipTable = {
 	{ "WOW_SKILL_ALCHEMY", 5640 },
 	{ "WOW_SKILL_BLACKSMITHING", 10858 },
-	{ "WOW_SKILL_COOKING", 6325 },
 	{ "WOW_SKILL_ENCHANTING", 20758 },
 	{ "WOW_SKILL_ENGINEERING", 13309 },
 	{ "WOW_SKILL_FIRST_AID", 19442 },
-	{ "WOW_SKILL_FISHING", 34109 },
+	{ "WOW_SKILL_HERBALISM", 22795 }, -- 63122, 85663
 	{ "WOW_SKILL_INSCRIPTION", 50166 },
 	{ "WOW_SKILL_JEWELCRAFTING", 20854 },
 	{ "WOW_SKILL_LEATHERWORKING", 18731 },
+	{ "WOW_SKILL_MINING", 2901 },
 	{ "WOW_SKILL_TAILORING", 6272 },
 }
 
@@ -473,7 +465,7 @@ local function GetWowTooltipTextHelper( id, key )
 	local _, _, skill, level = ArkInventory.TooltipFind( ArkInventory.Global.Tooltip.Scan, ArkInventory.Localise["WOW_TOOLTIP_SKILL"], false, true, true )
 	
 	if skill and level then
-		--ArkInventory.Output( "tooltip: got ", id )
+		--ArkInventory.Output( "tooltip: got ", id, ", skill = ", skill, ", level = ", level )
 		return skill
 	end
 	
@@ -521,7 +513,7 @@ local function GetTooltipBasedTranslations( )
 				if newValue ~= oldValue then
 					
 					if not oldValue or key == oldValue then
-						--ArkInventory.OutputWarning( "Updating ", GetLocale( ), " key [", key, "] with [", newValue, "]" )
+						--ArkInventory.OutputWarning( "Setting ", GetLocale( ), " key [", key, "] with [", newValue, "]" )
 					else
 						ArkInventory.OutputWarning( "Updating ", GetLocale( ), " key [", key, "] with [", newValue, "], was [", oldValue, "]" )
 					end

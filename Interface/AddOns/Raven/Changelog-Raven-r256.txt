@@ -1,4 +1,65 @@
 ------------------------------------------------------------------------
+r256 | tomber | 2012-09-02 05:33:50 +0000 (Sun, 02 Sep 2012) | 7 lines
+Changed paths:
+   M /trunk/Conditions.lua
+   M /trunk/Main.lua
+   M /trunk/Nest.lua
+   M /trunk/Presets/Druid.lua
+   M /trunk/Presets/Mage.lua
+   M /trunk/Raven_Options/Options.lua
+
+Improved method of checking if auras are buffs or debuffs in trackers. This used to depend on the preset files, defaulting to debuff when not found. Now default is to check if the unit is friendly or hostile. Note that this fixes Swiftmend showing up as a debuff in trackers.
+
+Fixed issue with bar background opacity not being set correctly when using the expiring color option. Also, improved responsiveness of switching colors on expiration.
+
+Added Swiftmend buff to druid presets. Changed Frost Bomb to debuff in mage presets.
+
+Increased maximum level in Player Status>Level condition test to 100.
+------------------------------------------------------------------------
+r255 | tomber | 2012-09-01 05:02:37 +0000 (Sat, 01 Sep 2012) | 1 line
+Changed paths:
+   M /trunk/Profile.lua
+
+Update spellbook caching code that needed to be updated for 5.0.4 in order to prevent intermittent Lua errors when shapeshifting.
+------------------------------------------------------------------------
+r254 | tomber | 2012-08-31 17:14:20 +0000 (Fri, 31 Aug 2012) | 9 lines
+Changed paths:
+   M /trunk/Conditions.lua
+   M /trunk/Localizations/enUS.lua
+   M /trunk/Main.lua
+   M /trunk/Presets/Druid.lua
+   M /trunk/Presets/Mage.lua
+   M /trunk/Presets/Monk.lua
+   M /trunk/Presets/Paladin.lua
+   M /trunk/Presets/Priest.lua
+   M /trunk/Presets/Rogue.lua
+   M /trunk/Presets/Shaman.lua
+   M /trunk/Raven_Options/Options.lua
+
+Changed Hide Consolidate Buffs option to work correctly when solo versus in a group.
+
+Removed "Is Fishing" test from condition code and all preset conditions that used to include it. The previous implementation no longer works in 5.0.4.
+
+Added stance buffs for warriors and paladins (oddly, seals are now represented as stances in the API). This allows you to test for, among other things, an active seal.
+
+Added optional aura and optional duration settings for spell effects triggered by a spell cast. Among other things, this allows you to show a different duration for Wild Strike when Bloodsurge is active.
+
+Added cooldowns to monk presets for Diffuse Magic and Zen Meditation. Added Censure debuff to paladin presets. Changed Blindside to a buff in rogue presets.
+------------------------------------------------------------------------
+r253 | tomber | 2012-08-30 00:27:14 +0000 (Thu, 30 Aug 2012) | 5 lines
+Changed paths:
+   M /trunk/Bars.lua
+   M /trunk/Presets/General.lua
+   M /trunk/Presets/Mage.lua
+   M /trunk/Presets/Rogue.lua
+   M /trunk/Presets/Shaman.lua
+
+Fixed toggle all test mode bug that caused a Lua error when a bar group has been deleted within a session.
+
+Removed default spell effects linked to out-of-date talents (e.g., Efflorescence).
+
+Mage Arcane Charge is now a debuff. Rogue Revealing Strike is now a buff. Rogue Blindside debuff added. Shaman Lava Surge buff added.
+------------------------------------------------------------------------
 r252 | tomber | 2012-08-26 20:55:17 +0000 (Sun, 26 Aug 2012) | 3 lines
 Changed paths:
    M /trunk/Bars.lua

@@ -1,11 +1,11 @@
-## Interface: 40300
+## Interface: 50001
 ## Title: GridStatusRaidDebuff(Catalcysm)
 ## Notes: Debuff List for Cataclysm
 ## Author: Stassart (Trelis-Proudmoore-US)
 ## Version: 1.4
 ## Grid Author: Pastamancer & Maia
 ## Dependencies: GridStatusRaidDebuff
-## X-Curse-Packaged-Version: r28
+## X-Curse-Packaged-Version: r29
 ## X-Curse-Project-Name: GridStatusRD_Cata
 ## X-Curse-Project-ID: gridstatusrd_cata
 ## X-Curse-Repository-ID: wow/gridstatusrd_cata/mainline

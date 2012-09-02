@@ -1,6 +1,6 @@
--- (c) 2009-2011, all rights reserved.
--- $Revision: 930 $
--- $Date: 2012-08-29 17:05:16 +1000 (Wed, 29 Aug 2012) $
+-- (c) 2006-2012, all rights reserved.
+-- $Revision: 952 $
+-- $Date: 2012-09-01 20:41:23 +1000 (Sat, 01 Sep 2012) $
 
 
 ArkInventory = LibStub( "AceAddon-3.0" ):NewAddon( "ArkInventory", "AceConsole-3.0", "AceHook-3.0", "AceEvent-3.0", "AceBucket-3.0" )
@@ -32,8 +32,8 @@ ArkInventory.Const = { -- constants
 	
 	Program = {
 		Name = "ArkInventory",
-		Version = 30301,
-		UIVersion = "3.3.1",
+		Version = 30302,
+		UIVersion = "3.3.2",
 		--Beta = "BETA 11-11-01-50",
 	},
 	
@@ -1498,7 +1498,8 @@ ArkInventory.Const.DatabaseDefaults.global = {
 			},
 		},
 	},
-	["player"] = { },
+	["player"] = {
+	},
 }
 
 ArkInventory.Const.DatabaseDefaults.realm = {
@@ -2033,7 +2034,7 @@ function ArkInventory.OnEnable( )
 	ArkInventory:RegisterBucketMessage( "LISTEN_MAIL_LEAVE_BUCKET", 0.3 )
 	ArkInventory:RegisterBucketMessage( "LISTEN_MAIL_UPDATE_BUCKET", bucket1 )
 	ArkInventory:RegisterEvent( "MAIL_INBOX_UPDATE", "LISTEN_MAIL_UPDATE" )
-	
+
 	ArkInventory:RegisterEvent( "TRADE_SHOW", "LISTEN_TRADE_ENTER" )
 	ArkInventory:RegisterEvent( "TRADE_CLOSED", "LISTEN_TRADE_LEAVE" )
 	
@@ -2042,6 +2043,7 @@ function ArkInventory.OnEnable( )
 	ArkInventory:RegisterBucketMessage( "LISTEN_AUCTION_LEAVE_BUCKET", 0.3 )
 	ArkInventory:RegisterEvent( "AUCTION_OWNED_LIST_UPDATE", "LISTEN_AUCTION_UPDATE" )
 	ArkInventory:RegisterBucketMessage( "LISTEN_AUCTION_UPDATE_BUCKET", 2 )
+	ArkInventory:RegisterBucketMessage( "LISTEN_AUCTION_UPDATE_MASSIVE_BUCKET", 60 )
 	
 	ArkInventory:RegisterEvent( "MERCHANT_SHOW", "LISTEN_MERCHANT_ENTER" )
 	ArkInventory:RegisterEvent( "MERCHANT_CLOSED", "LISTEN_MERCHANT_LEAVE" )
@@ -4206,7 +4208,7 @@ function ArkInventory.Frame_Border_Paint( border, slot, file, size, offset, scal
 	
 	local offset = offset * scale
 	
-	border:SetBackdrop( { edgeFile = file, edgeSize = size * scale } )				
+	border:SetBackdrop( { edgeFile = file, edgeSize = size * scale } )
 	border:SetBackdropBorderColor( r or 0, g or 0, b or 0, a or 1 )
 	
 	border:ClearAllPoints( )

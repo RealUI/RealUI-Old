@@ -28,9 +28,9 @@ local function IsOn(value) return value ~= nil and value ~= Off end -- return tr
 -- Initialization settings for each test type (note that nil values are placeholders for documentation purposes)
 MOD.conditionTests = {
 	["Player Status"] = { enable = false, inCombat = nil, isResting = nil, hasPet = nil, isStealthed = nil, isMounted = nil,
-		isFishing = nil, inGroup = nil, inParty = nil, inRaid = nil, isPvP = nil, inInstance = nil, inArena = nil, inBattleground = nil,
+		inGroup = nil, inParty = nil, inRaid = nil, isPvP = nil, inInstance = nil, inArena = nil, inBattleground = nil,
 		hasMainHand = nil, levelMainHand = 1, hasOffHand = nil, levelOffHand = 1,
-		checkTalent = nil, talent = nil, checkLevel = nil, level = 80, checkStance = nil, stance = nil,
+		checkTalent = nil, talent = nil, checkLevel = nil, level = 85, checkStance = nil, stance = nil,
 		checkHealth = nil, minHealth = 100, checkPower = nil, minPower = 100, checkHolyPower = nil, minHolyPower = 1, checkShards = nil, minShards = 1,
 		checkEclipsePower = nil, minEclipsePower = 0, checkEclipse = nil, checkSolar = nil, checkLunar = nil, checkSun = nil, checkMoon = nil,
 		checkComboPoints = nil, minComboPoints = 5, checkRunes = nil, checkAnyRune = nil, needBlood = nil, needFrost = nil, needUnholy = nil,
@@ -420,7 +420,6 @@ local function CheckTestAND(ttype, t)
 		if IsOn(t.inBattleground) and (t.inBattleground ~= stat.inBattleground) then return false end
 		if IsOn(t.isResting) and (t.isResting ~= stat.isResting) then return false end
 		if IsOn(t.isStealthed) and (t.isStealthed ~= stat.isStealthed) then return false end
-		if IsOn(t.isFishing) and (t.isFishing ~= stat.isFishing) then return false end
 		if IsOn(t.isMounted) and (t.isMounted ~= stat.isMounted) then return false end
 		if IsOn(t.isPvP) and (t.isPvP ~= stat.isPvP) then return false end
 		if IsOn(t.checkLevel) and IsOn(t.level) and (t.checkLevel ~= (stat.level >= t.level)) then return false end
@@ -519,7 +518,6 @@ local function CheckTestOR(ttype, t)
 		if IsOn(t.inBattleground) and (t.inBattleground == stat.inBattleground) then return true end
 		if IsOn(t.isResting) and (t.isResting == stat.isResting) then return true end
 		if IsOn(t.isStealthed) and (t.isStealthed == stat.isStealthed) then return true end
-		if IsOn(t.isFishing) and (t.isFishing == stat.isFishing) then return true end
 		if IsOn(t.isMounted) and (t.isMounted == stat.isMounted) then return true end
 		if IsOn(t.isPvP) and (t.isPvP == stat.isPvP) then return true end
 		if IsOn(t.checkLevel) and IsOn(t.level) and (t.checkLevel == (stat.level >= t.level)) then return true end
@@ -633,7 +631,6 @@ function MOD:UpdateConditions()
 	if instance ~= nil then stat.inInstance = (it == "party") or (it == "raid"); stat.inArena = (it == "arena"); stat.inBattleground = (it == "pvp") else
 		stat.inInstance = false; stat.inArena = false; stat.inBattleground = false end
 	stat.isResting = (IsResting() ~= nil)
-	stat.isFishing = (IsUsableSpell(fishSpell) ~= nil)
 	stat.isMounted = CheckMounted()
 	stat.inVehicle = (UnitUsingVehicle("player") ~= nil)
 	stat.isPvP = (UnitIsPVP("player") ~= nil)
@@ -803,7 +800,6 @@ function MOD:GetConditionText(name)
 					if IsOn(t.inCombat) then if t.inCombat then a = a .. d .. L["In Combat"] else a = a .. d .. L["Out Of Combat"] end; d = ", " end
 					if IsOn(t.isResting) then if t.isResting then a = a .. d .. L["Is Resting"] else a = a .. d .. L["Not Resting"] end; d = ", " end
 					if IsOn(t.isStealthed) then if t.isStealthed then a = a .. d .. L["Is Stealthed"] else a = a .. d .. L["Not Stealthed"] end; d = ", " end
-					if IsOn(t.isFishing) then if t.isFishing then a = a .. d .. L["Is Fishing"] else a = a .. d .. L["Not Fishing"] end; d = ", " end
 					if IsOn(t.isMounted) then if t.isMounted then a = a .. d .. L["Is Mounted"] else a = a .. d .. L["Not Mounted"] end; d = ", " end
 					if IsOn(t.isPvP) then if t.isPvP then a = a .. d .. L["Is PvP"] else a = a .. d .. L["Not PvP"] end; d = ", " end
 					if IsOn(t.inGroup) then if t.inGroup then a = a .. d .. L["In Group"] else a = a .. d .. L["Not In Group"] end; d = ", " end

@@ -32,9 +32,9 @@ Raven.generalSpells = {
 }
 
 Raven.spellEffects = {
-	{ id = 18562, duration = 7, spell = 81275, talent = 81275 }, -- Swiftmend causes Efflorescence
-	{ id = 33831, duration = 30, talent = 33831 }, -- Force of Nature
-	{ id = 88685, duration = 18, talent = 88627 }, -- Holy Word: Sanctuary
+--	{ id = 18562, duration = 7, spell = 81275, talent = 81275 }, -- Swiftmend causes Efflorescence
+--	{ id = 33831, duration = 30, talent = 33831 }, -- Force of Nature
+--	{ id = 88685, duration = 18, talent = 88627 }, -- Holy Word: Sanctuary
 	{ id = 73920, duration = 10 }, -- Healing Rain
 	{ id = 99061, duration = 15 }, -- Mage 2-piece T12 bonus
 }

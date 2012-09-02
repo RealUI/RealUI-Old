@@ -95,7 +95,7 @@ Raven.classSpells.PRIEST = {
 Raven.classConditions.PRIEST = {
 	["Fortitude Missing"] = { -- "Commanding Shout", "Power Word: Fortitude", "Blood Pact", "Qiraji Fortitude"
 		tests = {
-			["Player Status"] = { enable = true, isResting = false, isMounted = false, isFishing = false },
+			["Player Status"] = { enable = true, isResting = false, isMounted = false },
 			["Spell Ready"] = { enable = true, spell = 21562, }, -- "Power Word: Fortitude"
 			["Any Buffs"] = { enable = true, toggle = true, unit = "player",
 				auras = { 469, 21562, 6307, 90364 }, },
@@ -104,7 +104,7 @@ Raven.classConditions.PRIEST = {
 	},
 	["Vampiric Embrace!"] = {
 		tests = {
-			["Player Status"] = { enable = true, isResting = false, isMounted = false, isFishing = false },
+			["Player Status"] = { enable = true, isResting = false, isMounted = false },
 			["All Buffs"] = { enable = true, unit = "player", auras = { 15473 }, }, -- "Shadowform"
 			["Any Buffs"] = { enable = true, toggle = true, unit = "player", auras = { 15286 }, }, -- "Vampiric Embrace"
 			["Spell Ready"] = { enable = true, spell = 15286, }, -- "Vampiric Embrace"
@@ -113,7 +113,7 @@ Raven.classConditions.PRIEST = {
 	},
 	["Inner Fire!"] = {
 		tests = {
-			["Player Status"] = { enable = true, isResting = false, isMounted = false, isFishing = false },
+			["Player Status"] = { enable = true, isResting = false, isMounted = false },
 			["Any Buffs"] = { enable = true, toggle = true, unit = "player", auras = { 588, 73413 }, }, -- "Inner Fire" or "Inner Will"
 			["Spell Ready"] = { enable = true, spell = 588, }, -- "Inner Fire"
 		},	
@@ -121,7 +121,7 @@ Raven.classConditions.PRIEST = {
 	},
 	["Chakra!"] = {
 		tests = {
-			["Player Status"] = { enable = true, isResting = false, isMounted = false, isFishing = false },
+			["Player Status"] = { enable = true, isResting = false, isMounted = false },
 			["Any Buffs"] = { enable = true, toggle = true, unit = "player", auras = { 81206, 81208, 81209 }, }, -- "Sanctuary" or "Serenity" or "Chastise"
 			["Spell Ready"] = { enable = true, spell = 81206, }, -- "Chakra: Sanctuary"
 		},	

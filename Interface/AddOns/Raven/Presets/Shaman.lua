@@ -57,6 +57,7 @@ Raven.classSpells.SHAMAN = {
 	{ "Hex", DEBUFF, p.Green2, cooldown = true, school = "Nature", id = 51514 },
 	{ "Lava Burst", nil, p.Red3, cooldown = true, school = "Fire", id = 51505 },
 	{ "Lava Lash", nil, p.Red2, cooldown = true, school = "Fire", id = 60103 },
+	{ "Lava Surge", BUFF, p.Orange2, school = "Fire", id = 77756 },
 	{ "Lightning Bolt", nil, p.Blue1, school = "Nature", lockout = true, id = 403 },
 	{ "Lightning Shield", BUFF, p.Blue2, school = "Nature", id = 324 },
 	{ "Maelstrom Weapon", BUFF, p.Purple3, id = 51530 },
@@ -112,7 +113,7 @@ Raven.classSpells.SHAMAN = {
 Raven.classConditions.SHAMAN = {
 	["Weapon Buff Missing"] = {
 		tests = {
-			["Player Status"] = { enable = true, isResting = false, isMounted = false, isFishing = false },
+			["Player Status"] = { enable = true, isResting = false, isMounted = false },
 			["Spell Ready"] = { enable = true, spell = 8017, }, -- "Rockbiter Weapon"
 			["Buff Type"] = { enable = true, unit = "player", toggle = true, hasBuff = "Mainhand" },
 		},	

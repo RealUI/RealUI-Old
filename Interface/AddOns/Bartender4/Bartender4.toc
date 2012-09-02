@@ -1,5 +1,5 @@
 ## Interface: 50001
-## X-Curse-Packaged-Version: 4.5.0
+## X-Curse-Packaged-Version: 4.5.3
 ## X-Curse-Project-Name: Bartender4
 ## X-Curse-Project-ID: bartender4
 ## X-Curse-Repository-ID: wow/bartender4/mainline
@@ -7,7 +7,7 @@
 ## Title: Bartender4
 ## Notes: Simple and Advanced combined - Bartender4 ActionBar AddOn
 
-## Version: 4.5.0
+## Version: 4.5.3
 
 ## Author: Nevcairiel
 ## X-Email: h.leppkes at gmail dot com
@@ -68,7 +68,6 @@ StanceBar.lua
 MicroMenu.lua
 RepXPBar.lua
 VehicleBar.lua
-MultiCastBar.lua
 BlizzardArt.lua
 ExtraActionBar.lua
 
@@ -87,7 +86,6 @@ Options\PetBar.lua
 Options\StanceBar.lua
 Options\RepXPBar.lua
 Options\VehicleBar.lua
-Options\MultiCastBar.lua
 Options\BlizzardArt.lua
 Options\ExtraActionBar.lua
 

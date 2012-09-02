@@ -97,7 +97,7 @@ Raven.classSpells.DRUID = {
 	{ "Sunfire", DEBUFF, p.Orange2, id = 93402 },
 	{ "Survival Instincts", BUFF, p.Orange3, cooldown = true, id = 61336 },
 	{ "Swift Flight Form", BUFF, p.Cyan, id = 40120 },
-	{ "Swiftmend", nil, p.Blue3, cooldown = true, school = "Nature", id = 18562 },
+	{ "Swiftmend", BUFF, p.Blue3, cooldown = true, school = "Nature", id = 18562 },
 	{ "Swipe", nil, p.Yellow3, cooldown = true, school = "Nature", id = 779 },
 	{ "Symbiosis", BUFF, p.Green3, id = 110309 },
 	{ "Thick Hide", BUFF, p.Brown2, id = 16931 },
@@ -118,7 +118,7 @@ Raven.classSpells.DRUID = {
 Raven.classConditions.DRUID = {
 	["Mark of the Wild Missing"] = { -- "Mark of the Wild", "Blessing of Kings", "Legacy of the Emperor", "Embrace of the Shale Spider"
 		tests = {
-			["Player Status"] = { enable = true, isResting = false, isMounted = false, isFishing = false },
+			["Player Status"] = { enable = true, isResting = false, isMounted = false },
 			["Spell Ready"] = { enable = true, spell = 1126 }, -- "Mark of the Wild"
 			["Any Buffs"] = { enable = true, toggle = true, unit = "player",
 				auras = { 1126, 20217, 115921, 90363 }, },

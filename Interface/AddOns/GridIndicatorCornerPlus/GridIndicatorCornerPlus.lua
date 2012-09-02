@@ -5,6 +5,7 @@
 local L = GridIndicatorCornerPlus_Locales
 
 local Grid = Grid
+
 local GridFrame = Grid:GetModule("GridFrame")
 local GridIndicatorCornerPlus = GridFrame:NewModule("GridIndicatorCornerPlus", "AceEvent-3.0")
 
@@ -16,12 +17,13 @@ GridIndicatorCornerPlus.defaultDB = {
 	CornerPlusOriginalSize = true,
 }
 
-GridIndicatorCornerPlus.options = {
+local options = {--GridIndicatorCornerPlus.options = {
 	type = "group",
+	--inline = true,
 	icon = "Interface\\AddOns\\GridIndicatorCornerPlus\\GridIndicatorCornerPlus-icon-TRTLBLBR",
 	name = L["Corner Plus"],
 	desc = L["Options for Corner Plus."],
-	order = 108,
+	order = -0.551,--480,
 	args = {
 		["configuration"] = {
 			type = "toggle",
@@ -37,7 +39,8 @@ GridIndicatorCornerPlus.options = {
 		["header1"] = {
 			type = "header",
 			order = 15,
-			name = " ",
+			width = "full",
+			name = "",
 		},
 		["cornerplusspace"] = {
 			type = "range",
@@ -58,6 +61,7 @@ GridIndicatorCornerPlus.options = {
 			name = L["Same size as Grid standard"],
 			desc = L["If enabled, the size of the Corner Plus indicator is adjustable with the standard Grid corner option. If deactivated, you can set an individual size for the Corner Plus indicators."],
 			order = 30,
+			width = "full",
 			get = function() return GridIndicatorCornerPlus.db.profile.CornerPlusOriginalSize end,
 			set = function(_, v)
 				GridIndicatorCornerPlus.db.profile.CornerPlusOriginalSize = v
@@ -81,6 +85,7 @@ GridIndicatorCornerPlus.options = {
 		}
 	}
 }
+Grid.options.args["GridIndicatorCornerPlus"] = options
 
 local indicators = GridFrame.prototype.indicators
 table.insert(indicators, { type = "cornerPlusTLtopright",    order = 8.61,  name = L["Top Left Corner (top right)"] })
@@ -153,7 +158,7 @@ function GridIndicatorCornerPlus:CleanOptionsMenu()
 		icon = "Interface\\AddOns\\GridIndicatorCornerPlus\\GridIndicatorCornerPlus-icon-TL",
 		name = L["Top Left Corner Plus"],
 		desc = L["Options for Top Left Corner Plus indicators."],
-		order = 58.61,
+		order = 9.1,
 		args = {
 			["cornerPlusTLtopright"]    = Grid.options.args.Indicators.args.cornerPlusTLtopright,
 			["cornerPlusTLbottomleft"]  = Grid.options.args.Indicators.args.cornerPlusTLbottomleft,
@@ -172,7 +177,7 @@ function GridIndicatorCornerPlus:CleanOptionsMenu()
 		icon = "Interface\\AddOns\\GridIndicatorCornerPlus\\GridIndicatorCornerPlus-icon-TR",
 		name = L["Top Right Corner Plus"],
 		desc = L["Options for Top Right Corner Plus indicators."],
-		order = 59.61,
+		order = 10.1,
 		args = {
 			["cornerPlusTRtopleft"]     = Grid.options.args.Indicators.args.cornerPlusTRtopleft,
 			["cornerPlusTRbottomleft"]  = Grid.options.args.Indicators.args.cornerPlusTRbottomleft,
@@ -191,7 +196,7 @@ function GridIndicatorCornerPlus:CleanOptionsMenu()
 		icon = "Interface\\AddOns\\GridIndicatorCornerPlus\\GridIndicatorCornerPlus-icon-BL",
 		name = L["Bottom Left Corner Plus"],
 		desc = L["Options for Bottom Left Corner Plus indicators."],
-		order = 60.61,
+		order = 11.1,
 		args = {
 			["cornerPlusBLtopleft"]     = Grid.options.args.Indicators.args.cornerPlusBLtopleft,
 			["cornerPlusBLtopright"]    = Grid.options.args.Indicators.args.cornerPlusBLtopright,
@@ -210,7 +215,7 @@ function GridIndicatorCornerPlus:CleanOptionsMenu()
 		icon = "Interface\\AddOns\\GridIndicatorCornerPlus\\GridIndicatorCornerPlus-icon-BR",
 		name = L["Bottom Right Corner Plus"],
 		desc = L["Options for Bottom Right Corner Plus indicators."],
-		order = 61.61,
+		order = 12.1,
 		args = {
 			["cornerPlusBRtopleft"]    = Grid.options.args.Indicators.args.cornerPlusBRtopleft,
 			["cornerPlusBRtopright"]   = Grid.options.args.Indicators.args.cornerPlusBRtopright,

@@ -814,14 +814,18 @@ function ArkInventory:LISTEN_MAIL_LEAVE_BUCKET( )
 end
 
 function ArkInventory:LISTEN_MAIL_UPDATE_BUCKET( )
-
+	
 	--ArkInventory.Output( "LISTEN_MAIL_UPDATE_BUCKET" )
+	
+	ArkInventory.ScanMail( )
+	
+end
 
-	local loc_id = ArkInventory.Const.Location.Mail
+function ArkInventory:LISTEN_MAIL_UPDATE_MASSIVE_BUCKET( )
 	
-	ArkInventory.ScanLocation( loc_id )
+	--ArkInventory.Output( "LISTEN_MAIL_UPDATE_BUCKET" )
 	
-	ArkInventory.Frame_Main_Generate( loc_id, ArkInventory.Const.Window.Draw.Recalculate )
+	ArkInventory.ScanMail( true )
 	
 end
 
@@ -900,6 +904,14 @@ function ArkInventory:LISTEN_AUCTION_UPDATE_BUCKET( )
 	--ArkInventory.Output( "LISTEN_AUCTION_UPDATE_BUCKET" )
 	
 	ArkInventory.ScanAuction( )
+	
+end
+
+function ArkInventory:LISTEN_AUCTION_UPDATE_MASSIVE_BUCKET( )
+	
+	--ArkInventory.Output( "LISTEN_AUCTION_UPDATE_MASSIVE_BUCKET" )
+	
+	ArkInventory.ScanAuction( true )
 	
 end
 
@@ -2543,7 +2555,7 @@ function ArkInventory.ObjectInfoName( h )
 	return x
 end
 
-function ArkInventory.ScanAuction( )
+function ArkInventory.ScanAuction( massive )
 	
 	local blizzard_id = ArkInventory.Const.Offset.Auction + 1
 	
@@ -2568,7 +2580,14 @@ function ArkInventory.ScanAuction( )
 	
 	local old_bag_count = bag.count
 	
-	bag.count = select( 2, GetNumAuctionItems( "owner" ) )
+	local auctions = select( 2, GetNumAuctionItems( "owner" ) )
+	
+	if auctions > 100 and not massive then
+		ArkInventory:SendMessage( "LISTEN_AUCTION_UPDATE_MASSIVE_BUCKET" )
+		return
+	end
+	
+	bag.count = auctions
 	bag.empty = 0
 	bag.type = ArkInventory.Const.Slot.Type.Auction
 	bag.status = ArkInventory.Const.Bag.Status.Active

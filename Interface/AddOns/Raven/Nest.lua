@@ -1129,8 +1129,8 @@ local function Bar_UpdateSettings(bg, bar, config)
 	local w, h = bg.width - offsetX, bg.height; if config.iconOnly then w = bg.barWidth; h = bg.barHeight end
 	if bg.showBar and config.bars ~= "timeline" and (w > 0) and (h > 0) then -- non-zero dimensions to fix the zombie bar bug
 		local ar, ag, ab = Nest_AdjustColor(bar.br, bar.bg, bar.bb, bg.bgSaturation or 0, bg.bgBrightness or 0)
-		if expiring then ec = bar.attributes.expireColor; if ec and ec.a > 0 then ar = ec.r; ag = ec.g; ab = ec.b; ea = ec.a end end
-		bb:SetVertexColor(ar, ag, ab, 1); bb:SetTexture(bg.bgTexture); bb:SetAlpha(ea)
+		if expiring then ec = bar.attributes.expireColor; if ec and ec.a > 0 then ar = ec.r; ag = ec.g; ab = ec.b end end
+		bb:SetVertexColor(ar, ag, ab, 1); bb:SetTexture(bg.bgTexture); bb:SetAlpha(bg.bgAlpha)
 		bb:SetWidth(w); bb:SetTexCoord(0, 1, 0, 1); bb:Show()
 		if (fill > 0) and (bg.fgNotTimer or bar.timeLeft) then
 			if bg.showSpark and (fill < 1) then sparky = true end
@@ -1172,11 +1172,14 @@ local function Bar_RefreshAnimations(bg, bar, config)
 		if remaining < bar.maxTime then fill = remaining / bar.maxTime end -- calculate fraction of time remaining
 		timeText = Nest_FormatTime(remaining, bg.timeFormat, bg.timeSpaces, bg.timeCase) -- set timer text
 		if bg.showTimeText then bar.timeText:SetText(timeText) end
-		if bar.attributes.expireTime and bar.attributes.expireMinimum and not bar.expireDone and bar.duration >= bar.attributes.expireMinimum
-			and bar.attributes.expireTime > remaining and (bar.attributes.expireTime - remaining) < 1 then
-			PlaySoundFile(bar.attributes.soundExpire, Raven.db.global.SoundChannel); bar.expireDone = true
-			Raven:ForceUpdate() -- color change may happen at same time
+		local expireTime, expireMinimum = bar.attributes.expireTime, bar.attributes.expireMinimum
+		if expireTime and not bar.expireDone and expireTime > remaining and (expireTime - remaining) < 1 then
+			if expireMinimum and bar.duration >= bar.attributes.expireMinimum then
+				PlaySoundFile(bar.attributes.soundExpire, Raven.db.global.SoundChannel); bar.expireDone = true
+			end
 		end
+		local colorTime = bar.attributes.colorTime -- if need to change color then force update to re-color the bar
+		if colorTime and colorTime > remaining and (colorTime - remaining) < 0.25 then Raven:ForceUpdate() end
 		if bar.attributes.expireMSBT and bar.attributes.minimumMSBT and not bar.warningDone and bar.duration >= bar.attributes.minimumMSBT
 			and bar.attributes.expireMSBT > remaining and (bar.attributes.expireMSBT - remaining) < 1 then
 			local ec, crit, icon = bar.attributes.colorMSBT, bar.attributes.criticalMSBT, bar.iconTexture:GetTexture()

@@ -644,15 +644,13 @@ end
 
 -- Lock or unlock all bar groups
 function MOD:LockBarGroups(lock)
-	for _, bp in pairs(MOD.db.profile.BarGroups) do
-		if IsOn(bp) then bp.locked = lock end
-	end
+	for _, bp in pairs(MOD.db.profile.BarGroups) do if IsOn(bp) then bp.locked = lock end end
 	MOD:UpdateAllBarGroups()
 end
 
 -- Toggle test mode for all bar groups
 function MOD:TestBarGroups(lock)
-	for _, bp in pairs(MOD.db.profile.BarGroups) do MOD:TestBarGroup(bp) end
+	for _, bp in pairs(MOD.db.profile.BarGroups) do if IsOn(bp) then MOD:TestBarGroup(bp) end end
 	MOD:UpdateAllBarGroups()
 end
 

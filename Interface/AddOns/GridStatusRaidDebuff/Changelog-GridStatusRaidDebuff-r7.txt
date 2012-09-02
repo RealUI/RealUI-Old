@@ -1,4 +1,10 @@
 ------------------------------------------------------------------------
+r7 | stassart | 2012-08-30 04:06:32 +0000 (Thu, 30 Aug 2012) | 1 line
+Changed paths:
+   M /trunk/Core.lua
+
+Fixed warn lua error. Fixed GlyphUI taint caused by using an _ not declared local.
+------------------------------------------------------------------------
 r6 | stassart | 2012-07-30 04:22:40 +0000 (Mon, 30 Jul 2012) | 1 line
 Changed paths:
    M /trunk/Locale/enUS.lua
