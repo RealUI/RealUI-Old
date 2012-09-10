@@ -1,6 +1,12 @@
 local nibRealUI = LibStub("AceAddon-3.0"):GetAddon("nibRealUI")
 local db, ndbc
+local mass
 
+if IsAddOnLoaded("Massive") then
+	mass = LibStub:GetLibrary("Massive")
+end
+
+local _
 local MODNAME = "FrameMover"
 local FrameMover = nibRealUI:NewModule(MODNAME, "AceEvent-3.0", "AceBucket-3.0")
 

@@ -1,10 +1,16 @@
 local nibRealUI = LibStub("AceAddon-3.0"):GetAddon("nibRealUI")
 local db
+local mass
+
+if IsAddOnLoaded("Massive") then
+	mass = LibStub:GetLibrary("Massive")
+end
 
 local MODNAME = "CombatFader"
 local CombatFader = nibRealUI:NewModule(MODNAME, "AceEvent-3.0", "AceBucket-3.0")
 
 local _G = getfenv(0)
+local _
 
 local LoggedIn = false
 local FirstLog = true

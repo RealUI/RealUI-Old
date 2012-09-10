@@ -2,5 +2,6 @@
 
 *.pkgmeta
 
-Blizzard_*/
 +Wowhead*/
+Blizzard_*/
+Massive/

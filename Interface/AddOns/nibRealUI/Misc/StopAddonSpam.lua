@@ -2,6 +2,11 @@
 
 local nibRealUI = LibStub("AceAddon-3.0"):GetAddon("nibRealUI")
 local StopAddonSpam = nibRealUI:NewModule("StopAddonSpam", "AceEvent-3.0", "AceHook-3.0");
+local mass
+
+if IsAddOnLoaded("Massive") then
+	mass = LibStub:GetLibrary("Massive")
+end
 
 local ALLOW = 1
 local DENY  = 0

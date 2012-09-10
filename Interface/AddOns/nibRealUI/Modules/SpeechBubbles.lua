@@ -2,7 +2,13 @@
 
 local nibRealUI = LibStub("AceAddon-3.0"):GetAddon("nibRealUI")
 local db
+local mass
 
+if IsAddOnLoaded("Massive") then
+	mass = LibStub:GetLibrary("Massive")
+end
+
+local _
 local MODNAME = "SpeechBubbles"
 local SpeechBubbles = nibRealUI:NewModule(MODNAME, "AceEvent-3.0", "AceTimer-3.0")
 

@@ -34,10 +34,15 @@
 local nibRealUI = LibStub("AceAddon-3.0"):GetAddon("nibRealUI")
 local LSM = LibStub("LibSharedMedia-3.0")
 local db, ndbc
+local mass
+
+if IsAddOnLoaded("Massive") then
+	mass = LibStub:GetLibrary("Massive")
+end
 
 local MODNAME = "Loot"
 local Loot = nibRealUI:NewModule(MODNAME, "AceEvent-3.0")
-
+local _
 local LoggedIn = false
 
 -- Options
@@ -417,7 +422,7 @@ RealUILootFrame.close = CreateFrame("Button", "RealUI_Loot_Close", RealUILootFra
 RealUILootFrame.close:SetPoint("TOPRIGHT", RealUILootFrame, "TOPRIGHT", 8, 20)
 RealUILootFrame.slots = {}
 
-local LootOnEnter = function(self)
+local function LootOnEnter(self)
 	local slot = self:GetID()
 	if(GetLootSlotType(slot)) then
 		GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
@@ -616,7 +621,7 @@ function Loot:InitializeLoot()
 	LootFrame:UnregisterAllEvents()
 	table.insert(UISpecialFrames, "RealUI_Loot")
 
-	function _G.GroupLootDropDown_GiveLoot(self)
+	function GroupLootDropDown_GiveLoot(self)
 		if ( LootSQ >= MASTER_LOOT_THREHOLD ) then
 			local dialog = StaticPopup_Show("CONFIRM_LOOT_DISTRIBUTION", ITEM_QUALITY_COLORS[LootSQ].hex..LootSN..FONT_COLOR_CODE_CLOSE, self:GetText())
 			if (dialog) then

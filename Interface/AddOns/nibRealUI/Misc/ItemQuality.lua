@@ -1,8 +1,14 @@
 local nibRealUI = LibStub("AceAddon-3.0"):GetAddon("nibRealUI")
 local LSM = LibStub("LibSharedMedia-3.0")
+local mass
+
+if IsAddOnLoaded("Massive") then
+	mass = LibStub:GetLibrary("Massive")
+end
 
 local MODNAME = "ItemQuality"
 local ItemQuality = nibRealUI:NewModule(MODNAME, "AceEvent-3.0", "AceBucket-3.0", "AceHook-3.0")
+local _
 
 -- Flags / Tables
 local BordersSet = false

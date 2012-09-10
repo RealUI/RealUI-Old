@@ -1,5 +1,10 @@
 local L = LibStub("AceLocale-3.0"):GetLocale("nibIceHUD", false)
 local EclipseBar = IceCore_CreateClass(IceBarElement)
+local mass
+
+if IsAddOnLoaded("Massive") then
+	mass = LibStub:GetLibrary("Massive")
+end
 
 local nibIceHUD = _G.nibIceHUD
 

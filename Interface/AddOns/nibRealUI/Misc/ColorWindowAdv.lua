@@ -1,4 +1,9 @@
 local CPF, OSF = ColorPickerFrame, OpacitySliderFrame
+local mass
+
+if IsAddOnLoaded("Massive") then
+	mass = LibStub:GetLibrary("Massive")
+end
 
 ----
 local CPFMover = CreateFrame("Frame", nil, CPF)

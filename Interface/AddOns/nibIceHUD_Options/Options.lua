@@ -1,6 +1,12 @@
 local LibDualSpec = LibStub('LibDualSpec-1.0', true)
 local L = LibStub("AceLocale-3.0"):GetLocale("nibIceHUD", false)
 local lastCustomModule = "Bar"
+local _
+local mass
+
+if IsAddOnLoaded("Massive") then
+	mass = LibStub:GetLibrary("Massive")
+end
 
 nibIceHUD_Options = {}
 

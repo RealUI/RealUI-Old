@@ -1,5 +1,10 @@
 local L = LibStub("AceLocale-3.0"):GetLocale("nibIceHUD", false)
 local TargetCast = IceCore_CreateClass(IceCastBar)
+local mass
+
+if IsAddOnLoaded("Massive") then
+	mass = LibStub:GetLibrary("Massive")
+end
 
 TargetCast.prototype.notInterruptible = false
 

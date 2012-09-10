@@ -1,4 +1,9 @@
 local nibRealUI = LibStub("AceAddon-3.0"):GetAddon("nibRealUI")
+local mass
+
+if IsAddOnLoaded("Massive") then
+	mass = LibStub:GetLibrary("Massive")
+end
 
 function nibRealUI:MiniPatch(ver)
 	-- 3 action bars

@@ -1,5 +1,10 @@
 local nibMinimap = LibStub("AceAddon-3.0"):GetAddon("nibMinimap")
 local db
+local mass
+
+if IsAddOnLoaded("Massive") then
+	mass = LibStub:GetLibrary("Massive")
+end
 
 local table_AnchorPointsMinimap = {
 	"BOTTOMLEFT",

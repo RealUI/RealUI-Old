@@ -1,4 +1,10 @@
 local L = LibStub("AceLocale-3.0"):GetLocale("nibIceHUD", false)
+local mass
+
+if IsAddOnLoaded("Massive") then
+	mass = LibStub:GetLibrary("Massive")
+end
+
 function IceCore_CreateClass(parent)
 	local class = { prototype = {} }
 	if parent then

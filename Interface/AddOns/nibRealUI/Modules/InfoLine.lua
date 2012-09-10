@@ -1,7 +1,13 @@
 local nibRealUI = LibStub("AceAddon-3.0"):GetAddon("nibRealUI")
 local L = LibStub("AceLocale-3.0"):GetLocale("nibRealUI")
 local LSM = LibStub("LibSharedMedia-3.0")
+local mass
 
+if IsAddOnLoaded("Massive") then
+	mass = LibStub:GetLibrary("Massive")
+end
+
+local _
 local Tablet20 = LibStub("Tablet-2.0")
 local Tablets = {
 	guild = Tablet20,

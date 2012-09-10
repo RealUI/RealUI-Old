@@ -1,5 +1,10 @@
 local L = LibStub("AceLocale-3.0"):GetLocale("nibIceHUD", false)
 local Vengeance = IceCore_CreateClass(IceUnitBar)
+local mass
+
+if IsAddOnLoaded("Massive") then
+	mass = LibStub:GetLibrary("Massive")
+end
 
 local VENGEANCE_SPELL_ID = 93098	-- To get name of Vengeance buff
 

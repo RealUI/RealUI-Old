@@ -3,6 +3,11 @@
 
 local nibRealUI = LibStub("AceAddon-3.0"):GetAddon("nibRealUI")
 local LSM = LibStub("LibSharedMedia-3.0")
+local mass
+
+if IsAddOnLoaded("Massive") then
+	mass = LibStub:GetLibrary("Massive")
+end
 
 local MODNAME = "DragEmAll"
 local DragEmAll = nibRealUI:NewModule(MODNAME, "AceEvent-3.0")

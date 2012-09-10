@@ -2,6 +2,11 @@ local nibRealUI = LibStub("AceAddon-3.0"):GetAddon("nibRealUI")
 local L = LibStub("AceLocale-3.0"):GetLocale("nibRealUI")
 local LSM = LibStub("LibSharedMedia-3.0")
 local db, dbc, dbg
+local mass
+
+if IsAddOnLoaded("Massive") then
+	mass = LibStub:GetLibrary("Massive")
+end
 
 local nibRealUICharacter_defaults = {
 	initialized = false,
@@ -15,10 +20,10 @@ local table_MiniPatches = {
 }
 
 local table_Addons = {
-	{"ACP", "ACP_Data"},
+--	{"ACP", "ACP_Data"},
 	{"ArkInventory", "ARKINVDB"},
 	{"Bartender4", "Bartender4DB"},
-	{"BugSack", "BugSackDB"},
+--	{"BugSack", "BugSackDB"},
 	{"DXE", "DXEDB"},
 	{"Grid", "GridDB"},
 	{"Mapster", "MapsterDB"},
@@ -441,7 +446,7 @@ local function InstallationStage1()
 		if IsAddOnLoaded(addon) then
 			AddonCount = AddonCount + 1
 			if db then
-				if db["profiles"]["RealUI"] then
+				if db["profiles"] and db["profiles"]["RealUI"] then
 					PrintAddonStatus(addon, "ok")
 					OKCount = OKCount + 1
 				else

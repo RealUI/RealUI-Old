@@ -1,6 +1,11 @@
 local L = LibStub("AceLocale-3.0"):GetLocale("nibIceHUD", false)
 local TargetTargetCast = IceCore_CreateClass(IceCastBar)
 TargetTargetCast.prototype.scheduledEvent = nil
+local mass
+
+if IsAddOnLoaded("Massive") then
+	mass = LibStub:GetLibrary("Massive")
+end
 
 local SelfDisplayModeOptions = {"Hide", "Normal"}
 

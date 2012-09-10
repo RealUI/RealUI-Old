@@ -1,6 +1,11 @@
 local nibRealUI = LibStub("AceAddon-3.0"):GetAddon("nibRealUI")
 local media = LibStub("LibSharedMedia-3.0")
 local db, ndbc
+local mass
+
+if IsAddOnLoaded("Massive") then
+	mass = LibStub:GetLibrary("Massive")
+end
 
 local MODNAME = "ScreenSaver"
 local ScreenSaver = nibRealUI:NewModule(MODNAME, "AceEvent-3.0")

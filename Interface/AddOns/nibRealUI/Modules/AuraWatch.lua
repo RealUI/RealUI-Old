@@ -1,5 +1,10 @@
 local nibRealUI = LibStub("AceAddon-3.0"):GetAddon("nibRealUI")
 local db
+local mass
+
+if IsAddOnLoaded("Massive") then
+	mass = LibStub:GetLibrary("Massive")
+end
 
 local MODNAME = "AuraWatch"
 local AuraWatch = nibRealUI:NewModule(MODNAME, "AceEvent-3.0", "AceBucket-3.0", "AceTimer-3.0")
@@ -507,7 +512,7 @@ local Defaults = {
 					[1] = {
 						enabled = true,
 						inactive = true,
-						personal = false,
+						personal = true,
 						incombat = true,
 						level = 1,
 						spells = {
@@ -545,7 +550,7 @@ local Defaults = {
 					[2] = {
 						enabled = true,
 						inactive = true,
-						personal = false,
+						personal = true,
 						incombat = true,
 						level = 1,
 						spells = {

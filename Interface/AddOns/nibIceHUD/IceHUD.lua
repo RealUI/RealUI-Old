@@ -1,5 +1,10 @@
 local L = LibStub("AceLocale-3.0"):GetLocale("nibIceHUD", false)
 nibIceHUD = LibStub("AceAddon-3.0"):NewAddon("nibIceHUD", "AceConsole-3.0")
+local mass
+
+if IsAddOnLoaded("Massive") then
+	mass = LibStub:GetLibrary("Massive")
+end
 
 local nibIceHUD = nibIceHUD
 
