@@ -16,37 +16,37 @@ local GetTime = _G.GetTime
 
 local validUnits = {"player", "target", "focus", "pet", "vehicle", "targettarget", "main hand weapon", "off hand weapon"}
 local buffOrDebuff = {"buff", "debuff"}
-local customClassSelect = {"ALL"}
 local validBuffTimers = {"none", "seconds", "minutes:seconds", "minutes"}
+local customClassSelect = {"ALL"}
 
+--FillLocalizedClassList(customClassSelect);
 local classDisplayName, classTag, classID
 local numClasses = GetNumClasses();
 for i = 1, numClasses do
-	classDisplayName = GetClassInfo(i);
-	tinsert(customClassSelect, classDisplayName)
+	--mass.track(customClassSelect)
+	classTag = select(2, GetClassInfo(i));
+	tinsert(customClassSelect, classTag)
 end
-
-local uClass, _, uClassID = UnitClass("player")
+local uClass, uClassTag, uClassID = UnitClass("player")
 
 local specList = {}
 local function GetSpecList(element)
 --	local tbl = {}
 
 	wipe(specList)
-	local cnt = 0
-	--print("element: "..tostring(element))
+	--print("Element: "..tostring(element))
 	for k, v in pairs(customClassSelect) do
-		cnt = cnt + 1
 		if customClassSelect[k] == element then
 			classID = k - 1 
 		end
 	end
 	--print("ClassID: "..tostring(classID))
-	if classID == 0 or nil then return specList end
-	local numSpecs = GetNumSpecializationsForClassID(classID)
-	for i = 1, numSpecs do
-		local _, name = GetSpecializationInfoForClassID(classID, i)
-		tinsert(specList, name)
+	if classID and classID ~= 0 then --== 0 or nil then return specList end
+		local numSpecs = GetNumSpecializationsForClassID(classID)
+		for i = 1, numSpecs do
+			local _, name = GetSpecializationInfoForClassID(classID, i)
+			tinsert(specList, name)
+		end
 	end
 	return specList
 end
@@ -74,7 +74,7 @@ end
 -- 'Public' methods -----------------------------------------------------------
 -- OVERRIDE
 function IceCustomBar.prototype:Enable(core)
-	self.validClass = (uClass == self.moduleSettings.class) or (self.moduleSettings.class == "ALL")
+	self.validClass = (uClassTag == self.moduleSettings.class) or (self.moduleSettings.class == "ALL")
 	
 	-- Not a valid class? Don't set up the bar
 	if not self.validClass then return end
@@ -333,9 +333,11 @@ function IceCustomBar.prototype:GetOptions()
 		desc = "Which Class to show this bar in.",
 		values = customClassSelect,
 		get = function(info)
+			--print("Get Class!!")
 			return nibIceHUD:GetSelectValue(info, self.moduleSettings.class)
 		end,
 		set = function(info, v)
+			--print("Set Class!!")
 			self.moduleSettings.class = customClassSelect[v]
 --			GetSpecList(self, info, v)
 			self:UpdateCustomBar(self.unit)
@@ -648,36 +650,6 @@ function IceCustomBar.prototype:OutCombat()
 	self:UpdateCustomBar(self.unit)
 end
 
-local hex2bin = {
-	[0] = "000",
-	[1] = "100",
-	[2] = "010",
-	[3] = "110",
-	[4] = "001",
-	[5] = "101",
-	[6] = "011",
-	[7] = "111",
-}
-
-function IceCustomBar.prototype:RetrieveTableFromBinary(v)
-	if v == nil then v = 7 end
-	v = min(v, 7)
-	v = max(v, 1)
-	
-	local s = hex2bin[v]
-	
-	local binarray = {}
-	for i = 1, 3 do
-		if strsub(s, i, i) == "0" then
-			binarray[i] = false
-		else
-			binarray[i] = true
-		end
-	end
-	
-	return binarray
-end
-
 function IceCustomBar.prototype:Show(bShouldShow)
 	if not bShouldShow then
 		IceCustomBar.super.prototype.Show(self, false)
@@ -686,7 +658,6 @@ function IceCustomBar.prototype:Show(bShouldShow)
 	
 	local showTalent = false
 	local activeSpec = GetSpecialization() or 0
-	--local spec = self:RetrieveTableFromBinary()
 	for k, v in pairs(self.moduleSettings.spec) do
 		--print("Name: "..self.elementName.."; spec: "..activeSpec.."; k: "..k.."; v: "..tostring(v))
 		--print("same? "..tostring(k == "spec"..activeSpec))

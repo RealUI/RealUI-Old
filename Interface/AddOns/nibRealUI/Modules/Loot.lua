@@ -439,6 +439,7 @@ local LootOnLeave = function(self)
 end
 
 local LootOnClick = function(self)
+	print("IsModifiedClick: "..tostring(IsModifiedClick()))
 	if(IsModifiedClick()) then
 		HandleModifiedItemClick(GetLootSlotLink(self:GetID()))
 	else
