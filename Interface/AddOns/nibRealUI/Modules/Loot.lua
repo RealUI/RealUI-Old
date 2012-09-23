@@ -412,7 +412,6 @@ end
 ---- LOOT ----
 --------------
 local LootIconSize = 32
-local LootSQ, LootSS, LootSN
 
 local RealUILootFrame = CreateFrame("Button", "RealUI_Loot", UIParent)
 RealUILootFrame:SetFrameStrata("HIGH")
@@ -423,8 +422,11 @@ RealUILootFrame.close:SetPoint("TOPRIGHT", RealUILootFrame, "TOPRIGHT", 8, 20)
 RealUILootFrame.slots = {}
 
 local function LootOnEnter(self)
+	print("LootOnEnter: ")
 	local slot = self:GetID()
-	if(GetLootSlotType(slot)) then
+	print("GetLootSlotType Enter: "..tostring(GetLootSlotType(slot)))
+	print("GetLootSlotType(slot) == 1 is "..tostring((GetLootSlotType(slot) == 1)))
+	if(GetLootSlotType(slot) == 1) then
 		GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
 		GameTooltip:SetLootItem(slot)
 		CursorUpdate(self)
@@ -433,21 +435,35 @@ local function LootOnEnter(self)
 end
 
 local LootOnLeave = function(self)
+	print("LootOnLeave: ")
 	GameTooltip:Hide()
 	ResetCursor()
 	self.bg:SetBackdropColor(0, 0, 0, 0.6)
 end
 
 local LootOnClick = function(self)
+	print("LootOnClick: ")
 	print("IsModifiedClick: "..tostring(IsModifiedClick()))
 	if(IsModifiedClick()) then
 		HandleModifiedItemClick(GetLootSlotLink(self:GetID()))
 	else
 		StaticPopup_Hide("CONFIRM_LOOT_DISTRIBUTION")
-		LootSS = self:GetID()
-		LootSQ = self.quality
-		LootSN = self.name:GetText()
-		LootSlot(LootSS)
+		LootFrame.selectedLootButton = self
+		LootFrame.selectedSlot = self:GetID()
+		LootFrame.selectedQuality = self.quality
+		LootFrame.selectedItemName = self.name:GetText()
+		LootFrame.selectedTexture = self.icon:GetTexture()
+		
+		LootSlot(self:GetID())
+	end
+end
+
+local LootOnUpdate = function(self)
+	--print("LootOnUpdate: ")
+	if(GameTooltip:IsOwned(self)) then
+		GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+		GameTooltip:SetLootItem(self:GetID())
+		CursorOnUpdate(self)
 	end
 end
 
@@ -473,6 +489,7 @@ local createSlot = function(id)
 	frame:SetScript("OnClick", LootOnClick)
 	frame:SetScript("OnEnter", LootOnEnter)
 	frame:SetScript("OnLeave", LootOnLeave)
+	frame:SetScript("OnUpdate", LootOnUpdate)
 
 	local iconFrame = CreateFrame("Frame", nil, frame)
 	iconFrame:SetHeight(LootIconSize)
@@ -532,21 +549,17 @@ function Loot:UpdateLootPosition()
 	end
 end
 
+RealUILootFrame:SetScript("OnEvent", function(self, event, ...)
+	self[event](self, event, ...)
+end)
+
 RealUILootFrame:SetScript("OnHide", function(self)
 	StaticPopup_Hide("CONFIRM_LOOT_DISTRIBUTION")
 	CloseLoot()
 end)
 
-function Loot:LOOT_CLOSED()
-	StaticPopup_Hide"LOOT_BIND"
-	RealUILootFrame:Hide()
-
-	for _, v in next, RealUILootFrame.slots do
-		v:Hide()
-	end
-end
-
 function Loot:LOOT_OPENED(event, autoloot)
+	print("LOOT_OPENED: ")
 	RealUILootFrame:Show()
 	RealUILootFrame:SetWidth(db.resolution[ndbc.resolution].lootwidth)
 	
@@ -562,12 +575,14 @@ function Loot:LOOT_OPENED(event, autoloot)
 	if(items > 0) then
 		for i = 1, items do
 			local slot = RealUILootFrame.slots[i] or createSlot(i)
-			local texture, item, quantity, quality, locked = GetLootSlotInfo(i)
-			if texture then
+			local icon, name, quantity, quality, locked = GetLootSlotInfo(i)
+			if icon then
 				local color = ITEM_QUALITY_COLORS[quality]
 
+				print("GetLootSlotType OPENED: "..tostring(GetLootSlotType(i)))
+				print("GetLootSlotType(i) == 2 is "..tostring((GetLootSlotType(i) == 2)))
 				if (GetLootSlotType(i) == 2) then
-					item = item:gsub("\n", ", ")
+					name = name:gsub("\n", ", ")
 				end
 
 				if(quantity > 1) then
@@ -578,9 +593,9 @@ function Loot:LOOT_OPENED(event, autoloot)
 				end
 
 				slot.quality = quality
-				slot.name:SetText(item)
+				slot.name:SetText(name)
 				slot.name:SetTextColor(color.r, color.g, color.b)
-				slot.icon:SetTexture(texture)
+				slot.icon:SetTexture(icon)
 				slot.icon:SetDesaturated(false)
 
 				slot:Enable()
@@ -605,16 +620,29 @@ function Loot:LOOT_OPENED(event, autoloot)
 end
 
 function Loot:LOOT_SLOT_CLEARED(event, slot)
+	print("LOOT_SLOT_CLEARED: ")
 	if(not RealUILootFrame:IsShown()) then return end
 	RealUILootFrame.slots[slot]:Hide()
 	anchorSlots(RealUILootFrame)
 end
 
+function Loot:LOOT_CLOSED()
+	print("LOOT_CLOSED: ")
+	StaticPopup_Hide"LOOT_BIND"
+	RealUILootFrame:Hide()
+
+	for _, v in next, RealUILootFrame.slots do
+		v:Hide()
+	end
+end
+
 function Loot:OPEN_MASTER_LOOT_LIST()
-	ToggleDropDownMenu(1, nil, GroupLootDropDown, RealUILootFrame.slots[LootSS], 0, 0)
+	print("OPEN_MASTER_LOOT_LIST: ")--..tostring(GetLootSlotType(slot)))
+	ToggleDropDownMenu(1, nil, GroupLootDropDown, RealUILootFrame.slots[LootFrame.selectedSlot], 0, 0)
 end
 
 function Loot:UPDATE_MASTER_LOOT_LIST()
+	print("UPDATE_MASTER_LOOT_LIST: ")
 	UIDropDownMenu_Refresh(GroupLootDropDown)
 end
 
@@ -623,19 +651,20 @@ function Loot:InitializeLoot()
 	table.insert(UISpecialFrames, "RealUI_Loot")
 
 	function GroupLootDropDown_GiveLoot(self)
-		if ( LootSQ >= MASTER_LOOT_THREHOLD ) then
-			local dialog = StaticPopup_Show("CONFIRM_LOOT_DISTRIBUTION", ITEM_QUALITY_COLORS[LootSQ].hex..LootSN..FONT_COLOR_CODE_CLOSE, self:GetText())
+		print("GroupLootDropDown_GiveLoot: ")
+		if ( LootFrame.selectedQuality >= MASTER_LOOT_THREHOLD ) then
+			local dialog = StaticPopup_Show("CONFIRM_LOOT_DISTRIBUTION", ITEM_QUALITY_COLORS[LootFrame.selectedQuality].hex..LootFrame.selectedItemName..FONT_COLOR_CODE_CLOSE, self:GetText())
 			if (dialog) then
 				dialog.data = self.value
 			end
 		else
-			GiveMasterLoot(LootSS, self.value)
+			GiveMasterLoot(LootFrame.selectedSlot, self.value)
 		end
 		CloseDropDownMenus()
 	end
 
 	StaticPopupDialogs["CONFIRM_LOOT_DISTRIBUTION"].OnAccept = function(self, data)
-		GiveMasterLoot(LootSS, data)
+		GiveMasterLoot(LootFrame.selectedSlot, data)
 	end
 	
 	self:RegisterEvent("LOOT_OPENED")
