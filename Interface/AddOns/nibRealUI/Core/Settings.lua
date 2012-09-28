@@ -67,7 +67,7 @@ end
 -- CVars
 local function SetDefaultCVars()
 	-- Screenshots
-	SetCVar("screenshotFormat", "jpg")				-- JPG format
+	SetCVar("screenshotFormat", "png")				-- PNG format
 	SetCVar("screenshotQuality", "10")				-- Highest quality
 	-- Help
 	SetCVar("showGameTips", 0)						-- Turn off Loading Screen Tips

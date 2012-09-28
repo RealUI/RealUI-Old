@@ -2,7 +2,7 @@
 ## Title: |cffaaaaaanib|rMinimap
 ## Author: Nibelheim
 ## Notes: Minimap for RealUI.
-## Version: 7.2 r1
+## Version: 7.3
 ## SavedVariables: nibMinimapDB
 ## Dependencies: nibLibs
 

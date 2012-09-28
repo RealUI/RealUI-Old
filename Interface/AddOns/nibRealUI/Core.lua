@@ -4,14 +4,10 @@ local LSM = LibStub("LibSharedMedia-3.0")
 local db, dbc, dbg
 local mass
 
-if IsAddOnLoaded("Massive") then
-	mass = LibStub:GetLibrary("Massive")
-end
-
 local nibRealUI_Version = {
 	[1] = 7,
-	[2] = 2,
-	[3] = 1,
+	[2] = 3,
+	[3] = 0,
 }
 
 -- Default Options
