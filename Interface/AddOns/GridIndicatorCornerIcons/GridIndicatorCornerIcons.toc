@@ -7,9 +7,9 @@
 ## Notes-ruRU: Добавляет 2иконки индикатора на каждый угол фреймов  Грид (всего: 8 индикаторов иконок).
 ## Notes-zhCN: [Grid] 在每个 Grid 框体角落添加2个图标提示（总共：8个图标提示）。
 ## Notes-zhTW: [Grid] 在每個 Grid 框架角落添加2個圖標提示（總共：8個圖標提示）。
-## Version: 50001-1
+## Version: 50001-3
 ## Dependencies: Grid
-## X-Curse-Packaged-Version: 50001-1
+## X-Curse-Packaged-Version: 50001-3
 ## X-Curse-Project-Name: GridIndicatorCornerIcons
 ## X-Curse-Project-ID: grid-indicator-corner-icons
 ## X-Curse-Repository-ID: wow/grid-indicator-corner-icons/mainline

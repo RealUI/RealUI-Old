@@ -298,6 +298,7 @@ obj["ENERGY_AMOUNT"]		= "%a - Amount of energy.\n"
 obj["CHI_AMOUNT"]			= "%a - Amount of chi you have.\n"
 obj["CP_AMOUNT"]			= "%a - Amount of combo points you have.\n"
 obj["HOLY_POWER_AMOUNT"]	= "%a - Amount of holy power you have.\n"
+obj["SHADOW_ORBS_AMOUNT"]	= "%a - Amount of shadow orbs you have.\n" -- TODO: Add to others
 obj["HONOR_AMOUNT"]			= "%a - Amount of honor.\n"
 obj["REP_AMOUNT"]			= "%a - Amount of reputation.\n"
 obj["ITEM_AMOUNT"]			= "%a - Amount of the item looted.\n"
@@ -492,6 +493,8 @@ obj["NOTIFICATION_CP_GAIN"]				= { label="Combo Point Gains", tooltip="Enable wh
 obj["NOTIFICATION_CP_FULL"]				= { label="Combo Points Full", tooltip="Enable when you attain full combo points."}
 obj["NOTIFICATION_HOLY_POWER_CHANGE"]	= { label="Holy Power Changes", tooltip="Enable when you change holy power."}
 obj["NOTIFICATION_HOLY_POWER_FULL"]		= { label="Holy Power Full", tooltip="Enable when you attain full holy power."}
+obj["NOTIFICATION_SHADOW_ORBS_CHANGE"]	= { label="Shadow Orb Changes", tooltip="Enable when you change shadow orbs."}
+obj["NOTIFICATION_SHADOW_ORBS_FULL"]	= { label="Shadow Orbs Full", tooltip="Enable when you attain full shadow orbs."}
 obj["NOTIFICATION_HONOR_GAIN"]			= { label="Honor Gains", tooltip="Enable when you gain honor."}
 obj["NOTIFICATION_REP_GAIN"]			= { label="Reputation Gains", tooltip="Enable when you gain reputation."}
 obj["NOTIFICATION_REP_LOSS"]			= { label="Reputation Losses", tooltip="Enable when you lose reputation."}

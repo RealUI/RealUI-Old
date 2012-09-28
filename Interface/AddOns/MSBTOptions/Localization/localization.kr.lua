@@ -275,6 +275,7 @@ obj["ENERGY_AMOUNT"]		= "%a - 기력.\n"
 --obj["CHI_AMOUNT"]			= "%a - Amount of chi you have.\n"
 obj["CP_AMOUNT"]			= "%a - 연계 점수.\n"
 obj["HOLY_POWER_AMOUNT"]	= "%a - 보유한 신성한 힘.\n"
+--obj["SHADOW_ORBS_AMOUNT"]	= "%a - Amount of shadow orbs you have.\n"
 obj["HONOR_AMOUNT"]			= "%a - 명예 점수.\n"
 obj["REP_AMOUNT"]			= "%a - 평판 수치.\n"
 obj["ITEM_AMOUNT"]			= "%a - 획득한 아이템 수량.\n"
@@ -469,6 +470,8 @@ obj["NOTIFICATION_CP_GAIN"]				= { label="연계 점수 획득", tooltip="연계
 obj["NOTIFICATION_CP_FULL"]				= { label="연계 점수 마무리", tooltip="연계 점수가 절정 (5 포인트)에 도달했음을 알려줍니다."}
 obj["NOTIFICATION_HOLY_POWER_CHANGE"]	= { label="신성한 힘 변환", tooltip="신성한 힘이 변환되면 알려줍니다."}
 obj["NOTIFICATION_HOLY_POWER_FULL"]		= { label="신성한 힘 최대", tooltip="최대 신성한 힘에 도달하면 알려줍니다."}
+--obj["NOTIFICATION_SHADOW_ORBS_CHANGE"]	= { label="Shadow Orb Changes", tooltip="Enable when you change shadow orbs."}
+--obj["NOTIFICATION_SHADOW_ORBS_FULL"]	= { label="Shadow Orbs Full", tooltip="Enable when you attain full shadow orbs."}
 obj["NOTIFICATION_HONOR_GAIN"]			= { label="명예 획득", tooltip="명예 점수 획득을 알려줍니다.."}
 obj["NOTIFICATION_REP_GAIN"]			= { label="평판 상승", tooltip="평판 수치 획득을 알려줍니다.."}
 obj["NOTIFICATION_REP_LOSS"]			= { label="평판 하락", tooltip="평판 수치 감소를 알려줍니다."}

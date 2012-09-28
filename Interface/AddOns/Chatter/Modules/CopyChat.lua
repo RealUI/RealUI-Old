@@ -197,17 +197,26 @@ function mod:Copy(frame)
 	self.editBox:HighlightText(0)
 end
 
+local function fixName(misc, id, moreMisc, fakeName, tag, colon)
+	local _, charName, _, _, _, _, _, englishClass = BNGetToonInfo(id)
+	return charName..colon
+end
+
 function mod:GetLines(...)
 	local ct = 1
+	wipe(lines)
 	for i = select("#", ...), 1, -1 do
 		local region = select(i, ...)
 		if region:GetObjectType() == "FontString" then
-			lines[ct] = tostring(region:GetText())
+			local linez = tostring(region:GetText())
+			lines[ct] = gsub(linez, "(|HBNplayer:%S-|k:)(%d-)(:%S-|h)(%S-)(|?h?)(:)", fixName)
+			lines[ct] = gsub(lines[ct], "(|TInterface(.*)|t)", "")
 			ct = ct + 1
 		end
 	end
 	return ct - 1
 end
+
 
 function mod:OnShow(cft)
 	local cfn = cft:GetName():match("ChatFrame%d")

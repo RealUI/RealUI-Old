@@ -25,11 +25,6 @@ if not L then return end
 	L["WOW_ZONE_ABYSSAL_DEPTHS"] = "Abyssal Depths"
 	
 	
---	wow skill headers - must match exactly what is in game (wrath only)
-	L["WOW_SKILL_HEADER_PRIMARY"] = "Professions"
-	L["WOW_SKILL_HEADER_SECONDARY"] = "Secondary Skills"
-	
-	
 --	wow tooltip text - must match exactly what is in game
 	L["WOW_ITEM_TOOLTIP_FOOD"] = "Must remain seated while eating"
 	L["WOW_ITEM_TOOLTIP_DRINK"] = "Must remain seated while drinking"
@@ -41,14 +36,12 @@ if not L then return end
 	
 --	location names
 	L["LOCATION_ALL"] = "All"
-	L["LOCATION_BAG"] = "Bag" --INVTYPE_BAG
 	L["LOCATION_BANK"] = "Bank"
 	L["LOCATION_WEARING"] = "Wearing"
-	L["LOCATION_TOKEN"] = "Token" --CURRENCY
 	
 	
 --	subframe names
-	L["SUBFRAME_NAME_TITLE"] = "Title" 
+	L["SUBFRAME_NAME_TITLE"] = "Title"
 	L["SUBFRAME_NAME_BAGCHANGER"] = "Bag Changer"
 	
 	
@@ -80,14 +73,10 @@ if not L then return end
 	L["CATEGORY_SYSTEM_CORE_MATS"] = "Core Mats"
 	L["CATEGORY_SYSTEM_EQUIPMENT"] = "Equipment (Not Soulbound)"
 	L["CATEGORY_SYSTEM_EQUIPMENT_SOULBOUND"] = "Equipment (Soulbound)"
-	L["CATEGORY_SYSTEM_TOKEN"] = "Token"
-	L["CATEGORY_SYSTEM_TRASH"] = "Trash"
 	
 	
 --	consumable category descriptions
-	L["CATEGORY_CONSUMABLE_DRINK"] = "Drink"
-	L["CATEGORY_CONSUMABLE_FOOD"] = "Food"
-	L["CATEGORY_CONSUMABLE_FOOD_PET"] = "Food (Pet)"
+	L["CATEGORY_CONSUMABLE_FOOD_PET"] = "Pet Food"
 	L["CATEGORY_CONSUMABLE_POTION_HEAL"] = "Health (Potion/Stone)"
 	L["CATEGORY_CONSUMABLE_POTION_MANA"] = "Mana (Potion/Gem)"
 	L["CATEGORY_CONSUMABLE_ELIXIR_BATTLE"] = "Elixir (Battle)"
@@ -152,6 +141,7 @@ if not L then return end
 	L["MENU_ITEM_DEBUG_BAG"] = "Bag"
 	L["MENU_ITEM_DEBUG_SLOT"] = "Slot"
 	L["MENU_ITEM_DEBUG_BAG_TYPE"] = "Type"
+	L["MENU_ITEM_DEBUG_PET_ID"] = "Pet ID"
 	L["MENU_ITEM_DEBUG_AI_ID_SHORT"] = "Short ID"
 	L["MENU_ITEM_DEBUG_AI_ID_CACHE"] = "Cache ID"
 	L["MENU_ITEM_DEBUG_AI_ID_RULE"] = "Rule ID"
@@ -233,6 +223,8 @@ if not L then return end
 	L["CONFIG_SYSTEM_TOOLTIP_FACTION_ONLY"] = "Faction only"
 	L["CONFIG_SYSTEM_TOOLTIP_FACTION_ONLY_TEXT"] = "only show data for the current faction"
 	L["CONFIG_SYSTEM_TOOLTIP_VAULT_TEXT"] = "include data from %1$s" -- %1$s = vault
+	L["CONFIG_SYSTEM_TOOLTIP_BATTLEPET_SOURCE_TEXT"] = "include source text in tooltip"
+	L["CONFIG_SYSTEM_TOOLTIP_BATTLEPET_DESCRIPTION_TEXT"] = "include description text in tooltip"
 	
 	L["CONFIG_SYSTEM_BUGFIX"] = "Bug Fixes / Workarounds"
 	L["CONFIG_SYSTEM_BUGFIX_TEXT"] = "toggle the code to fix or work around this issue"
@@ -467,16 +459,11 @@ if not L then return end
 	
 --	rules frame
 	L["RULE"] = "Rule"
-	L["RULE_ENABLED"] = "Enabled"
 	L["RULE_HIDDEN"] = "Hidden"
-	L["RULE_ORDER"] = "Order"
-	L["RULE_DESCRIPTION"] = "Description"
 	L["RULE_FORMULA"] = "Formula"
 	L["RULE_LIST_ENABLED"] = "Use"
 	L["RULE_LIST_DAMAGED"] = "Dmg"
 	L["RULE_LIST_ID"] = "Rule"
-	L["RULE_LIST_ORDER"] = "Order"
-	L["RULE_LIST_DESCRIPTION"] = "Description"
 	
 	L["RULE_DAMAGED"] = "Rule %s is now flagged as damaged and will no longer be used until repaired"
 	L["RULE_FAILED"] = "Error validating rule %s"
@@ -488,7 +475,6 @@ if not L then return end
 	L["RULE_FAILED_ARGUMENT_IS_NIL"] = "%1$s( ... ), argument %2$i is nil"
 	L["RULE_FAILED_ARGUMENT_IS_INVALID"] = "%1$s( ... ), argument %2$i is not a %3$s"
 	L["RULE_FAILED_ARGUMENT_NONE_SPECIFIED"] = "%1$s( ... ), no arguments specified"
-	L["RULE_FAILED_ADDON_NOT_LOADED"] = "%1$s( ... ), required addon is not loaded"
 	
 	
 --	new item indicators
@@ -523,9 +509,9 @@ if not L then return end
 	
 	
 --	misc chat stuff
-	L["UPGRADE_PROFILE"] = "Upgrading profile data for [%1$s] to v%2$.4f" -- profile name, version
-	L["UPGRADE_GLOBAL"] = "Upgrading global %1$s data to v%2$.4f" -- profile type, version
-	L["UPGRADE_CHAR"] = "Upgrading character data for %1$s to v%2$.4f" -- character, version
+	L["UPGRADE_PROFILE"] = "Upgrading profile data for [%1$s] to v%2$d" -- profile name, version
+	L["UPGRADE_GLOBAL"] = "Upgrading global %1$s data to v%2$d" -- profile type, version
+	L["UPGRADE_CHAR"] = "Upgrading character data for %1$s to v%2$d" -- character, version
 	
 	L["MISC_ALERT"] = "Alert!"
 	L["MISC_ALERT_FRAMELEVEL_1"] = "Bug fix complete."
@@ -533,7 +519,6 @@ if not L then return end
 	
 	
 --	item count tooltip
-	L["TOOLTIP_TOTAL"] = "Total"
 	L["TOOLTIP_COUNT_ME"] = ">"
 	L["TOOLTIP_VAULT_TABS"] = "Tab"
 	
@@ -598,6 +583,7 @@ if not L then return end
 	L["CLICK_TO_SELECT"] = "Click to select"
 	L["CLICK_TO_DESELECT"] = "Click to deselect"
 	L["CLICK_TO_IGNORE"] = "Click to ignore"
+	L["ORDER"] = "Order"
 	
 	
 --	libdatabroker
@@ -608,17 +594,13 @@ if not L then return end
 	L["LDB_BAGS_STYLE_TEXT"] = "Displays both used and total slot counts"
 	L["LDB_BAGS_INCLUDE_TYPE"] = "Bag type"
 	L["LDB_BAGS_INCLUDE_TYPE_TEXT"] = "Displays the type of bag in the text"
-	L["LDB_TRACKING"] = "Tracking"
 	L["LDB_TRACKING_CURRENCY"] = "Currencies / Tokens"
-	L["LDB_TRACKING_ITEM"] = "Items"
 	L["LDB_PETS_SUMMON"] = "Summon Pet"
 	L["LDB_MOUNTS_NOT_HERE"] = "None of your mounts are usable here"
 	L["LDB_MOUNTS_GROUND"] = "Ground"
-	L["LDB_MOUNTS_FLYING"] = "Flying"
 	L["LDB_MOUNTS_FLYING_DISMOUNT"] = "Dismount in flight"
 	L["LDB_MOUNTS_FLYING_DISMOUNT_TEXT"] = "Enabled = allows you to dismount while flying.\n\nDisabled = you need to land before you can dismount"
 	L["LDB_MOUNTS_FLYING_DISMOUNT_WARNING"] = "You are currently flying, please land to select another mount"
-	L["LDB_MOUNTS_WATER"] = "Water"
 	L["LDB_MOUNTS_SUMMON"] = "Summon Mount"
 	L["LDB_MOUNTS_NODATA"] = "Unknown / Changed"
 	L["LDB_MOUNTS_TOOLTIP_MODE"] = "Mode"

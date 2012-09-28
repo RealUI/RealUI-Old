@@ -265,9 +265,7 @@ end
 
 -- Initialize cache of icons
 local iconCache = {}
-local knownSpells = {}
 function MOD:SetIconDefaults()
-	table.wipe(knownSpells)
 	for tab = 1, 2 do -- scan first two tabs of player spell book and create caches of known spells and icons
 		local _, _, offset, numSpells = GetSpellTabInfo(tab)
 		for i = 1, numSpells do
@@ -275,26 +273,22 @@ function MOD:SetIconDefaults()
 			local stype, id = GetSpellBookItemInfo(index, "spell")
 			if stype == "SPELL" then -- use spellbook index to check for cooldown
 				local name, _, icon = GetSpellInfo(index, "spell")
-				if name then iconCache[name] = icon; knownSpells[name] = icon end
+				if name then iconCache[name] = icon end
 			elseif stype == "FLYOUT" then -- use spell id to check for cooldown
 				local _, _, numSlots = GetFlyoutInfo(id)
 				for slot = 1, numSlots do
 					local spellID = GetFlyoutSlotInfo(id, slot)
 					if spellID then
 						local name, _, icon = GetSpellInfo(spellID)
-						if name then iconCache[name] = icon; knownSpells[name] = icon end
+						if name then iconCache[name] = icon end
 					end
 				end
 			end
 		end
 	end
-	-- for name, icon in pairs(knownSpells) do print(name, icon) end
 	local _, _, iconGCD = GetSpellInfo(28730) -- cached for global cooldown (using same icon as Arcane Torrent)
 	iconCache[L["GCD"]] = iconGCD
 end
-
--- Test if a spell name is included in the spell book
-function MOD:IsKnownSpell(name)	return knownSpells[name] ~= nil end
 
 -- Initialize dimension defaults
 function MOD:SetDimensionDefaults(p)
@@ -724,6 +718,7 @@ MOD.DefaultProfile = {
 		ButtonFacadeBorder = false,		-- enable color of border texture in ButtonFacade
 		SoundChannel = "Master",		-- by default, use the Master sound channel
 		HideOmniCC = false,				-- hide OmniCC counts on all bar group icons
+		HideBorder = false,				-- hide custom border in all bar groups
 		Minimap = { hide = false, minimapPos = 180, radius = 80, }, -- saved DBIcon minimap settings
 		InCombatBar = {},				-- shared settings for the in-combat bar
 	},

@@ -215,7 +215,9 @@ function mod:OnEnable()
 	self:LibSharedMedia_Registered()
 	self:SetBackdrops()
 	for i = 1, #frames do
-		frames[i]:Show()
+		if self.db.profile.frames and self.db.profile.frames["FRAME_" .. i].enable then
+			frames[i]:Show()
+		end
 		mod:SetAnchors(frames[i], self.db.profile.frames["FRAME_" .. i].combatLogFix)
 	end
 	Media.RegisterCallback(mod, "LibSharedMedia_Registered")
@@ -236,10 +238,14 @@ end
 do
 	function mod:SetBackdrop(frame)
 		local profile = self.db.profile.frames[frame.id]
+		local doTile = false
+		if profile and profile.tileSize and profile.tileSize > 1 then
+			doTile = true
+		end
 		frame:SetBackdrop({
 			bgFile = Media:Fetch("background", profile.background),
 			edgeFile = Media:Fetch("border", profile.border),
-			tile = true,
+			tile = doTile,
 			tileSize = profile.tileSize,
 			edgeSize = profile.edgeSize,
 			insets = {left = profile.inset, right = profile.inset, top = profile.inset, bottom = profile.inset}

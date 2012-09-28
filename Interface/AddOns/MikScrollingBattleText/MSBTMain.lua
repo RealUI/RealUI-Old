@@ -134,6 +134,7 @@ local eventHandlers = {}
 local damageTypeMap = {}
 local damageColorProfileEntries = {}
 local powerTokens = {}
+local uniquePowerTypes = {}
 
 -- Throttled ability info.
 local throttledAbilities = {}
@@ -349,7 +350,7 @@ local function FormatEvent(message, amount, damageType, overhealAmount, overkill
 
    -- Color it with the correct color if coloring is enabled.
    local overkillSettings = currentProfile.overkill
-   partialAmount = string_gsub(overkillSettings.trailer, "%%a", overkillAmount)
+   partialAmount = string_gsub(overkillSettings.trailer, "%%a", partialAmount)
    if (not currentProfile.partialColoringDisabled) then
     partialAmount = string_format("|cFF%02x%02x%02x%s|r", overkillSettings.colorR * 255, overkillSettings.colorG * 255, overkillSettings.colorB * 255, partialAmount)
    end
@@ -385,7 +386,7 @@ local function FormatEvent(message, amount, damageType, overhealAmount, overkill
  if (powerType and string_find(message, "%p", 1, true)) then
   local powerString = _G[powerTokens[powerType] or "UNKNOWN"]
   if (powerType == powerTypes["ECLIPSE"]) then powerString = amount and (amount > 0 and BALANCE_POSITIVE_ENERGY or BALANCE_NEGATIVE_ENERGY) or UNKNOWN end
-  message = string_gsub(message, "%%p", powerString)
+  message = string_gsub(message, "%%p", powerString or UNKNOWN)
  end
  
 
@@ -566,6 +567,23 @@ local function HandleHolyPower(numHolyPower, powerType)
 
  -- Display the event.
  DisplayEvent(eventSettings, FormatEvent(eventSettings.message, numHolyPower))
+end
+
+
+-- ****************************************************************************
+-- Handle shadow orb changes.
+-- ****************************************************************************
+local function HandleShadowOrbs(numOrbs, powerType)
+ -- Get the correct event settings.
+ local eventSettings = MSBTProfiles.currentProfile.events.NOTIFICATION_SHADOW_ORBS_CHANGE
+ local maxOrbs = UnitPowerMax("player", powerType)
+ if (numOrbs == maxOrbs) then eventSettings = MSBTProfiles.currentProfile.events.NOTIFICATION_SHADOW_ORBS_FULL end
+
+ -- Don't do anything if the event is disabled.
+ if (eventSettings.disabled) then return end
+
+ -- Display the event.
+ DisplayEvent(eventSettings, FormatEvent(eventSettings.message, numOrbs))
 end
 
 
@@ -918,8 +936,8 @@ end
 -- Handles power parser events.
 -- ****************************************************************************
 local function PowerHandler(parserEvent, currentProfile)
- -- Handle holy power and chi uniquely.
- if (parserEvent.powerType == powerTypes["HOLY_POWER"] or parserEvent.powerType == powerTypes["LIGHT_FORCE"]) then return end
+ -- Handle certain power types such as holy power, shadow orbs, and chi uniquely.
+ if (uniquePowerTypes[parserEvent.powerType] ~= nil) then return end
 
  -- Ignore the event if all power gains are being shown.
  if (currentProfile.showAllPowerGains) then return end
@@ -1316,6 +1334,11 @@ function eventFrame:UNIT_POWER(unitID, powerToken)
  elseif (powerToken == "HOLY_POWER" and playerClass == "PALADIN") then
   if (powerAmount ~= lastPowerAmount) then HandleHolyPower(powerAmount, powerType) end
   doFullDetect = false
+
+ -- Handle shadow orbs uniquely.
+ elseif (powerToken == "SHADOW_ORBS" and playerClass == "PRIEST") then
+  if (powerAmount ~= lastPowerAmount) then HandleShadowOrbs(powerAmount, powerType) end
+  doFullDetect = false
  end
 
  -- Detect power gains if show all power gains is enabled.
@@ -1431,6 +1454,12 @@ eventHandlers["extraattacks"] = ExtraAttacksHandler
 for powerToken, powerType in pairs(powerTypes) do
  powerTokens[powerType] = powerToken
 end
+powerTokens[SPELL_POWER_DARK_FORCE] = POWER_TYPE_DARK_POWER
+
+-- Create map of power types that are handled uniquely.
+uniquePowerTypes[powerTypes["HOLY_POWER"]] = true
+uniquePowerTypes[powerTypes["LIGHT_FORCE"]] = true
+uniquePowerTypes[powerTypes["SHADOW_ORBS"]] = true
 
 -- Create damage type and damage color profile maps.
 CreateDamageMaps()

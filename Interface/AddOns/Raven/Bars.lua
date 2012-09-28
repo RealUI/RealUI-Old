@@ -38,12 +38,14 @@ function MOD:GetTimelineLabels() return defaultLabels end
 MOD.BarGroupTemplate = { -- default bar group settings
 	enabled = true, locked = true, merged = false, linkSettings = false, checkCondition = false, noMouse = false, iconMouse = true,
 	barColors = "Spell", bgColors = "Normal", iconColors = "None", combatTips = true, casterTips = true, anchorTips = "DEFAULT", strata = "MEDIUM",
-	useDefaultDimensions = true, useDefaultFontsAndTextures = true, useDefaultColors = true, sor = "A", reverseSort = false, timeSort = true, playerSort = false,
-	configuration = 1, anchor = false, anchorX = 0, anchorY = 0, anchorLastBar = false, anchorRow = false, anchorColumn = true, anchorEmpty = false, growDirection = true,
+	useDefaultDimensions = true, useDefaultFontsAndTextures = true, useDefaultColors = true,
+	sor = "A", reverseSort = false, timeSort = true, playerSort = false,
+	configuration = 1, anchor = false, anchorX = 0, anchorY = 0, anchorLastBar = false, anchorRow = false, anchorColumn = true, anchorEmpty = false,
+	growDirection = true, fillBars = false, wrap = 0, wrapDirection = false, snapCenter = false, maxBars = 0,
 	pulseStart = false, pulseEnd = false, flashExpiring = false, flashTime = 5, hide = false, fade = false, delayTime = 5,
 	bgNormalAlpha = 1, bgCombatAlpha = 1, mouseAlpha = 1, fadeAlpha = 1, testTimers = 10, testStatic = 0, testLoop = false,
 	soundSpellStart = false, soundSpellEnd = false, soundSpellExpire = false, soundAltStart = "None", soundAltEnd = "None", soundAltExpire = "None",
-	wrap = 0, wrapDirection = false, snapCenter = false, maxBars = 0, labelOffset = 0, labelInset = 0, labelWrap = false, labelAlign = "MIDDLE",
+	labelOffset = 0, labelInset = 0, labelWrap = false, labelCenter = false, labelAlign = "MIDDLE",
 	timeOffset = 0, timeInset = 0, timeAlign = "normal", timeIcon = false, iconOffset = 0, iconInset = 0, iconHide = false, iconAlign = "CENTER",
 	expireTime = 5, expireMinimum = 0, colorExpiring = false, expireMSBT = false, criticalMSBT = false, clockReverse = true, clockEdge = false,
 	expireColor = false, expireLabelColor = false, expireTimeColor = false, desaturate = false,
@@ -53,10 +55,10 @@ MOD.BarGroupTemplate = { -- default bar group settings
 	showInstance = true, showNotInstance = true, showArena = true, showBattleground = true, showPrimary = true, showSecondary = true,
 	showResting = true, showMounted = true, showVehicle = true, showFriendly = true, showEnemy = true, showBlizz = true, showNotBlizz = true,
 	detectBuffs = false, detectDebuffs = false, detectAllBuffs = false, detectAllDebuffs = false, detectDispellable = false, detectInflictable = false,
-	detectNPCDebuffs = false, detectVehicleDebuffs = false,
+	detectNPCDebuffs = false, detectVehicleDebuffs = false, detectBoss = false,
 	noHeaders = false, noTargets = false, noLabels = false, targetFirst = false, targetAlpha = 1, replay = false, replayTime = 5,
 	detectCastable = false, detectStealable = false, detectMagicBuffs = false, detectEffectBuffs = false, detectWeaponBuffs = false,
-	detectNPCBuffs = false, detectVehicleBuffs = false, detectOtherBuffs = false,
+	detectNPCBuffs = false, detectVehicleBuffs = false, detectOtherBuffs = false, detectBossBuffs = false,
 	detectCooldowns = false, detectBuffsMonitor = "player", detectBuffsCastBy = "player", detectDebuffsMonitor = "player",
 	detectDebuffsCastBy = "player", detectCooldownsBy = "player", detectTracking = false, detectOnlyTracking = false,
 	detectSpellCooldowns = true, detectTrinketCooldowns = true, detectInternalCooldowns = true, detectSpellEffectCooldowns = true,
@@ -74,8 +76,8 @@ MOD.BarGroupTemplate = { -- default bar group settings
 
 MOD.BarGroupLayoutTemplate = { -- all the bar group settings involved in layout configuration
 	barWidth = 0, barHeight = 0, iconSize = 0, scale = 0, spacingX = 0, spacingY = 0, iconOffsetX = 0, iconOffsetY = 0,
-	useDefaultDimensions = 0, configuration = 0, growDirection = 0, wrap = 0, wrapDirection = 0, snapCenter = 0, maxBars = 0,
-	labelOffset = 0, labelInset = 0, labelWrap = 0, labelAlign = 0, timeOffset = 0, timeInset = 0, timeAlign = 0, timeIcon = 0,
+	useDefaultDimensions = 0, configuration = 0, growDirection = 0, wrap = 0, wrapDirection = 0, snapCenter = 0, fillBars = 0, maxBars = 0,
+	labelOffset = 0, labelInset = 0, labelWrap = 0, labelCenter = 0, labelAlign = 0, timeOffset = 0, timeInset = 0, timeAlign = 0, timeIcon = 0,
 	iconOffset = 0, iconInset = 0, iconHide = 0, iconAlign = 0,
 	hideIcon = 0, hideClock = 0, hideBar = 0, hideSpark = 0, hideValue = 0, hideLabel = 0, hideCount = 0, showTooltips = 0
 }
@@ -571,9 +573,9 @@ function MOD:UpdateBarGroup(bp)
 		Nest_SetBarGroupLock(bg, bp.locked)
 		Nest_SetBarGroupAttribute(bg, "parentFrame", bp.parentFrame)
 		Nest_SetBarGroupBarLayout(bg, bp.barWidth, bp.barHeight, bp.iconSize, bp.scale, bp.spacingX, bp.spacingY,
-			bp.iconOffsetX, bp.iconOffsetY, bp.labelOffset, bp.labelInset, bp.labelWrap, bp.labelAlign,
+			bp.iconOffsetX, bp.iconOffsetY, bp.labelOffset, bp.labelInset, bp.labelWrap, bp.labelAlign, bp.labelCenter,
 			bp.timeOffset, bp.timeInset, bp.timeAlign, bp.timeIcon, bp.iconOffset, bp.iconInset, bp.iconHide, bp.iconAlign,
-			bp.configuration, bp.growDirection, bp.wrap, bp.wrapDirection, bp.snapCenter, bp.maxBars, bp.strata)
+			bp.configuration, bp.growDirection, bp.wrap, bp.wrapDirection, bp.snapCenter, bp.fillBars, bp.maxBars, bp.strata)
 		Nest_SetBarGroupLabelFont(bg, media:Fetch("font", bp.labelFont), bp.labelFSize, bp.labelAlpha, bp.labelColor,
 			bp.labelOutline, bp.labelShadow, bp.labelThick, bp.labelMono)
 		Nest_SetBarGroupTimeFont(bg, media:Fetch("font", bp.timeFont), bp.timeFSize, bp.timeAlpha, bp.timeColor,
@@ -985,18 +987,19 @@ local function DetectNewBuffs(unit, n, aura, isBuff, bp, vbp, bg)
 	if (aura[4] == "Tracking") then checkTracking = bp.detectTracking end
 	local tt, ta = aura[11], aura[12]
 	local isStealable = (aura[7] == 1)
-	local isCastable = aura[17]
 	local isNPC = aura[18]
 	local isVehicle = aura[19]
-	local isMagic = (aura[4] == "Magic")
+	local isBoss = (aura[15] ~= nil)
+	local isMagic = (aura[4] == "Magic") and not isStealable
 	local isEffect = (tt == "effect")
 	local isWeapon = (tt == "weapon")
-	local isOther = not isStealable and not isCastable and not isNPC and not isVehicle and not isMagic and not isEffect and not isWeapon
+	local isCastable = aura[17] and not isWeapon
+	local isOther = not isStealable and not isCastable and not isNPC and not isVehicle and not isMagic and not isEffect and not isWeapon and not isBoss
 	local isMine = (aura[6] == "player")
 	local id, gname = aura[20], aura[21] -- these fields are only valid if unit == "all
 	local checkAll = (unit == "all")
 	local checkTypes = not bp.filterBuffTypes or (bp.detectStealable and isStealable) or (bp.detectCastable and isCastable)
-		or (bp.detectNPCBuffs and isNPC) or (bp.detectVehicleBuffs and isVehicle)
+		or (bp.detectNPCBuffs and isNPC) or (bp.detectVehicleBuffs and isVehicle) or (bp.detectBossBuffs and isBoss)
 		or (bp.detectMagicBuffs and isMagic) or (bp.detectEffectBuffs and isEffect) or (bp.detectWeaponBuffs and isWeapon) or (bp.detectOtherBuffs and isOther)
 	if ((checkAll and not (bp.noPlayerBuffs and (id == UnitGUID("player"))) and not (bp.noPetBuffs and (id == UnitGUID("pet")))
 			and not (bp.noTargetBuffs and (id == UnitGUID("target"))) and not (bp.noFocusBuffs and (id == UnitGUID("focus")))) or

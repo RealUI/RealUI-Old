@@ -2,11 +2,10 @@ local mod = Chatter:NewModule("Group Say (/gr)", "AceHook-3.0", "AceConsole-3.0"
 local L = LibStub("AceLocale-3.0"):GetLocale("Chatter")
 mod.modName = L["Group Say (/gr)"]
 
-local GetNumPartyMembers = _G.GetNumPartyMembers
 local IsInInstance = _G.IsInInstance
-local GetNumPartyMembers = _G.GetNumPartyMembers
-local GetNumRaidMembers = _G.GetNumRaidMembers
 local SendChatMessage = _G.SendChatMessage
+local IsInRaid = _G.IsInRaid
+local IsInGroup = _G.IsInGroup
 
 function mod:Decorate(frame)
 	self:HookScript(_G[frame:GetName().."EditBox"], "OnTextChanged")
@@ -47,10 +46,10 @@ function mod:GetGroupDistribution(slash)
 	if inInstance and (kind == "pvp") then
 		return slash and "/bg " or "BATTLEGROUND"
 	end
-	if GetNumRaidMembers() > 0 then
+	if IsInRaid() then
 		return slash and "/ra " or "RAID"
 	end
-	if GetNumPartyMembers() > 0 then
+	if IsInGroup() then
 		return slash and "/p " or "PARTY"
 	end
 	return slash and "/s " or "SAY"

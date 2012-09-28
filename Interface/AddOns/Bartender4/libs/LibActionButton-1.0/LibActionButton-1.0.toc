@@ -6,7 +6,7 @@
 ## X-Category: Library
 ## X-License: BSD
 ## OptionalDeps: LibKeyBound-1.0
-## X-Curse-Packaged-Version: 0.14-1-g50ba5e7
+## X-Curse-Packaged-Version: 0.15
 ## X-Curse-Project-Name: LibActionButton-1.0
 ## X-Curse-Project-ID: libactionbutton-1-0
 ## X-Curse-Repository-ID: wow/libactionbutton-1-0/mainline

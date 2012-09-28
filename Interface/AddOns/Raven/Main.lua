@@ -48,10 +48,13 @@ MOD.runeTypes = {} -- cache types of runes
 MOD.runeIcons = {} -- cache icons for Death Knight runes
 MOD.updateActions = true -- action bar changed
 MOD.updateDispels = true -- need to update dispel types
+MOD.knownGlyphs = {} -- cache of known glyphs
+MOD.activeGlyphs = {} -- cache of active glyphs
 
 local doUpdate = true -- set by any event that can change bars (used to throttle major updates)
 local forceUpdate = false -- set to cause immediate update (reserved for critical changes like to player's target or focus)
 local updateCooldowns = false -- set when actionbar or inventory slot cooldown starts or stops
+local updateGlyphs = true -- set when need to update cache of glyph info
 local units = { "player", "pet", "target", "focus", "targettarget", "focustarget", "pettarget", "mouseover" } -- ordered list of units
 local eventUnits = { "targettarget", "focustarget", "pettarget", "mouseover" } -- can't count on events for these units
 local unitUpdate = {} -- boolean for each unit that indicates need to update auras
@@ -108,6 +111,7 @@ end
 local function TriggerPlayerUpdate() unitUpdate.player = true; doUpdate = true end
 local function TriggerCooldownUpdate() updateCooldowns = true; doUpdate = true end
 local function TriggerActionsUpdate() MOD.updateActions = true; doUpdate = true end
+local function TriggerGlyphUpdate() updateGlyphs = true; doUpdate = true end
 function MOD:ForceUpdate() doUpdate = true; forceUpdate = true end
 
 -- Function called to detect global cooldowns
@@ -349,6 +353,7 @@ function MOD:OnEnable()
 	-- Register events called prior to starting play
 	self:RegisterEvent("PLAYER_ENTERING_WORLD")
 	self:RegisterEvent("UNIT_AURA")
+	self:RegisterEvent("UNIT_POWER")
 	self:RegisterEvent("UNIT_PET")
 	self:RegisterEvent("UNIT_TARGET")
 	self:RegisterEvent("PLAYER_FOCUS_CHANGED")
@@ -373,6 +378,8 @@ function MOD:OnEnable()
 	self:RegisterEvent("UNIT_SPELLCAST_START", CheckGCD)
 	self:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED", CheckSpellCasts)
 	self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED", CombatLogTracker)
+	self:RegisterEvent("GLYPH_ADDED", TriggerGlyphUpdate)
+	self:RegisterEvent("GLYPH_UPDATED", TriggerGlyphUpdate)
 	MOD:InitializeBars() -- initialize routine that manages the bar library
 	MOD:InitializeSounds() -- add sounds to LibSharedMedia
 	MOD.LibBossIDs = LibStub("LibBossIDs-1.0", true)
@@ -439,6 +446,9 @@ end
 -- Event called when an aura changes on a unit, returns the unit name
 function MOD:UNIT_AURA(e, unit) if unit and (unitUpdate[unit] ~= nil) then unitUpdate[unit] = true; doUpdate = true end end
 
+-- Event called when a unit's power changes
+function MOD:UNIT_POWER(e, unit) if unit == "player" then unitUpdate[unit] = true; doUpdate = true end end
+
 -- Event for when vehicle info changes
 function MOD:VEHICLE_UPDATE() TriggerCooldownUpdate(); TriggerPlayerUpdate() end
 
@@ -497,6 +507,23 @@ local function InitializeTalents()
 		MOD.talents[t].select = i
 	end
 	MOD.updateDispels = true
+end
+
+-- Initialize cache of glyph info
+local function InitializeGlyphs()
+	table.wipe(MOD.knownGlyphs)
+	table.wipe(MOD.activeGlyphs)
+	local count = GetNumGlyphs()
+	for index = 1, count do
+		local name, _, isKnown, _, castSpell = GetGlyphInfo(index)
+		if isKnown then MOD.knownGlyphs[name] = castSpell end
+	end
+	for slot = 1, NUM_GLYPH_SLOTS do
+		local enabled, _, _, spell, _, glyphSpell = GetGlyphSocketInfo(slot)
+		if enabled and spell then
+			for name, castSpell in pairs(MOD.knownGlyphs) do if glyphSpell == castSpell then MOD.activeGlyphs[name] = slot break end end
+		end
+	end
 end
 
 -- Check if the options panel is loaded, if not then get it loaded and ask it to toggle open/close status
@@ -594,6 +621,7 @@ function MOD:Update(elapsed)
 	CheckBlizzFrames() -- make sure blizzard frames are visible or not
 	if MOD.db.profile.enabled then
 		elapsedTime = elapsedTime + elapsed; refreshTime = refreshTime + elapsed
+		if updateGlyphs then InitializeGlyphs(); updateGlyphs = false end
 		if forceUpdate or (elapsedTime >= throttleTime) then
 			forceUpdate = false; throttleCount = throttleCount + 1; if throttleCount == 5 then throttleCount = 0 end
 			if not talentsInitialized then InitializeTalents() end -- retry until talents initialized
@@ -853,25 +881,25 @@ end
 
 -- Add buffs for the specified unit to the active buffs table
 local function GetBuffs(unit)
-	local name, rank, icon, count, btype, duration, expire, caster, isStealable, _, spellID, apply
+	local name, rank, icon, count, btype, duration, expire, caster, isStealable, _, spellID, apply, boss
 	local i = 1
 	repeat
-		name, rank, icon, count, btype, duration, expire, caster, isStealable, _, spellID, apply = UnitAura(unit, i, "HELPFUL")
+		name, rank, icon, count, btype, duration, expire, caster, isStealable, _, spellID, apply, boss = UnitAura(unit, i, "HELPFUL")
 		if name then
 			if not caster then caster = "unknown" elseif caster == "vehicle" then caster = "player" end -- vehicle buffs treated like player buffs
 			if caster == "player" then MOD:SetDuration(name, duration) end
-			AddAura(unit, name, true, spellID, count, btype, duration, caster, isStealable, nil, apply, icon, rank, expire, "buff", i)
+			AddAura(unit, name, true, spellID, count, btype, duration, caster, isStealable, boss, apply, icon, rank, expire, "buff", i)
 		end
 		i = i + 1
 	until not name
 	if unit ~= "player" then return end -- done for all but player, players also need to add vehicle buffs
 	i = 1
 	repeat
-		name, rank, icon, count, btype, duration, expire, caster, isStealable, _, spellID, apply = UnitAura("vehicle", i, "HELPFUL")
+		name, rank, icon, count, btype, duration, expire, caster, isStealable, _, spellID, apply, boss = UnitAura("vehicle", i, "HELPFUL")
 		if name then
 			if not caster then caster = "unknown" elseif caster == "vehicle" then caster = "player" end -- vehicle buffs treated like player buffs
 			if caster == "player" then MOD:SetDuration(name, duration) end
-			AddAura(unit, name, true, spellID, count, btype, duration, caster, isStealable, nil, apply, icon, rank, expire, "vehicle buff", i)
+			AddAura(unit, name, true, spellID, count, btype, duration, caster, isStealable, boss, apply, icon, rank, expire, "vehicle buff", i)
 		end
 		i = i + 1
 	until not name
@@ -966,6 +994,30 @@ local function GetStanceAura()
 	end
 end
 
+-- Create an aura for class-specific power buffs: soul shards, holy power, shadow orbs
+local function GetPowerBuffs()
+	local power, id = nil, nil
+	if MOD.myClass == "PALADIN" then power = UnitPower("player", SPELL_POWER_HOLY_POWER); id = 85247
+	elseif MOD.myClass == "PRIEST" then power = UnitPower("player", SPELL_POWER_SHADOW_ORBS); id = 95740
+	elseif MOD.myClass == "MONK" then power = UnitPower("player", SPELL_POWER_LIGHT_FORCE); id = 97272
+	elseif MOD.myClass == "WARLOCK" then
+		if IsSpellKnown(108647) then
+			power = UnitPower("player", SPELL_POWER_BURNING_EMBERS, true); id = 108647
+		elseif IsSpellKnown(1120) then
+			power = UnitPower("player", SPELL_POWER_SOUL_SHARDS); id = 117198
+		elseif IsSpellKnown(104315) then
+			power = UnitPower("player", SPELL_POWER_DEMONIC_FURY); id = 104315
+		end
+	end
+	if power and power > 0 then
+		local name, _, icon = GetSpellInfo(id)
+		local link = GetSpellLink(id)
+		if name then
+			AddAura("player", name, true, id, power, "Power", 0, "player", nil, nil, nil, icon, nil, 0, "spell link", link)
+		end
+	end
+end
+
 -- Update unit auras if necessary (deferred until requested)
 function MOD:UnitStatusUpdate(unit)
 	local status = unitStatus[unit]
@@ -973,7 +1025,7 @@ function MOD:UnitStatusUpdate(unit)
 		if status ~= 1 then unit = status end
 		if unitUpdate[unit] then -- need to do an update for this unit
 			ReleaseAuras(unit); GetBuffs(unit); GetDebuffs(unit)
-			if unit == "player" then GetTracking(); GetSpellEffectAuras(); GetStanceAura() end
+			if unit == "player" then GetTracking(); GetSpellEffectAuras(); GetStanceAura(); GetPowerBuffs() end
 			unitUpdate[unit] = false
 		end
 		return unit
@@ -1063,8 +1115,13 @@ local function CheckInventoryCooldown(slot)
 	if id then
 		local start, duration, enable = GetInventoryItemCooldown("player", id)
 		if start and (start > 0) and (enable == 1) and (duration > 1.5) then
-			local name, _, _, _, _, _, _, _, _, icon = GetItemInfo(GetInventoryItemLink("player", id))
-			AddCooldown(name, id, icon, start, duration, "inventory", slot, "player")
+			local link = GetInventoryItemLink("player", id)
+			if link then
+				local spell = GetItemSpell(link)
+				local name, _, _, _, _, _, _, _, equipSlot, icon = GetItemInfo(link)
+				if spell and equipSlot ~= "INVTYPE_TRINKET" then name = spell end
+				if name and icon then AddCooldown(name, id, icon, start, duration, "inventory", slot, "player") end
+			end
 		end
 	end
 end

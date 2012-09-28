@@ -1,7 +1,7 @@
 -- (c) 2007 Nymbia.  see LGPLv2.1.txt for full details.
 --DO NOT MAKE CHANGES TO THIS FILE BEFORE READING THE WIKI PAGE REGARDING CHANGING THESE FILES
 if not LibStub("LibPeriodicTable-3.1", true) then error("PT3 must be loaded before data") end
-LibStub("LibPeriodicTable-3.1"):AddData("Consumable", gsub("$Rev: 378 $", "(%d+)", function(n) return n+90000 end), {
+LibStub("LibPeriodicTable-3.1"):AddData("Consumable", gsub("$Rev: 382 $", "(%d+)", function(n) return n+90000 end), {
 	["Consumable.Anti-Venom"]="6452:25,6453:35,13462:60,2633:60,19440:60,12586:60,9030:60,3386:60,31437:70,25550:70",
 	["Consumable.Bandage.Basic"]="1251:66,2581:114,3530:161,3531:301,6450:400,6451:640,8544:800,8545:1104,14529:1360,14530:2000,21990:2800,21991:3400,38643:3400,38640:4100,34721:4800,34722:5800,53049:17400,53050:26000,53051:35000",
 	["Consumable.Bandage.Battleground.Alterac Valley"]="19307:2000",
@@ -10,10 +10,10 @@ LibStub("LibPeriodicTable-3.1"):AddData("Consumable", gsub("$Rev: 378 $", "(%d+)
 
 	--NOT AUTOGENNED Self buffs are on caster only, target buffs are on target
 	--Under no circumstances do you add food buffs here, nor weapon buffs for now.  These are applied differently / noncombat
-	["Consumable.Buff.Agility.Flask"]="33208:18,32598:20,32599:20,47499:40,58149:80,58087:300,65455:300",
+	["Consumable.Buff.Agility.Flask"]="33208:18,32598:20,32599:20,47499:40,58149:80,58087:300,65455:300,75525:80",
 	["Consumable.Buff.Agility.Self"]="2457:4,3390:8,8949:15,28104:15,8412:25,9187:25,13452:25,22831:35,58145:1200",
 	["Consumable.Buff.Agility.Target"]="3012:3,1477:5,4425:8,10309:10,27498:15,33457:20,43463:25,43464:30",
-	["Consumable.Buff.Intellect.Flask"]="33208:18,32596:20,32600:20,32601:20,13511:65,47499:40,58149:80,58086:300,65455:300",
+	["Consumable.Buff.Intellect.Flask"]="33208:18,32596:20,32600:20,32601:20,13511:65,47499:40,58149:80,58086:300,65455:300,75525:80",
 	["Consumable.Buff.Intellect.Self"]="3383:6,28104:15,13447:18,8423:25,9179:25,32067:30",
 	["Consumable.Buff.Intellect.Target"]="955:3,2290:5,4419:12,10308:17,27499:21,33458:24,12458:30,37091:32,37092:48",
 	["Consumable.Buff.Spirit.Flask"]="33208:18,67438:300",
@@ -22,7 +22,7 @@ LibStub("LibPeriodicTable-3.1"):AddData("Consumable", gsub("$Rev: 378 $", "(%d+)
 	["Consumable.Buff.Stamina.Flask"]="33208:18,32596:30,32597:30,32598:30,32599:30,32600:30,32601:30,58085:300,65455:300",
 	["Consumable.Buff.Stamina.Self"]="20709:5,17048:10,21114:10,21151:15,28104:15,13453:18,30615:20",
 	["Consumable.Buff.Stamina.Target"]="1180:4,1711:8,4422:12,10307:16,27502:20,33461:42,37093:63,37094:132",
-	["Consumable.Buff.Strength.Flask"]="33208:18,32597:20,32598:20,47499:40,58149:80,58088:300,65455:300",
+	["Consumable.Buff.Strength.Flask"]="33208:18,32597:20,32598:20,47499:40,58149:80,58088:300,65455:300,75525:80",
 	["Consumable.Buff.Strength.Self"]="2454:4,6662:8,3391:8,28104:15,13453:18,8410:25,9206:25,22824:35,22837:75,22828:120,58146:1200",
 	["Consumable.Buff.Strength.Target"]="954:3,2289:5,4426:8,10310:10,27503:15,33462:20,43465:25,12451:30,43466:30",
 
@@ -79,7 +79,7 @@ LibStub("LibPeriodicTable-3.1"):AddData("Consumable", gsub("$Rev: 378 $", "(%d+)
 
 	["Consumable.Buff Type.Battle"]="954,955,1181,1477,1712,2289,2290,2454,2457,3012,3383,3390,3391,4419,4424,4425,4426,6373,6662,8410,8412,8424,8949,9155,9179,9187,9206,9224,9264,10306,10308,10309,10310,11563,12450,12451,12460,12820,13447,13452,13453,13454,17708,20007,20079,21546,22824,22825,22827,22831,22833,22835,22840,27498,27499,27501,27503,28102,28103,28104,31679,32067,33457,33458,33460,33462,34537,37091,37092,37097,37098,37878,39666,40068,40070,40072,40073,40076,40109,43463,43464,43465,43466,44325,44327,44329,44330,44331,45621,58084,58089,58092,58094,58144,58148,63303,63304,63305,63307,78883",
 	["Consumable.Buff Type.Guardian"]="1177,1180,1478,1711,2458,3013,3382,3388,3389,3825,3826,4421,4422,5997,8411,8423,8827,8951,9088,10305,10307,10592,11564,12455,12457,12458,12459,13445,20004,20080,20081,22834,22848,23444,27500,27502,32062,32063,32068,33459,33461,37093,37094,40078,40097,43467,44328,44332,58093,58143,63306,63308",
-	["Consumable.Buff Type.Flask"]="13510,35716,13512,32766,32601,32599,13506,32900,33208,32598,22854,32600,32765,32597,32767,32898,35717,32899,22861,22851,32596,32764,13511,22853,22866,13513,32901,40079,40082,40083,40084,40404,46376,46377,46378,46379,47499,58149,58086,67438,58085,58088,58087",
+	["Consumable.Buff Type.Flask"]="13510,35716,13512,32766,32601,32599,13506,32900,33208,32598,22854,32600,32765,32597,32767,32898,35717,32899,22861,22851,32596,32764,13511,22853,22866,13513,32901,40079,40082,40083,40084,40404,46376,46377,46378,46379,47499,58149,58086,67438,58085,58088,58087,75525",
 
 	-- NOT AUTOGENNED. These are used by AutoBar.  Please check with the AutoBar author before making major changes
 	["Consumable.Buff Group.General.Self"]="m,Consumable.Buff.Absorb.Self.Damage,Consumable.Buff.Haste,Consumable.Buff.Health.Self,Consumable.Buff.Regen Health.Self,Consumable.Buff.Resilience.Self,Consumable.Buff.Spirit.Self,Consumable.Buff.Stamina.Self,Consumable.Buff.Dodge.Self,Consumable.Buff.Resistance.Self,Consumable.Buff.Speed.Self,Consumable.Buff.Absorb.Self,Consumable.Buff.Spell Reflect.Self,Consumable.Buff.Free Action,Consumable.Buff.Water Breathing",
@@ -243,10 +243,10 @@ LibStub("LibPeriodicTable-3.1"):AddData("Consumable", gsub("$Rev: 378 $", "(%d+)
 	["Consumable.Tailor.Net"]="m,Consumable.Cooldown.Drums.Nets",
 
 	--NOT AUTOGENNED These are items you need to (right) click to use.  If it makes no sense in a button, it does not belong here.  Permanent: Vargoth's Staff, Pony Keg, etc. Quest: removed by Blizzard on quest completion. Replenished: dailies like booterang or others you can replenish like Halaa bombs.
-	["Consumable.Warlock.Firestone"]="13700:75,22128:141",
+	["Consumable.Warlock.Firestone"]="",
 	["Consumable.Warlock.Healthstone"]="5509:500,5510:800,5511:250,5512:100,9421:1200,19004:110,19005:120,19006:275,19007:300,19008:550,19009:600,19010:880,19011:960,19012:1320,19013:1440,22103:2080,22104:2288,22105:2496,36889:3500,36890:3850,36891:4200,36892:4280,36893:4708,36894:5136",
-	["Consumable.Warlock.Soulstone"]="5232:18,16892:30,16893:40,16895:50,16896:60,22116:70,36895:76",
-	["Consumable.Warlock.Spellstone"]="13602:11,36896:20,36897:20",
+	["Consumable.Warlock.Soulstone"]="",
+	["Consumable.Warlock.Spellstone"]="",
 
 	--NOT AUTOGENNED (All water.  I'd like to get this mined, but the filters for these items on allakhazam and wowhead are nonexistant.)
 	["Consumable.Water.Basic"]="1401:60,159:151,1179:436,17404:436,1205:835,9451:835,19299:835,1708:1344,4791:1344,10841:1344,17405:1344,1645:1992,19300:1992,8766:2934,23161:2934,23585:2934,24006:2934,38429:2934,32455:4200,18300:4200,24007:4200,28399:5100,29454:5100,38430:5100,27860:7200,29395:7200,30457:7200,29401:7200,33042:7200,32668:7200,32453:7200,35954:7200,37253:7200,38431:7200,44750:7200,38698:9180,42777:12960,43086:9180,40357:7200,33445:12960,33444:9180,43236:12960,41731:12960,39520:12960,58256:45000,59029:45000,59230:45000,63251:96000,58257:96000,62675:96000,58274:19200,68140:96000,62672:96000",
@@ -260,17 +260,17 @@ LibStub("LibPeriodicTable-3.1"):AddData("Consumable", gsub("$Rev: 378 $", "(%d+)
 	["Consumable.Water.Percentage"]="19997:60,21241:60",
 
 	--!!Add to miner
-	["Consumable.Weapon Buff.Firestone"]="41170:7,41169:14,41171:21,41172:28,40773:35,41173:42,41174:49",
+	["Consumable.Weapon Buff.Firestone"]="",
 	["Consumable.Weapon Buff.Misc"]="3824,3829,31535,23123,34538,34539,44065",
 	["Consumable.Weapon Buff.Oil.Mana"]="20745:4,20747:8,20748:12,22521:14",
 	["Consumable.Weapon Buff.Oil.Wizard"]="20744:8,20746:16,20750:24,20749:36,22522:42",
-	["Consumable.Weapon Buff.Poison.Anesthetic"]="21835:153,43237:231",
-	["Consumable.Weapon Buff.Poison.Crippling"]="3775:50",
-	["Consumable.Weapon Buff.Poison.Deadly"]="2892:36,2893:52,8984:80,8985:108,20844:136,22053:144,22054:180,43232:244,43233:296",
-	["Consumable.Weapon Buff.Poison.Instant"]="6947:22,6949:34,6950:50,8926:76,8927:105,8928:130,21927:170,43230:245,43231:300",
-	["Consumable.Weapon Buff.Poison.Mind Numbing"]="5237:60",
-	["Consumable.Weapon Buff.Poison.Wound"]="10918:17,10920:25,10921:38,10922:53,22055:112,43234:188,43235:231",
-	["Consumable.Weapon Buff.Spellstone"]="41191:10,41192:20,41193:30,41194:40,41195:50,41196:60",
+	["Consumable.Weapon Buff.Poison.Anesthetic"]="",
+	["Consumable.Weapon Buff.Poison.Crippling"]="",
+	["Consumable.Weapon Buff.Poison.Deadly"]="",
+	["Consumable.Weapon Buff.Poison.Instant"]="",
+	["Consumable.Weapon Buff.Poison.Mind Numbing"]="",
+	["Consumable.Weapon Buff.Poison.Wound"]="",
+	["Consumable.Weapon Buff.Spellstone"]="",
 	["Consumable.Weapon Buff.Stone.Sharpening Stone"]="23122,2862:2,2863:3,2871:4,7964:6,12404:8,18262,23528:12,23529:14",
 	["Consumable.Weapon Buff.Stone.Weight Stone"]="3239:2,3240:3,3241:4,7965:6,12643:8,28420:12,28421",
 })

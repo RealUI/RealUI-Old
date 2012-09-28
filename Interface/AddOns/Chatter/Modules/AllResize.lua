@@ -84,6 +84,10 @@ function mod:MakeResizers(frame)
 end
 
 function mod:HideResizers(f)
+	-- check that we made resizers before tryign to hide it
+	if not f.resizeTopLeft then
+		return
+	end
 	f.resizeTopLeft:Hide()
 	f.resizeTopRight:Hide()
 	f.resizeBottomLeft:Hide()

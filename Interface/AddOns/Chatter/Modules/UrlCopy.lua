@@ -195,12 +195,14 @@ do
 	local buff = {}
 	local function addTS3Nickname(...)
 		wipe(buff)
+		local gotName = false
 		for i = 1, select("#", ...) do
 			local chunk = select(i, ...)
 			local key, val = strsplit("=", chunk, 2)
 			if val then
 				if strlower(key) ~= "nickname" then
 					tinsert(buff, chunk)
+					gotName = true
 				end
 			end
 		end

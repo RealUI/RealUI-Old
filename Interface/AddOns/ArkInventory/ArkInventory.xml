@@ -5,11 +5,9 @@
 	<GameTooltip virtual="true" name="ArkScanTooltipTemplate" inherits="GameTooltipTemplate">
 		<Scripts>
 			<Onload>
+				GameTooltip_OnLoad( self )
 				self:SetOwner( UIParent, "ANCHOR_NONE" )
 			</Onload>
-			<OnUpdate>
-				<!-- override - do not update -->
-			</OnUpdate>
 			<OnTooltipAddMoney>
 				<!-- override -->
 			</OnTooltipAddMoney>
@@ -28,11 +26,11 @@
 		</FontHeight>
 		<Color r="1.0" g="0.82" b="0" />
 	</Font>
-
+	
 	<Font virtual="true" name="ARKINV_GameFontHighlight" inherits="ARKINV_GameFontNormal" outline="NORMAL">
 		<Color r="1.0" g="1.0" b="1.0" />
 	</Font>
-
+	
 	<Font virtual="true" name="ARKINV_GameFontDisable" inherits="ARKINV_GameFontNormal" outline="NORMAL">
 		<Color r="0.5" g="0.5" b="0.5" />
 	</Font>
@@ -90,15 +88,8 @@
 		<Size x="20" y="20"  />
 	</Texture>
 	
-	<Texture virtual="true" name="ARKINV_TextureHighlight" hidden="true">
-	
-		<Anchors>
-			<Anchor point="TOPLEFT" relativeTo="$parent" relativePoint="TOPLEFT" />
-			<Anchor point="BOTTOMRIGHT" relativeTo="$parent" relativePoint="BOTTOMRIGHT" />
-		</Anchors>
-		
+	<Texture virtual="true" name="ARKINV_TextureHighlight" setAllPoints="true" hidden="true">
 		<Color r="1" g="1" b="0" a="0.2" />
-		
 	</Texture>
 	
 	<Texture virtual="true" name="ARKINV_TextureSelected" inherits="ARKINV_TextureHighlight" hidden="true">
@@ -134,9 +125,7 @@
 			
 				<FontString name="$parentLabel" inherits="ARKINV_DataEntryLabelFont">
 					<Anchors>
-						<Anchor point="RIGHT" relativePoint="LEFT">
-							<Offset x="-10" y="0" />
-						</Anchor>
+						<Anchor point="RIGHT" relativePoint="LEFT" x="-10" y="0" />
 					</Anchors>
 				</FontString>
 				
@@ -149,6 +138,35 @@
 
 <!-- FRAMES -->
 
+	<Frame virtual="true" name="ARKINV_Border">
+		<Anchors>
+			<Anchor point="TOPLEFT" />
+			<Anchor point="BOTTOMRIGHT" />
+		</Anchors>
+	</Frame>
+	
+	<Frame virtual="true" name="ARKINV_BorderHighlight" hidden="true">
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture file="Interface\Buttons\CheckButtonHilight" alphaMode="ADD" />
+			</Layer>
+		</Layers>
+	</Frame>
+	
+	<Frame virtual="true" name="ARKINV_BorderPulse" inherits="ARKINV_BorderHighlight">
+		<Animations>
+			<AnimationGroup parentKey="glow" looping="REPEAT">
+				<Alpha change="-1.0" duration="0.6" order="1"/>
+				<Alpha change="1.0" duration="0.6" order="2"/>
+			</AnimationGroup>
+		</Animations>
+		<Scripts>
+			<OnShow>
+				self.glow:Play( )
+			</OnShow>
+		</Scripts>
+	</Frame>
+	
 	<Frame virtual="true" name="ARKINV_TemplateFrameBasic">
 		<Frames>
 			<Frame name="$parentArkBorder" inherits="ARKINV_Border" />
@@ -163,12 +181,8 @@
 			<Layer level="BACKGROUND">
 				<Texture name="$parentBackground">
 					<Anchors>
-						<Anchor point="TOPLEFT" relativeTo="$parent" relativePoint="TOPLEFT">
-							<Offset x="3" y="-3" />
-						</Anchor>
-						<Anchor point="BOTTOMRIGHT" relativeTo="$parent" relativePoint="BOTTOMRIGHT">
-							<Offset x="-3" y="3" />
-						</Anchor>
+						<Anchor point="TOPLEFT" x="3" y="-3" />
+						<Anchor point="BOTTOMRIGHT" x="-3" y="3" />
 					</Anchors>
 					<Color r="0" g="0" b="0" a="0.9" />
 				</Texture>
@@ -221,13 +235,6 @@
 		</Scripts>
 	</Button>
 
-	<Frame virtual="true" name="ARKINV_Border">
-		<Anchors>
-			<Anchor point="TOPLEFT" />
-			<Anchor point="BOTTOMRIGHT" />
-		</Anchors>
-	</Frame>
-	
 	<Button virtual="true" name="ARKINV_TemplateButtonItem" inherits="ContainerFrameItemButtonTemplate" hidden="true">
 		
 		<NormalTexture name="$parentNormalTexture" urgency="5" file="" />
@@ -236,30 +243,11 @@
 			
 			<Frame name="$parentArkBorder" inherits="ARKINV_Border" />
 			
-			<Frame name="$parentArkHighlight">
-			
-				<Anchors>
-					<Anchor point="TOPLEFT" />
-					<Anchor point="BOTTOMRIGHT" />
-				</Anchors>
-				
-				<Layers>
-					<Layer level="OVERLAY">
-						<Texture name="$parentBag" hidden="true" />
-					</Layer>
-				</Layers>
-				
-			</Frame>
-			
 			<Frame name="$parentArkNew">
 			
 				<Anchors>
-					<Anchor point="TOPLEFT" relativeTo="$parent" relativePoint="TOPLEFT">
-						<Offset x="0" y="-2" />
-					</Anchor>
-					<Anchor point="BOTTOMRIGHT" relativeTo="$parent" relativePoint="TOPRIGHT">
-						<Offset x="0" y="-12" />
-					</Anchor>
+					<Anchor point="TOPLEFT" x="0" y="-2" />
+					<Anchor point="BOTTOMRIGHT" relativeTo="$parent" relativePoint="TOPRIGHT" x="0" y="-12" />
 				</Anchors>
 				
 				<Layers>
@@ -318,20 +306,75 @@
 		
 	</Button>
 
-	<Button virtual="true" name="ARKINV_TemplateButtonCompanionItem" inherits="ARKINV_TemplateButtonItem" hidden="true">
+	<Button virtual="true" name="ARKINV_TemplateButtonMountItem" inherits="ARKINV_TemplateButtonItem" hidden="true">
 		
 		<Scripts>
 			
 			<OnClick>
-				ArkInventory.Frame_Companion_Item_OnClick( self, button, down )
+				ArkInventory.Frame_Item_Companion_OnClick( self, button, down )
 			</OnClick>
 			
 			<OnDragStart>
-				ArkInventory.Frame_Companion_Item_OnDrag( self )
+				ArkInventory.Frame_Item_Companion_OnDrag( self )
 			</OnDragStart>
 			
 			<OnReceiveDrag>
-				ArkInventory.Frame_Companion_Item_OnDrag( self )
+				ArkInventory.Frame_Item_Companion_OnDrag( self )
+			</OnReceiveDrag>
+			
+		</Scripts>
+		
+	</Button>
+	
+	<Button virtual="true" name="ARKINV_TemplateButtonBattlepetItem" inherits="ARKINV_TemplateButtonItem" hidden="true">
+		
+		<Frames>
+			
+			<Frame parentKey="active" inherits="ARKINV_BorderPulse" setAllPoints="true" />
+			
+			<Frame parentKey="slotted" inherits="ARKINV_BorderHighlight" setAllPoints="true" />
+			
+			<Frame parentKey="dead" hidden="true">
+				<Size x="26" y="26" />
+				<Anchors>
+					<Anchor point="CENTER" />
+				</Anchors>
+				<Layers>
+					<Layer level="OVERLAY">
+						<Texture file="Interface\PetBattles\DeadPetIcon" />
+					</Layer>
+				</Layers>
+			</Frame>
+			
+			<Frame parentKey="favorite" hidden="true">
+				<Size x="26" y="26" />
+				<Anchors>
+					<Anchor point="TOPLEFT" x="-8" y="8" />
+				</Anchors>
+				<Layers>
+					<Layer level="OVERLAY">
+						<Texture file="Interface\PetBattles\PetJournal">
+							<TexCoords left="0.11328125" right="0.16210938" top="0.02246094" bottom="0.04687500" />	
+						</Texture>
+					</Layer>
+				</Layers>
+			</Frame>
+			
+		</Frames>
+		
+			
+		<Scripts>
+			
+			<OnClick>
+				ArkInventory.Frame_Item_Battlepet_OnClick( self, button, down )
+			</OnClick>
+			
+			<OnDragStart>
+				-- do nothing
+			</OnDragStart>
+			
+			<OnReceiveDrag>
+				-- do nothing
 			</OnReceiveDrag>
 			
 		</Scripts>
@@ -354,6 +397,10 @@
 				-- do nothing
 			</OnReceiveDrag>
 			
+			<OnMouseUp>
+				ArkInventory.Frame_Item_OnMouseUp( self, button )
+			</OnMouseUp>
+
 		</Scripts>
 
 	</Button>
@@ -362,26 +409,17 @@
 		
 		<NormalTexture name="$parentNormalTexture" urgency="5" file="" />
 		
+		<Layers>
+			<Layer level="OVERLAY">
+				<Texture name="$parentTainted" setAllPoints="true" hidden="false">
+					<Color r="0.7" g="0.1" b="1.0" a="0.4" />
+				</Texture>
+			</Layer>
+		</Layers>
+		
 		<Frames>
 			
 			<Frame name="$parentArkBorder" inherits="ARKINV_Border" />
-			
-			<Frame name="$parentArkHighlight">
-			
-				<Anchors>
-					<Anchor point="TOPLEFT" />
-					<Anchor point="BOTTOMRIGHT" />
-				</Anchors>
-				
-				<Layers>
-					<Layer level="OVERLAY">
-						<Texture name="$parentTainted" hidden="false">
-							<Color r="0.7" g="0.1" b="1.0" a="0.4" />
-						</Texture>
-					</Layer>
-				</Layers>
-				
-			</Frame>
 			
 		</Frames>
 		
@@ -420,14 +458,14 @@
 		<Size x="20" y="20" />
 		
 		<Anchors>
-			<Anchor point="TOPLEFT" relativeTo="$parent" />
+			<Anchor point="TOPLEFT" />
 		</Anchors>
 
 		<Layers>
 			<Layer level="BORDER">
 				<FontString name="$parentEditText" inherits="ARKINV_GameFontNormalHuge" justifyH="CENTER" justifyV="MIDDLE">
 					<Anchors>
-						<Anchor point="CENTER" relativeTo="$parent" />
+						<Anchor point="CENTER" />
 					</Anchors>
 				</FontString>
 			</Layer>
@@ -644,12 +682,8 @@
 			<Layer level="BORDER">
 				<FontString name="$parentLabel" inherits="ARKINV_GameFontNormal" justifyH="LEFT" hidden="true">
 					<Anchors>
-						<Anchor point="TOPLEFT" relativeTo="$parent" relativePoint="TOPLEFT">
-							<Offset x="4" y="-4" />
-						</Anchor>
-						<Anchor point="RIGHT">
-							<Offset x="-4" y="0" />
-						</Anchor>
+						<Anchor point="TOPLEFT" x="4" y="-4" />
+						<Anchor point="RIGHT" x="-4" y="0" />
 					</Anchors>
 				</FontString>
 			</Layer>
@@ -697,9 +731,7 @@
 			<Button name="$parentLocation0" inherits="ARKINV_TemplateButtonAction">
 				<Size x="42" y="42" />
 				<Anchors>
-					<Anchor point="TOPLEFT">
-						<Offset x="8" y="-8" />
-					</Anchor>
+					<Anchor point="TOPLEFT" x="8" y="-8" />
 				</Anchors>
 				<Scripts>
 					<OnClick>
@@ -713,9 +745,7 @@
 			
 			<Button name="$parentClose" inherits="ARKINV_TemplateButtonClose">
 				<Anchors>
-					<Anchor point="TOPRIGHT">
-						<Offset x="-8" y="-8" />
-					</Anchor>
+					<Anchor point="TOPRIGHT" x="-8" y="-8" />
 				</Anchors>
 				<Scripts>
 					<OnClick>
@@ -728,33 +758,25 @@
 			<!-- top action button row -->
 			<Button name="$parentActionButton11" inherits="ARKINV_TemplateButtonAction">
 				<Anchors>
-					<Anchor point="RIGHT" relativeTo="$parentClose" relativePoint="LEFT">
-						<Offset x="-3" y="0" />
-					</Anchor>
+					<Anchor point="RIGHT" relativeTo="$parentClose" relativePoint="LEFT" x="-3" y="0" />
 				</Anchors>
 			</Button>
 			
 			<Button name="$parentActionButton12" inherits="ARKINV_TemplateButtonAction">
 				<Anchors>
-					<Anchor point="RIGHT" relativeTo="$parentActionButton11" relativePoint="LEFT">
-						<Offset x="-3" y="0" />
-					</Anchor>
+					<Anchor point="RIGHT" relativeTo="$parentActionButton11" relativePoint="LEFT" x="-3" y="0" />
 				</Anchors>
 			</Button>
 			
 			<Button name="$parentActionButton13" inherits="ARKINV_TemplateButtonAction">
 				<Anchors>
-					<Anchor point="RIGHT" relativeTo="$parentActionButton12" relativePoint="LEFT">
-						<Offset x="-3" y="0" />
-					</Anchor>
+					<Anchor point="RIGHT" relativeTo="$parentActionButton12" relativePoint="LEFT" x="-3" y="0" />
 				</Anchors>
 			</Button>
 			
 			<Button name="$parentActionButton14" inherits="ARKINV_TemplateButtonAction">
 				<Anchors>
-					<Anchor point="RIGHT" relativeTo="$parentActionButton13" relativePoint="LEFT">
-						<Offset x="-3" y="0" />
-					</Anchor>
+					<Anchor point="RIGHT" relativeTo="$parentActionButton13" relativePoint="LEFT" x="-3" y="0" />
 				</Anchors>
 			</Button>
 			
@@ -762,33 +784,25 @@
 			<!-- bottom action button row -->
 			<Button name="$parentActionButton21" inherits="ARKINV_TemplateButtonAction">
 				<Anchors>
-					<Anchor point="TOP" relativeTo="$parentActionButton11" relativePoint="BOTTOM">
-						<Offset x="0" y="-2" />
-					</Anchor>
+					<Anchor point="TOP" relativeTo="$parentActionButton11" relativePoint="BOTTOM" x="0" y="-2" />
 				</Anchors>
 			</Button>
 			
 			<Button name="$parentActionButton22" inherits="ARKINV_TemplateButtonAction">
 				<Anchors>
-					<Anchor point="RIGHT" relativeTo="$parentActionButton21" relativePoint="LEFT">
-						<Offset x="-3" y="0" />
-					</Anchor>
+					<Anchor point="RIGHT" relativeTo="$parentActionButton21" relativePoint="LEFT" x="-3" y="0" />
 				</Anchors>
 			</Button>
 			
 			<Button name="$parentActionButton23" inherits="ARKINV_TemplateButtonAction">
 				<Anchors>
-					<Anchor point="RIGHT" relativeTo="$parentActionButton22" relativePoint="LEFT">
-						<Offset x="-3" y="0" />
-					</Anchor>
+					<Anchor point="RIGHT" relativeTo="$parentActionButton22" relativePoint="LEFT" x="-3" y="0" />
 				</Anchors>
 			</Button>
 
 			<Button name="$parentActionButton24" inherits="ARKINV_TemplateButtonAction">
 				<Anchors>
-					<Anchor point="RIGHT" relativeTo="$parentActionButton23" relativePoint="LEFT">
-						<Offset x="-3" y="0" />
-					</Anchor>
+					<Anchor point="RIGHT" relativeTo="$parentActionButton23" relativePoint="LEFT" x="-3" y="0" />
 				</Anchors>
 			</Button>
 			
@@ -816,19 +830,15 @@
 		<Size x="2" y="40" />
 
 		<Anchors>
-			<Anchor point="TOPLEFT" relativeTo="$parentTitle" relativePoint="BOTTOMLEFT">
-				<Offset x="0" y="4" />
-			</Anchor>
-			<Anchor point="RIGHT" relativeTo="$parent" relativePoint="RIGHT" />
+			<Anchor point="TOPLEFT" relativeTo="$parentTitle" relativePoint="BOTTOMLEFT" x="0" y="4" />
+			<Anchor point="RIGHT" />
 		</Anchors>
 		
 		<Frames>
 		
 			<Button name="$parentClear" inherits="ARKINV_TemplateButtonClear">
 				<Anchors>
-					<Anchor point="RIGHT">
-						<Offset x="-8" y="0" />
-					</Anchor>
+					<Anchor point="RIGHT" x="-8" y="0" />
 				</Anchors>
 			</Button>
 			
@@ -837,12 +847,8 @@
 				<Size x="2" y="20" />
 				
 				<Anchors>
-					<Anchor point="LEFT" relativeTo="$parent" relativePoint="LEFT">
-						<Offset x="120" y="0" />
-					</Anchor>
-					<Anchor point="RIGHT" relativeTo="$parentClear" relativePoint="LEFT">
-						<Offset x="-2" y="0" />
-					</Anchor>
+					<Anchor point="LEFT" x="120" y="0" />
+					<Anchor point="RIGHT" relativeTo="$parentClear" relativePoint="LEFT" x="-2" y="0" />
 				</Anchors>
 				
 				<Scripts>
@@ -877,10 +883,8 @@
 		<Size x="400" y="40" />
 
 		<Anchors>
-			<Anchor point="TOPLEFT" relativeTo="$parentSearch" relativePoint="BOTTOMLEFT">
-				<Offset x="0" y="4" />
-			</Anchor>
-			<Anchor point="RIGHT" relativeTo="$parent" relativePoint="RIGHT" />
+			<Anchor point="TOPLEFT" relativeTo="$parentSearch" relativePoint="BOTTOMLEFT" x="0" y="4" />
+			<Anchor point="RIGHT" />
 		</Anchors>
 
 		<Frames>
@@ -901,21 +905,53 @@
 		<Size x="1" y="58" />
 
 		<Anchors>
-			<Anchor point="TOPLEFT" relativeTo="$parentContainer" relativePoint="BOTTOMLEFT">
-				<Offset x="0" y="3" />
-			</Anchor>
-			<Anchor point="RIGHT" relativeTo="$parent" relativePoint="RIGHT" />
+			<Anchor point="TOPLEFT" relativeTo="$parentContainer" relativePoint="BOTTOMLEFT" x="0" y="3" />
+			<Anchor point="RIGHT" />
 		</Anchors>
 
+	</Frame>
+	
+	<Frame virtual="true" name="ARKINV_CurrencyTracking" hidden="true">
+		<Size x="1" y="1" />
+		<Layers>
+			<Layer level="ARTWORK">
+				<Texture parentKey="icon" name="$parentIcon" inherits="ARKINV_TextureUnknown" hidden="false">
+					<Anchors>
+						<Anchor point="TOPLEFT" />
+					</Anchors>
+				</Texture>
+				<FontString parentKey="count" name="$parentCount" text="NO DATA" inherits="ARKINV_GameFontNormalLarge" hidden="false">
+					<Anchors>
+						<Anchor point="LEFT" relativeTo="$parentIcon" relativePoint="RIGHT" />
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnLoad>
+				self:SetHeight( self.icon:GetHeight( ) )
+			</OnLoad>
+			<OnEnter>
+				ArkInventory.GameTooltipSetHyperlink( self, GetCurrencyLink( self.currencyID ) )
+			</OnEnter>
+			<OnLeave>
+				ArkInventory.GameTooltipHide( )
+			</OnLeave>
+			<OnMouseUp>
+				if ( IsModifiedClick("CHATLINK") ) then
+					HandleModifiedItemClick( GetCurrencyLink( self.currencyID ) )
+				else
+					ToggleCharacter( "TokenFrame" )
+				end
+			</OnMouseUp>
+		</Scripts>
 	</Frame>
 	
 	<Frame virtual="true" name="ARKINV_TemplateFrameMainStatus" inherits="ARKINV_TemplateFrameStandard" hidden="false">
 		
 		<Anchors>
-			<Anchor point="TOPLEFT" relativeTo="$parentChanger" relativePoint="BOTTOMLEFT">
-				<Offset x="0" y="3" />
-			</Anchor>
-			<Anchor point="RIGHT" relativeTo="$parent" relativePoint="RIGHT" />
+			<Anchor point="TOPLEFT" relativeTo="$parentChanger" relativePoint="BOTTOMLEFT" x="0" y="3" />
+			<Anchor point="RIGHT" />
 		</Anchors>
 		
 		<Layers>
@@ -923,50 +959,9 @@
 				
 				<FontString name="$parentEmptyText" inherits="ARKINV_GameFontNormalLarge" justifyH="LEFT" text="NO DATA">
 					<Anchors>
-						<Anchor point="LEFT">
-							<Offset x="10" y="0" />
-						</Anchor>
+						<Anchor point="LEFT" x="10" y="0" />
 					</Anchors>
 					<Color r="1" g="1" b="1" a="1" />
-				</FontString>
-				
-				<Texture name="$parentTrackingIcon1" inherits="ARKINV_TextureUnknown" hidden="true">
-					<Anchors>
-						<Anchor point="LEFT" relativeTo="$parentEmptyText" relativePoint="RIGHT">
-							<Offset x="20" y="0" />
-						</Anchor>
-					</Anchors>
-				</Texture>
-				<FontString name="$parentTrackingCount1" inherits="ARKINV_GameFontNormalLarge" hidden="true">
-					<Anchors>
-						<Anchor point="LEFT" relativeTo="$parentTrackingIcon1" relativePoint="RIGHT" />
-					</Anchors>
-				</FontString>
-				
-				<Texture name="$parentTrackingIcon2" inherits="ARKINV_TextureUnknown" hidden="true">
-					<Anchors>
-						<Anchor point="LEFT" relativeTo="$parentTrackingCount1" relativePoint="RIGHT">
-							<Offset x="20" y="0" />
-						</Anchor>
-					</Anchors>
-				</Texture>
-				<FontString name="$parentTrackingCount2" inherits="ARKINV_GameFontNormalLarge" hidden="true">
-					<Anchors>
-						<Anchor point="LEFT" relativeTo="$parentTrackingIcon2" relativePoint="RIGHT" />
-					</Anchors>
-				</FontString>
-				
-				<Texture name="$parentTrackingIcon3" inherits="ARKINV_TextureUnknown" hidden="true">
-					<Anchors>
-						<Anchor point="LEFT" relativeTo="$parentTrackingCount2" relativePoint="RIGHT">
-							<Offset x="20" y="0" />
-						</Anchor>
-					</Anchors>
-				</Texture>
-				<FontString name="$parentTrackingCount3" inherits="ARKINV_GameFontNormalLarge" hidden="true">
-					<Anchors>
-						<Anchor point="LEFT" relativeTo="$parentTrackingIcon3" relativePoint="RIGHT" />
-					</Anchors>
 				</FontString>
 				
 			</Layer>
@@ -976,7 +971,7 @@
 			
 			<Frame name="$parentGold" inherits="ArkInventory_SmallMoneyFrameTemplate">
 				<Anchors>
-					<Anchor point="RIGHT" relativeTo="$parent" relativePoint="RIGHT" />
+					<Anchor point="RIGHT" />
 				</Anchors>
 				<Scripts>
 					<OnLoad>
@@ -985,58 +980,22 @@
 				</Scripts>
 			</Frame>
 			
-			<Frame name="$parentTrackingData1" hidden="true">
-				<Anchors>
-					<Anchor point="TOPLEFT" relativeTo="$parentTrackingIcon1" />
-					<Anchor point="BOTTOMRIGHT" relativeTo="$parentTrackingCount1" />
-				</Anchors>
-				<Scripts>
-					<OnEnter>
-						ArkInventory.GameTooltipSetHyperlink( self, self.item )
-					</OnEnter>
-					<OnLeave>
-						ArkInventory.GameTooltipHide( )
-					</OnLeave>
-					<OnMouseUp>
-						ToggleCharacter( "TokenFrame" )
-					</OnMouseUp>
-				</Scripts>
+			<Frame name="$parentTracking1" inherits="ARKINV_CurrencyTracking" hidden="true">
+					<Anchors>
+						<Anchor point="LEFT" relativeTo="$parentEmptyText" relativePoint="RIGHT" x="20" y="0" />
+					</Anchors>
 			</Frame>
 		
-			<Frame name="$parentTrackingData2" hidden="true">
+			<Frame name="$parentTracking2" inherits="ARKINV_CurrencyTracking" hidden="true">
 				<Anchors>
-					<Anchor point="TOPLEFT" relativeTo="$parentTrackingIcon2" />
-					<Anchor point="BOTTOMRIGHT" relativeTo="$parentTrackingCount2" />
+					<Anchor point="LEFT" relativeTo="$parentTracking1" relativePoint="RIGHT" />
 				</Anchors>
-				<Scripts>
-					<OnEnter>
-						ArkInventory.GameTooltipSetHyperlink( self, self.item )
-					</OnEnter>
-					<OnLeave>
-						ArkInventory.GameTooltipHide( )
-					</OnLeave>
-					<OnMouseUp>
-						ToggleCharacter( "TokenFrame" )
-					</OnMouseUp>
-				</Scripts>
 			</Frame>
 		
-			<Frame name="$parentTrackingData3" hidden="true">
+			<Frame name="$parentTracking3" inherits="ARKINV_CurrencyTracking" hidden="true">
 				<Anchors>
-					<Anchor point="TOPLEFT" relativeTo="$parentTrackingIcon3" />
-					<Anchor point="BOTTOMRIGHT" relativeTo="$parentTrackingCount3" />
+					<Anchor point="LEFT" relativeTo="$parentTracking2" relativePoint="RIGHT" />
 				</Anchors>
-				<Scripts>
-					<OnEnter>
-						ArkInventory.GameTooltipSetHyperlink( self, self.item )
-					</OnEnter>
-					<OnLeave>
-						ArkInventory.GameTooltipHide( )
-					</OnLeave>
-					<OnMouseUp>
-						ToggleCharacter( "TokenFrame" )
-					</OnMouseUp>
-				</Scripts>
 			</Frame>
 			
 		</Frames>
@@ -1062,12 +1021,8 @@
 		
 			<ScrollingMessageFrame name="$parentList" fade="false" enableMouse="true">
 				<Anchors>
-					<Anchor point="TOPLEFT">
-						<Offset x="10" y="-10" />
-					</Anchor>
-					<Anchor point="BOTTOMRIGHT">
-						<Offset x="-40" y="10" />
-					</Anchor>
+					<Anchor point="TOPLEFT" x="10" y="-10" />
+					<Anchor point="BOTTOMRIGHT" x="-40" y="10" />
 				</Anchors>
 				<FontString inherits="ARKINV_TableRowFont" JustifyH="LEFT" />
 				<Scripts>
@@ -1087,9 +1042,7 @@
 				<DisabledTexture file="Interface\ChatFrame\UI-ChatIcon-ScrollUp-Disabled" />
 				<HighlightTexture file="Interface\Buttons\UI-Common-MouseHilight" alphaMode="ADD" />
 				<Anchors>
-					<Anchor point="TOPLEFT" relativeTo="$parentList" relativePoint="TOPRIGHT">
-						<Offset x="5" y="0" />
-					</Anchor>
+					<Anchor point="TOPLEFT" relativeTo="$parentList" relativePoint="TOPRIGHT" x="5" y="0" />
 				</Anchors>
 				<Scripts>
 					<OnClick>
@@ -1106,9 +1059,7 @@
 				<DisabledTexture file="Interface\ChatFrame\UI-ChatIcon-ScrollDown-Disabled" />
 				<HighlightTexture file="Interface\Buttons\UI-Common-MouseHilight" alphaMode="ADD" />
 				<Anchors>
-					<Anchor point="BOTTOMLEFT" relativeTo="$parentList" relativePoint="BOTTOMRIGHT">
-						<Offset x="5" y="0" />
-					</Anchor>
+					<Anchor point="BOTTOMLEFT" relativeTo="$parentList" relativePoint="BOTTOMRIGHT" x="5" y="0" />
 				</Anchors>
 				<Scripts>
 					<OnClick>
@@ -1133,18 +1084,10 @@
 			<ScrollFrame name="$parentScroll" inherits="UIPanelScrollFrameTemplate">
 				
 				<Anchors>
-					<Anchor point="TOP">
-						<Offset x="0" y="-10" />
-					</Anchor>
-					<Anchor point="LEFT" >
-						<Offset x="5" y="0" />
-					</Anchor>
-					<Anchor point="RIGHT">
-						<Offset x="-30" y="0" />
-					</Anchor>
-					<Anchor point="BOTTOM">
-						<Offset x="0" y="40" />
-					</Anchor>
+					<Anchor point="TOP" x="0" y="-10" />
+					<Anchor point="LEFT" x="5" y="0" />
+					<Anchor point="RIGHT" x="-30" y="0" />
+					<Anchor point="BOTTOM" x="0" y="40" />
 				</Anchors>
 				
 				<ScrollChild>
@@ -1215,9 +1158,7 @@
 				<Size x="1" y="22" />
 				
 				<Anchors>
-					<Anchor point="TOP" relativeTo="$parentScroll" relativePoint="BOTTOM" >
-						<Offset x="0" y="-5" />
-					</Anchor>
+					<Anchor point="TOP" relativeTo="$parentScroll" relativePoint="BOTTOM" x="0" y="-5" />
 				</Anchors>
 				
 				<Scripts>
@@ -1254,7 +1195,7 @@
 		<Size x="400" y="180" />
 		
 		<Anchors>
-			<Anchor point="TOPLEFT" relativeTo="$parent" relativePoint="TOPLEFT" />
+			<Anchor point="TOPLEFT" />
 		</Anchors>
 		
 		<Frames>
@@ -1296,9 +1237,7 @@
 				<Size x="32" y="13" />
 				
 				<Anchors>
-					<Anchor point="RIGHT">
-						<Offset x="-13" y="0" />
-					</Anchor>
+					<Anchor point="RIGHT" x="-13" y="0" />
 				</Anchors>
 				
 				<NormalTexture file="Interface\MoneyFrame\UI-MoneyIcons">
@@ -1311,9 +1250,7 @@
 				
 				<ButtonText name="$parentText">
 					<Anchors>
-						<Anchor point="RIGHT">
-							<Offset x="-13" y="0" />
-						</Anchor>
+						<Anchor point="RIGHT" x="-13" y="0" />
 					</Anchors>
 				</ButtonText>
 				
@@ -1330,7 +1267,7 @@
 					</OnLeave>
 					<OnClick>
 						local parent = self:GetParent( )
-						OpenCoinPickupFrame( 1, MoneyTypeInfo[parent.moneyType].UpdateFunc( ), parent )
+						OpenCoinPickupFrame( 1, MoneyTypeInfo[parent.moneyType].UpdateFunc( self ), parent )
 						parent.hasPickup = 1
 					</OnClick>
 				</Scripts>
@@ -1342,9 +1279,7 @@
 				<Size x="32" y="13" />
 				
 				<Anchors>
-					<Anchor point="RIGHT" relativeTo="$parentCopperButton" relativePoint="LEFT">
-						<Offset x="-4" y="0" />
-					</Anchor>
+					<Anchor point="RIGHT" relativeTo="$parentCopperButton" relativePoint="LEFT" x="-4" y="0" />
 				</Anchors>
 				
 				<NormalTexture file="Interface\MoneyFrame\UI-MoneyIcons">
@@ -1357,9 +1292,7 @@
 				
 				<ButtonText name="$parentText">
 					<Anchors>
-						<Anchor point="RIGHT">
-							<Offset x="-13" y="0" />
-						</Anchor>
+						<Anchor point="RIGHT" x="-13" y="0" />
 					</Anchors>
 				</ButtonText>
 				
@@ -1376,7 +1309,7 @@
 					</OnLeave>
 					<OnClick>
 						local parent = self:GetParent( )
-						OpenCoinPickupFrame( COPPER_PER_SILVER, MoneyTypeInfo[parent.moneyType].UpdateFunc( ), parent )
+						OpenCoinPickupFrame( COPPER_PER_SILVER, MoneyTypeInfo[parent.moneyType].UpdateFunc( self ), parent )
 						parent.hasPickup = 1
 					</OnClick>
 				</Scripts>
@@ -1388,9 +1321,7 @@
 				<Size x="32" y="13" />
 				
 				<Anchors>
-					<Anchor point="RIGHT" relativeTo="$parentSilverButton" relativePoint="LEFT">
-						<Offset x="-4" y="0" />
-					</Anchor>
+					<Anchor point="RIGHT" relativeTo="$parentSilverButton" relativePoint="LEFT" x="-4" y="0" />
 				</Anchors>
 				
 				<NormalTexture file="Interface\MoneyFrame\UI-MoneyIcons">
@@ -1403,9 +1334,7 @@
 				
 				<ButtonText name="$parentText">
 					<Anchors>
-						<Anchor point="RIGHT">
-							<Offset x="-13" y="0" />
-						</Anchor>
+						<Anchor point="RIGHT" x="-13" y="0" />
 					</Anchors>
 				</ButtonText>
 				
@@ -1422,7 +1351,7 @@
 					</OnLeave>
 					<OnClick>
 						local parent = self:GetParent( )
-						OpenCoinPickupFrame( COPPER_PER_GOLD, MoneyTypeInfo[parent.moneyType].UpdateFunc( ), parent )
+						OpenCoinPickupFrame( COPPER_PER_GOLD, MoneyTypeInfo[parent.moneyType].UpdateFunc( self ), parent )
 						parent.hasPickup = 1
 					</OnClick>
 				</Scripts>
@@ -1457,9 +1386,7 @@
 		
 		<Anchors>
 			<Anchor point="LEFT" />
-			<Anchor point="RIGHT">
-				<Offset x="-20" y="0" />
-			</Anchor>
+			<Anchor point="RIGHT" x="-20" y="0" />
 		</Anchors>
 		
 		<Layers>
@@ -1490,23 +1417,15 @@
 			
 				<Texture name="$parentHighlight" inherits="ARKINV_TextureHighlight">
 					<Anchors>
-						<Anchor point="TOPLEFT" relativeTo="$parent" relativePoint="TOPLEFT">
-							<Offset x="5" y="0" />
-						</Anchor>
-						<Anchor point="BOTTOMRIGHT" relativeTo="$parent" relativePoint="BOTTOMRIGHT">
-							<Offset x="-5" y="0" />
-						</Anchor>
+						<Anchor point="TOPLEFT" x="5" y="0" />
+						<Anchor point="BOTTOMRIGHT" x="-5" y="0" />
 					</Anchors>
 				</Texture>
 
 				<Texture name="$parentSelected" inherits="ARKINV_TextureSelected">
 					<Anchors>
-						<Anchor point="TOPLEFT" relativeTo="$parent" relativePoint="TOPLEFT">
-							<Offset x="5" y="0" />
-						</Anchor>
-						<Anchor point="BOTTOMRIGHT" relativeTo="$parent" relativePoint="BOTTOMRIGHT">
-							<Offset x="-5" y="0" />
-						</Anchor>
+						<Anchor point="TOPLEFT" x="5" y="0" />
+						<Anchor point="BOTTOMRIGHT" x="-5" y="0" />
 					</Anchors>
 				</Texture>
 
@@ -1615,49 +1534,39 @@
 		<Size x="1" y="1" />
 	
 		<Anchors>
-			<Anchor point="LEFT" relativeTo="$parent" relativePoint="LEFT" />
-			<Anchor point="RIGHT" relativeTo="$parent" relativePoint="RIGHT" />
+			<Anchor point="LEFT" />
+			<Anchor point="RIGHT" />
 		</Anchors>
 	
 		<Frames>
 		
 			<CheckButton name="$parentBag1" inherits="ArkInventory_ChangerPlayerMainTemplate">
 				<Anchors>
-					<Anchor point="LEFT" relativeTo="$parent" relativePoint="LEFT">
-						<Offset x="8" y="0" />
-					</Anchor>
+					<Anchor point="LEFT" x="8" y="0" />
 				</Anchors>
 			</CheckButton>
 			
 			<CheckButton name="$parentBag2" inherits="ArkInventory_ChangerGenericExtraTemplate">
 				<Anchors>
-					<Anchor point="LEFT" relativeTo="$parentBag1" relativePoint="RIGHT">
-						<Offset x="5" y="0" />
-					</Anchor>
+					<Anchor point="LEFT" relativeTo="$parentBag1" relativePoint="RIGHT" x="5" y="0" />
 				</Anchors>
 			</CheckButton>
 			
 			<CheckButton name="$parentBag3" inherits="ArkInventory_ChangerGenericExtraTemplate">
 				<Anchors>
-					<Anchor point="LEFT" relativeTo="$parentBag2" relativePoint="RIGHT">
-						<Offset x="5" y="0" />
-					</Anchor>
+					<Anchor point="LEFT" relativeTo="$parentBag2" relativePoint="RIGHT" x="5" y="0" />
 				</Anchors>
 			</CheckButton>
 
 			<CheckButton name="$parentBag4" inherits="ArkInventory_ChangerGenericExtraTemplate">
 				<Anchors>
-					<Anchor point="LEFT" relativeTo="$parentBag3" relativePoint="RIGHT">
-						<Offset x="5" y="0" />
-					</Anchor>
+					<Anchor point="LEFT" relativeTo="$parentBag3" relativePoint="RIGHT" x="5" y="0" />
 				</Anchors>
 			</CheckButton>
 		
 			<CheckButton name="$parentBag5" inherits="ArkInventory_ChangerGenericExtraTemplate">
 				<Anchors>
-					<Anchor point="LEFT" relativeTo="$parentBag4" relativePoint="RIGHT">
-						<Offset x="5" y="0" />
-					</Anchor>
+					<Anchor point="LEFT" relativeTo="$parentBag4" relativePoint="RIGHT" x="5" y="0" />
 				</Anchors>
 			</CheckButton>
 
@@ -1684,66 +1593,50 @@
 			<Button name="$parentBag1" inherits="ArkInventory_ChangerBankMainTemplate">
 
 				<Anchors>
-					<Anchor point="LEFT">
-						<Offset x="10" y="0" />
-					</Anchor>
+					<Anchor point="LEFT" x="10" y="0" />
 				</Anchors>
 				
 			</Button>
 			
 			<Button name="$parentBag2" inherits="ArkInventory_ChangerGenericExtraTemplate">
 				<Anchors>
-					<Anchor point="LEFT" relativeTo="$parentBag1" relativePoint="RIGHT">
-						<Offset x="5" y="0" />
-					</Anchor>
+					<Anchor point="LEFT" relativeTo="$parentBag1" relativePoint="RIGHT" x="5" y="0" />
 				</Anchors>
 			</Button>
 			
 			<Button name="$parentBag3" inherits="ArkInventory_ChangerGenericExtraTemplate">
 				<Anchors>
-					<Anchor point="LEFT" relativeTo="$parentBag2" relativePoint="RIGHT">
-						<Offset x="5" y="0" />
-					</Anchor>
+					<Anchor point="LEFT" relativeTo="$parentBag2" relativePoint="RIGHT" x="5" y="0" />
 				</Anchors>
 			</Button>
 			
 			<Button name="$parentBag4" inherits="ArkInventory_ChangerGenericExtraTemplate">
 				<Anchors>
-					<Anchor point="LEFT" relativeTo="$parentBag3" relativePoint="RIGHT">
-						<Offset x="5" y="0" />
-					</Anchor>
+					<Anchor point="LEFT" relativeTo="$parentBag3" relativePoint="RIGHT" x="5" y="0" />
 				</Anchors>
 			</Button>
 			
 			<Button name="$parentBag5" inherits="ArkInventory_ChangerGenericExtraTemplate">
 				<Anchors>
-					<Anchor point="LEFT" relativeTo="$parentBag4" relativePoint="RIGHT">
-						<Offset x="5" y="0" />
-					</Anchor>
+					<Anchor point="LEFT" relativeTo="$parentBag4" relativePoint="RIGHT" x="5" y="0" />
 				</Anchors>
 			</Button>
 			
 			<Button name="$parentBag6" inherits="ArkInventory_ChangerGenericExtraTemplate">
 				<Anchors>
-					<Anchor point="LEFT" relativeTo="$parentBag5" relativePoint="RIGHT">
-						<Offset x="5" y="0" />
-					</Anchor>
+					<Anchor point="LEFT" relativeTo="$parentBag5" relativePoint="RIGHT" x="5" y="0" />
 				</Anchors>
 			</Button>
 
 			<Button name="$parentBag7" inherits="ArkInventory_ChangerGenericExtraTemplate">
 				<Anchors>
-					<Anchor point="LEFT" relativeTo="$parentBag6" relativePoint="RIGHT">
-						<Offset x="5" y="0" />
-					</Anchor>
+					<Anchor point="LEFT" relativeTo="$parentBag6" relativePoint="RIGHT" x="5" y="0" />
 				</Anchors>
 			</Button>
 			
 			<Button name="$parentBag8" inherits="ArkInventory_ChangerGenericExtraTemplate">
 				<Anchors>
-					<Anchor point="LEFT" relativeTo="$parentBag7" relativePoint="RIGHT">
-						<Offset x="5" y="0" />
-					</Anchor>
+					<Anchor point="LEFT" relativeTo="$parentBag7" relativePoint="RIGHT" x="5" y="0" />
 				</Anchors>
 			</Button>
 
@@ -1784,9 +1677,7 @@
 					<Frame name="$parentDetailMoneyFrame" inherits="ArkInventory_SmallMoneyFrameTemplate">
 					
 						<Anchors>
-							<Anchor point="LEFT" relativeTo="$parentSlotCost" relativePoint="RIGHT">
-								<Offset x="10" y="0" />
-							</Anchor>
+							<Anchor point="LEFT" relativeTo="$parentSlotCost" relativePoint="RIGHT" x="10" y="0" />
 						</Anchors>
 						
 						<Scripts>
@@ -1830,73 +1721,55 @@
 		
 			<Button name="$parentBag1" inherits="ArkInventory_ChangerVaultTabTemplate">
 				<Anchors>
-					<Anchor point="LEFT">
-						<Offset x="10" y="0" />
-					</Anchor>
+					<Anchor point="LEFT" x="10" y="0" />
 				</Anchors>
 			</Button>
 			
 			<Button name="$parentBag2" inherits="ArkInventory_ChangerVaultTabTemplate">
 				<Anchors>
-					<Anchor point="LEFT" relativeTo="$parentBag1" relativePoint="RIGHT">
-						<Offset x="5" y="0" />
-					</Anchor>
+					<Anchor point="LEFT" relativeTo="$parentBag1" relativePoint="RIGHT" x="5" y="0" />
 				</Anchors>
 			</Button>
 			
 			<Button name="$parentBag3" inherits="ArkInventory_ChangerVaultTabTemplate">
 				<Anchors>
-					<Anchor point="LEFT" relativeTo="$parentBag2" relativePoint="RIGHT">
-						<Offset x="5" y="0" />
-					</Anchor>
+					<Anchor point="LEFT" relativeTo="$parentBag2" relativePoint="RIGHT" x="5" y="0" />
 				</Anchors>
 			</Button>
 			
 			<Button name="$parentBag4" inherits="ArkInventory_ChangerVaultTabTemplate">
 				<Anchors>
-					<Anchor point="LEFT" relativeTo="$parentBag3" relativePoint="RIGHT">
-						<Offset x="5" y="0" />
-					</Anchor>
+					<Anchor point="LEFT" relativeTo="$parentBag3" relativePoint="RIGHT" x="5" y="0" />
 				</Anchors>
 			</Button>
 			
 			<Button name="$parentBag5" inherits="ArkInventory_ChangerVaultTabTemplate">
 				<Anchors>
-					<Anchor point="LEFT" relativeTo="$parentBag4" relativePoint="RIGHT">
-						<Offset x="5" y="0" />
-					</Anchor>
+					<Anchor point="LEFT" relativeTo="$parentBag4" relativePoint="RIGHT" x="5" y="0" />
 				</Anchors>
 			</Button>
 
 			<Button name="$parentBag6" inherits="ArkInventory_ChangerVaultTabTemplate">
 				<Anchors>
-					<Anchor point="LEFT" relativeTo="$parentBag5" relativePoint="RIGHT">
-						<Offset x="5" y="0" />
-					</Anchor>
+					<Anchor point="LEFT" relativeTo="$parentBag5" relativePoint="RIGHT" x="5" y="0" />
 				</Anchors>
 			</Button>
 
 			<Button name="$parentBag7" inherits="ArkInventory_ChangerVaultTabTemplate">
 				<Anchors>
-					<Anchor point="LEFT" relativeTo="$parentBag6" relativePoint="RIGHT">
-						<Offset x="5" y="0" />
-					</Anchor>
+					<Anchor point="LEFT" relativeTo="$parentBag6" relativePoint="RIGHT" x="5" y="0" />
 				</Anchors>
 			</Button>
 
 			<Button name="$parentBag8" inherits="ArkInventory_ChangerVaultTabTemplate">
 				<Anchors>
-					<Anchor point="LEFT" relativeTo="$parentBag7" relativePoint="RIGHT">
-						<Offset x="5" y="0" />
-					</Anchor>
+					<Anchor point="LEFT" relativeTo="$parentBag7" relativePoint="RIGHT" x="5" y="0" />
 				</Anchors>
 			</Button>
 
 			<Button name="$parentBag9" inherits="ArkInventory_ChangerVaultTabTemplate">
 				<Anchors>
-					<Anchor point="LEFT" relativeTo="$parentBag8" relativePoint="RIGHT">
-						<Offset x="5" y="0" />
-					</Anchor>
+					<Anchor point="LEFT" relativeTo="$parentBag8" relativePoint="RIGHT" x="5" y="0" />
 				</Anchors>
 			</Button>
 
@@ -1905,9 +1778,7 @@
 				<Size x="124" y="21" />
 				
 				<Anchors>
-					<Anchor point="BOTTOMRIGHT">
-						<Offset x="-5" y="5" />
-					</Anchor>
+					<Anchor point="BOTTOMRIGHT" x="-5" y="5" />
 				</Anchors>
 				
 				<Scripts>
@@ -1943,9 +1814,7 @@
 				<Size x="124" y="21" />
 						
 				<Anchors>
-					<Anchor point="TOPRIGHT">
-						<Offset x="-5" y="-5" />
-					</Anchor>
+					<Anchor point="TOPRIGHT" x="-5" y="-5" />
 				</Anchors>
 						
 				<Scripts>
@@ -1982,9 +1851,7 @@
 				
 				<Anchors>
 					<Anchor point="BOTTOM" relativeTo="$parentWithdrawButton" relativePoint="BOTTOM" />
-					<Anchor point="RIGHT" relativeTo="$parentGoldAvailable" relativePoint="LEFT">
-						<Offset x="-5" y="0" />
-					</Anchor>
+					<Anchor point="RIGHT" relativeTo="$parentGoldAvailable" relativePoint="LEFT" x="-5" y="0" />
 				</Anchors>
 				
 				<Layers>
@@ -2016,9 +1883,7 @@
 					<Frame name="$parentDetailMoneyFrame" inherits="ArkInventory_SmallMoneyFrameTemplate">
 					
 						<Anchors>
-							<Anchor point="LEFT" relativeTo="$parentSlotCost" relativePoint="RIGHT">
-								<Offset x="10" y="0" />
-							</Anchor>
+							<Anchor point="LEFT" relativeTo="$parentSlotCost" relativePoint="RIGHT" x="10" y="0" />
 						</Anchors>
 						
 						<Scripts>
@@ -2060,4 +1925,29 @@
 	
 	<GameTooltip name="ARKINV_ScanTooltip" inherits="ArkScanTooltipTemplate" />
 	
+	<Frame name="ARKINV_CombatYieldTimer" hidden="true">
+		<Scripts>
+			<Onload>
+				self:RegisterEvent( "PLAYER_REGEN_DISABLED" )
+				self:RegisterEvent( "PLAYER_REGEN_ENABLED" )
+			</Onload>
+			<OnUpdate>
+				self.timer = ( self.timer or 0 ) + elapsed
+				if self.timer > 0.02 then
+					ArkInventory.Frame_Main_DrawThreadResume( )
+					self.timer = nil
+				end
+			</OnUpdate>
+			<OnEvent>
+				if ( event == "PLAYER_REGEN_DISABLED" ) then
+					self:Show( )
+				elseif ( event == "PLAYER_REGEN_ENABLED" ) then
+					self:Hide( )
+					table.wipe( ArkInventory.Global.Thread.Window )
+					table.wipe( ArkInventory.Global.Thread.WindowState )
+				end
+			</OnEvent>
+		</Scripts>
+	</Frame>
+
 </Ui>

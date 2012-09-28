@@ -1,274 +1,42 @@
+local _G = _G
+local select = _G.select
+local pairs = _G.pairs
+local string = _G.string
+local type = _G.type
+local error = _G.error
+local table = _G.table
+
+
 -- localisation checking code, read from the bottom up
 
 local frame = CreateFrame( "Frame" )
 frame.timermax = 5
 frame.loopmax = 5
 
+local lang = _G[string.upper( GetLocale( ) )] or GetLocale( )
 
 local updateTable = {
-	["WOW_ITEM_TYPE_ARMOR"] = function( value )
-		-- dont need to do anything
-	end,
-	["WOW_ITEM_TYPE_CONSUMABLE"] = function( value )
-		ArkInventory.Const.Category.Code.Consumable[404].text = value
-	end,
-	["WOW_ITEM_TYPE_CONSUMABLE_BANDAGE"] = function( value )
-		ArkInventory.Const.Category.Code.Consumable[432].text = value
-	end,
-	["WOW_ITEM_TYPE_CONSUMABLE_ELIXIR"] = function( value )
-		ArkInventory.Const.Category.Code.Consumable[430].text = value
-	end,
-	["WOW_ITEM_TYPE_CONSUMABLE_FLASK"] = function( value )
-		ArkInventory.Const.Category.Code.Consumable[431].text = value
-	end,
-	["WOW_ITEM_TYPE_CONSUMABLE_FOOD_AND_DRINK"] = function( value )
-		ArkInventory.Const.Category.Code.Consumable[437].text = value
-	end,
-	["WOW_ITEM_TYPE_CONSUMABLE_ITEM_ENHANCEMENT"] = function( value )
-		ArkInventory.Const.Category.Code.Consumable[440].text = value
-	end,
-	["WOW_ITEM_TYPE_CONSUMABLE_POTION"] = function( value )
-		ArkInventory.Const.Category.Code.Consumable[424].text = value
-	end,
-	["WOW_ITEM_TYPE_CONSUMABLE_SCROLL"] = function( value )
-		ArkInventory.Const.Category.Code.Consumable[433].text = value
-	end,
-	["WOW_ITEM_TYPE_CONTAINER"] = function( value )
-		ArkInventory.Const.Category.Code.System[405].text = value
-	end,
-	["WOW_ITEM_TYPE_CONTAINER_BAG"] = function( value )
-		ArkInventory.Const.Category.Code.Empty[302].text = value
-		ArkInventory.Const.Slot.Data[ArkInventory.Const.Slot.Type.Bag].long = value
-		ArkInventory.Const.Slot.Data[ArkInventory.Const.Slot.Type.Bag].type = value
-		ArkInventory.Const.Slot.Data[ArkInventory.Const.Slot.Type.Wearing].long = value
-		ArkInventory.Const.Slot.Data[ArkInventory.Const.Slot.Type.Wearing].type = value
-		ArkInventory.Const.Slot.Data[ArkInventory.Const.Slot.Type.Mail].type = value
-		ArkInventory.Const.Slot.Data[ArkInventory.Const.Slot.Type.Mail].long = value
-		ArkInventory.Const.Slot.Data[ArkInventory.Const.Slot.Type.Critter].long = value
-		ArkInventory.Const.Slot.Data[ArkInventory.Const.Slot.Type.Mount].long = value
-		ArkInventory.Const.Slot.Data[ArkInventory.Const.Slot.Type.Token].long = value
-	end,
-	["WOW_ITEM_TYPE_CONTAINER_ENCHANTING"] = function( value )
-		ArkInventory.Const.Slot.Data[ArkInventory.Const.Slot.Type.Enchanting].type = value
-	end,
-	["WOW_ITEM_TYPE_CONTAINER_ENGINEERING"] = function( value )
-		ArkInventory.Const.Slot.Data[ArkInventory.Const.Slot.Type.Engineering].type = value
-	end,
-	["WOW_ITEM_TYPE_CONTAINER_GEM"] = function( value )
-		ArkInventory.Const.Slot.Data[ArkInventory.Const.Slot.Type.Gem].type = value
-	end,
-	["WOW_ITEM_TYPE_CONTAINER_HERB"] = function( value )
-		ArkInventory.Const.Slot.Data[ArkInventory.Const.Slot.Type.Herb].type = value
-	end,
-	["WOW_ITEM_TYPE_CONTAINER_INSCRIPTION"] = function( value )
-		ArkInventory.Const.Slot.Data[ArkInventory.Const.Slot.Type.Inscription].type = value
-	end,
-	["WOW_ITEM_TYPE_CONTAINER_LEATHERWORKING"] = function( value )
-		ArkInventory.Const.Slot.Data[ArkInventory.Const.Slot.Type.Leatherworking].type = value
-	end,
-	["WOW_ITEM_TYPE_CONTAINER_MINING"] = function( value )
-		ArkInventory.Const.Slot.Data[ArkInventory.Const.Slot.Type.Mining].type = value
-	end,
-	["WOW_ITEM_TYPE_CONTAINER_TACKLE"] = function( value )
-		ArkInventory.Const.Slot.Data[ArkInventory.Const.Slot.Type.Tackle].long = value
-		ArkInventory.Const.Slot.Data[ArkInventory.Const.Slot.Type.Tackle].type = value
-	end,
-	["WOW_ITEM_TYPE_GEM"] = function( value )
-		ArkInventory.Const.Category.Code.System[434].text = value
-		ArkInventory.Const.Category.Code.Empty[308].text = value
-		ArkInventory.Const.Slot.Data[ArkInventory.Const.Slot.Type.Gem].long = value
-	end,
-	["WOW_ITEM_TYPE_GLYPH"] = function( value )
-		ArkInventory.Const.Category.Code.System[439].text = value
-	end,
-	["WOW_ITEM_TYPE_MISC"] = function( value )
-		ArkInventory.Const.Category.Code.System[407].text = value
-	end,
-	["WOW_ITEM_TYPE_MISC_MOUNT"] = function( value )
-		ArkInventory.Const.Category.Code.System[415].text = value
-		ArkInventory.Const.Slot.Data[ArkInventory.Const.Slot.Type.Mount].type = value
-	end,
-	["WOW_ITEM_TYPE_MISC_PET"] = function( value )
-		ArkInventory.Const.Category.Code.System[423].text = value
-		ArkInventory.Const.Slot.Data[ArkInventory.Const.Slot.Type.Critter].type = value
-	end,
-	["WOW_ITEM_TYPE_MISC_REAGENT"] = function( value )
-		ArkInventory.Const.Category.Code.System[408].text = value
-	end,
-	["WOW_ITEM_TYPE_QUEST"] = function( value )
-		ArkInventory.Const.Category.Code.System[411].text = value
-	end,
-	["WOW_ITEM_TYPE_RECIPE"] = function( value )
-		ArkInventory.Const.Category.Code.System[409].text = value
-	end,
-	["WOW_ITEM_TYPE_TRADE_GOODS"] = function( value )
-		ArkInventory.Const.Category.Code.Trade[412].text = value
-	end,
-	["WOW_ITEM_TYPE_TRADE_GOODS_CLOTH"] = function( value )
-		ArkInventory.Const.Category.Code.Trade[502].text = value
-	end,
-	["WOW_ITEM_TYPE_TRADE_GOODS_DEVICES"] = function( value )
-		ArkInventory.Const.Category.Code.Trade[425].text = value
-	end,
-	["WOW_ITEM_TYPE_TRADE_GOODS_ELEMENTAL"] = function( value )
-		ArkInventory.Const.Category.Code.Trade[503].text = value
-	end,
-	["WOW_ITEM_TYPE_TRADE_GOODS_ITEM_ENCHANTMENT"] = function( value )
-		ArkInventory.Const.Category.Code.Trade[510].text = value
-	end,
-	["WOW_ITEM_TYPE_TRADE_GOODS_EXPLOSIVES"] = function( value )
-		ArkInventory.Const.Category.Code.Trade[426].text = value
-	end,
-	["WOW_ITEM_TYPE_TRADE_GOODS_HERB"] = function( value )
-		ArkInventory.Const.Category.Code.Trade[501].text = value
-	end,
-	["WOW_ITEM_TYPE_TRADE_GOODS_LEATHER"] = function( value )
-		ArkInventory.Const.Category.Code.Trade[504].text = value
-	end,
-	["WOW_ITEM_TYPE_TRADE_GOODS_MATERIALS"] = function( value )
-		ArkInventory.Const.Category.Code.Trade[507].text = value
-	end,
-	["WOW_ITEM_TYPE_TRADE_GOODS_MEAT"] = function( value )
-		ArkInventory.Const.Category.Code.Trade[505].text = value
-	end,
-	["WOW_ITEM_TYPE_TRADE_GOODS_METAL_AND_STONE"] = function( value )
-		ArkInventory.Const.Category.Code.Trade[506].text = value
-	end,
-	["WOW_ITEM_TYPE_TRADE_GOODS_PARTS"] = function( value )
-		ArkInventory.Const.Category.Code.Trade[427].text = value
-	end,
-	["WOW_ITEM_TYPE_WEAPON"] = function( value )
-		-- dont need to do anything
-	end,
-	
-	
-	
---	["LOCATION_MOUNT"] = function( value )
---		ArkInventory.Global.Location[ArkInventory.Const.Location.Mount].Name = value
---		BINDING_NAME_ARKINV_TOGGLE_MOUNT = value
---	end,
---	["LOCATION_PET"] = function( value )
---		ArkInventory.Global.Location[ArkInventory.Const.Location.Pet].Name = value
---		BINDING_NAME_ARKINV_TOGGLE_PET = value
---	end,
-	
-	
-	
-	
-	["CATEGORY_CONSUMABLE"] = function( value )
-		-- dont need to do anything
-	end,
-	["CATEGORY_TRADE_GOODS"] = function( value )
-		-- dont need to do anything
-	end,
-	["CATEGORY_OTHER"] = function( value )
-		-- dont need to do anything
-	end,
-	
-	
-	
-	
-	["WOW_SKILL_ALCHEMY"] = function( value )
-		ArkInventory.Const.Category.Code.Skill[101].text = value
-	end,
-	["WOW_SKILL_BLACKSMITHING"] = function( value )
-		ArkInventory.Const.Category.Code.Skill[102].text = value
-	end,
-	["WOW_SKILL_ENCHANTING"] = function( value )
-		ArkInventory.Const.Category.Code.Skill[105].text = value
-		ArkInventory.Const.Category.Code.Empty[306].text = value
-		ArkInventory.Const.Slot.Data[ArkInventory.Const.Slot.Type.Enchanting].long = value
-	end,
-	["WOW_SKILL_ENGINEERING"] = function( value )
-		ArkInventory.Const.Category.Code.Skill[104].text = value
-		ArkInventory.Const.Category.Code.Empty[307].text = value
-		ArkInventory.Const.Slot.Data[ArkInventory.Const.Slot.Type.Engineering].long = value
-	end,
-	["WOW_SKILL_FIRST_AID"] = function( value )
-		ArkInventory.Const.Category.Code.Skill[106].text = value
-	end,
 	["WOW_SKILL_HERBALISM"] = function( value )
 		ArkInventory.Const.Category.Code.Skill[108].text = value
 		ArkInventory.Const.Category.Code.Empty[305].text = value
 		ArkInventory.Const.Slot.Data[ArkInventory.Const.Slot.Type.Herb].long = value
-	end,
-	["WOW_SKILL_INSCRIPTION"] = function( value )
-		ArkInventory.Const.Category.Code.Skill[115].text = value
-		ArkInventory.Const.Category.Code.Empty[313].text = value
-		ArkInventory.Const.Slot.Data[ArkInventory.Const.Slot.Type.Inscription].long = value
-	end,
-	["WOW_SKILL_JEWELCRAFTING"] = function( value )
-		ArkInventory.Const.Category.Code.Skill[109].text = value
-	end,
-	["WOW_SKILL_LEATHERWORKING"] = function( value )
-		ArkInventory.Const.Category.Code.Skill[110].text = value
-		ArkInventory.Const.Category.Code.Empty[312].text = value
-		ArkInventory.Const.Slot.Data[ArkInventory.Const.Slot.Type.Leatherworking].long = value
+		ArkInventory.Const.Skills.Data[182].text = value
 	end,
 	["WOW_SKILL_MINING"] = function( value )
 		ArkInventory.Const.Category.Code.Skill[111].text = value
 		ArkInventory.Const.Category.Code.Empty[309].text = value
 		ArkInventory.Const.Slot.Data[ArkInventory.Const.Slot.Type.Mining].long = value
+		ArkInventory.Const.Skills.Data[186].text = value
 	end,
 	["WOW_SKILL_SKINNING"] = function( value )
 		ArkInventory.Const.Category.Code.Skill[112].text = value
-	end,
-	["WOW_SKILL_TAILORING"] = function( value )
-		ArkInventory.Const.Category.Code.Skill[113].text = value
+		ArkInventory.Const.Skills.Data[393].text = value
 	end,
 }
 
 
 
 local itemTable = { -- key, itemtype = true / itemsubtype = false, item id
-	{ "WOW_ITEM_TYPE_ARMOR", true, 2435 },
-	{ "WOW_ITEM_TYPE_CONSUMABLE", true, 34722 },
-	{ "WOW_ITEM_TYPE_CONSUMABLE_BANDAGE", false, 34722 },
-	{ "WOW_ITEM_TYPE_CONSUMABLE_ELIXIR", false, 39666 },
-	{ "WOW_ITEM_TYPE_CONSUMABLE_FLASK", false, 46376 },
-	{ "WOW_ITEM_TYPE_CONSUMABLE_FOOD_AND_DRINK", false, 45932 },
-	{ "WOW_ITEM_TYPE_CONSUMABLE_ITEM_ENHANCEMENT", false, 45060 },
-	{ "WOW_ITEM_TYPE_CONSUMABLE_POTION", false, 43570 },
-	{ "WOW_ITEM_TYPE_CONSUMABLE_SCROLL", false, 49632 },
-	{ "WOW_ITEM_TYPE_CONTAINER", true, 4496 },
-	{ "WOW_ITEM_TYPE_CONTAINER_BAG", false, 4496 },
-	{ "WOW_ITEM_TYPE_CONTAINER_ENCHANTING", false, 30748 },
-	{ "WOW_ITEM_TYPE_CONTAINER_ENGINEERING", false, 30745 },
-	{ "WOW_ITEM_TYPE_CONTAINER_GEM", false, 30747 },
-	{ "WOW_ITEM_TYPE_CONTAINER_HERB", false, 22250 },
-	{ "WOW_ITEM_TYPE_CONTAINER_INSCRIPTION", false, 39489 },
-	{ "WOW_ITEM_TYPE_CONTAINER_LEATHERWORKING", false, 38399 },
-	{ "WOW_ITEM_TYPE_CONTAINER_MINING", false, 30746 },
-	{ "WOW_ITEM_TYPE_CONTAINER_TACKLE", false, 60218 },
-	{ "WOW_ITEM_TYPE_GEM", true, 36919 },
-	{ "WOW_ITEM_TYPE_GLYPH", true, 43673 },
-	{ "WOW_ITEM_TYPE_MISC", true, 47180 },
-	{ "WOW_ITEM_TYPE_MISC_MOUNT", false, 47180 },
-	{ "WOW_ITEM_TYPE_MISC_PET", false, 8495 },
-	{ "WOW_ITEM_TYPE_MISC_REAGENT", false, 17029 },
-	{ "WOW_ITEM_TYPE_QUEST", true, 22014 },
-	{ "WOW_ITEM_TYPE_RECIPE", true, 5640 },
-	{ "WOW_ITEM_TYPE_TRADE_GOODS", true, 2320 },
-	{ "WOW_ITEM_TYPE_TRADE_GOODS_CLOTH", false, 2320 },
-	{ "WOW_ITEM_TYPE_TRADE_GOODS_DEVICES", false, 15846 },
-	{ "WOW_ITEM_TYPE_TRADE_GOODS_ELEMENTAL", false, 37704 },
-	{ "WOW_ITEM_TYPE_TRADE_GOODS_ITEM_ENCHANTMENT", false, 38682 },
-	{ "WOW_ITEM_TYPE_TRADE_GOODS_EXPLOSIVES", false, 4378 },
-	{ "WOW_ITEM_TYPE_TRADE_GOODS_HERB", false, 36908 },
-	{ "WOW_ITEM_TYPE_TRADE_GOODS_LEATHER", false, 44128 },
-	{ "WOW_ITEM_TYPE_TRADE_GOODS_MATERIALS", false, 30183 },
-	{ "WOW_ITEM_TYPE_TRADE_GOODS_MEAT", false, 35794 },
-	{ "WOW_ITEM_TYPE_TRADE_GOODS_METAL_AND_STONE", false, 18567 },
-	{ "WOW_ITEM_TYPE_TRADE_GOODS_PARTS", false, 43127 },
-	{ "WOW_ITEM_TYPE_WEAPON", true, 2526 },
-	
-	{ "LOCATION_MOUNT", false, 47180 },
-	{ "LOCATION_PET", false, 8495 },
-
-	{ "CATEGORY_CONSUMABLE", true, 34722 },
-	{ "CATEGORY_TRADE_GOODS", true, 2320 },
-	{ "CATEGORY_OTHER", false, 5048 },
-	
 }
 
 
@@ -321,16 +89,16 @@ local function GetItemBasedTranslations( )
 			
 				ok = false
 				
-				--ArkInventory.OutputWarning( "Failed to verify ", GetLocale( ), " entry ", key, ", value is [", oldValue, "]" )
+				--ArkInventory.OutputWarning( "Failed to verify ", lang, " entry ", key, ", value is [", oldValue, "]" )
 			
 			else
 			
 				if newValue ~= oldValue then
 					
 					if not oldValue or key == oldValue then
-						--ArkInventory.OutputWarning( "Updating ", GetLocale( ), " entry ", key, " with [", newValue, "]" )
+						--ArkInventory.OutputWarning( "Updating ", lang, " entry ", key, " with [", newValue, "]" )
 					else
-						ArkInventory.OutputWarning( "Updating ", GetLocale( ), " entry ", key, " with [", newValue, "], was [", oldValue, "]" )
+						ArkInventory.OutputWarning( "Updating ", lang, " entry ", key, " with [", newValue, "], was [", oldValue, "]" )
 					end
 					
 					rawset( L, key, newValue )
@@ -354,18 +122,7 @@ end
 
 
 local spellTable = { -- key, spell id
---	{ "WOW_SKILL_ALCHEMY", 2259 }, --, 3101, 3464, 11611, 28596, 51304, 80731
---	{ "WOW_SKILL_BLACKSMITHING", 2018 }, -- , 3100, 3538, 9785, 29844, 51300, 76666
---	{ "WOW_SKILL_ENCHANTING", 7411 }, -- 7412, 7413, 13920, 28029, 51313, 74258
---	{ "WOW_SKILL_ENGINEERING", 4036 }, -- 4037, 4038, 12656, 30350, 51306, 82774
---	{ "WOW_SKILL_FIRST_AID", 3273 }, -- 3274, 7924, 10846, 27028, 45542, 74559
---	{ "WOW_SKILL_HERBALISM", 13614 }, -- 9134
---	{ "WOW_SKILL_INSCRIPTION", 45357 }, -- 45358, 45359, 45360, 45361, 45363, 86008
---	{ "WOW_SKILL_JEWELCRAFTING", 25229 }, -- 25230, 28894, 28895, 28897, 51311, 73318
---	{ "WOW_SKILL_LEATHERWORKING", 2108 }, -- 3104, 3811, 10662, 32549, 51302, 81199
---	{ "WOW_SKILL_MINING", 2575 }, -- 2576, 3564, 10248, 29354, 50310, 74517
 	{ "WOW_SKILL_SKINNING", 8613 }, -- 8617, 8618, 10768, 32678, 50305, 74522
---	{ "WOW_SKILL_TAILORING", 3908 }, -- 3909, 3910, 12180, 26790, 51309, 75156
 }
 
 local function GetWowSpellNameHelper( id, key )
@@ -413,16 +170,16 @@ local function GetSpellBasedTranslations( )
 			
 				ok = false
 				
-				--ArkInventory.OutputWarning( "Failed to verify ", GetLocale( ), " key [", key, "], value is [", oldValue, "]" )
+				--ArkInventory.OutputWarning( "Failed to verify ", lang, " key [", key, "], value is [", oldValue, "]" )
 			
 			else
 			
 				if newValue ~= oldValue then
 					
 					if not oldValue or key == oldValue then
-						--ArkInventory.OutputWarning( "Updating ", GetLocale( ), " key [", key, "] with [", newValue, "]" )
+						--ArkInventory.OutputWarning( "Updating ", lang, " key [", key, "] with [", newValue, "]" )
 					else
-						ArkInventory.OutputWarning( "Updating ", GetLocale( ), " key [", key, "] with [", newValue, "], was [", oldValue, "]" )
+						ArkInventory.OutputWarning( "Updating ", lang, " key [", key, "] with [", newValue, "], was [", oldValue, "]" )
 					end
 					
 					rawset( L, key, newValue )
@@ -445,17 +202,8 @@ end
 
 
 local tooltipTable = {
-	{ "WOW_SKILL_ALCHEMY", 5640 },
-	{ "WOW_SKILL_BLACKSMITHING", 10858 },
-	{ "WOW_SKILL_ENCHANTING", 20758 },
-	{ "WOW_SKILL_ENGINEERING", 13309 },
-	{ "WOW_SKILL_FIRST_AID", 19442 },
 	{ "WOW_SKILL_HERBALISM", 22795 }, -- 63122, 85663
-	{ "WOW_SKILL_INSCRIPTION", 50166 },
-	{ "WOW_SKILL_JEWELCRAFTING", 20854 },
-	{ "WOW_SKILL_LEATHERWORKING", 18731 },
 	{ "WOW_SKILL_MINING", 2901 },
-	{ "WOW_SKILL_TAILORING", 6272 },
 }
 
 local function GetWowTooltipTextHelper( id, key )
@@ -506,16 +254,16 @@ local function GetTooltipBasedTranslations( )
 			
 				ok = false
 				
-				--ArkInventory.OutputWarning( "Failed to verify ", GetLocale( ), " key [", key, "], value is [", oldValue, "]" )
+				--ArkInventory.OutputWarning( "Failed to verify ", lang, " key [", key, "], value is [", oldValue, "]" )
 			
 			else
 			
 				if newValue ~= oldValue then
 					
 					if not oldValue or key == oldValue then
-						--ArkInventory.OutputWarning( "Setting ", GetLocale( ), " key [", key, "] with [", newValue, "]" )
+						--ArkInventory.OutputWarning( "Setting ", lang, " key [", key, "] with [", newValue, "]" )
 					else
-						ArkInventory.OutputWarning( "Updating ", GetLocale( ), " key [", key, "] with [", newValue, "], was [", oldValue, "]" )
+						ArkInventory.OutputWarning( "Updating ", lang, " key [", key, "] with [", newValue, "], was [", oldValue, "]" )
 					end
 					
 					rawset( L, key, newValue )
@@ -559,13 +307,13 @@ frame:SetScript( "OnUpdate",
 			if not updateTable then
 				self:Hide( )
 				if ArkInventory.db.global.option.message.translation.final then
-					ArkInventory.Output( "Translations for ", GetLocale( ), " are already loaded." )
+					ArkInventory.Output( lang, " translations already loaded." )
 				end
 				return
 			end
 			
 			if ArkInventory.db.global.option.message.translation.interim then
-				ArkInventory.Output( "Loading Translations for ", GetLocale( ), ": Attempt ", self.loop, " of ", self.loopmax )
+				ArkInventory.Output( lang, " translations - attempt ", self.loop, " of ", self.loopmax, "." )
 			end
 			
 			local ok = GetTranslations( )
@@ -577,7 +325,7 @@ frame:SetScript( "OnUpdate",
 				if ok then
 					
 					if ArkInventory.db.global.option.message.translation.final then
-						ArkInventory.Output( "Translations for ", GetLocale( ), " loaded." )
+						ArkInventory.Output( lang, " translations successfully loaded." )
 					end
 					
 					table.wipe( spellTable )
@@ -598,7 +346,7 @@ frame:SetScript( "OnUpdate",
 						ArkInventory.Output( k )
 					end
 					
-					ArkInventory.OutputWarning( "Translations for ", GetLocale( ), " failed to load, you may experience issues with item categorisation and menu text" )
+					ArkInventory.OutputWarning( lang, " translations failed to load. You may experience issues with item categorisation and menu text." )
 					
 				end
 				

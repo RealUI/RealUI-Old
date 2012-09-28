@@ -72,7 +72,7 @@ local chatEvent, chatEventTarget
 
 function mod:ChatFrame_MessageEventHandler(frame, event, ...)
 	chatEvent = event
-	arg1,chatEventTarget = ...
+	local arg1,chatEventTarget = ...
 	return self.hooks["ChatFrame_MessageEventHandler"](frame, event, ...)
 end
 

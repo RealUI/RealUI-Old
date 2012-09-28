@@ -25,11 +25,6 @@ if not L then return end
 	L["WOW_ZONE_ABYSSAL_DEPTHS"] = "Profondeurs Abyssales"
 	
 	
---	wow skill headers - must match exactly what is in game
-	L["WOW_SKILL_HEADER_PRIMARY"] = "Professions"
-	L["WOW_SKILL_HEADER_SECONDARY"] = "Professions secondaires"
-	
-	
 --	wow tooltip text - must match exactly what is in game
 	L["WOW_ITEM_TOOLTIP_FOOD"] = "Vous devez rester assis pendant que vous mangez"
 	L["WOW_ITEM_TOOLTIP_DRINK"] = "Vous devez rester assis pendant que vous buvez"
@@ -41,10 +36,8 @@ if not L then return end
 	
 --	location names
 	L["LOCATION_ALL"] = "Tous"
-	L["LOCATION_BAG"] = "Sac"
 	L["LOCATION_BANK"] = "Banque"
 	L["LOCATION_WEARING"] = "Vêtements"
-	L["LOCATION_TOKEN"] = "Insignes"
 	
 	
 --	subframe names
@@ -80,13 +73,9 @@ if not L then return end
 	L["CATEGORY_SYSTEM_CORE_MATS"] = "Matière première"
 	L["CATEGORY_SYSTEM_EQUIPMENT"] = "Equipement non lié"
 	L["CATEGORY_SYSTEM_EQUIPMENT_SOULBOUND"] = "Equipement lié"
-	L["CATEGORY_SYSTEM_TOKEN"] = "Insigne"
-	L["CATEGORY_SYSTEM_TRASH"] = "Camelote"
 	
 	
 --	consumable category descriptions
-	L["CATEGORY_CONSUMABLE_DRINK"] = "Boisson"
-	L["CATEGORY_CONSUMABLE_FOOD"] = "Nourriture"
 	L["CATEGORY_CONSUMABLE_FOOD_PET"] = "Nourriture pour familier"
 	L["CATEGORY_CONSUMABLE_POTION_MANA"] = "Mana (Potion/Gemme)"
 	L["CATEGORY_CONSUMABLE_POTION_HEAL"] = "Soin (Potion/Pierre de soins)"
@@ -152,6 +141,7 @@ if not L then return end
 	L["MENU_ITEM_DEBUG_BAG"] = "Sac"
 	L["MENU_ITEM_DEBUG_SLOT"] = "Emplacement"
 --	L["MENU_ITEM_DEBUG_BAG_TYPE"] = ""
+--	L["MENU_ITEM_DEBUG_PET_ID"] = ""
 	L["MENU_ITEM_DEBUG_AI_ID_SHORT"] = "ID court"
 	L["MENU_ITEM_DEBUG_AI_ID_CACHE"] = "ID cache"
 	L["MENU_ITEM_DEBUG_AI_ID_RULE"] = "ID de règle"
@@ -233,6 +223,8 @@ if not L then return end
 --	L["CONFIG_SYSTEM_TOOLTIP_FACTION_ONLY"] = ""
 --	L["CONFIG_SYSTEM_TOOLTIP_FACTION_ONLY_TEXT"] = ""
 --	L["CONFIG_SYSTEM_TOOLTIP_VAULT_TEXT"] = ""
+--	L["CONFIG_SYSTEM_TOOLTIP_BATTLEPET_SOURCE_TEXT"] = ""
+--	L["CONFIG_SYSTEM_TOOLTIP_BATTLEPET_DESCRIPTION_TEXT"] = ""
 	
 	L["CONFIG_SYSTEM_BUGFIX"] = "Corriger/Contourner le bogue"
 	L["CONFIG_SYSTEM_BUGFIX_TEXT"] = "Activer le code pour corriger ou contourner ce problème"
@@ -465,16 +457,11 @@ if not L then return end
 	
 --	rules frame
 	L["RULE"] = "Règle"
-	L["RULE_ENABLED"] = "Activé"
 	L["RULE_HIDDEN"] = "Caché"
-	L["RULE_ORDER"] = "Ordre"
---	L["RULE_DESCRIPTION"] = ""
 	L["RULE_FORMULA"] = "Formule"
 	L["RULE_LIST_ENABLED"] = "Utilisé"
 	L["RULE_LIST_DAMAGED"] = "Emdommagé"
 	L["RULE_LIST_ID"] = "Règle"
-	L["RULE_LIST_ORDER"] = "Ordre"
-	L["RULE_LIST_DESCRIPTION"] = "Description"
 	
 	L["RULE_DAMAGED"] = "La règle %s est marquée comme emdommagée et ne sera plus utilisée avant d'être réparée"
 --	L["RULE_FAILED"] = ""
@@ -486,7 +473,6 @@ if not L then return end
 --	L["RULE_FAILED_ARGUMENT_IS_NIL"] = ""
 --	L["RULE_FAILED_ARGUMENT_IS_INVALID"] = ""
 --	L["RULE_FAILED_ARGUMENT_NONE_SPECIFIED"] = ""
---	L["RULE_FAILED_ADDON_NOT_LOADED"] = ""
 	
 	
 --	new item indicators
@@ -521,8 +507,8 @@ if not L then return end
 	
 	
 --	misc chat stuff
-	L["UPGRADE_PROFILE"] = "Mise à jour des données de profile pour [%1$s] vers v%2$.4f"
-	L["UPGRADE_GLOBAL"] = "Mise à jour global des données de %1$s vers v%2$.4f"
+	L["UPGRADE_PROFILE"] = "Mise à jour des données de profile pour [%1$s] vers v%2$d"
+	L["UPGRADE_GLOBAL"] = "Mise à jour global des données de %1$s vers v%2$d"
 --	L["UPGRADE_CHAR"] = ""
 	
 	L["MISC_ALERT"] = "Alerte !"
@@ -531,7 +517,6 @@ if not L then return end
 	
 	
 --	item count tooltip
---	L["TOOLTIP_TOTAL"] = ""
 --	L["TOOLTIP_COUNT_ME"] = ""
 --	L["TOOLTIP_VAULT_TABS"] = ""
 	
@@ -596,6 +581,7 @@ if not L then return end
 --	L["CLICK_TO_SELECT"] = ""
 --	L["CLICK_TO_DESELECT"] = ""
 --	L["CLICK_TO_IGNORE"] = ""	
+	L["ORDER"] = "Ordre"
 	
 	
 -- libdatabroker
@@ -606,17 +592,13 @@ if not L then return end
 --	L["LDB_BAGS_STYLE_TEXT"] = ""
 --	L["LDB_BAGS_INCLUDE_TYPE"] = ""
 --	L["LDB_BAGS_INCLUDE_TYPE_TEXT"] = ""
---	L["LDB_TRACKING"] = ""
 --	L["LDB_TRACKING_CURRENCY"] = ""
---	L["LDB_TRACKING_ITEM"] = ""
 --	L["LDB_PETS_SUMMON"] = ""
 --	L["LDB_MOUNTS_NOT_HERE"] = ""
 --	L["LDB_MOUNTS_GROUND"] = ""
---	L["LDB_MOUNTS_FLYING"] = ""
 --	L["LDB_MOUNTS_FLYING_DISMOUNT"] = ""
 --	L["LDB_MOUNTS_FLYING_DISMOUNT_TEXT"] = ""
 --	L["LDB_MOUNTS_FLYING_DISMOUNT_WARNING"] = ""
---	L["LDB_MOUNTS_WATER"] = ""
 --	L["LDB_MOUNTS_SUMMON"] = ""
 --	L["LDB_MOUNTS_NODATA"] = ""
 --	L["LDB_MOUNTS_TOOLTIP_MODE"] = ""

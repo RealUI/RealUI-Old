@@ -1,10 +1,10 @@
 
 if ( GetLocale() == "deDE" ) then
-	EASYMAIL_FORWARDTEXT = "Vorw\195\164rts";
+	EASYMAIL_FORWARDTEXT = "Weiterleiten";
 	EASYMAIL_CLEAROPTION = "L\195\182sche Feld";
 	EASYMAIL_ATTBUTTONTEXT = "Alles nehmen";
 	EASYMAIL_CHECKALLTEXT = "Alles Makieren";
-	EASYMAIL_CLEARALLTEXT = "Alles L\195\182schen";
+	EASYMAIL_CLEARALLTEXT = "Mak. L\195\182schen";
 	EASYMAIL_GETALLTEXT = "Gegenst. nehmen";
 	EASYMAIL_GUILDTEXT = "Gilden Mitglieder";
 	EASYMAIL_FRIENDSTEXT = "Freunde";

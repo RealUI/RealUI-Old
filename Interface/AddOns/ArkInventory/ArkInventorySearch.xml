@@ -16,12 +16,8 @@
 		<Size x="2" y="2" />
 
 		<Anchors>
-			<Anchor point="LEFT" relativeTo="$parent" relativePoint="LEFT">
-				<Offset x="5" y="0" />
-			</Anchor>
-			<Anchor point="RIGHT" relativeTo="$parent" relativePoint="RIGHT">
-				<Offset x="-30" y="0" />
-			</Anchor>
+			<Anchor point="LEFT" x="5" y="0" />
+			<Anchor point="RIGHT" x="-30" y="0" />
 		</Anchors>
 
 		<Layers>
@@ -45,23 +41,15 @@
 			
 				<Texture name="$parentHighlight" inherits="ARKINV_TextureHighlight">
 					<Anchors>
-						<Anchor point="TOPLEFT" relativeTo="$parent" relativePoint="TOPLEFT">
-							<Offset x="5" y="0" />
-						</Anchor>
-						<Anchor point="BOTTOMRIGHT" relativeTo="$parent" relativePoint="BOTTOMRIGHT">
-							<Offset x="-5" y="0" />
-						</Anchor>
+						<Anchor point="TOPLEFT" x="5" y="0" />
+						<Anchor point="BOTTOMRIGHT" x="-5" y="0" />
 					</Anchors>
 				</Texture>
 
 				<Texture name="$parentSelected" inherits="ARKINV_TextureSelected">
 					<Anchors>
-						<Anchor point="TOPLEFT" relativeTo="$parent" relativePoint="TOPLEFT">
-							<Offset x="5" y="0" />
-						</Anchor>
-						<Anchor point="BOTTOMRIGHT" relativeTo="$parent" relativePoint="BOTTOMRIGHT">
-							<Offset x="-5" y="0" />
-						</Anchor>
+						<Anchor point="TOPLEFT" x="5" y="0" />
+						<Anchor point="BOTTOMRIGHT" x="-5" y="0" />
 					</Anchors>
 				</Texture>
 
@@ -123,9 +111,7 @@
 
 			<Button name="$parentRow1" inherits="ARKINV_TemplateSearchTableRow" id="1">
 				<Anchors>
-					<Anchor point="TOP">
-						<Offset x="0" y="-10" />
-					</Anchor>
+					<Anchor point="TOP" x="0" y="-10" />
 				</Anchors>
 			</Button>
 
@@ -246,12 +232,8 @@
 			<ScrollFrame name="$parentScroll" inherits="FauxScrollFrameTemplate">
 
 				<Anchors>
-					<Anchor point="TOPRIGHT">
-						<Offset x="-30" y="-10" />
-					</Anchor>
-					<Anchor point="BOTTOMRIGHT">
-						<Offset x="0" y="10" />
-					</Anchor>
+					<Anchor point="TOPRIGHT" x="-30" y="-10" />
+					<Anchor point="BOTTOMRIGHT" x="0" y="10" />
 				</Anchors>
 
 				<Scripts>
@@ -293,15 +275,9 @@
 
 		<Anchors>
 			<Anchor point="TOP" />
-			<Anchor point="LEFT" relativeTo="$parent" relativePoint="LEFT">
-				<Offset x="20" y="0" />
-			</Anchor>
-			<Anchor point="RIGHT" relativeTo="$parent" relativePoint="RIGHT">
-				<Offset x="-20" y="0" />
-			</Anchor>
-			<Anchor point="BOTTOM" relativeTo="$parent" relativePoint="BOTTOM">
-				<Offset x="0" y="20" />
-			</Anchor>
+			<Anchor point="LEFT" x="20" y="0" />
+			<Anchor point="RIGHT" x="-20" y="0" />
+			<Anchor point="BOTTOM" x="0" y="20" />
 		</Anchors>
 		
 		<Scripts>
@@ -319,20 +295,16 @@
 				<Size x="2" y="40" />
 
 				<Anchors>
-					<Anchor point="TOP" relativeTo="$parent" relativePoint="TOP">
-						<Offset x="0" y="-20" />
-					</Anchor>
-					<Anchor point="LEFT" relativeTo="$parent" relativePoint="LEFT" />
-					<Anchor point="RIGHT" relativeTo="$parent" relativePoint="RIGHT" />
+					<Anchor point="TOP" x="0" y="-20" />
+					<Anchor point="LEFT" />
+					<Anchor point="RIGHT" />
 				</Anchors>
 				
 				<Frames>
 					
 					<Button name="$parentClear" inherits="ARKINV_TemplateButtonClear">
 						<Anchors>
-							<Anchor point="RIGHT">
-								<Offset x="-8" y="0" />
-							</Anchor>
+							<Anchor point="RIGHT" x="-8" y="0" />
 						</Anchors>
 					</Button>
 					
@@ -341,12 +313,8 @@
 						<Size x="2" y="20" />
 						
 						<Anchors>
-							<Anchor point="LEFT" relativeTo="$parent" relativePoint="LEFT">
-								<Offset x="80" y="0" />
-							</Anchor>
-							<Anchor point="RIGHT" relativeTo="$parentClear" relativePoint="LEFT">
-								<Offset x="-2" y="0" />
-							</Anchor>
+							<Anchor point="LEFT" x="80" y="0" />
+							<Anchor point="RIGHT" relativeTo="$parentClear" relativePoint="LEFT" x="-2" y="0" />
 						</Anchors>
 						
 						<Scripts>
@@ -423,7 +391,7 @@
 		<Size x="500" y="600" />
 
 		<Anchors>
-			<Anchor point="CENTER" relativeTo="$parent" relativePoint="CENTER" />
+			<Anchor point="CENTER" />
 		</Anchors>
 
 		<Frames>
@@ -433,8 +401,8 @@
 				<Size x="400" y="40" />
 
 				<Anchors>
-					<Anchor point="TOPLEFT" relativeTo="$parent" relativePoint="TOPLEFT" />
-					<Anchor point="RIGHT" relativeTo="$parent" relativePoint="RIGHT" />
+					<Anchor point="TOPLEFT" />
+					<Anchor point="RIGHT" />
 				</Anchors>
 			
 				<Frames>
@@ -446,9 +414,7 @@
 						<NormalTexture file="Interface\Minimap\Tracking\None" />
 						
 						<Anchors>
-							<Anchor point="LEFT" relativeTo="$parent" relativePoint="LEFT">
-								<Offset x="6" y="0" />
-							</Anchor>
+							<Anchor point="LEFT" x="6" y="0" />
 						</Anchors>
 						
 					</Button>
@@ -456,9 +422,7 @@
 					<Button name="$parentClose" inherits="ARKINV_TemplateButtonClose">
 					
 						<Anchors>
-							<Anchor point="RIGHT" relativeTo="$parent" relativePoint="RIGHT">
-								<Offset x="-8" y="0" />
-							</Anchor>
+							<Anchor point="RIGHT" x="-8" y="0" />
 						</Anchors>
 						
 						<Scripts>
@@ -479,12 +443,8 @@
 									<Anchors>
 										<Anchor point="TOP" relativeTo="$parentMenu" relativePoint="TOP" />
 										<Anchor point="BOTTOM" relativeTo="$parentMenu" relativePoint="BOTTOM" />
-										<Anchor point="LEFT" relativeTo="$parentMenu" relativePoint="RIGHT">
-											<Offset x="5" y="0" />
-										</Anchor>
-										<Anchor point="RIGHT" relativeTo="$parentClose" relativePoint="RIGHT">
-											<Offset x="-20" y="0" />
-										</Anchor>
+										<Anchor point="LEFT" relativeTo="$parentMenu" relativePoint="RIGHT" x="5" y="0" />
+										<Anchor point="RIGHT" relativeTo="$parentClose" relativePoint="RIGHT" x="-20" y="0" />
 									</Anchors>
 								</FontString>
 							</Layer>
@@ -497,10 +457,8 @@
 			
 			<Frame name="$parentFrame" inherits="ARKINV_TemplateSearchMain">
 				<Anchors>
-					<Anchor point="TOPLEFT" relativeTo="$parentTitle" relativePoint="BOTTOMLEFT">
-						<Offset x="0" y="2" />
-					</Anchor>
-					<Anchor point="BOTTOMRIGHT" relativeTo="$parent" relativePoint="BOTTOMRIGHT" />
+					<Anchor point="TOPLEFT" relativeTo="$parentTitle" relativePoint="BOTTOMLEFT" x="0" y="2" />
+					<Anchor point="BOTTOMRIGHT" />
 				</Anchors>
 			</Frame>
 			

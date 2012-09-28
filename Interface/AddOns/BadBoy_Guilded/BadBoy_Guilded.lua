@@ -13,7 +13,6 @@ local prevLineId, result, triggers = 0, nil, {
 	"looking for.*join [ou][us]r?",--<> is Looking for Dedicated and skilled DPS and Healer classes to join us in the current 10 man  raids and expand to 25 man raids. Raids on mon,wed,thurs,sunday 21.00-24.00 18+
 	"www.*apply", --pls go to www.*.com to apply or wisp me for extra info.
 	"looking.*members", -- <<>> is a social levelling looking for all members no lvl requirement, Once we have more members were looking to do Raids and PvP premades, /w if you would like to join please or  /w me for info.
-	"guild.*join", --<> is a lvling guild but as soon as we have enough 85 we will raid  we are here not 2 take the game 2 serously and 2 have fun if u wanna join wisper me or <> any lvl welcome :)
 	"levell?in.*guild", --<> Easy Going Leveling Guild LFM of any levels, we are friendly, helpfull and have 6 guild tabs available.
 	"apply.*www", --<> We Are Looking For people Item lvl 333+ for our25man Cataclysm Raiding team. Must Be over 18+ to Apply or Have some insane Skills. If you Got Any Questions Go to www.<>.net Or contact me or a officer.
 	"gu?ilde?.*[/w][/w]", --<> is a newly formed social guild for all classes and levels. Our aim is to have fun and we hope to do raids when we are big enough. For any more info or an invite /w me. Thank You.
@@ -52,6 +51,8 @@ local prevLineId, result, triggers = 0, nil, {
 	"looking.*progress.*info", --<*> is seeking a Tank for our DS10 Runs. Bring ilvl 395+. We have 4/8 HC. Looking to progress to 5/8 HC asap.  Raid days are Wed / Fri 20:00 - 23:00. /w for more info
 	"player.*clear.*info", --<*> LF PVE Player  We Cleared DS 10 Man and We need  1 Healer (Druid or Paladin) 2 Spot For RDPS Warlock and Boomkin  /w me for more info
 	"searching.*raiders.*progress", -- * We are searching for hardcore raiders for HC DS progression, You will need 395+ Ilvl, Achievement (8/8 Normal, Minimum), Microphone and to be above 16+. Searching for Druid (Tank) or a Death Knight (Tank).
+	"guild.*seeking.*exp", --REGAIN {skull}25 lvl{skull} 8/8 HC DS raiding guild seeking for raiders/pvpers and socials for MoP. RBG team leaded by 2.4k experienced pvpers.
+	"guild.*classes.*members", --* are currently lvl 17 and are rebuilding the guild so were accepting all classes and lvls, we are not interested in what item lvl you have we are interested in social members and want people to enjoy the game,whisp for info :)
 
 	--Dutch
 	"guild.*zoek naar.*social", -- [25] Nederlands sprekende Guild <*> zijn op zoek naar Tanks: Geen / Melee dps: Warrior / Ranger dps: warlock, Mage / Healers: Paladin / raid tijden ma, di ,do van 20:00ST tot 23:00ST, social [invite] is ook mogelijk whisper voor meer info.
@@ -109,6 +110,9 @@ local prevLineId, result, triggers = 0, nil, {
 
 	--Hungarian
 	"guild.*játékosokat keres", --* Guild játékosokat keres.Létszámtól függően Old Dungeon,RBG,Content Raid szervezése.Fejlödö szintü karaktereket is várunk.
+	"guild.*info.*wh?isp", --Hali ! * lvl 25 guild tagfelvételt hirdet minden class számára! Raidek szombaton és vasárnap délután MOP-tól! További info wisp: *
+	"klán.*raid.*karakter", --A * klán (lvl25) felnött vagy felnött gondolkodású embereket keres raidezésre, pvp-re és egyéb szórakozásokra. Nem számít a karakter vagy a felszerelés szintje, csak az igény a könnyed, stresszmentes szórakozásra.
+	"klán.*jelentkezését", --* lvl 25-ös klán újra aktív. Aktív játékosok jelentkezését várjuk, akik Pandaria altt is raidelni szeretnénke majd. Infóért írjatok rám nyugodtan.
 }
 
 ChatFrame_AddMessageEventFilter("CHAT_MSG_CHANNEL", function(_,event,msg,player,_,_,_,_,chanId,_,_,_,lineId)
@@ -132,6 +136,7 @@ end)
 
 local whispers = {
 	"would.*join my.*guild", --Would you like to join my social raiding guild?.. lv1 but it will grow fast with your help :D and lottery. u can win 50g a week. MORE later!!
+	"wanna.*join my.*guild", --wanna join my guild im not one of those f*gs that spamf*ck the trade but you have to start from somewhere well pst if u want in if u dont idc i only have me and my best friend in it right now and we have only been using it for storage... 
 	"would.*join our.*guild", --Would you like to join our guild ? if you join We will pay your all repair costrs...
 	"would.*join a.*guild", --Would You Like To Join a New Guild ? Help us Grow. That Will Give You Free Repair When You Reach Lvl 5! wen you reach 85 u will Get 2000g
 	"would.*join.*social.*guild", --Hello <>,how are you? would you like to join <> a newly created socialplayer guild!
@@ -174,7 +179,7 @@ local whispers = {
 	"guild.*looking.*social", --Hello, * is a newly formed guild transfered from *, with DS experienced leadership. We are currenlty looking for active people to help us level up the guild, and continue our DS progress. Socials are always welcome aswell.
 	"guild.*raid.*le?ve?l.*join", --Hey mate :) <*> is a new PvP Guild! Our main focus will ofc be in MoP! We will also set up Raids, and have a few groups for raiding :) In the beginning we will focus on levling, getting people geared, skilled and exp'ed. Please join if u PvP:
 	"guild.*repair.*join", --Hey there!, i noticed your new? ;D. i've just started off a guild with free repairs, and bank tab use, along with perks to come, care to join? :) ... Let me know :)!
-	"recruit.*guild.*join", --Hello *! <*> is now recruiting!Awsome guild!, join now!
+	"re[cq]ruit.*guild.*join", --Hello *! <*> is now recruiting!Awsome guild!, join now!
 	"guild.*le?ve?l.*raid.*player", --Guild * Level 9. HI *. We are a good guild and there you can do everything. RAID ARENA RBG BG DG achiv. You say us wht you want to do and we try to organise it! we are not too much so you will be in a great family of good player
 	"le?ve?l.*bonus.*join.*guild", --Hi * ! We've got 2 guild bank tabs filled with FREE items and enchants to help You leveling aswell as bonus 5% exp from Fast Track perk. Join our guild and lvl up faster!
 	"le?ve?l.*guild.*repair", --* LvL 16 Guild! Be active and mature! 100g FREE Guild repair everyday!
@@ -215,6 +220,26 @@ local whispers = {
 	"looking.*member.*guild", --* is looking for more friendly members! We have everything other guilds have but what makes us unique is our competition system where we hand out thousands of gold each week! We also have a website with irl introductions and pictures etc!
 	"new.*le?ve?l.*guild.*join", --"<>" We are a new lvl 1 guild and we need you to join the ARMY :D JOIN US NOW!!! We are a nice guild :)
 	"recruit.*guild.*welcome", --Hello! <> is recruiting! I will give everyone doing dungeons with me 100g per run! We will become a Raiding guild, but  right now everyone is welcome!
+	"guild.*welcome.*friendly", --LV 25 GuildActive peps Active pvp,questing..ect All LV's welcome friendly Come have fun before MIST!!!
+	"wanna.*join.*repair.*buff", --Hey, wanna join us :) ? Free repairs, 5% exp buff
+	"recruit.*raid.*need", --Hi there! We are recruiting for MoP for main focus will be raiding, we are currently in need of 1 healer and multiple dps for our core group. raid goes from 9pm to ? We have weekly contests for gold and other prizes for the person that gets the most xp
+	"would.*join.*guild.*perk", --Would you like to join this awsome guild of doom? You get all the perks you need to level faster! :)
+	"looking.*perk.*repair", --<*> is looking for more players to fill roster! We can offer you all useful perks & Free repairs!
+	"gameplay.*join.*guild", --Take your gameplay to the next level! Er… actually, take a few steps back. Kick up your feet. Stop the grind and join the coolest laid-back guild in the land! It’s “cool” to call yourself “cool”.
+	"social.*guild.*perk", --<*> is one of the biggest and most active social 25 guild on the realm. We got all perks, all mounts, companions, cauldrons, recipes etc etc. We are now preparing for MoP and we will be doing guilddungeons, raids and much more! :) Welcome!
+	"noticed.*guild.*invite", --Hey i noticed u wernt in a guild and i was wondering if ud like to raid come MoP ill gladly invite you =)
+	"join.*le?ve?l.*recruit", --Join * <level3> recruiting all Going to start PVP AND PVE when MoP Comes OUT JOIN YOU WILL HAVE FUN! :)
+	"le?ve?l.*recruit.*join", --Hello, <*> (level15) is recruiting for MoP! Join us for raiding, pvp, and leveling! Please accept invite!!
+	"guild.*fun.*pvp.*raid", --(*) We are a guild that aims to provide a fun experience for everyone that wishes to participate in various guild activites like PVP including Arena and RBG, Raiding / Dungeon, we will be doing everything in Mist of Pandaria.
+	"player.*recruit.*perk", --<*> (13) Looking for more players for MoP based PvE and PvP. Open Recruitment with many perks!
+	"need.*player.*pay.*active", --<*> needs players! I pay 1,000g to the most active member every monday!
+	"social.*guild.*player", --Hello *. * is a social guild that is intended to provide players a good experience of WOW. We look for players who want to do raids normal and heroic, dungeons, levelling out classes, etc. We have with you!!!
+	"recruit.*casual.*progres", --<*> <1> Is Now Recruiting. Formed by an 8/8HM experienced GM. <*> aims to become one of the major casual hubs for coming MoP, while at the same time, allowing for progression in a HM environemnt. Aus weeknight raiding (Late Night US).
+	"open.*repair.*join", --<*> We're open for everyone to come chill while playing. Free Repairs! No requirements or expectations. Press Accept to Join
+	"recruit.*bonus.*exp", --<*> of * recruiting! Earn 5% BONUS experience with *!
+	"le?ve?l.*guild.*perk", --Enjoy level 25 guild perks without responsibility.
+	"le?ve?l.*guild.*info", --<*> is just form and we pay you to lvl! 10g for lvl10 and 20g for lvl 20 and so on! 300g for lvl 85! (must lvl while in guild) Pst for more info and invite! (looking for some good ppl to be officers!)
+	"wonder.*wanted.*join.*cool", --Hey * ... I was wondering you know... If you wanted to join <*>... It's pretty cool. We like to party. And pants. Sorry. I'll go now.
 }
 
 local tbl, whispPrevLineId, whispResult = {}, 0, nil
@@ -227,6 +252,7 @@ ChatFrame_AddMessageEventFilter("CHAT_MSG_WHISPER", function(_,event,msg,player,
 		msg = msg:lower() --Lower all text, remove capitals
 		for i = 1, #whispers do
 			if strfind(msg, whispers[i]) then --Found a match
+				--print(whispers[i])
 				if BadBoyLog then BadBoyLog("Guilded", event, player, msg) end
 				whispResult = true
 				return true --found a trigger, filter

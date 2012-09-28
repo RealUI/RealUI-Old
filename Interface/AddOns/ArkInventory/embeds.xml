@@ -19,6 +19,8 @@
 	<Script file="Externals\PeriodicTable-Tradeskill\LibPeriodicTable-3.1-Tradeskill.lua" />
 	<Script file="Externals\PeriodicTable-TradeskillResultMats\LibPeriodicTable-3.1-TradeskillResultMats.lua" />
 	
+	<Script file="Externals\LibPetJournal\LibPetJournal-2.0.lua" />
+	
 	<Include file="Externals\SharedMedia\lib.xml" />
 	<Include file="Externals\SharedMediaWidgets\widget.xml" />
 	

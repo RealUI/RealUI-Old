@@ -37,9 +37,9 @@ General:
 	* example rules - http://code.google.com/p/arkinventory/wiki/ExampleRules
 	
 	* download from;
+		* curse gaming - http://wow.curse.com/downloads/wow-addons/details/ark-inventory.aspx
 		* google code - http://code.google.com/p/arkinventory/downloads/list
 		* wow interface - http://www.wowinterface.com/downloads/info6488
-		* curse gaming - http://wow.curse.com/downloads/wow-addons/details/ark-inventory.aspx
 		
 	
 	

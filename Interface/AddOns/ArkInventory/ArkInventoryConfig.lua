@@ -1,3 +1,12 @@
+local _G = _G
+local select = _G.select
+local pairs = _G.pairs
+local string = _G.string
+local type = _G.type
+local error = _G.error
+local table = _G.table
+
+
 --[[
 	
 	info.options = the options table
@@ -609,6 +618,38 @@ function ArkInventory.ConfigInternal( )
 									set = function( info, v )
 										ArkInventory.db.global.option.tooltip.add.tabs = v
 										ArkInventory.ObjectCountClear( )
+									end,
+								},
+							},
+						},
+						battlepet = {
+							order = 400,
+							name = ArkInventory.Localise["BATTLEPET"],
+							type = "group",
+							inline = true,
+							args = {
+								source = {
+									order = 100,
+									name = SOURCES,
+									desc = ArkInventory.Localise["CONFIG_SYSTEM_TOOLTIP_BATTLEPET_SOURCE_TEXT"],
+									type = "toggle",
+									get = function( info )
+										return ArkInventory.db.global.option.tooltip.battlepet.source
+									end,
+									set = function( info, v )
+										ArkInventory.db.global.option.tooltip.battlepet.source = v
+									end,
+								},
+								description = {
+									order = 200,
+									name = ArkInventory.Localise["DESCRIPTION"],
+									desc = ArkInventory.Localise["CONFIG_SYSTEM_TOOLTIP_BATTLEPET_DESCRIPTION_TEXT"],
+									type = "toggle",
+									get = function( info )
+										return ArkInventory.db.global.option.tooltip.battlepet.description
+									end,
+									set = function( info, v )
+										ArkInventory.db.global.option.tooltip.battlepet.description = v
 									end,
 								},
 							},
@@ -1307,7 +1348,7 @@ function ArkInventory.ConfigInternal( )
 					type = "group",
 					childGroups = "tab",
 					name = function( )
-						return ArkInventory.Localise["WOW_ITEM_TYPE_MISC_MOUNT"]
+						return ArkInventory.Localise["WOW_AH_MISC_MOUNT"]
 					end,
 					args = { },
 				},
@@ -2257,7 +2298,7 @@ function ArkInventory.ConfigInternalSettings( path )
 											set = function( info, v )
 												local loc_id = ConfigGetNodeArg( info, #info - 5 )
 												ArkInventory.LocationOptionSetReal( loc_id, "changer", "highlight", "show", v )
-												ArkInventory.ItemCategoryClear( nil, nil, true )
+												ArkInventory.ItemCacheClear( )
 												ArkInventory.Frame_Main_Generate( nil, ArkInventory.Const.Window.Draw.Refresh )
 											end,
 										},
@@ -2306,7 +2347,7 @@ function ArkInventory.ConfigInternalSettings( path )
 											set = function( info, v )
 												local loc_id = ConfigGetNodeArg( info, #info - 5 )
 												ArkInventory.LocationOptionSetReal( loc_id, "changer", "freespace", "show", v )
-												ArkInventory.ItemCategoryClear( nil, nil, true )
+												ArkInventory.ItemCacheClear( )
 												ArkInventory.Frame_Main_Generate( nil, ArkInventory.Const.Window.Draw.Refresh )
 											end,
 										},
@@ -3230,7 +3271,6 @@ function ArkInventory.ConfigInternalSettings( path )
 								local loc_id = ConfigGetNodeArg( info, #info - 3 )
 								ArkInventory.LocationOptionSetReal( loc_id, "slot", "empty", "clump", v )
 								ArkInventory.ItemCacheClear( )
-								ArkInventory.ItemCategoryClear( nil, nil, true )
 								ArkInventory.Frame_Main_Generate( nil, ArkInventory.Const.Window.Draw.Recalculate )
 							end,
 						},
@@ -3678,7 +3718,7 @@ function ArkInventory.ConfigInternalSortingCustom( path )
 			end,
 			set = function( info, v )
 				local id = ConfigGetNodeArg( info, #info - 1 )
-				ArkInventory.db.global.option.sort.data[id].name = strtrim( v )
+				ArkInventory.db.global.option.sort.data[id].name = string.trim( v )
 				ArkInventory.ConfigInternalSorting( )
 			end,
 		},

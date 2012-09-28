@@ -25,11 +25,6 @@ if not L then return end
 	L["WOW_ZONE_ABYSSAL_DEPTHS"] = "Abyssische Tiefen"
 	
 	
---	wow skill headers - must match exactly what is in game
-	L["WOW_SKILL_HEADER_PRIMARY"] = "Berufe"
-	L["WOW_SKILL_HEADER_SECONDARY"] = "Sekund\195\164re Fertigkeiten"
-	
-	
 --	wow tooltip text - must match exactly what is in game
 	L["WOW_ITEM_TOOLTIP_FOOD"] = "Ihr m\195\188sst beim Essen sitzen bleiben"
 	L["WOW_ITEM_TOOLTIP_DRINK"] = "Ihr m\195\188sst beim Trinken sitzen bleiben"
@@ -41,10 +36,8 @@ if not L then return end
 	
 --	location names
 	L["LOCATION_ALL"] = "alle"
-	L["LOCATION_BAG"] = "Taschen"
 	L["LOCATION_BANK"] = "Bankfach"
 	L["LOCATION_WEARING"] = "angezogen"
-	L["LOCATION_TOKEN"] = "Abzeichen"
 	
 	
 --	subframe names
@@ -80,13 +73,9 @@ if not L then return end
 	L["CATEGORY_SYSTEM_CORE_MATS"] = "Kernmaterialien"
 	L["CATEGORY_SYSTEM_EQUIPMENT"] = "Ausr\195\188stung"
 	L["CATEGORY_SYSTEM_EQUIPMENT_SOULBOUND"] = "seelengebundene Ausr\195\188stung"
-	L["CATEGORY_SYSTEM_TOKEN"] = "Abzeichen"
-	L["CATEGORY_SYSTEM_TRASH"] = "Plunder"
 	
 	
 --	consumable category descriptions
-	L["CATEGORY_CONSUMABLE_DRINK"] = "Getr\195\164nke"
-	L["CATEGORY_CONSUMABLE_FOOD"] = "Essen"
 	L["CATEGORY_CONSUMABLE_FOOD_PET"] = "Essen f\195\188r den Begleiter"
 	L["CATEGORY_CONSUMABLE_POTION_HEAL"] = "Heiltr\195\164nke"
 	L["CATEGORY_CONSUMABLE_POTION_MANA"] = "Manatr\195\164nke"
@@ -152,6 +141,7 @@ if not L then return end
 	L["MENU_ITEM_DEBUG_BAG"] = "Tasche"
 	L["MENU_ITEM_DEBUG_SLOT"] = "Platz"
 	L["MENU_ITEM_DEBUG_BAG_TYPE"] = "Taschenart"
+--	L["MENU_ITEM_DEBUG_PET_ID"] = ""
 --	L["MENU_ITEM_DEBUG_AI_ID_SHORT"] = ""
 --	L["MENU_ITEM_DEBUG_AI_ID_CACHE"] = ""
 	L["MENU_ITEM_DEBUG_AI_ID_RULE"] = "Regel ID"
@@ -233,6 +223,8 @@ if not L then return end
 --	L["CONFIG_SYSTEM_TOOLTIP_FACTION_ONLY"] = ""
 --	L["CONFIG_SYSTEM_TOOLTIP_FACTION_ONLY_TEXT"] = ""
 --	L["CONFIG_SYSTEM_TOOLTIP_VAULT_TEXT"] = ""
+--	L["CONFIG_SYSTEM_TOOLTIP_BATTLEPET_SOURCE_TEXT"] = ""
+--	L["CONFIG_SYSTEM_TOOLTIP_BATTLEPET_DESCRIPTION_TEXT"] = ""
 	
 	L["CONFIG_SYSTEM_BUGFIX"] = "Fehlerbehebungen / Workarounds"
 	L["CONFIG_SYSTEM_BUGFIX_TEXT"] = "Schaltet die Fehlerbehebung f\195\188r diese Problem ein."
@@ -465,16 +457,11 @@ if not L then return end
 	
 --	rules frame
 	L["RULE"] = "Regel"
-	L["RULE_ENABLED"] = "aktiv"
 	L["RULE_HIDDEN"] = "versteckt"
-	L["RULE_ORDER"] = "Reihenfolge"
-	L["RULE_DESCRIPTION"] = "Beschreibung"
 	L["RULE_FORMULA"] = "Ausdruck"
 	L["RULE_LIST_ENABLED"] = "Akt"
 	L["RULE_LIST_DAMAGED"] = "Def"
 	L["RULE_LIST_ID"] = "Regel"
-	L["RULE_LIST_ORDER"] = "Reihenfolge"
-	L["RULE_LIST_DESCRIPTION"] = "Beschreibung"
 	
 	L["RULE_DAMAGED"] = "Regel %s wird als defekt markiert und daher nicht l\195\164nger ausgef\195\188hrt, bis sie wieder korrigiert wurde"
 --	L["RULE_FAILED"] = ""
@@ -486,7 +473,6 @@ if not L then return end
 --	L["RULE_FAILED_ARGUMENT_IS_NIL"] = ""
 --	L["RULE_FAILED_ARGUMENT_IS_INVALID"] = ""
 --	L["RULE_FAILED_ARGUMENT_NONE_SPECIFIED"] = ""
---	L["RULE_FAILED_ADDON_NOT_LOADED"] = ""
 	
 	
 --	new item indicators
@@ -521,9 +507,9 @@ if not L then return end
 	
 	
 --	misc chat stuff
-	L["UPGRADE_PROFILE"] = "aktualisiere Profil von [%1$s] auf Version %2$.4f" -- profile name, version
-	L["UPGRADE_GLOBAL"] = "aktualisiere globale Daten von %1$s auf Version %2$.4f"  -- profile type, version
---	L["UPGRADE_CHAR"] = "Upgrading character data for %1$s to v%2$.4f"  -- character, version
+	L["UPGRADE_PROFILE"] = "aktualisiere Profil von [%1$s] auf Version %2$d" -- profile name, version
+	L["UPGRADE_GLOBAL"] = "aktualisiere globale Daten von %1$s auf Version %2$d"  -- profile type, version
+--	L["UPGRADE_CHAR"] = "Upgrading character data for %1$s to v%2$d"  -- character, version
 	
 	L["MISC_ALERT"] = "ACHTUNG!"
 	L["MISC_ALERT_FRAMELEVEL_1"] = "Fehlerbehebung abgeschlossen"
@@ -531,7 +517,6 @@ if not L then return end
 	
 	
 --	item count tooltip
-	L["TOOLTIP_TOTAL"] = "Gesamt"
 --	L["TOOLTIP_COUNT_ME"] = ""
 --	L["TOOLTIP_VAULT_TABS"] = ""
 	
@@ -596,6 +581,7 @@ if not L then return end
 --	L["CLICK_TO_SELECT"] = ""
 --	L["CLICK_TO_DESELECT"] = ""
 --	L["CLICK_TO_IGNORE"] = ""	
+	L["ORDER"] = "Reihenfolge"
 	
 	
 -- libdatabroker
@@ -606,17 +592,13 @@ if not L then return end
 --	L["LDB_BAGS_STYLE_TEXT"] = ""
 --	L["LDB_BAGS_INCLUDE_TYPE"] = ""
 --	L["LDB_BAGS_INCLUDE_TYPE_TEXT"] = ""
---	L["LDB_TRACKING"] = ""
 --	L["LDB_TRACKING_CURRENCY"] = ""
---	L["LDB_TRACKING_ITEM"] = ""
 --	L["LDB_PETS_SUMMON"] = ""
 --	L["LDB_MOUNTS_NOT_HERE"] = ""
 --	L["LDB_MOUNTS_GROUND"] = ""
---	L["LDB_MOUNTS_FLYING"] = ""
 --	L["LDB_MOUNTS_FLYING_DISMOUNT"] = ""
 --	L["LDB_MOUNTS_FLYING_DISMOUNT_TEXT"] = ""
 --	L["LDB_MOUNTS_FLYING_DISMOUNT_WARNING"] = ""
---	L["LDB_MOUNTS_WATER"] = ""
 --	L["LDB_MOUNTS_SUMMON"] = ""
 --	L["LDB_MOUNTS_NODATA"] = ""
 --	L["LDB_MOUNTS_TOOLTIP_MODE"] = ""

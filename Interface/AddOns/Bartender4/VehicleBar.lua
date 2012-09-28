@@ -18,23 +18,16 @@ local defaults = { profile = Bartender4:Merge({
 	enabled = true,
 	visibility = {
 		vehicleui = false,
+		overridebar = false,
 	},
 }, Bartender4.ButtonBar.defaults) }
 
 function VehicleBarMod:OnInitialize()
 	self.db = Bartender4.db:RegisterNamespace("Vehicle", defaults)
-	if self.blizzardVehicle then
-		self:SetEnabledState(false)
-	else
-		self:SetEnabledState(self.db.profile.enabled)
-	end
+	self:SetEnabledState(self.db.profile.enabled)
 end
 
 function VehicleBarMod:OnEnable()
-	if self.blizzardVehicle then
-		self:Disable()
-		return
-	end
 	if not self.bar then
 		self.bar = setmetatable(Bartender4.ButtonBar:Create("Vehicle", self.db.profile, L["Vehicle Bar"], true), {__index = VehicleBar})
 		local buttons = {MainMenuBarVehicleLeaveButton}
@@ -46,9 +39,8 @@ function VehicleBarMod:OnEnable()
 			v:SetParent(self.bar)
 			v.ClearSetPoint = self.bar.ClearSetPoint
 		end
-
-		self:SecureHook("MainMenuBarVehicleLeaveButton_Update")
 	end
+	self:SecureHook("MainMenuBarVehicleLeaveButton_Update")
 	self.bar:Enable()
 	self:ToggleOptions()
 	self:ApplyConfig()

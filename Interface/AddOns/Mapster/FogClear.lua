@@ -84,7 +84,6 @@ local errata = {
 		["NorthGateOutpost"] = 46973434093,
 		["IronforgeAirfield"] = 660946228,
 		["HelmsBedLake"] = 288559966426,
-		["ShimmerRidge"] = 142150445227,
 		["TheGrizzledDen"] = 308556234963,
 		["Ironforge"] = 417688952,
 		["ColdridgeValley"] = 393094674830,
@@ -1454,7 +1453,7 @@ local worldMapCache = {}
 local battleMapCache = {}
 function FogClear:OnEnable()
 	self:RawHook("GetNumMapOverlays", true)
-	self:RawHook("WorldMapFrame_Update", true)
+	self:SecureHook("WorldMapFrame_Update", "UpdateWorldMapOverlays")
 
 	wipe(worldMapCache)
 	for i = 1, NUM_WORLDMAP_OVERLAYS do
@@ -1466,11 +1465,11 @@ function FogClear:OnEnable()
 		self:RegisterEvent("ADDON_LOADED", function(event, addon)
 			if addon == "Blizzard_BattlefieldMinimap" then
 				FogClear:UnregisterEvent("ADDON_LOADED")
-				FogClear:RawHook("BattlefieldMinimap_Update", true)
+				FogClear:SecureHook("BattlefieldMinimap_Update", "UpdateBattlefieldMinimapOverlays")
 			end
 		end)
 	else
-		self:RawHook("BattlefieldMinimap_Update", true)
+		self:SecureHook("BattlefieldMinimap_Update", "UpdateBattlefieldMinimapOverlays")
 
 		wipe(battleMapCache)
 		for i = 1, NUM_BATTLEFIELDMAP_OVERLAYS do
@@ -1533,16 +1532,6 @@ function FogClear:RealHasOverlays()
 
 	local overlayMap = self.overlays[mapFileName]
 	if overlayMap and next(overlayMap) then return true end
-end
-
-function FogClear:WorldMapFrame_Update()
-	self.hooks.WorldMapFrame_Update()
-	self:UpdateWorldMapOverlays()
-end
-
-function FogClear:BattlefieldMinimap_Update()
-	self.hooks.BattlefieldMinimap_Update()
-	self:UpdateBattlefieldMinimapOverlays()
 end
 
 local discoveredOverlays = {}

@@ -4,15 +4,16 @@
 ## Title-zhCN: [背包]ArkInventory 整合背包银行
 ## Author: Arkayenro - Khaz'goroth
 ## Email: arkayenro at gmail dot com
-## Version: 3.03
+## Version: 30314
 ## DefaultState: Enabled
 ## LoadOnDemand: 0
 ## SavedVariables: ARKINVDB
 
 ## Notes: Allows you to view all items from all your characters on the same realm, when-ever and where-ever you want.
 
-## OptionalDeps: Blizzard_GuildBankUI, Blizzard_VoidStorageUI, Ace3, AceGUI-3.0-SharedMediaWidgets, LibPeriodicTable-3.1, LibSharedMedia-3.0
-## X-Embeds: Ace3, AceGUI-3.0-SharedMediaWidgets, LibPeriodicTable-3.1, LibSharedMedia-3.0
+## OptionalDeps: Blizzard_GuildBankUI, Blizzard_VoidStorageUI, Blizzard_PetJournal, Ace3, AceGUI-3.0-SharedMediaWidgets, LibPeriodicTable-3.1, LibSharedMedia-3.0, LibPetJournal
+
+## X-Embeds: Ace3, AceGUI-3.0-SharedMediaWidgets, LibPeriodicTable-3.1, LibSharedMedia-3.0, LibPetJournal
 
 ## X-Category: Inventory
 ## X-Website: http://arkinventory.googlecode.com
@@ -25,7 +26,6 @@ Libs\LibStub\LibStub.lua
 Libs\CallbackHandler\CallbackHandler-1.0.lua
 Libs\LibDataBroker\LibDataBroker-1.1.lua
 Libs\ArkDewdrop\ArkDewdrop-3.0.lua
-
 
 #@no-lib-strip@
 embeds.xml

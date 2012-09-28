@@ -25,11 +25,6 @@ if not L then return end
 	L["WOW_ZONE_ABYSSAL_DEPTHS"] = "Profundidades Abisales"
 	
 	
---	wow skill headers - must match exactly what is in game
-	L["WOW_SKILL_HEADER_PRIMARY"] = "Profesiones"
-	L["WOW_SKILL_HEADER_SECONDARY"] = "Habilidades secundarias"
-	
-	
 --	wow tooltip text - must match exactly what is in game
 	L["WOW_ITEM_TOOLTIP_FOOD"] = "Debes permanecer sentado mientras comes"
 	L["WOW_ITEM_TOOLTIP_DRINK"] = "Debes permanecer sentado mientras bebes"
@@ -41,10 +36,8 @@ if not L then return end
 	
 --	location names
 --	L["LOCATION_ALL"] = ""
-	L["LOCATION_BAG"] = "Bolsas"
 	L["LOCATION_BANK"] = "Banco"
 --	L["LOCATION_WEARING"] = ""
---	L["LOCATION_TOKEN"] = ""
 	
 	
 --	subframe names
@@ -80,13 +73,9 @@ if not L then return end
 	L["CATEGORY_SYSTEM_CORE_MATS"] = "MATERIAS PRIMAS"
 	L["CATEGORY_SYSTEM_EQUIPMENT"] = "EQUIPO (NO LIGADO)"
 	L["CATEGORY_SYSTEM_EQUIPMENT_SOULBOUND"] = "EQUIPO"
-	L["CATEGORY_SYSTEM_TRASH"] = "BASURA"
---	L["CATEGORY_SYSTEM_TOKEN"] = ""
 	
 	
 --	consumable category descriptions
-	L["CATEGORY_CONSUMABLE_DRINK"] = "BEBIDA"
-	L["CATEGORY_CONSUMABLE_FOOD"] = "COMIDA"
 	L["CATEGORY_CONSUMABLE_FOOD_PET"] = "COMIDA (SOLO MASCOTA)"
 	L["CATEGORY_CONSUMABLE_POTION_MANA"] = "MAN\195\129 (POCI\195\147N/GEMA)"
 	L["CATEGORY_CONSUMABLE_POTION_HEAL"] = "SALUD (POCI\195\147N/PIEDRA)"
@@ -152,6 +141,7 @@ if not L then return end
 --	L["MENU_ITEM_DEBUG_BAG"] = ""
 --	L["MENU_ITEM_DEBUG_SLOT"] = ""
 --	L["MENU_ITEM_DEBUG_BAG_TYPE"] = ""
+--	L["MENU_ITEM_DEBUG_PET_ID"] = ""
 --	L["MENU_ITEM_DEBUG_AI_ID_SHORT"] = ""
 --	L["MENU_ITEM_DEBUG_AI_ID_CACHE"] = ""
 --	L["MENU_ITEM_DEBUG_AI_ID_RULE"] = ""
@@ -233,6 +223,8 @@ if not L then return end
 --	L["CONFIG_SYSTEM_TOOLTIP_FACTION_ONLY"] = ""
 --	L["CONFIG_SYSTEM_TOOLTIP_FACTION_ONLY_TEXT"] = ""
 --	L["CONFIG_SYSTEM_TOOLTIP_VAULT_TEXT"] = ""
+--	L["CONFIG_SYSTEM_TOOLTIP_BATTLEPET_SOURCE_TEXT"] = ""
+--	L["CONFIG_SYSTEM_TOOLTIP_BATTLEPET_DESCRIPTION_TEXT"] = ""
 	
 --	L["CONFIG_SYSTEM_BUGFIX"] = ""
 --	L["CONFIG_SYSTEM_BUGFIX_TEXT"] = ""
@@ -465,16 +457,11 @@ if not L then return end
 	
 --	rules frame
 --	L["RULE"] = ""
---	L["RULE_ENABLED"] = ""
 --	L["RULE_HIDDEN"] = ""
---	L["RULE_ORDER"] = ""
---	L["RULE_DESCRIPTION"] = ""
 --	L["RULE_FORMULA"] = ""
 --	L["RULE_LIST_ENABLED"] = ""
 --	L["RULE_LIST_DAMAGED"] = ""
 --	L["RULE_LIST_ID"] = ""
---	L["RULE_LIST_ORDER"] = ""
---	L["RULE_LIST_DESCRIPTION"] = ""
 	
 --	L["RULE_DAMAGED"] = ""
 --	L["RULE_FAILED"] = ""
@@ -486,7 +473,6 @@ if not L then return end
 --	L["RULE_FAILED_ARGUMENT_IS_NIL"] = ""
 --	L["RULE_FAILED_ARGUMENT_IS_INVALID"] = ""
 --	L["RULE_FAILED_ARGUMENT_NONE_SPECIFIED"] = ""
---	L["RULE_FAILED_ADDON_NOT_LOADED"] = ""
 	
 	
 --	new item indicators
@@ -531,7 +517,6 @@ if not L then return end
 	
 	
 --	item count tooltip
---	L["TOOLTIP_TOTAL"] = ""
 --	L["TOOLTIP_COUNT_ME"] = ""
 --	L["TOOLTIP_VAULT_TABS"] = ""
 	
@@ -596,6 +581,7 @@ if not L then return end
 --	L["CLICK_TO_SELECT"] = ""
 --	L["CLICK_TO_DESELECT"] = ""
 --	L["CLICK_TO_IGNORE"] = ""	
+--	L["ORDER"] = ""
 	
 	
 -- libdatabroker
@@ -606,17 +592,13 @@ if not L then return end
 --	L["LDB_BAGS_STYLE_TEXT"] = ""
 --	L["LDB_BAGS_INCLUDE_TYPE"] = ""
 --	L["LDB_BAGS_INCLUDE_TYPE_TEXT"] = ""
---	L["LDB_TRACKING"] = ""
 --	L["LDB_TRACKING_CURRENCY"] = ""
---	L["LDB_TRACKING_ITEM"] = ""
 --	L["LDB_PETS_SUMMON"] = ""
 --	L["LDB_MOUNTS_NOT_HERE"] = ""
 --	L["LDB_MOUNTS_GROUND"] = ""
---	L["LDB_MOUNTS_FLYING"] = ""
 --	L["LDB_MOUNTS_FLYING_DISMOUNT"] = ""
 --	L["LDB_MOUNTS_FLYING_DISMOUNT_TEXT"] = ""
 --	L["LDB_MOUNTS_FLYING_DISMOUNT_WARNING"] = ""
---	L["LDB_MOUNTS_WATER"] = ""
 --	L["LDB_MOUNTS_SUMMON"] = ""
 --	L["LDB_MOUNTS_NODATA"] = ""
 --	L["LDB_MOUNTS_TOOLTIP_MODE"] = ""

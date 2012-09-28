@@ -81,6 +81,7 @@ Raven.classSpells.WARLOCK = {
 	{ "Soul Fire", nil, p.Red2, school = "Fire", lockout = true, id = 6353 },
 	{ "Soul Harvest", BUFF, p.Purple3, school = "Shadow", id = 101976 },
 	{ "Soul Link", BUFF, p.Gray, cooldown = true, school = "Shadow", id = 108415 },
+	{ "Soul Shards", BUFF, p.Purple1, id = 117198 },
 	{ "Soul Swap", BUFF, p.Pink, cooldown = true, school = "Shadow", id = 86121 },
 	{ "Soulburn", nil, p.Purple1, cooldown = true, school = "Shadow", id = 74434 },
 	{ "Soulshatter", nil, p.Cyan, cooldown = true, school = "Shadow", id = 29858 },

@@ -43,7 +43,8 @@ local anchorDefaults = { -- backdrop initialization for bar group anchors
 
 local bgTemplate = { -- these fields are cleared when a bar group is deleted
 	barWidth  = 0, barHeight = 0, iconSize = 0, scale = 0, spacingX = 0, spacingY = 0, iconOffsetX = 0, iconOffsetY = 0,
-	labelOffset = 0, labelInset = 0, labelWrap = 0, labelAlign = 0, timeOffset = 0, timeInset = 0, timeAlign = 0, timeIcon = 0, iconOffset = 0, iconInset = 0,
+	labelOffset = 0, labelInset = 0, labelWrap = 0, labelAlign = 0, labelCenter = 0,
+	timeOffset = 0, timeInset = 0, timeAlign = 0, timeIcon = 0, iconOffset = 0, iconInset = 0,
 	configuration = 0, reverse = 0, wrap = 0, wrapDirection = 0, snapCenter = 0, maxBars = 0, width = 0, height = 0,
 	labelFont = 0, labelFSize = 0, labelAlpha = 0, labelColor = 0, labelFlags = 0, labelShadow = 0,
 	timeFont = 0, timeFSize = 0, timeAlpha = 0, timeColor = 0, timeFlags = 0, timeShadow = 0,
@@ -348,11 +349,13 @@ end
 
 -- Set layout options for a bar group
 function Nest_SetBarGroupBarLayout(bg, barWidth, barHeight, iconSize, scale, spacingX, spacingY, iconOffsetX, iconOffsetY,
-			labelOffset, labelInset, labelWrap, labelAlign, timeOffset, timeInset, timeAlign, timeIcon, iconOffset, iconInset,
-			iconHide, iconAlign, configuration, reverse, wrap, wrapDirection, snapCenter, maxBars, strata)
-	bg.barWidth = barWidth; bg.barHeight = barHeight; bg.iconSize = iconSize; bg.scale = scale or 1; bg.maxBars = maxBars; bg.strata = strata
+			labelOffset, labelInset, labelWrap, labelAlign, labelCenter, timeOffset, timeInset, timeAlign, timeIcon, iconOffset, iconInset,
+			iconHide, iconAlign, configuration, reverse, wrap, wrapDirection, snapCenter, fillBars, maxBars, strata)
+	bg.barWidth = barWidth; bg.barHeight = barHeight; bg.iconSize = iconSize; bg.scale = scale or 1
+	bg.fillBars = fillBars; bg.maxBars = maxBars; bg.strata = strata
 	bg.spacingX = spacingX or 0; bg.spacingY = spacingY or 0; bg.iconOffsetX = iconOffsetX or 0; bg.iconOffsetY = iconOffsetY or 0
-	bg.labelOffset = labelOffset or 0; bg.labelInset = labelInset or 0; bg.labelWrap = labelWrap; bg.labelAlign = labelAlign or "MIDDLE"
+	bg.labelOffset = labelOffset or 0; bg.labelInset = labelInset or 0; bg.labelWrap = labelWrap;
+	bg.labelCenter = labelCenter; bg.labelAlign = labelAlign or "MIDDLE"
 	bg.timeOffset = timeOffset or 0; bg.timeInset = timeInset or 0; bg.timeAlign = timeAlign or "normal"; bg.timeIcon = timeIcon
 	bg.iconOffset = iconOffset or 0; bg.iconInset = iconInset or 0; bg.iconHide = iconHide; bg.iconAlign = iconAlign or "CENTER"
 	bg.configuration = configuration or 1; bg.reverse = reverse; bg.wrap = wrap or 0; bg.wrapDirection = wrapDirection; bg.snapCenter = snapCenter
@@ -361,6 +364,7 @@ end
 
 local function TextFlags(outline, thick, mono)
 	local t = nil
+	if not outline and not thick then mono = false end -- XXXX workaround for blizzard bugs caused by use of monochrome text flag by itself
 	if mono then
 		if outline then if thick then t = "MONOCHROME,OUTLINE,THICKOUTLINE" else t = "MONOCHROME,OUTLINE" end
 		else if thick then t = "MONOCHROME,THICKOUTLINE" else t = "MONOCHROME" end end
@@ -940,7 +944,7 @@ local function Bar_UpdateLayout(bg, bar, config)
 				bar.labelText:SetPoint("LEFT", bar.frame, "LEFT", 0, bg.labelOffset)
 				if not ti then bar.timeText:SetPoint("RIGHT", bar.frame, "RIGHT", bg.timeInset - offsetRight, bg.timeOffset) end
 			end
-			bar.labelText:SetJustifyH("RIGHT")
+			bar.labelText:SetJustifyH(bg.labelCenter and "CENTER" or "RIGHT")
 		elseif config.label == "left" then
 			if not ti then bar.timeText:SetPoint("RIGHT", bar.frame, "RIGHT", bg.timeInset - offsetRight - fudge, bg.timeOffset) end
 			if bg.timeAlign == "normal" then bar.timeText:SetJustifyH(ti and "CENTER" or "RIGHT") else bar.timeText:SetJustifyH(bg.timeAlign) end
@@ -951,7 +955,7 @@ local function Bar_UpdateLayout(bg, bar, config)
 				bar.labelText:SetPoint("RIGHT", bar.frame, "RIGHT", 0, bg.labelOffset)
 				if not ti then bar.timeText:SetPoint("LEFT", bar.frame, "LEFT", bg.timeInset + offsetLeft, bg.timeOffset) end
 			end
-			bar.labelText:SetJustifyH("LEFT")
+			bar.labelText:SetJustifyH(bg.labelCenter and "CENTER" or "LEFT")
 		end
 		if config.bars == "r2l" then 
 			bar.fgTexture:SetPoint("TOPLEFT", bar.frame, "TOPLEFT", offsetLeft, 0)
@@ -983,11 +987,10 @@ local function Bar_UpdateLayout(bg, bar, config)
 		bar.iconText:SetPoint("LEFT", bar.icon, "LEFT", bg.iconInset - 10, bg.iconOffset)
 		bar.iconText:SetPoint("RIGHT", bar.icon, "RIGHT", bg.iconInset + 12, bg.iconOffset) -- pad right to center time text better
 		bar.iconText:SetJustifyH(bg.iconAlign); bar.iconText:SetJustifyV("MIDDLE")
-		if MSQ and bg.MSQ_Group and Raven.db.global.ButtonFacadeIcons then -- if using ButtonFacade, set custom fields in button data table and add to skinnning group
+		if MSQ and bg.MSQ_Group and Raven.db.global.ButtonFacadeIcons then -- if using Masque, set custom fields in button data table and add to skinnning group
 			bar.cooldown:SetSize(bg.iconSize, bg.iconSize); bar.cooldown:SetPoint("CENTER", bar.icon, "CENTER")
 			bar.iconTexture:SetTexCoord(0, 1, 0, 1)
-			bar.iconTexture:SetSize(bg.iconSize, bg.iconSize)
-			bar.iconTexture:SetPoint("CENTER", bar.icon, "CENTER")
+			bar.iconTexture:SetSize(bg.iconSize, bg.iconSize); bar.iconTexture:SetPoint("CENTER", bar.icon, "CENTER")
 			bg.MSQ_Group:RemoveButton(bar.icon, true) -- needed so size changes work when icon is reused
 			local bdata = bar.buttonData
 			bdata.Icon = bar.iconTexture
@@ -996,12 +999,20 @@ local function Bar_UpdateLayout(bg, bar, config)
 			bdata.Border = bar.iconBorder
 			bg.MSQ_Group:AddButton(bar.icon, bdata)
 		else -- if not then use a default button arrangment
-			if bg.MSQ_Group then bg.MSQ_Group:RemoveButton(bar.icon, false) end -- remove skin, if any
-			local trim, crop, slice = 0.04, 0.96, 0.92 * bg.iconSize
-			bar.cooldown:SetSize(slice, slice); bar.cooldown:SetPoint("CENTER", bar.icon, "CENTER")
-			bar.iconTexture:SetTexCoord(trim, crop, trim, crop)
-			bar.iconTexture:SetSize(slice, slice); bar.iconTexture:SetPoint("CENTER", bar.icon, "CENTER")
-			bar.iconBorder:SetTexture("Interface\\AddOns\\Raven\\Normal")
+			if bg.MSQ_Group then bg.MSQ_Group:RemoveButton(bar.icon) end -- remove skin, if any
+			if not Raven.db.global.HideBorder then
+				local trim, crop, slice = 0.04, 0.96, 0.92 * bg.iconSize
+				bar.cooldown:SetSize(slice, slice); bar.cooldown:SetPoint("CENTER", bar.icon, "CENTER")
+				bar.iconTexture:SetTexCoord(trim, crop, trim, crop)
+				bar.iconTexture:SetSize(slice, slice); bar.iconTexture:SetPoint("CENTER", bar.icon, "CENTER")
+				bar.iconBorder:SetTexture("Interface\\AddOns\\Raven\\Normal")
+			else
+				bar.cooldown:SetSize(bg.iconSize, bg.iconSize); bar.cooldown:SetPoint("CENTER", bar.icon, "CENTER")
+				bar.iconTexture:SetTexCoord(0, 1, 0, 1)
+				bar.iconTexture:SetSize(bg.iconSize, bg.iconSize); bar.iconTexture:SetPoint("CENTER", bar.icon, "CENTER")
+				bar.iconBorder:SetTexture("Interface\\AddOns\\Raven\\Normal")
+				bar.iconBorder:SetTexture(0, 0, 0, 0)
+			end
 		end
 	end	
 	bar.frame:SetSize(w, h); bar.container:SetSize(w, h); bar.container:SetAllPoints()
@@ -1085,6 +1096,7 @@ local function Bar_UpdateSettings(bg, bar, config)
 		if remaining > bar.duration then remaining = bar.duration end -- and no inaccurate durations!
 		bar.timeLeft = remaining -- update saved value
 		if remaining < bar.maxTime then fill = remaining / bar.maxTime end -- calculate fraction of time remaining
+		if bg.fillBars then fill = 1 - fill end -- optionally fill instead of empty bars
 		timeText = Nest_FormatTime(remaining, bg.timeFormat, bg.timeSpaces, bg.timeCase) -- set timer text
 	elseif bar.value then
 		timeText = bar.value -- set time text field to an optional string value
@@ -1103,7 +1115,9 @@ local function Bar_UpdateSettings(bg, bar, config)
 			local nx = MSQ:GetNormal(bar.icon)
 			if Raven.db.global.ButtonFacadeNormal and nx and nx.SetVertexColor then nx:SetVertexColor(bar.ibr, bar.ibg, bar.ibb, bar.iba) end
 		else
-			bx:SetAllPoints(bar.icon); bx:SetVertexColor(bar.ibr, bar.ibg, bar.ibb, bar.iba); showBorder = true
+			if not Raven.db.global.HideBorder then
+				bx:SetAllPoints(bar.icon); bx:SetVertexColor(bar.ibr, bar.ibg, bar.ibb, bar.iba); showBorder = true
+			else showBorder = false end
 		end
 	else
 		bar.icon:Hide()
@@ -1170,6 +1184,7 @@ local function Bar_RefreshAnimations(bg, bar, config)
 		if remaining > bar.duration then remaining = bar.duration end -- and no inaccurate durations!
 		bar.timeLeft = remaining -- update saved value
 		if remaining < bar.maxTime then fill = remaining / bar.maxTime end -- calculate fraction of time remaining
+		if bg.fillBars then fill = 1 - fill end -- optionally fill instead of empty bars
 		timeText = Nest_FormatTime(remaining, bg.timeFormat, bg.timeSpaces, bg.timeCase) -- set timer text
 		if bg.showTimeText then bar.timeText:SetText(timeText) end
 		local expireTime, expireMinimum = bar.attributes.expireTime, bar.attributes.expireMinimum

@@ -29,9 +29,10 @@ local function IsOn(value) return value ~= nil and value ~= Off end -- return tr
 MOD.conditionTests = {
 	["Player Status"] = { enable = false, inCombat = nil, isResting = nil, hasPet = nil, isStealthed = nil, isMounted = nil,
 		inGroup = nil, inParty = nil, inRaid = nil, isPvP = nil, inInstance = nil, inArena = nil, inBattleground = nil,
-		hasMainHand = nil, levelMainHand = 1, hasOffHand = nil, levelOffHand = 1,
-		checkTalent = nil, talent = nil, checkLevel = nil, level = 85, checkStance = nil, stance = nil,
-		checkHealth = nil, minHealth = 100, checkPower = nil, minPower = 100, checkHolyPower = nil, minHolyPower = 1, checkShards = nil, minShards = 1,
+		hasMainHand = nil, levelMainHand = 1, hasOffHand = nil, levelOffHand = 1, checkSpec = nil, spec = nil, checkSpell = nil, spell = nil,
+		checkTalent = nil, talent = nil, checkLevel = nil, level = 85, checkStance = nil, stance = nil, checkGlyph = nil, glyph = nil,
+		checkHealth = nil, minHealth = 100, checkPower = nil, minPower = 100, checkHolyPower = nil, minHolyPower = 1, checkFury = nil, minFury = 1,
+		checkShadowOrbs = nil, minShadowOrbs = 1, checkEmbers = nil, minEmbers = 1, checkShards = nil, minShards = 1, checkChi = nil, minChi = 1,
 		checkEclipsePower = nil, minEclipsePower = 0, checkEclipse = nil, checkSolar = nil, checkLunar = nil, checkSun = nil, checkMoon = nil,
 		checkComboPoints = nil, minComboPoints = 5, checkRunes = nil, checkAnyRune = nil, needBlood = nil, needFrost = nil, needUnholy = nil,
 		checkTotems = nil, air = nil, airTotem = nil, water = nil, waterTotem = nil, earth = nil, earthTotem = nil, fire = nil, fireTotem = nil,
@@ -192,6 +193,14 @@ end
 -- Check if a classification list contains a classification, return true if it does
 local function CheckClassification(v, cl) if v == "rareelite" then v = "rlite" end; return string.find(cl or "", v) ~= nil end
 
+-- Check if a spell is known in the spellbook
+local function CheckSpellKnown(spell)
+	local id = tonumber(spell)
+	if not id then id = MOD:GetSpellID(spell) end
+	if not id or not IsSpellKnown(id) then return false end
+	return true
+end
+
 -- Check if a spell is ready to be cast by the player, if rangeCheck then make sure in range of unit too
 local function CheckSpellReady(spell, unit, rangeCheck, usable)
 	if not spell or (spell == "") then return true end
@@ -287,7 +296,7 @@ end
 local function CheckAllCooldowns(spells, ready, timeLeft, toggle)
 	for _, spell in pairs(spells) do -- look for each spell and check if on cooldown
 		local cdt = 0
-		if ready and not IsUsableSpell(spell) then if not MOD:IsKnownSpell(spell) then return false end cdt = 3600 end
+		if ready and not IsUsableSpell(spell) then if not CheckSpellKnown(spell) then return false end cdt = 3600 end
 		local cd = MOD:CheckCooldown(spell) -- look up in the active cooldowns table
 		if cd and (cd[1] ~= nil) then cdt = cd[1]; if timeLeft < cdt then AddTimeEvent(spell, cdt - timeLeft) end end
 		if toggle then
@@ -400,6 +409,17 @@ local function CheckWeapon(slot, level)
 	return false
 end
 
+-- Check current specialization
+local function CheckSpec(spec)
+	if not spec then spec = "none" end
+	local currentSpec = GetSpecialization()
+	local currentSpecName = currentSpec and select(2, GetSpecializationInfo(currentSpec)) or "none"
+	return spec == currentSpecName
+end
+
+-- Check if a glyph is active
+local function CheckGlyph(glyph) return MOD.activeGlyphs[glyph] end
+
 -- Make sure the table contains at least one entry
 local function HasTable(t)
 	if IsOn(t) and (type(t) == "table") and (next(t) ~= nil) then return true end
@@ -426,6 +446,10 @@ local function CheckTestAND(ttype, t)
 		if IsOn(t.checkHealth) and IsOn(t.minHealth) and (t.checkHealth ~= (stat.health >= t.minHealth)) then return false end
 		if IsOn(t.checkPower) and IsOn(t.minPower) and (t.checkPower ~= (stat.power >= t.minPower)) then return false end
 		if IsOn(t.checkHolyPower) and IsOn(t.minHolyPower) and (t.checkHolyPower ~= (stat.holyPower >= t.minHolyPower)) then return false end
+		if IsOn(t.checkShadowOrbs) and IsOn(t.minShadowOrbs) and (t.checkShadowOrbs ~= (stat.shadowOrbs >= t.minShadowOrbs)) then return false end
+		if IsOn(t.checkChi) and IsOn(t.minChi) and (t.checkChi ~= (stat.chi >= t.minChi)) then return false end
+		if IsOn(t.checkEmbers) and IsOn(t.minEmbers) and (t.checkEmbers ~= (stat.embers >= t.minEmbers)) then return false end
+		if IsOn(t.checkFury) and IsOn(t.minFury) and (t.checkFury ~= (stat.fury >= t.minFury)) then return false end
 		if IsOn(t.checkShards) and IsOn(t.minShards) and (t.checkShards ~= (stat.shards >= t.minShards)) then return false end
 		if IsOn(t.checkEclipsePower) and (t.checkEclipsePower ~= CheckEclipsePower(t.minEclipsePower)) then return false end
 		if IsOn(t.checkEclipse) and not CheckEclipse(t.checkSolar, t.checkLunar, t.checkSun, t.checkMoon) then return false end
@@ -438,6 +462,9 @@ local function CheckTestAND(ttype, t)
 		end
 		if IsOn(t.checkTotems) and not CheckTotems(t.air, t.airTotem, t.earth, t.earthTotem, t.fire, t.fireTotem, t.water, t.waterTotem) then return false end
 		if IsOn(t.checkTalent) and IsOn(t.talent) and not RavenCheckTalent(t.talent) then return false end
+		if IsOn(t.checkSpec) and IsOn(t.spec) and not CheckSpec(t.spec) then return false end
+		if IsOn(t.checkGlyph) and IsOn(t.glyph) and not CheckGlyph(t.glyph) then return false end
+		if IsOn(t.checkSpell) and IsOn(t.spell) and not CheckSpellKnown(t.spell) then return false end
 		if IsOn(t.hasMainHand) and not CheckWeapon("MainHandSlot", t.levelMainHand) then return false end
 		if IsOn(t.hasOffHand) and not CheckWeapon("SecondaryHandSlot", t.levelOffHand) then return false end
 	elseif ttype == "Pet Status" then -- pet must exist for these tests to be true
@@ -524,6 +551,10 @@ local function CheckTestOR(ttype, t)
 		if IsOn(t.checkHealth) and IsOn(t.minHealth) and (t.checkHealth == (stat.health >= t.minHealth)) then return true end
 		if IsOn(t.checkPower) and IsOn(t.minPower) and (t.checkPower == (stat.power >= t.minPower)) then return true end
 		if IsOn(t.checkHolyPower) and IsOn(t.minHolyPower) and (t.checkHolyPower == (stat.holyPower >= t.minHolyPower)) then return true end
+		if IsOn(t.checkShadowOrbs) and IsOn(t.minShadowOrbs) and (t.checkShadowOrbs == (stat.shadowOrbs >= t.minShadowOrbs)) then return true end
+		if IsOn(t.checkChi) and IsOn(t.minChi) and (t.checkChi == (stat.chi >= t.minChi)) then return true end
+		if IsOn(t.checkEmbers) and IsOn(t.minEmbers) and (t.checkEmbers == (stat.embers >= t.minEmbers)) then return true end
+		if IsOn(t.checkFury) and IsOn(t.minFury) and (t.checkFury == (stat.fury >= t.minFury)) then return true end
 		if IsOn(t.checkShards) and IsOn(t.minShards) and (t.checkShards == (stat.shards >= t.minShards)) then return true end
 		if IsOn(t.checkEclipsePower) and (t.checkEclipsePower == CheckEclipsePower(t.minEclipsePower)) then return true end
 		if IsOn(t.checkEclipse) and CheckEclipse(t.checkSolar, t.checkLunar, t.checkSun, t.checkMoon) then return true end
@@ -536,6 +567,9 @@ local function CheckTestOR(ttype, t)
 		end
 		if IsOn(t.checkTotems) and CheckTotems(t.air, t.airTotem, t.earth, t.earthTotem, t.fire, t.fireTotem, t.water, t.waterTotem) then return true end
 		if IsOn(t.checkTalent) and IsOn(t.talent) and RavenCheckTalent(t.talent) then return true end
+		if IsOn(t.checkSpec) and IsOn(t.spec) and CheckSpec(t.spec) then return true end
+		if IsOn(t.checkGlyph) and IsOn(t.glyph) and CheckGlyph(t.glyph) then return true end
+		if IsOn(t.checkSpell) and IsOn(t.spell) and CheckSpellKnown(t.spell) then return true end
 		if IsOn(t.hasMainHand) and CheckWeapon("MainHandSlot", t.levelMainHand) then return true end
 		if IsOn(t.hasOffHand) and CheckWeapon("SecondaryHandSlot", t.levelOffHand) then return true end
 	elseif ttype == "Pet Status" then -- pet must exist for these tests to be true
@@ -641,6 +675,15 @@ function MOD:UpdateConditions()
 	m = UnitPowerMax("player"); if m > 0 then stat.power = (100 * UnitPower("player") / m) else stat.power = 0 end
 	if MOD.myClass == "PALADIN" then stat.holyPower = UnitPower("player", SPELL_POWER_HOLY_POWER) else stat.holyPower = 0 end
 	if MOD.myClass == "WARLOCK" then stat.shards = UnitPower("player", SPELL_POWER_SOUL_SHARDS) else stat.shards = 0 end
+	if MOD.myClass == "PRIEST" then stat.shadowOrbs = UnitPower("player", SPELL_POWER_SHADOW_ORBS) else stat.shadowOrbs = 0 end
+	if MOD.myClass == "MONK" then stat.chi = UnitPower("player", SPELL_POWER_LIGHT_FORCE) else stat.chi = 0 end
+	if MOD.myClass == "WARLOCK" then
+		stat.shards = UnitPower("player", SPELL_POWER_SOUL_SHARDS)
+		stat.fury = UnitPower("player", SPELL_POWER_DEMONIC_FURY)
+		stat.embers = UnitPower("player", SPELL_POWER_BURNING_EMBERS, true)
+	else
+		stat.shards = 0; stat.embers = 0; stat.fury = 0
+	end
 	stat.combo = GetComboPoints("player")
 	stat.stance = GetStance()
 	stat.noPet = (UnitExists("pet") == nil)
@@ -819,16 +862,27 @@ function MOD:GetConditionText(name)
 						a = a .. d .. L["Holy Power String"](x, t.minHolyPower); d = ", " end
 					if IsOn(t.checkShards) and t.minShards then local x = "<"; if t.checkShards then x = ">=" end;
 						a = a .. d .. L["Shards String"](x, t.minShards); d = ", " end
+					if IsOn(t.checkShadowOrbs) and t.minShadowOrbs then local x = "<"; if t.checkShadowOrbs then x = ">=" end;
+						a = a .. d .. L["Shadow Orbs String"](x, t.minShadowOrbs); d = ", " end
+					if IsOn(t.checkEmbers) and t.minEmbers then local x = "<"; if t.checkEmbers then x = ">=" end;
+						a = a .. d .. L["Embers String"](x, t.minEmbers); d = ", " end
+					if IsOn(t.checkFury) and t.minFury then local x = "<"; if t.checkFury then x = ">=" end;
+						a = a .. d .. L["Fury String"](x, t.minFury); d = ", " end
 					if IsOn(t.checkEclipsePower) and t.minEclipsePower then local x = "<"; if t.checkEclipsePower then x = ">=" end;
 						a = a .. d .. L["Eclipse String"](x, t.minEclipsePower); d = ", " end
 					if IsOn(t.checkEclipse) and t.checkSolar then a = a .. d .. L["Solar Eclipse"]; d = ", " end
 					if IsOn(t.checkEclipse) and t.checkLunar then a = a .. d .. L["Lunar Eclipse"]; d = ", " end
 					if IsOn(t.checkEclipse) and t.checkSun then a = a .. d .. L[">> Sun"]; d = ", " end
 					if IsOn(t.checkEclipse) and t.checkMoon then a = a .. d .. L[">> Moon"]; d = ", " end
+					if IsOn(t.checkChi) and t.minChi then local x = "<"; if t.checkChi then x = ">=" end;
+						a = a .. d .. L["Chi String"](x, t.minChi); d = ", " end
 					if IsOn(t.checkComboPoints) and t.minComboPoints then local x = "<"; if t.checkComboPoints then x = ">=" end;
 						a = a .. d .. L["Combo Pts String"](x, t.minComboPoints); d = ", " end
 					if IsOn(t.checkStance) and t.stance then a = a .. d .. L["Stance String"](t.stance); d = ", " end
 					if IsOn(t.checkTalent) and t.talent then a = a .. d .. L["Talent String"](t.talent); d = ", " end
+					if IsOn(t.checkSpec) and t.spec then a = a .. d .. L["Spec String"](t.spec); d = ", " end
+					if IsOn(t.checkSpell) and t.spell then a = a .. d .. L["Spell String"](t.spell); d = ", " end
+					if IsOn(t.checkGlyph) and t.glyph then a = a .. d .. L["Glyph String"](t.glyph); d = ", " end
 					if IsOn(t.checkRunes) and (t.checkAnyRune or t.needBlood or t.needFrost or t.needUnholy) then
 						a = a .. d
 						local p, pc = "", 0

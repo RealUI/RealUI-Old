@@ -25,11 +25,6 @@ if not L then return end
 	L["WOW_ZONE_ABYSSAL_DEPTHS"] = "심연의 나락"
 	
 	
---	wow skill headers - must match exactly what is in game
-	L["WOW_SKILL_HEADER_PRIMARY"] = "전문 기술"
-	L["WOW_SKILL_HEADER_SECONDARY"] = "보조 기술"
-	
-	
 --	wow tooltip text - must match exactly what is in game
 	L["WOW_ITEM_TOOLTIP_FOOD"] = "음식을 먹으려면 앉아 있어야 합니다."
 	L["WOW_ITEM_TOOLTIP_DRINK"] = "음료를 마시려면 앉아 있어야 합니다."
@@ -41,10 +36,8 @@ if not L then return end
 	
 --	location names
 --	L["LOCATION_ALL"] = ""
-	L["LOCATION_BAG"] = "가방"
 	L["LOCATION_BANK"] = "은행"
 --	L["LOCATION_WEARING"] = ""
---	L["LOCATION_TOKEN"] = ""
 	
 	
 --	subframe names
@@ -80,13 +73,9 @@ if not L then return end
 	L["CATEGORY_SYSTEM_CORE_MATS"] = "중요 재료"
 	L["CATEGORY_SYSTEM_EQUIPMENT"] = "착용장비 (착용 시 귀속)"
 	L["CATEGORY_SYSTEM_EQUIPMENT_SOULBOUND"] = "착용장비(귀속 아이템)"
-	L["CATEGORY_SYSTEM_TRASH"] = "잡동사니"
-	L["CATEGORY_SYSTEM_TOKEN"] = "토큰"
 	
 	
 --	consumable category descriptions
-	L["CATEGORY_CONSUMABLE_DRINK"] = "음료"
-	L["CATEGORY_CONSUMABLE_FOOD"] = "음식"
 	L["CATEGORY_CONSUMABLE_FOOD_PET"] = "음식 (소환수용)"
 	L["CATEGORY_CONSUMABLE_POTION_MANA"] = "마나 (물약/석)"
 	L["CATEGORY_CONSUMABLE_POTION_HEAL"] = "치유 (물약/석)"
@@ -152,6 +141,7 @@ if not L then return end
 --	L["MENU_ITEM_DEBUG_BAG"] = ""
 --	L["MENU_ITEM_DEBUG_SLOT"] = ""
 --	L["MENU_ITEM_DEBUG_BAG_TYPE"] = ""
+--	L["MENU_ITEM_DEBUG_PET_ID"] = ""
 --	L["MENU_ITEM_DEBUG_AI_ID_SHORT"] = ""
 --	L["MENU_ITEM_DEBUG_AI_ID_CACHE"] = ""
 --	L["MENU_ITEM_DEBUG_AI_ID_RULE"] = ""
@@ -233,6 +223,8 @@ if not L then return end
 --	L["CONFIG_SYSTEM_TOOLTIP_FACTION_ONLY"] = ""
 --	L["CONFIG_SYSTEM_TOOLTIP_FACTION_ONLY_TEXT"] = ""
 --	L["CONFIG_SYSTEM_TOOLTIP_VAULT_TEXT"] = ""
+--	L["CONFIG_SYSTEM_TOOLTIP_BATTLEPET_SOURCE_TEXT"] = ""
+--	L["CONFIG_SYSTEM_TOOLTIP_BATTLEPET_DESCRIPTION_TEXT"] = ""
 	
 --	L["CONFIG_SYSTEM_BUGFIX"] = ""
 --	L["CONFIG_SYSTEM_BUGFIX_TEXT"] = ""
@@ -465,16 +457,11 @@ if not L then return end
 	
 --	rules frame
 	L["RULE"] = "규칙"
-	L["RULE_ENABLED"] = "사용함"
 	L["RULE_HIDDEN"] = "숨겨짐"
-	L["RULE_ORDER"] = "순서"
-	L["RULE_DESCRIPTION"] = "세부설명"
 	L["RULE_FORMULA"] = "형식"
 --	L["RULE_LIST_ENABLED"] = ""
 --	L["RULE_LIST_DAMAGED"] = ""
 --	L["RULE_LIST_ID"] = ""
---	L["RULE_LIST_ORDER"] = ""
---	L["RULE_LIST_DESCRIPTION"] = ""
 	
 --	L["RULE_DAMAGED"] = ""
 --	L["RULE_FAILED"] = ""
@@ -486,7 +473,6 @@ if not L then return end
 --	L["RULE_FAILED_ARGUMENT_IS_NIL"] = ""
 --	L["RULE_FAILED_ARGUMENT_IS_INVALID"] = ""
 --	L["RULE_FAILED_ARGUMENT_NONE_SPECIFIED"] = ""
---	L["RULE_FAILED_ADDON_NOT_LOADED"] = ""
 	
 	
 --	new item indicators
@@ -531,7 +517,6 @@ if not L then return end
 	
 	
 --	item count tooltip
---	L["TOOLTIP_TOTAL"] = ""
 --	L["TOOLTIP_COUNT_ME"] = ""
 	L["TOOLTIP_VAULT_TABS"] = ""
 	
@@ -596,6 +581,7 @@ if not L then return end
 --	L["CLICK_TO_SELECT"] = ""
 --	L["CLICK_TO_DESELECT"] = ""
 --	L["CLICK_TO_IGNORE"] = ""	
+	L["ORDER"] = "순서"
 	
 	
 -- libdatabroker
@@ -606,17 +592,13 @@ if not L then return end
 --	L["LDB_BAGS_STYLE_TEXT"] = ""
 --	L["LDB_BAGS_INCLUDE_TYPE"] = ""
 --	L["LDB_BAGS_INCLUDE_TYPE_TEXT"] = ""
---	L["LDB_TRACKING"] = ""
 --	L["LDB_TRACKING_CURRENCY"] = ""
---	L["LDB_TRACKING_ITEM"] = ""
 --	L["LDB_PETS_SUMMON"] = ""
 --	L["LDB_MOUNTS_NOT_HERE"] = ""
 --	L["LDB_MOUNTS_GROUND"] = ""
---	L["LDB_MOUNTS_FLYING"] = ""
 --	L["LDB_MOUNTS_FLYING_DISMOUNT"] = ""
 --	L["LDB_MOUNTS_FLYING_DISMOUNT_TEXT"] = ""
 --	L["LDB_MOUNTS_FLYING_DISMOUNT_WARNING"] = ""
---	L["LDB_MOUNTS_WATER"] = ""
 --	L["LDB_MOUNTS_SUMMON"] = ""
 --	L["LDB_MOUNTS_NODATA"] = ""
 --	L["LDB_MOUNTS_TOOLTIP_MODE"] = ""

@@ -1,6 +1,6 @@
 ﻿--[[
 Name: Sink-2.0
-Revision: $Rev: 79 $
+Revision: $Rev: 81 $
 Author(s): Rabbit (rabbit.magtheridon@gmail.com), Antiarc (cheal@gmail.com)
 Website: http://rabbit.nihilum.eu
 Documentation: http://wiki.wowace.com/index.php/Sink-2.0
@@ -21,7 +21,7 @@ If you derive from the library or change it in any way, you are required to cont
 -- Sink-2.0
 
 local SINK20 = "LibSink-2.0"
-local SINK20_MINOR = 90000 + tonumber(("$Revision: 79 $"):match("(%d+)"))
+local SINK20_MINOR = 90000 + tonumber(("$Revision: 81 $"):match("(%d+)"))
 
 local sink = LibStub:NewLibrary(SINK20, SINK20_MINOR)
 if not sink then return end
@@ -329,7 +329,7 @@ local function channel(addon, text)
 	local chan = sink.channelMapping[loc]
 	if chan == "GROUP" then
 		chan = select(2, IsInInstance()) == "pvp" and "BATTLEGROUND" or (UnitInRaid("player") and "RAID" or "PARTY")
-		if chan == "PARTY" and GetNumPartyMembers() == 0 then chan = "SAY" end
+		if chan == "PARTY" and GetNumSubgroupMembers() == 0 then chan = "SAY" end
 	elseif chan == "CHANNEL" then
 		local id, name = GetChannelName(loc)
 		if name then

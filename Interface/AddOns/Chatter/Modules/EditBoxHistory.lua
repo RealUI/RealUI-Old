@@ -16,7 +16,7 @@ end
 
 function mod:OnEnable()
 	-- Keeping state if we're enabled or not
-	enable = false
+	enabled = false
 	for _, line in ipairs( history ) do
 		editbox:AddHistoryLine( line )
 	end

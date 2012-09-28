@@ -806,7 +806,7 @@ function EasyMail_AdjustAtt()
 	
 	OpenMailScrollFrame:SetHeight(scrollHeight);
 	OpenMailScrollChildFrame:SetHeight(scrollHeight);
-	OpenMailHorizontalBarLeft:SetPoint("TOPLEFT", "OpenMailFrame", "TOPLEFT", 15, 0 - OpenMailScrollFrame:GetHeight() - 94);
+	OpenMailHorizontalBarLeft:SetPoint("TOPLEFT", "OpenMailFrame", "TOPLEFT", 2, 0 - OpenMailScrollFrame:GetHeight() - 80);
 	OpenScrollBarBackgroundTop:SetHeight(min(scrollHeight, 256));
 	OpenScrollBarBackgroundTop:SetTexCoord(0, 0.484375, 0, min(scrollHeight, 256) / 256);
 	OpenStationeryBackgroundLeft:SetHeight(scrollHeight);
@@ -818,8 +818,8 @@ function EasyMail_AdjustAtt()
 	OpenMailAttachmentText:SetPoint(point, relativeTo, relativePoint, xOfs, yOfs + 4);
 	
 	-- Position Take All button
-	EasyMail_AttButton:SetPoint("TOPRIGHT", "OpenMailFrame", "TOPRIGHT", -44, 
-		0 - OpenMailScrollFrame:GetHeight() - 104);
+	EasyMail_AttButton:SetPoint("TOPRIGHT", "OpenMailFrame", "TOPRIGHT", -9, 
+		0 - OpenMailScrollFrame:GetHeight() - 92);
 	
 	-- Disable the button when mail is COD, there are no money or item attachments, or we are taking attachments
 	if (GettingAtt or OpenMailFrame.cod or not (OpenMailFrame.money or EasyMail_HasAttachments())) then
@@ -1200,12 +1200,12 @@ end
 ---------------------------------------------------
 function EasyMail_ShowCheckBoxes()
 	-- Move the inbox frames over to the right to make room for the checkboxes
-	MailItem1:SetPoint("TOPLEFT", "InboxFrame", "TOPLEFT", 48, -80);
+	MailItem1:SetPoint("TOPLEFT", "InboxFrame", "TOPLEFT", 35, -70);
 
 	for t = 1, INBOXITEMS_TO_DISPLAY do
 		-- Shorten the widths of the inbox frames, shorten the subject, and move the expire time text over
-		getglobal("MailItem"..t):SetWidth(280);
-		getglobal("MailItem"..t.."Subject"):SetWidth(228);
+		getglobal("MailItem"..t):SetWidth(275);
+		getglobal("MailItem"..t.."Subject"):SetWidth(223);
 		getglobal("MailItem"..t.."ExpireTime"):SetPoint("TOPRIGHT", "MailItem"..t, "TOPRIGHT", 10, -4);
 		
 		-- Create checkboxes and locate them

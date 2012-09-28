@@ -214,6 +214,7 @@ end
 
 function mod:OnInitialize()
 	self.db = Chatter.db:RegisterNamespace("PlayerNames", defaults)
+
 	for k, v in pairs(self.db.realm.names) do
 		if type(v) == "string" then
 			self.db.realm.names[k] = {class = v}
@@ -221,7 +222,7 @@ function mod:OnInitialize()
 	end
 
 	if self.db.global and self.db.global.names then
-		self.db.global.names = nil	-- get rid of old data
+		self.db.global.names = {}	-- get rid of old data
 	end
 end
 
@@ -307,6 +308,7 @@ function mod:ClearCustomClassColorCache()
 end
 
 function mod:AddPlayer(name, class, level, save)
+	if not self.db.realm.names then self.db.realm.names = {} end
 	if name and class and class ~= UNKNOWN then
 		if save or self.db.realm.names[name] then	-- if we already have an entry saved from elsewhere, we update it regardless of the requested "save" type - nothing else makes sense
 			self.db.realm.names[name] = self.db.realm.names[name] or {}
@@ -443,6 +445,7 @@ end
 
 
 local function fixLogin(head,id,misc,who,xtra,colon)
+	local bleftBracket, brightBracket = "",""
 	if mod.db.profile.bnetBrackets then
 		bleftBracket = leftBracket
 		brightBracket = rightBracket
@@ -472,12 +475,15 @@ local function changeBNetName(misc, id, moreMisc, fakeName, tag, colon)
 		end
 	end
 
-	bleftBracket = ""
-	brightBracket = ""
-
+	local bleftBracket = ""
+	local brightBracket = ""
+	
+	local waslogin = false
+	
 	if strmatch(moreMisc,"BN_INLINE_TOAST_ALERT") then
 		-- We got an alert strip the colon out of the misc its the last char
 		misc = strsub(misc, 1, -2)
+		waslogin = true
 	end
 
 	if not mod.db.profile.bnetBrackets then
@@ -494,7 +500,11 @@ local function changeBNetName(misc, id, moreMisc, fakeName, tag, colon)
 			end
 		end
 	end
-	return misc..id..moreMisc..bleftBracket..fakeName..brightBracket..tag..":"
+	if waslogin then
+		return misc..moreMisc..bleftBracket..fakeName..brightBracket..tag
+	else
+		return misc..id..moreMisc..bleftBracket..fakeName..brightBracket..tag..":"
+	end
 end
 
 local function changeName(msgHeader, name, extra, msgCnt,displayName, msgBody)
@@ -529,7 +539,7 @@ local function changeName(msgHeader, name, extra, msgCnt,displayName, msgBody)
 			if strmatch(displayName, "|cff......") then
 				-- This will seriously fuck up the string if there is already more than 1 color ... FIXME
 				level = gsub(displayName, "((|cff......).-|r)", function (string, color)
-					return format("%s%s|r")
+					return format("%s%s|r",level,color)
 				end)
 			end
 			displayName = format("%s%s%s", displayName, separator, level)
@@ -570,7 +580,7 @@ function mod:AddMessage(frame, text, ...)
 	if text and type(text) == "string" then
 		text = gsub(text, "(|Hplayer:([^|:]+)([:%d+]*)([^|]*)|h%[([^%]]+)%]|h)(.-)$", changeName)
 		text = gsub(text, "(|HBNplayer:%S-|k:)(%d-)(:%S-|h)%[(%S-)%](|?h?)(:?)", changeBNetName)
-		text = gsub(text, "(|HBNplayer%S-|k)(%d-)(:%S-BN_INLINE_TOAST_ALERT%S-|h)%[(%S-)%](|?h?)(:?)",fixLogin)
+		text = gsub(text, "(|HBNplayer:%S-|k:)(%d-)(:%S-BN_INLINE_TOAST_ALERT%S-|h)%[(%S-)%](|?h?)(:?)",fixLogin)
 	end
 	return self.hooks[frame].AddMessage(frame, text, ...)
 end

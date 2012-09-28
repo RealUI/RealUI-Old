@@ -13,7 +13,7 @@ local gsub = _G.string.gsub
 
 function mod:OnEnable()
 	-- self:SecureHook("ChatEdit_ParseText")
-	for i = 1, 10 do
+	for i = 1, NUM_CHAT_WINDOWS do
 		self:HookScript(_G["ChatFrame" .. i .. "EditBox"], "OnTextChanged")
 	end
 	if not self.slashCommandRegistered then

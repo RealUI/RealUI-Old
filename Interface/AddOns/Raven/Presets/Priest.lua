@@ -6,7 +6,7 @@ local p = Raven.ColorPalette
 
 Raven.classSpells.PRIEST = {
 	{ "Angelic Bulwark", BUFF, p.Yellow2, id = 108945 },
-	{ "Angelic Feather", BUFF, p.Orange3, school = "Holy", id = 121536 },
+	{ "Angelic Feather", BUFF, p.Orange3, cooldown = true, school = "Holy", id = 121536 },
 	{ "Archangel", BUFF, p.Yellow1, cooldown = true, school = "Holy", id = 81700 },
 	{ "Blessed Healing", BUFF, p.Yellow3, school = "Holy", id = 70772 },
 	{ "Body and Soul", BUFF, p.Green3, id = 64129 },
@@ -17,7 +17,6 @@ Raven.classSpells.PRIEST = {
 	{ "Chakra: Chastise", BUFF, p.Yellow3, cooldown = true, school = "Holy", id = 81209 },
 	{ "Circle of Healing", nil, p.Yellow1, cooldown = true, school = "Holy", id = 34861 },
 	{ "Confession", nil, p.Green2, cooldown = true, id = 126123 },
-	{ "Dark Archangel", BUFF, p.Yellow1, cooldown = true, school = "Holy", id = 87153 },
 	{ "Desperate Prayer", nil, p.Orange1, cooldown = true, school = "Holy", id = 19236 },
 	{ "Devouring Plague", DEBUFF, p.Purple3, school = "Shadow", id = 2944 },
 	{ "Dispersion", BUFF, p.Purple1, cooldown = true, id = 47585 },
@@ -71,7 +70,7 @@ Raven.classSpells.PRIEST = {
 	{ "Serendipity", BUFF, p.Blue1, id = 63733 },
 	{ "Shackle Undead", DEBUFF, p.Orange2, id = 9484 },
 	{ "Shadowform", BUFF, p.Purple3, cooldown = true, school = "Shadow", id = 15473 },
-	{ "Shadow Orb", BUFF, p.Purple1, school = "Shadow", id = 77487 },
+	{ "Shadow Orbs", BUFF, p.Purple1, school = "Shadow", id = 95740 },
 	{ "Shadow Word: Death", nil, p.Red2, cooldown = true, school = "Shadow", id = 32379 },
 	{ "Shadow Word: Pain", DEBUFF, p.Red3, school = "Shadow", lockout = true, id = 589 },
 	{ "Shadowy Apparition", BUFF, p.Purple3, id = 87426 },

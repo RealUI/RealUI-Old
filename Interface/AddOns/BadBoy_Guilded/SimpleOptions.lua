@@ -1,6 +1,6 @@
 
 do
-	BadBoyGuildedConfigTitle:SetText("BadBoy_Guilded v2.76") --wowace magic, replaced with tag version
+	BadBoyGuildedConfigTitle:SetText("BadBoy_Guilded v2.82") --wowace magic, replaced with tag version
 
 	local guildedWhispers = CreateFrame("CheckButton", "BadBoyGuildedWhispersButton", BadBoyConfig, "OptionsBaseCheckButtonTemplate")
 	guildedWhispers:SetPoint("TOPLEFT", BadBoyConfigPopupButton, "BOTTOMLEFT", 0, -67)
@@ -37,7 +37,7 @@ do
 	elseif L == "koKR" then
 		guildedWhispersText:SetText("Remove guild invite whispers")
 	elseif L == "ptBR" then
-		guildedWhispersText:SetText("Remove guild invite whispers")
+		guildedWhispersText:SetText("Remove sussurros de convites de guilda")
 	elseif L == "itIT" then
 		guildedWhispersText:SetText("Remove guild invite whispers")
 	end

@@ -1,5 +1,5 @@
-﻿## Interface: 40000
-## X-Curse-Packaged-Version: r37
+﻿## Interface: 50001
+## X-Curse-Packaged-Version: r42
 ## X-Curse-Project-Name: AceGUI-3.0-SharedMediaWidgets
 ## X-Curse-Project-ID: ace-gui-3-0-shared-media-widgets
 ## X-Curse-Repository-ID: wow/ace-gui-3-0-shared-media-widgets/mainline

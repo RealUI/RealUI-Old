@@ -1,4 +1,4 @@
-﻿local mod = Chatter:NewModule("Disable Buttons", "AceHook-3.0")
+local mod = Chatter:NewModule("Disable Buttons", "AceHook-3.0")
 local L = LibStub("AceLocale-3.0"):GetLocale("Chatter")
 
 mod.modName = L["Disable Buttons"]
@@ -37,20 +37,20 @@ local defaults = { profile = {} }
 local clickFunc = function(self) self:GetParent():ScrollToBottom() end
 function mod:OnInitialize()
 	self.db = Chatter.db:RegisterNamespace("Buttons", defaults)
-	for i = 1, NUM_CHAT_WINDOWS do
-		local f = _G["ChatFrame" .. i]
-		local button = CreateFrame("Button", nil, f)
-		button:SetNormalTexture([[Interface\ChatFrame\UI-ChatIcon-ScrollEnd-Up]])
-		button:SetPushedTexture([[Interface\ChatFrame\UI-ChatIcon-ScrollEnd-Down]])
-		button:SetDisabledTexture([[Interface\ChatFrame\UI-ChatIcon-ScrollEnd-Disabled]])
-		button:SetHighlightTexture([[Interface\Buttons\UI-Common-MouseHilight]])
-		button:SetWidth(20)
-		button:SetHeight(20)
-		button:SetPoint("TOPRIGHT", f, "TOPRIGHT", 0, 0)
-		button:SetScript("OnClick", clickFunc)
-		button:Hide()
-		f.downButton = button
-	end
+	--for i = 1, NUM_CHAT_WINDOWS do
+	--	local f = _G["ChatFrame" .. i]
+		--local button = CreateFrame("Button", nil, f)
+		--button:SetNormalTexture([[Interface\ChatFrame\UI-ChatIcon-ScrollEnd-Up]])
+		--button:SetPushedTexture([[Interface\ChatFrame\UI-ChatIcon-ScrollEnd-Down]])
+		--button:SetDisabledTexture([[Interface\ChatFrame\UI-ChatIcon-ScrollEnd-Disabled]])
+		--button:SetHighlightTexture([[Interface\Buttons\UI-Common-MouseHilight]])
+		--button:SetWidth(20)
+		--button:SetHeight(20)
+		--button:SetPoint("TOPRIGHT", f, "TOPRIGHT", 0, 0)
+		--button:SetScript("OnClick", clickFunc)
+		--button:Hide()
+		--f.downButton = button
+	--end
 	self:SecureHook("FCF_RestorePositionAndDimensions")
 end
 
@@ -97,12 +97,14 @@ function mod:OnEnable()
 	FriendsMicroButton:SetScript("OnShow", hide)
 	for i = 1, NUM_CHAT_WINDOWS do
 		local f = _G["ChatFrame" .. i]
-		self:ApplyFrameChanges(f)
+		self:Decorate(f)
+		--self:ApplyFrameChanges(f)
 	end
 	if(self.db.profile.scrollReminder) then self:EnableBottomButton() end
 	for index,frame in ipairs(self.TempChatFrames) do
 		local f = _G[frame]
-		self:ApplyFrameChanges(f)
+		self:Decorate(f)
+		--self:ApplyFrameChanges(f)
 	end
 end
 

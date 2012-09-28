@@ -1,3 +1,12 @@
+local _G = _G
+local select = _G.select
+local pairs = _G.pairs
+local string = _G.string
+local type = _G.type
+local error = _G.error
+local table = _G.table
+
+
 local function FindPartialStack( loc_id, cb, cs, id )
 	
 	--ArkInventory.OutputDebug( "FindPartialStack( ", loc_id, ", ", cb, ".", cs, ", ", id, " )" )

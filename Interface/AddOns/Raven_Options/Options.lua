@@ -1212,7 +1212,7 @@ local function SetTestFieldString(ttype, fname, s)
 	if whiteStart == 1 then s = string.sub(s, whiteEnd + 1) end
 	local str = string.reverse(s) -- get the string after white space, reverse again to restore original order
 	if str ~= "" then -- make sure not empty string
-		if fname ~= "item" then str = ValidateSpellName(str) end
+		if fname ~= "item" and fname ~= "spec" and fname ~= "glyph" then str = ValidateSpellName(str) end
 		SetTestField(ttype, fname, str)
 	else
 		SetTestField(ttype, fname, nil)
@@ -2589,9 +2589,20 @@ MOD.OptionsTable = {
 					args = {
 						Enable = {
 							type = "toggle", order = 10, name = L["Hide OmniCC"],
-							desc = L["If checked, OmniCC counts are hidden on icons in all bar groups (requires /reloadui)."],
+							desc = L["If checked, OmniCC counts are hidden on icons in all bar groups (requires /reload)."],
 							get = function(info) return MOD.db.global.HideOmniCC end,
 							set = function(info, value) MOD.db.global.HideOmniCC = value; MOD:UpdateAllBarGroups() end,
+						},
+					},
+				},
+				CustomBorderGroup = {
+					type = "group", order = 40, name = L["Custom Border"], inline = true,
+					args = {
+						Enable = {
+							type = "toggle", order = 10, name = L["Hide Custom Border"],
+							desc = L["By default, icons are displayed with a custom border and can be informatively colored using settings in the bar group Appearance tab. If this option is checked then custom borders are hidden."],
+							get = function(info) return MOD.db.global.HideBorder end,
+							set = function(info, value) MOD.db.global.HideBorder = value; MOD:UpdateAllBarGroups() end,
 						},
 					},
 				},
@@ -2601,7 +2612,7 @@ MOD.OptionsTable = {
 					args = {
 						Enable = {
 							type = "toggle", order = 1, name = L["Enable"], width = "half",
-							desc = L["If checked, icons are skinned with Masque (formerly known as Button Facade)."],
+							desc = L["If checked, custom borders are automatically hidden and icons are skinned with Masque (may require /reload)."],
 							get = function(info) return MOD.db.global.ButtonFacadeIcons end,
 							set = function(info, value) MOD.db.global.ButtonFacadeIcons = value; MOD:UpdateAllBarGroups() end,
 						},
@@ -4106,7 +4117,7 @@ MOD.OptionsTable = {
 									type = "toggle", order = 20, name = L["Stealable"],
 									disabled = function(info) return not GetBarGroupField("filterBuffTypes") or not GetBarGroupField("detectBuffs") or
 											(GetBarGroupField("detectTracking") and GetBarGroupField("detectOnlyTracking")) end,
-									desc = L['Include buffs that mages can spellsteal.'],
+									desc = L['Include buffs that mages can spellsteal (you must include both Stealable and Magic if you want all magic buffs).'],
 									get = function(info) return GetBarGroupField("detectStealable") end,
 									set = function(info, value) SetBarGroupField("detectStealable", value) end,
 								},
@@ -4114,7 +4125,7 @@ MOD.OptionsTable = {
 									type = "toggle", order = 30, name = L["Magic"],
 									disabled = function(info) return not GetBarGroupField("filterBuffTypes") or not GetBarGroupField("detectBuffs") or
 											(GetBarGroupField("detectTracking") and GetBarGroupField("detectOnlyTracking")) end,
-									desc = L['Include magic buffs (these can usually be removed with abilities like Purge).'],
+									desc = L['Include magic buffs but not those considered stealable (magic buffs can usually be removed with abilities like Purge).'],
 									get = function(info) return GetBarGroupField("detectMagicBuffs") end,
 									set = function(info, value) SetBarGroupField("detectMagicBuffs", value) end,
 								},
@@ -4133,6 +4144,13 @@ MOD.OptionsTable = {
 									desc = L['Include buffs cast by a vehicle (note: only valid while caster is selected, such as when checking target of target).'],
 									get = function(info) return GetBarGroupField("detectVehicleBuffs") end,
 									set = function(info, value) SetBarGroupField("detectVehicleBuffs", value) end,
+								},
+								Boss = {
+									type = "toggle", order = 42, name = L["Boss"],
+									disabled = function(info) return not GetBarGroupField("filterBuffTypes") end,
+									desc = L['Include buffs cast by boss.'],
+									get = function(info) return GetBarGroupField("detectBossBuffs") end,
+									set = function(info, value) SetBarGroupField("detectBossBuffs", value) end,
 								},
 								Effects = {
 									type = "toggle", order = 45, name = L["Effect Timers"],
@@ -4868,11 +4886,17 @@ MOD.OptionsTable = {
 									set = function(info, value) SetBarGroupField("growDirection", value) end,
 								},
 								SnapCenter = {
-									type = "toggle", order = 30, name = L["Snap To Center"],
+									type = "toggle", order = 30, name = L["Center"], width = "half",
 									desc = L["If checked and the icon configuration bar group is locked, snap to center at the anchor position."],
 									disabled = function() local t = Nest_SupportedConfigurations[GetBarGroupField("configuration")]; return not t.iconOnly end,
 									get = function(info) return GetBarGroupField("snapCenter") end,
 									set = function(info, value) SetBarGroupField("snapCenter", value) end,
+								},
+								FillBars = {
+									type = "toggle", order = 32, name = L["Fill"], width = "half",
+									desc = L["If checked then timer bars fill up, otherwise they empty."],
+									get = function(info) return GetBarGroupField("fillBars") end,
+									set = function(info, value) SetBarGroupField("fillBars", value) end,
 								},
 								Space1 = { type = "description", name = "", order = 35 },
 								MaxBars = {
@@ -5168,21 +5192,27 @@ MOD.OptionsTable = {
 								},
 								LabelTopGroup = {
 									type = "toggle", order = 21, name = L["Top"], width = "half",
-									desc = L["If checked, set \"Top\" alignment for label text."],
+									desc = L["If checked, set \"Top\" vertical alignment for label text."],
 									get = function(info) return GetBarGroupField("labelAlign") == "TOP" end,
 									set = function(info, value) SetBarGroupField("labelAlign", "TOP") end,
 								},
-								LabelCenterGroup = {
+								LabelMiddleGroup = {
 									type = "toggle", order = 22, name = L["Middle"], width = "half",
-									desc = L["If checked, set \"Middle\" alignment for label text."],
+									desc = L["If checked, set \"Middle\" vertical alignment for label text."],
 									get = function(info) return GetBarGroupField("labelAlign") == "MIDDLE" end,
 									set = function(info, value) SetBarGroupField("labelAlign", "MIDDLE") end,
 								},
 								LabelBottomGroup = {
 									type = "toggle", order = 23, name = L["Bottom"], width = "half",
-									desc = L["If checked, set \"Bottom\" alignment for label text."],
+									desc = L["If checked, set \"Bottom\" vertical alignment for label text."],
 									get = function(info) return GetBarGroupField("labelAlign") == "BOTTOM" end,
 									set = function(info, value) SetBarGroupField("labelAlign", "BOTTOM") end,
+								},
+								LabelCenterGroup = {
+									type = "toggle", order = 24, name = L["Center"], width = "half",
+									desc = L["If checked, set \"Center\" horizontal alignment for label text, otherwise align based on bar layout (only applies to bar configurations because icon configurations default to \"Center\" horizontal alignment for labels)."],
+									get = function(info) return GetBarGroupField("labelCenter") end,
+									set = function(info, value) SetBarGroupField("labelCenter", value) end,
 								},
 								Space1 = { type = "description", name = "", order = 30 },
 								TimeTextInset = {
@@ -6805,15 +6835,39 @@ MOD.OptionsTable = {
 											set = function(info, value) SetTestField("Player Status", "checkHolyPower", value) end,
 										},
 										PowerRange = {
-											type = "range", order = 3, name = "", min = 1, max = 3, step = 1,
+											type = "range", order = 3, name = "", min = 1, max = 5, step = 1,
 											disabled = function(info) return IsTestFieldOff("Player Status", "checkHolyPower") end,
 											get = function(info) return GetTestField("Player Status", "minHolyPower") end,
 											set = function(info, value) SetTestField("Player Status", "minHolyPower", value) end,
 										},
 									},
 								},
+								CheckShadowOrbsGroup = {
+									type = "group", order = 72, name = L["Shadow Orbs"], inline = true, 
+									args = {
+										CheckPowerEnable = {
+											type = "toggle", order = 1, name = L["Enable"], width = "half",
+											desc = L["If checked, test the player's shadow orbs."],
+											get = function(info) return IsTestFieldOn("Player Status", "checkShadowOrbs") end,
+											set = function(info, value) local v = Off if value then v = true end SetTestField("Player Status", "checkShadowOrbs", v) end,
+										},
+										CheckPower = {
+											type = "toggle", order = 2, name = L["Minimum"],
+											desc = L["If checked, player must have at least this many shadow orbs, otherwise must be less."],
+											disabled = function(info) return IsTestFieldOff("Player Status", "checkShadowOrbs") end,
+											get = function(info) return GetTestField("Player Status", "checkShadowOrbs") == true end,
+											set = function(info, value) SetTestField("Player Status", "checkShadowOrbs", value) end,
+										},
+										PowerRange = {
+											type = "range", order = 3, name = "", min = 1, max = 3, step = 1,
+											disabled = function(info) return IsTestFieldOff("Player Status", "checkShadowOrbs") end,
+											get = function(info) return GetTestField("Player Status", "minShadowOrbs") end,
+											set = function(info, value) SetTestField("Player Status", "minShadowOrbs", value) end,
+										},
+									},
+								},
 								CheckShardsGroup = {
-									type = "group", order = 72, name = L["Soul Shards"], inline = true, 
+									type = "group", order = 73, name = L["Soul Shards"], inline = true, 
 									args = {
 										CheckShardsEnable = {
 											type = "toggle", order = 1, name = L["Enable"], width = "half",
@@ -6823,7 +6877,7 @@ MOD.OptionsTable = {
 										},
 										CheckShards = {
 											type = "toggle", order = 2, name = L["Minimum"],
-											desc = L["If checked, player's holy power must be at least this many charges, otherwise must be less."],
+											desc = L["If checked, player must have at least this many soul shards, otherwise must be less."],
 											disabled = function(info) return IsTestFieldOff("Player Status", "checkShards") end,
 											get = function(info) return GetTestField("Player Status", "checkShards") == true end,
 											set = function(info, value) SetTestField("Player Status", "checkShards", value) end,
@@ -6836,8 +6890,56 @@ MOD.OptionsTable = {
 										},
 									},
 								},
+								CheckBurningEmbersGroup = {
+									type = "group", order = 74, name = L["Burning Embers"], inline = true, 
+									args = {
+										CheckPowerEnable = {
+											type = "toggle", order = 1, name = L["Enable"], width = "half",
+											desc = L["If checked, test the player's burning embers segment count (there are 10 segments per ember)."],
+											get = function(info) return IsTestFieldOn("Player Status", "checkEmbers") end,
+											set = function(info, value) local v = Off if value then v = true end SetTestField("Player Status", "checkEmbers", v) end,
+										},
+										CheckPower = {
+											type = "toggle", order = 2, name = L["Minimum"],
+											desc = L["If checked, player must have at least this many burning embers, otherwise must be less."],
+											disabled = function(info) return IsTestFieldOff("Player Status", "checkEmbers") end,
+											get = function(info) return GetTestField("Player Status", "checkEmbers") == true end,
+											set = function(info, value) SetTestField("Player Status", "checkEmbers", value) end,
+										},
+										PowerRange = {
+											type = "range", order = 3, name = "", min = 1, max = 30, step = 1,
+											disabled = function(info) return IsTestFieldOff("Player Status", "checkEmbers") end,
+											get = function(info) return GetTestField("Player Status", "minEmbers") end,
+											set = function(info, value) SetTestField("Player Status", "minEmbers", value) end,
+										},
+									},
+								},
+								CheckDemonicFuryGroup = {
+									type = "group", order = 76, name = L["Demonic Fury"], inline = true, 
+									args = {
+										CheckPowerEnable = {
+											type = "toggle", order = 1, name = L["Enable"], width = "half",
+											desc = L["If checked, test the player's demonic fury."],
+											get = function(info) return IsTestFieldOn("Player Status", "checkFury") end,
+											set = function(info, value) local v = Off if value then v = true end SetTestField("Player Status", "checkFury", v) end,
+										},
+										CheckPower = {
+											type = "toggle", order = 2, name = L["Minimum"],
+											desc = L["If checked, player must have at least this much demonic fury, otherwise must be less."],
+											disabled = function(info) return IsTestFieldOff("Player Status", "checkFury") end,
+											get = function(info) return GetTestField("Player Status", "checkFury") == true end,
+											set = function(info, value) SetTestField("Player Status", "checkFury", value) end,
+										},
+										PowerRange = {
+											type = "range", order = 3, name = "", min = 1, max = 1000, step = 1,
+											disabled = function(info) return IsTestFieldOff("Player Status", "checkFury") end,
+											get = function(info) return GetTestField("Player Status", "minFury") end,
+											set = function(info, value) SetTestField("Player Status", "minFury", value) end,
+										},
+									},
+								},
 								CheckEclipsePower = {
-									type = "group", order = 74, name = L["Eclipse Power"], inline = true, 
+									type = "group", order = 77, name = L["Eclipse Power"], inline = true, 
 									args = {
 										CheckEclipseEnable = {
 											type = "toggle", order = 1, name = L["Enable"], width = "half",
@@ -6861,7 +6963,7 @@ MOD.OptionsTable = {
 									},
 								},
 								CheckEclipseGroup = {
-									type = "group", order = 74, name = L["Eclipse State"], inline = true, 
+									type = "group", order = 78, name = L["Eclipse State"], inline = true, 
 									args = {
 										CheckEclipseEnable = {
 											type = "toggle", order = 1, name = L["Enable"], width = "half",
@@ -6900,7 +7002,7 @@ MOD.OptionsTable = {
 									},
 								},
 								CheckRunesGroup = {
-									type = "group", order = 75, name = L["Runes"], inline = true,
+									type = "group", order = 79, name = L["Runes"], inline = true,
 									args = {
 										CheckRunes = {
 											type = "toggle", order = 10, name = L["Enable"], width = "half",
@@ -6989,7 +7091,7 @@ MOD.OptionsTable = {
 									},
 								},
 								CheckTotemsGroup = {
-									type = "group", order = 77, name = L["Totems"], inline = true,
+									type = "group", order = 80, name = L["Totems"], inline = true,
 									args = {
 										CheckTotems = {
 											type = "toggle", order = 10, name = L["Enable"], width = "half",
@@ -7099,8 +7201,32 @@ MOD.OptionsTable = {
 										},
 									},
 								},
+								CheckChiGroup = {
+									type = "group", order = 82, name = L["Chi"], inline = true, 
+									args = {
+										CheckPowerEnable = {
+											type = "toggle", order = 1, name = L["Enable"], width = "half",
+											desc = L["If checked, test the player's chi."],
+											get = function(info) return IsTestFieldOn("Player Status", "checkChi") end,
+											set = function(info, value) local v = Off if value then v = true end SetTestField("Player Status", "checkChi", v) end,
+										},
+										CheckPower = {
+											type = "toggle", order = 2, name = L["Minimum"],
+											desc = L["If checked, player must have at least this much chi, otherwise must be less."],
+											disabled = function(info) return IsTestFieldOff("Player Status", "checkChi") end,
+											get = function(info) return GetTestField("Player Status", "checkChi") == true end,
+											set = function(info, value) SetTestField("Player Status", "checkChi", value) end,
+										},
+										PowerRange = {
+											type = "range", order = 3, name = "", min = 1, max = 5, step = 1,
+											disabled = function(info) return IsTestFieldOff("Player Status", "checkChi") end,
+											get = function(info) return GetTestField("Player Status", "minChi") end,
+											set = function(info, value) SetTestField("Player Status", "minChi", value) end,
+										},
+									},
+								},
 								CheckComboPointsGroup = {
-									type = "group", order = 80, name = L["Combo Points"], inline = true, 
+									type = "group", order = 83, name = L["Combo Points"], inline = true, 
 									args = {
 										CheckComboPointsEnable = {
 											type = "toggle", order = 1, name = L["Enable"], width = "half",
@@ -7182,7 +7308,7 @@ MOD.OptionsTable = {
 									args = {
 										CheckTalentsEnable = {
 											type = "toggle", order = 10, name = L["Enable"], width = "half",
-											desc = L["If checked, test if points have been spent in one of the player's talents."],
+											desc = L["If checked, test if player's talents include a specific talent."],
 											get = function(info) return IsTestFieldOn("Player Status", "checkTalent") end,
 											set = function(info, value) local v = Off if value then v = true end SetTestField("Player Status", "checkTalent", v) end,
 										},
@@ -7192,6 +7318,57 @@ MOD.OptionsTable = {
 											set = function(info, value) SetTestField("Player Status", "talent", MOD.talentList[value]) end,
 											values = function(info) return MOD.talentList end,
 											style = "dropdown",
+										},
+									},
+								},
+								CheckSpecGroup = {
+									type = "group", order = 100, name = L["Specialization"], inline = true, 
+									args = {
+										CheckSpecEnable = {
+											type = "toggle", order = 10, name = L["Enable"], width = "half",
+											desc = L["If checked, test player's specialization."],
+											get = function(info) return IsTestFieldOn("Player Status", "checkSpec") end,
+											set = function(info, value) local v = Off if value then v = true end SetTestField("Player Status", "checkSpec", v) end,
+										},
+										SpecEntry = {
+											type = "input", order = 20, name = L["Specialization"],
+											desc = L['Enter the specialization to check for (enter "none" to check for no specialization).'],
+											get = function(info) return GetTestField("Player Status", "spec") end,
+											set = function(info, value) SetTestFieldString("Player Status", "spec", value) end,
+										},
+									},
+								},
+								CheckSpellGroup = {
+									type = "group", order = 105, name = L["Spellbook"], inline = true, 
+									args = {
+										CheckSpellEnable = {
+											type = "toggle", order = 10, name = L["Enable"], width = "half",
+											desc = L["If checked, test if a spell is in the player's spellbook."],
+											get = function(info) return IsTestFieldOn("Player Status", "checkSpell") end,
+											set = function(info, value) local v = Off if value then v = true end SetTestField("Player Status", "checkSpell", v) end,
+										},
+										SpellName = {
+											type = "input", order = 20, name = L["Spell"],
+											desc = L['Enter a spell name (or numeric identifier) to test is known in the spellbook.'],
+											get = function(info) return GetTestField("Player Status", "spell") end,
+											set = function(info, value) SetTestFieldString("Player Status", "spell", value) end,
+										},
+									},
+								},
+								CheckGlyphGroup = {
+									type = "group", order = 110, name = L["Glyph"], inline = true, 
+									args = {
+										CheckGlyphEnable = {
+											type = "toggle", order = 10, name = L["Enable"], width = "half",
+											desc = L["If checked, test if a glyph is active."],
+											get = function(info) return IsTestFieldOn("Player Status", "checkGlyph") end,
+											set = function(info, value) local v = Off if value then v = true end SetTestField("Player Status", "checkGlyph", v) end,
+										},
+										GlyphName = {
+											type = "input", order = 20, name = L["Glyph"],
+											desc = L['Enter short name for glyph (e.g., "Glyph of Overpower" is entered as "Overpower").'],
+											get = function(info) return GetTestField("Player Status", "glyph") end,
+											set = function(info, value) SetTestFieldString("Player Status", "glyph", value) end,
 										},
 									},
 								},

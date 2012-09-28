@@ -4,11 +4,13 @@ local myDebug = nil
 
 local reportMsg = "BadBoy: >>> |cfffe2ec8|Hbadboy:%s:%d|h[Spam blocked, click to report!]|h|r <<<"
 local throttleMsg = "|cFF33FF99BadBoy|r: Please wait ~4 seconds between reports to prevent being disconnected (Blizzard bug)"
+local reportBnet = "BadBoy: >>> |cfffe2ec8Battle.net invite blocked from |cffffff00%s|r|r <<<"
 do
 	local L = GetLocale()
 	if L == "frFR" then
 		reportMsg = "BadBoy: >>> |cfffe2ec8|Hbadboy:%s:%d|h[Spam bloqué, cliquez pour signaler !]|h|r <<<"
 		throttleMsg = "|cFF33FF99BadBoy|r: Veuillez patienter ~4 secondes entre les signalements afin d'éviter d'être déconnecté (bug de Blizzard)"
+		reportBnet = "BadBoy: >>> |cfffe2ec8Battle.net inviter bloqué à partir de |cffffff00%s|r|r <<<"
 	elseif L == "deDE" then
 		reportMsg = "BadBoy: >>> |cfffe2ec8|Hbadboy:%s:%d|h[Spam geblockt, zum Melden klicken!]|h|r <<<"
 		throttleMsg = "|cFF33FF99BadBoy|r: Bitte warte ca. 4 Sekunden zwischen Meldungen um einen Disconnect zu verhindern (Blizzard Bug)"
@@ -28,8 +30,7 @@ do
 		reportMsg = "BadBoy: >>> |cfffe2ec8|Hbadboy:%s:%d|h[Спам заблокирован. Нажмите, чтобы сообщить!]|h|r <<<"
 		throttleMsg = "|cFF33FF99BadBoy|r: Пожалуйста, подождите ~4 секунды между отчетами, чтобы избежать попадания отключен (ошибка Blizzard)"
 	elseif L == "koKR" then
-		reportMsg = "BadBoy: >>> |cfffe2ec8|Hbadboy:%s:%d|h[Spam blocked, click to report!]|h|r <<<"
-		throttleMsg = "|cFF33FF99BadBoy|r: Please wait ~4 seconds between reports to prevent being disconnected (Blizzard bug)"
+
 	elseif L == "ptBR" then
 		reportMsg = "BadBoy: >>> |cfffe2ec8|Hbadboy:%s:%d|h[Spam bloqueado, clique para denunciar!]|h|r <<<"
 		throttleMsg = "|cFF33FF99BadBoy|r: Por favor aguarde ~4 segundos entre denúncias para evitar ser desconectado (erro de Blizzard)"
@@ -281,6 +282,10 @@ local instantReportList = {
 	--WTB big amount of runescape money. 2mil = 1k gold. ONLY LEGIT PEOPLE.
 	"wt[bs].*runescapemoney.*%d+k", --WTB runescape money. 3mil = 1k in wow! easy money making.
 	"^wt[bs]rsaccount", --wts rs acount 10k .... lvl 95 with items for over 15 mil with 6 year old holiday
+	"^wt[bs]%d+rsaccount", --WTS 137 RS ACCOUNT /W ME
+	--WTS awesome rs account with 99's /w me
+	--WTS an awesome rs account /w me details
+	"^wt[bs]a?n?awesomersaccount", --wts awesome rs account /w me
 
 	--[[  Steam  ]]--
 	"^wtssteamaccount", --WTS Steam account with 31 games (full valve pack+more) /w me with offers
@@ -303,6 +308,7 @@ local instantReportList = {
 	--WTS wow account 85human Rogue with LEGENDARIES + JC BS.  u pay with gold./w me for more info
 	"^wt[st]wowaccount", --WTT Wow account /w me for more info
 	"^wtsaccount.*gametime", --WTS Account with free lvl 80 And GAME  TIME!! /w me
+	"^wt[bs]mopcode", --WTS MoP Code /w me for info
 
 	--[[  Diablo 3  ]]--
 	"^wttrade%d+kgold.*diablo", --WT trade 6k gol;d for 300k in diablo 3. /w me
@@ -363,6 +369,7 @@ local instantReportList = {
 	"wts.*deliver.*cheap.*price", --WTS [Reins of Poseidus],deliver fast,cheaper price ,pst,plz
 	"wts.*%[.*%].*%[.*%].*cheap.*stock", --wts [Reins of the Swift Spectral Tiger] [Reins of the Spectral Tiger] [Vial of the Sands],cheapst ,in stock ,pst
 	"wts.*%[.*%].*%[.*%].*cheap.*safe", --WTS [Reins of the Swift Spectral Tiger] [Tabard of the Lightbringer] [Magic Rooster Egg]Cheapest & Safest Online Trad
+	"wts.*%[.*%].*order.*stock", --Wts [prestiges mount] order over 50k will get it free  250k in stock-------- (lots of random characters)
 	"^wts.*spectraltiger.*alsootheritems$", --WTS [Magic Rooster Egg] [Reins of the Spectral Tiger] [Reins of the Swift Spectral Tiger] Also other items
 	--WTS [Magic Rooster Egg] [Reins of the Spectral Tiger]  [Reins of the Swift Spectral Tiger]cheap mount and gold
 	"^wts.*%[.*%].*%[.*%].*cheapmounta?n?d?gold", --WTS [Magic Rooster Egg] [Reins of the Spectral Tiger]  [Reins of the Swift Spectral Tiger]cheap mount&gold
@@ -381,6 +388,7 @@ local instantReportList = {
 	"^wt[bs]gametime.*/w", --WTS G A M E T I M E /W
 	"steed.*gc%d+day.*sale", --WTS [Winged Guardian] [Heart of the Aspects] [Celestial Steed]Each 15k gc90days=25KPet sales
 	"wts.*mount.*gametimecard", --WTS Mounts[Heart of the Aspects] and Pets/ GameTimecard
+	"mount.*account.*sell.*discount", --Get every single rare mount on your own account now! (including incredibly rare & unobtainables) Also selling all PvP achievies: Gladiator, Hero of Ally, 2200/2400 arenas/RBGs and more! Great discounts for MoP preorders! Message me! Skype: Baddieisboss
 	"raiditems.*buy.*email.*price.*wowpve%.c", --{rt1}{rt1}T{rt1}{rt1}S raid items ，397/410/416 token ，achive dragon (ICC,ULD,CATA,FL),416 weapons and so on.If u want to buy,our team will carry u to the instance to get it. U can email me anytime,I will give u a price. [wowpve.com]
 
 	--[[  Russian  ]]--
@@ -491,6 +499,7 @@ local instantReportList = {
 	"hotg01ds.*%d[%do]+k", --Hôtg01ds. côrn 1Ok=2.99 8081
 	--{star}www.OurGameCenter.com{star} 10000=4.69 WTS Smoldering Egg of Millagazor and all 410/416 items droped from DS {star} including achieve,mount,legendary dagger,etc.( 8/8H DS &7/7H FL)
 	"ourgamecenter.*wts.*legendary", --www.OurGameCenter.com10K=4.69 we have 8/8H DS 25m raid team ,WTS 410/416lvl BOP items,achiev,mount,legendary dagger,etc. {star} Smoldering Egg of Millagazor
+	"billiggull.*koster.*skype", --{star} Interessert i billig GULL? 100k koster 700 NOK (7 NOK pr 1k) – Bet: Pay Pal og nettbank. Bare nor,swe,dk kunder! Lei av kineserene? Jeg er mye sikrere, instant gull etter bet, online ofte og billig! Add meg på SKYPE for mer info: Nolixz1 {star}
 }
 
 --This is the replacement table. It serves to deobfuscate words by replacing letters with their English "equivalents".
@@ -610,7 +619,7 @@ local filter = function(_, event, msg, player, _, _, _, flag, channelId, _, _, _
 		for k,v in pairs(repTbl) do --Parse over the 'repTbl' table and replace strings
 			msg = gsub(msg, k, v)
 		end
-		if myDebug then print("Running replacements") end
+		if myDebug then print("Running replacements for chat") end
 	end
 	--End string replacements
 
@@ -650,9 +659,9 @@ end
 
 --[[ Configure report links ]]--
 do
-	local oldShow, addMsg, prevReport = ChatFrame_OnHyperlinkShow, ChatFrame1.AddMessage, 0
-	ChatFrame_OnHyperlinkShow = function(self, data, ...)
-		local badboy, player, lineId = strsplit(":", data)
+	local SetHyperlink, addMsg, prevReport = ItemRefTooltip.SetHyperlink, ChatFrame1.AddMessage, 0
+	function ItemRefTooltip:SetHyperlink(link, ...)
+		local badboy, player, lineId = strsplit(":", link)
 		if badboy and badboy == "badboy" then
 			lineId = tonumber(lineId)
 			if CanComplainChat(lineId) then
@@ -692,9 +701,9 @@ do
 					print(throttleMsg)
 				end
 			end
-			return
+		else
+			SetHyperlink(self, link, ...)
 		end
-		oldShow(self, data, ...)
 	end
 end
 
@@ -713,4 +722,48 @@ ChatFrame_AddMessageEventFilter("CHAT_MSG_DND", filter)
 ChatFrame_AddMessageEventFilter("CHAT_MSG_AFK", filter)
 
 SetCVar("spamFilter", 1)
+
+--[[ BNet Invites ]]--
+do
+	local f = CreateFrame("Frame")
+	f:RegisterEvent("PLAYER_LOGIN")
+	f:SetScript("OnEvent", function(frame,event,bnEvent)
+		if event == "PLAYER_LOGIN" or bnEvent == "FRIEND_PENDING" then
+			if event == "PLAYER_LOGIN" then
+				frame:RegisterEvent("CHAT_MSG_BN_INLINE_TOAST_ALERT")
+				frame:UnregisterEvent("PLAYER_LOGIN")
+			end
+			for i=1, BNGetNumFriendInvites() do
+				local id, player, _, msg = BNGetFriendInviteInfo(i)
+				if type(msg) == "string" then
+					local debug = msg
+					msg = msg:lower() --Lower all text, remove capitals
+					msg = gsub(msg, "[“”%*%-%(%)\"`'_%+#%%%^&;:~{} ]+", "") --Remove spaces, symbols, etc
+
+					--They like to replace English letters with UTF-8 "equivalents" to avoid detection
+					if strfind(msg, "[аàáäâãåсçеèéëёêìíïîΜмоòóöōôõùúüû]+") then --Only run the string replacement if the chat line has letters that need replaced
+						--This is no where near as resource intensive as I originally thought, it barely uses any CPU
+						for k,v in pairs(repTbl) do --Parse over the 'repTbl' table and replace strings
+							msg = gsub(msg, k, v)
+						end
+						if myDebug then print("Running replacements for BNET") end
+					end
+					--End string replacements
+
+					if IsSpam(msg, 0) then
+						if myDebug then
+							print("BNET invite", i, "is spam from player:", player)
+						else
+							ChatFrame1:AddMessage(reportBnet:format(player), 0.2, 1, 0.6)
+							if BadBoyLog then
+								BadBoyLog("BadBoy", "CHAT_MSG_BNET_INVITE", player, debug)
+							end
+							BNReportFriendInvite(id, "SPAM", "")
+						end
+					end
+				end
+			end
+		end
+	end)
+end
 

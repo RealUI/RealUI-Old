@@ -274,6 +274,7 @@ obj["ENERGY_AMOUNT"]		= "%a - Значение энергии.\n"
 --obj["CHI_AMOUNT"]			= "%a - Amount of chi you have.\n"
 obj["CP_AMOUNT"]			= "%a - Значение сколько приёмов в серии.\n"
 obj["HOLY_POWER_AMOUNT"]	= "%a - Значение вашей энергии Света.\n"
+--obj["SHADOW_ORBS_AMOUNT"]	= "%a - Amount of shadow orbs you have.\n"
 obj["HONOR_AMOUNT"]			= "%a - Значение чести.\n"
 obj["REP_AMOUNT"]			= "%a - Значение репутации.\n"
 obj["ITEM_AMOUNT"]			= "%a - Значение добытого предмета.\n"
@@ -468,6 +469,8 @@ obj["NOTIFICATION_CP_GAIN"]				= { label="Получ. Приёма в Серии
 obj["NOTIFICATION_CP_FULL"]				= { label="Макс. Приёмов в Серии", tooltip="Вкл/Выкл оповещение когда вы достигаете максимального количества приемов в серии."}
 obj["NOTIFICATION_HOLY_POWER_CHANGE"]	= { label="Изменение энергии Света", tooltip="Вкл/Выкл оповещение изменения вашей энергии Света."}
 obj["NOTIFICATION_HOLY_POWER_FULL"]		= { label="Полная энергия Света", tooltip="Вкл/Выкл оповещение когда вы достигаете полной энергии Света."}
+--obj["NOTIFICATION_SHADOW_ORBS_CHANGE"]	= { label="Shadow Orb Changes", tooltip="Enable when you change shadow orbs."}
+--obj["NOTIFICATION_SHADOW_ORBS_FULL"]	= { label="Shadow Orbs Full", tooltip="Enable when you attain full shadow orbs."}
 obj["NOTIFICATION_HONOR_GAIN"]			= { label="Получ. чести", tooltip="Вкл/Выкл оповещение когда вы получаете очки чести."}
 obj["NOTIFICATION_REP_GAIN"]			= { label="Получ. репутации", tooltip="Вкл/Выкл оповещение когда вы получаете очки репутации."}
 obj["NOTIFICATION_REP_LOSS"]			= { label="Потеря репутации", tooltip="Вкл/Выкл оповещение когда вы теряете очки репутации."}

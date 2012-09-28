@@ -442,7 +442,7 @@ function GridIndicatorCornerIcons.CreateIndicator(f, indicator)
 		f.iconTLcornerleftBG:SetHeight(wh + (2*borderSize))
 		f.iconTLcornerleftBG:SetPoint("TOPLEFT", f, "TOPLEFT", xoffset, yoffset)
 		f.iconTLcornerleftBG:SetBackdrop({
-					edgeFile = "Interface\\Addons\\Grid\\white16x16", edgeSize = 2,
+					edgeFile = "Interface\\Buttons\\WHITE8X8", edgeSize = 2,
 					insets = {left = 2, right = 2, top = 2, bottom = 2},
 					})
 		f.iconTLcornerleftBG:SetBackdropBorderColor(1, 1, 1, 0)
@@ -493,7 +493,7 @@ function GridIndicatorCornerIcons.CreateIndicator(f, indicator)
 		f.iconTLcornerrightBG:SetHeight(wh + (2*borderSize))
 		f.iconTLcornerrightBG:SetPoint("TOPLEFT", f, "TOPLEFT", (wh+xoffset)+(2*borderSize), yoffset)
 		f.iconTLcornerrightBG:SetBackdrop({
-					edgeFile = "Interface\\Addons\\Grid\\white16x16", edgeSize = 2,
+					edgeFile = "Interface\\Buttons\\WHITE8X8", edgeSize = 2,
 					insets = {left = 2, right = 2, top = 2, bottom = 2},
 					})
 		f.iconTLcornerrightBG:SetBackdropBorderColor(1, 1, 1, 0)
@@ -544,7 +544,7 @@ function GridIndicatorCornerIcons.CreateIndicator(f, indicator)
 		f.iconTRcornerleftBG:SetHeight(wh + (2*borderSize))
 		f.iconTRcornerleftBG:SetPoint("TOPRIGHT", f, "TOPRIGHT", ((wh*-1)+(xoffset*-1))-(2*borderSize), yoffset)
 		f.iconTRcornerleftBG:SetBackdrop({
-					edgeFile = "Interface\\Addons\\Grid\\white16x16", edgeSize = 2,
+					edgeFile = "Interface\\Buttons\\WHITE8X8", edgeSize = 2,
 					insets = {left = 2, right = 2, top = 2, bottom = 2},
 					})
 		f.iconTRcornerleftBG:SetBackdropBorderColor(1, 1, 1, 0)
@@ -595,7 +595,7 @@ function GridIndicatorCornerIcons.CreateIndicator(f, indicator)
 		f.iconTRcornerrightBG:SetHeight(wh + (2*borderSize))
 		f.iconTRcornerrightBG:SetPoint("TOPRIGHT", f, "TOPRIGHT", (xoffset*-1), yoffset)
 		f.iconTRcornerrightBG:SetBackdrop({
-					edgeFile = "Interface\\Addons\\Grid\\white16x16", edgeSize = 2,
+					edgeFile = "Interface\\Buttons\\WHITE8X8", edgeSize = 2,
 					insets = {left = 2, right = 2, top = 2, bottom = 2},
 					})
 		f.iconTRcornerrightBG:SetBackdropBorderColor(1, 1, 1, 0)
@@ -646,7 +646,7 @@ function GridIndicatorCornerIcons.CreateIndicator(f, indicator)
 		f.iconBLcornerleftBG:SetHeight(wh + (2*borderSize))
 		f.iconBLcornerleftBG:SetPoint("BOTTOMLEFT", f, "BOTTOMLEFT", xoffset, (yoffset*-1))
 		f.iconBLcornerleftBG:SetBackdrop({
-					edgeFile = "Interface\\Addons\\Grid\\white16x16", edgeSize = 2,
+					edgeFile = "Interface\\Buttons\\WHITE8X8", edgeSize = 2,
 					insets = {left = 2, right = 2, top = 2, bottom = 2},
 					})
 		f.iconBLcornerleftBG:SetBackdropBorderColor(1, 1, 1, 0)
@@ -697,7 +697,7 @@ function GridIndicatorCornerIcons.CreateIndicator(f, indicator)
 		f.iconBLcornerrightBG:SetHeight(wh + (2*borderSize))
 		f.iconBLcornerrightBG:SetPoint("BOTTOMLEFT", f, "BOTTOMLEFT", (wh+xoffset)+(2*borderSize), (yoffset*-1))
 		f.iconBLcornerrightBG:SetBackdrop({
-					edgeFile = "Interface\\Addons\\Grid\\white16x16", edgeSize = 2,
+					edgeFile = "Interface\\Buttons\\WHITE8X8", edgeSize = 2,
 					insets = {left = 2, right = 2, top = 2, bottom = 2},
 					})
 		f.iconBLcornerrightBG:SetBackdropBorderColor(1, 1, 1, 0)
@@ -748,7 +748,7 @@ function GridIndicatorCornerIcons.CreateIndicator(f, indicator)
 		f.iconBRcornerleftBG:SetHeight(wh + (2*borderSize))
 		f.iconBRcornerleftBG:SetPoint("BOTTOMRIGHT", f, "BOTTOMRIGHT", ((wh*-1)+(xoffset*-1))-(2*borderSize), (yoffset*-1))
 		f.iconBRcornerleftBG:SetBackdrop({
-					edgeFile = "Interface\\Addons\\Grid\\white16x16", edgeSize = 2,
+					edgeFile = "Interface\\Buttons\\WHITE8X8", edgeSize = 2,
 					insets = {left = 2, right = 2, top = 2, bottom = 2},
 					})
 		f.iconBRcornerleftBG:SetBackdropBorderColor(1, 1, 1, 0)
@@ -799,7 +799,7 @@ function GridIndicatorCornerIcons.CreateIndicator(f, indicator)
 		f.iconBRcornerrightBG:SetHeight(wh + (2*borderSize))
 		f.iconBRcornerrightBG:SetPoint("BOTTOMRIGHT", f, "BOTTOMRIGHT", (xoffset*-1), (yoffset*-1))
 		f.iconBRcornerrightBG:SetBackdrop({
-					edgeFile = "Interface\\Addons\\Grid\\white16x16", edgeSize = 2,
+					edgeFile = "Interface\\Buttons\\WHITE8X8", edgeSize = 2,
 					insets = {left = 2, right = 2, top = 2, bottom = 2},
 					})
 		f.iconBRcornerrightBG:SetBackdropBorderColor(1, 1, 1, 0)

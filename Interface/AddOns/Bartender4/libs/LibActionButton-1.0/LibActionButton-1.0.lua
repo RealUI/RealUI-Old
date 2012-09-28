@@ -29,7 +29,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ]]
 local MAJOR_VERSION = "LibActionButton-1.0"
-local MINOR_VERSION = 31
+local MINOR_VERSION = 32
 
 if not LibStub then error(MAJOR_VERSION .. " requires LibStub.") end
 local lib, oldversion = LibStub:NewLibrary(MAJOR_VERSION, MINOR_VERSION)
@@ -1276,7 +1276,14 @@ Generic.IsCurrentlyActive       = function(self) return nil end
 Generic.IsAutoRepeat            = function(self) return nil end
 Generic.IsUsable                = function(self) return nil end
 Generic.IsConsumableOrStackable = function(self) return nil end
-Generic.IsInRange               = function(self) return nil end
+Generic.IsUnitInRange           = function(self, unit) return nil end
+Generic.IsInRange               = function(self)
+	local unit = self:GetAttribute("unit")
+	if unit == "player" then
+		unit = nil
+	end
+	return self:IsUnitInRange(unit)
+end
 Generic.SetTooltip              = function(self) return nil end
 Generic.GetSpellId              = function(self) return nil end
 
@@ -1294,7 +1301,7 @@ Action.IsCurrentlyActive       = function(self) return IsCurrentAction(self._sta
 Action.IsAutoRepeat            = function(self) return IsAutoRepeatAction(self._state_action) end
 Action.IsUsable                = function(self) return IsUsableAction(self._state_action) end
 Action.IsConsumableOrStackable = function(self) return IsConsumableAction(self._state_action) or IsStackableAction(self._state_action) or (not IsItemAction(self._state_action) and GetActionCount(self._state_action) > 0) end
-Action.IsInRange               = function(self) return IsActionInRange(self._state_action, self:GetAttribute("unit")) end
+Action.IsUnitInRange           = function(self, unit) return IsActionInRange(self._state_action, unit) end
 Action.SetTooltip              = function(self) return GameTooltip:SetAction(self._state_action) end
 Action.GetSpellId              = function(self)
 	local actionType, id, subType = GetActionInfo(self._state_action)
@@ -1320,7 +1327,7 @@ Spell.IsCurrentlyActive       = function(self) return IsCurrentSpell(self._state
 Spell.IsAutoRepeat            = function(self) return IsAutoRepeatSpell(FindSpellBookSlotBySpellID(self._state_action), "spell") end -- needs spell book id as of 4.0.1.13066
 Spell.IsUsable                = function(self) return IsUsableSpell(self._state_action) end
 Spell.IsConsumableOrStackable = function(self) return IsConsumableSpell(self._state_action) end
-Spell.IsInRange               = function(self) return IsSpellInRange(FindSpellBookSlotBySpellID(self._state_action), "spell", self:GetAttribute("unit")) end -- needs spell book id as of 4.0.1.13066
+Spell.IsUnitInRange           = function(self, unit) return IsSpellInRange(FindSpellBookSlotBySpellID(self._state_action), "spell", unit) end -- needs spell book id as of 4.0.1.13066
 Spell.SetTooltip              = function(self) return GameTooltip:SetSpellByID(self._state_action) end
 Spell.GetSpellId              = function(self) return self._state_action end
 
@@ -1342,7 +1349,7 @@ Item.IsCurrentlyActive       = function(self) return IsCurrentItem(self._state_a
 Item.IsAutoRepeat            = function(self) return nil end
 Item.IsUsable                = function(self) return IsUsableItem(self._state_action) end
 Item.IsConsumableOrStackable = function(self) return IsConsumableItem(self._state_action) end
-Item.IsInRange               = function(self) return IsItemInRange(self._state_action, self:GetAttribute("unit")) end
+Item.IsUnitInRange           = function(self, unit) return IsItemInRange(self._state_action, unit) end
 Item.SetTooltip              = function(self) return GameTooltip:SetHyperlink(self._state_action) end
 Item.GetSpellId              = function(self) return nil end
 
@@ -1361,7 +1368,7 @@ Macro.IsCurrentlyActive       = function(self) return nil end
 Macro.IsAutoRepeat            = function(self) return nil end
 Macro.IsUsable                = function(self) return nil end
 Macro.IsConsumableOrStackable = function(self) return nil end
-Macro.IsInRange               = function(self) return nil end
+Macro.IsUnitInRange           = function(self, unit) return nil end
 Macro.SetTooltip              = function(self) return nil end
 Macro.GetSpellId              = function(self) return nil end
 
@@ -1379,7 +1386,7 @@ Custom.IsCurrentlyActive       = function(self) return nil end
 Custom.IsAutoRepeat            = function(self) return nil end
 Custom.IsUsable                = function(self) return true end
 Custom.IsConsumableOrStackable = function(self) return nil end
-Custom.IsInRange               = function(self) return nil end
+Custom.IsUnitInRange           = function(self, unit) return nil end
 Custom.SetTooltip              = function(self) return GameTooltip:SetText(self._state_action.tooltip) end
 Custom.GetSpellId              = function(self) return nil end
 Custom.RunCustom               = function(self, unit, button) return self._state_action.func(self, unit, button) end

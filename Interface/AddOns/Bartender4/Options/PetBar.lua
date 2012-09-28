@@ -24,7 +24,19 @@ function PetBarMod:SetupOptions()
 			set = "ToggleModule",
 			handler = self,
 		}
-		self.optionobject:AddElement("general", "enabled", enabled)
+
+		local cat_general = {
+			enabled = enabled,
+			grid = {
+				order = 83,
+				type = "toggle",
+				name = L["Button Grid"],
+				desc = L["Toggle the button grid."],
+				set = function(info, ...) PetBarMod:SetGrid(...) end,
+				get = function(info) return PetBarMod:GetGrid() end,
+			},
+		}
+		self.optionobject:AddElementGroup("general", cat_general)
 
 		self.disabledoptions = {
 			general = {

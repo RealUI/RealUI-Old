@@ -1,0 +1,38 @@
+tag v.1.3.5
+11723d352975007b0a19577e591be6e8167aefe1
+Sal Scotto <sal.scotto@gmail.com>
+2012-09-09 10:18:54 -0400
+
+Tagging for 1.3.5 many bug fixes included
+
+
+--------------------
+
+Sal Scotto:
+	- more bug fixes
+	- added raid leader and party leader to highlight module
+	- fixed loop to use NUM_CHAT_WINDOWS
+	- fix for ticket 249
+	- fixed a few bugs during profile reset
+	- fix for resizer hide call before they have been made ausing an error
+	- fixed issue with using borders
+	- fixed button movdule on temp frames
+	- during a copy strip the icons out to keep alignemnt from moving
+	- fixed a check to see if the border is enabled before showing it
+	- set the mouseover alpha to 1 on undocked tabs, not the requested alpha otherwise they are invisible
+	- add a check for empty guild name that can occur after even though IsInGuild returns true
+	- Fix ticket: 246
+durcyn:
+	- more nil checks before assignments in AddPlayer, who wrote this shit?
+	- check for our db namespace before trying to reference it in AddPlayer, otherwise we get errors on PLAYER_LOGOUT
+	- SETGLOBAL arg1 seems like a great idea
+Benjamin Staneck:
+	- no need for the colon here
+washu214:
+	- fix for ticket 229
+	- Fix for ticket 243, looks like some refectoring missed soem values
+	- added the 2 locale strings to english since it doesnt load them from locale system
+	- Fixed a few leaked globals. added chat tab alpha settings. Cleaned up some copy data with leftover lines
+	- Copy/Paste with realid text, will not replace real name with character name for pasting. also fixed the erronous tags in the data
+	- Changed path to highlight texture to Interface\BUTTONS\CheckButtonGlow from BUTTONS\CheckButtonGlow as with just BUTTON\CheckButtonGlow it results in the GREEN texture showing on mop i.e. missing path
+	- DRYCODE: fix for ticket #219

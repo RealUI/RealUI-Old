@@ -1,3 +1,11 @@
+local _G = _G
+local select = _G.select
+local pairs = _G.pairs
+local string = _G.string
+local type = _G.type
+local error = _G.error
+local table = _G.table
+
 
 function ArkInventory.CategoryRenumber( cat_old, cat_new )
 	
@@ -696,15 +704,45 @@ function ArkInventory.ConvertOldOptions( )
 	end
 	
 	
-	upgrade_version = 30301
+	upgrade_version = 30309
 	if ArkInventory.db.global.option.version < upgrade_version then
 		
-		ArkInventory.EraseSavedData( nil, ArkInventory.Const.Location.Wearing )
-		ArkInventory.EraseSavedData( nil, ArkInventory.Const.Location.Token )
+		
 		
 		ArkInventory.db.global.option.version = upgrade_version
 		
 	end
+	
+	
+	upgrade_version = 30311
+	if ArkInventory.db.char.option.version < upgrade_version then
+		
+		ArkInventory.Output( string.format( ArkInventory.Localise["UPGRADE_CHAR"], UnitName( "player" ), upgrade_version ) )
+		
+		-- erase any previously selected pets
+		for k in pairs( ArkInventory.db.char.option.ldb.pets.selected ) do
+			ArkInventory.db.char.option.ldb.pets.selected[k] = nil
+		end
+		
+		for k in pairs( ArkInventory.db.char.option.ldb.tracking.currency.tracked ) do
+			ArkInventory.db.char.option.ldb.tracking.currency.tracked[k] = false
+		end
+		
+		ArkInventory.db.char.option.version = upgrade_version
+		
+	end
+	
+	upgrade_version = 30313
+	if ArkInventory.db.realm.player.version < upgrade_version then
+		
+		ArkInventory.EraseSavedData( )
+		
+		ArkInventory.db.realm.player.version = upgrade_version
+		
+	end
+	
+
+	
 	
 	
 	

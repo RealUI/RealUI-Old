@@ -134,6 +134,7 @@ function mod:OnEnable()
 	self:RegisterEvent("CHAT_MSG_BATTLEGROUND_LEADER", "ParseChat")
 	self:RegisterEvent("CHAT_MSG_OFFICER", "ParseChat")
 	self:RegisterEvent("CHAT_MSG_PARTY", "ParseChat")
+	self:RegisterEvent("CHAT_MSG_PARTY_LEADER", "ParseChat")
 	self:RegisterEvent("CHAT_MSG_RAID_LEADER", "ParseChat")
 	self:RegisterEvent("CHAT_MSG_RAID", "ParseChat")
 	self:RegisterEvent("CHAT_MSG_RAID_WARNING", "ParseChat")
@@ -150,7 +151,9 @@ function mod:OnEnable()
 		"GUILD", L["Guild"], 
 		"OFFICER", L["Officer"],
 		"RAID", L["Raid"],
+		"RAID_LEADER", L["Raid Leader"],
 		"PARTY", L["Party"],
+		"PARTY_LEADER", PARTY_LEADER,
 		"RAID_WARNING", L["Raid Warning"],
 		"SAY", L["Say"],
 		"BATTLEGROUND", L["Battleground"],
