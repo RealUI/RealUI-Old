@@ -283,6 +283,40 @@ nibPointDisplayRUIDB = {
 							["x"] = -66,
 						},
 					},
+					["tp"] = {
+						["configmode"] = {
+							["count"] = 2,
+						},
+						["bars"] = {
+							["surround"] = {
+								["texture"] = "Round_Small_Surround",
+							},
+							["bg"] = {
+								["full"] = {
+									["color"] = {
+										["a"] = 0.8200000077486038,
+										["b"] = 0.4588235294117647,
+										["r"] = 0.3490196078431372,
+									},
+									["maxcolor"] = {
+										["b"] = 0.4588235294117647,
+										["r"] = 0.3490196078431372,
+									},
+									["texture"] = "Round_Small_BG",
+								},
+								["empty"] = {
+									["texture"] = "Round_Small_BG",
+								},
+							},
+							["position"] = {
+								["gap"] = -3,
+							},
+						},
+						["position"] = {
+							["y"] = -52,
+							["x"] = -66,
+						},
+					},
 					["chi"] = {
 						["configmode"] = {
 							["count"] = 5,
@@ -1023,6 +1057,40 @@ nibPointDisplayRUIDB = {
 									["maxcolor"] = {
 										["b"] = 0.7098039215686275,
 										["r"] = 0.1490196078431373,
+									},
+									["texture"] = "Round_Small_BG",
+								},
+								["empty"] = {
+									["texture"] = "Round_Small_BG",
+								},
+							},
+							["position"] = {
+								["gap"] = -3,
+							},
+						},
+						["position"] = {
+							["y"] = -52,
+							["x"] = -66,
+						},
+					},
+					["tp"] = {
+						["configmode"] = {
+							["count"] = 2,
+						},
+						["bars"] = {
+							["surround"] = {
+								["texture"] = "Round_Small_Surround",
+							},
+							["bg"] = {
+								["full"] = {
+									["color"] = {
+										["a"] = 0.8200000077486038,
+										["b"] = 0.4588235294117647,
+										["r"] = 0.3490196078431372,
+									},
+									["maxcolor"] = {
+										["b"] = 0.4588235294117647,
+										["r"] = 0.3490196078431372,
 									},
 									["texture"] = "Round_Small_BG",
 								},
