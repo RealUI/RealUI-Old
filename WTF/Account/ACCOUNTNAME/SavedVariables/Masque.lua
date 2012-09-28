@@ -10,11 +10,7 @@ MasqueDB = {
 	["profiles"] = {
 		["Default"] = {
 			["Groups"] = {
-				["Bartender4_StanceBar"] = {
-					["Fonts"] = true,
-					["SkinID"] = "RealUI",
-				},
-				["Bartender4_Vehicle"] = {
+				["Bartender4"] = {
 					["Fonts"] = true,
 					["SkinID"] = "RealUI",
 				},
@@ -22,34 +18,33 @@ MasqueDB = {
 					["Fonts"] = true,
 					["SkinID"] = "RealUI",
 				},
-				["Bartender4_3"] = {
-					["Fonts"] = true,
-					["SkinID"] = "RealUI",
-				},
-				["Raven_NestIcons"] = {
-					["Fonts"] = true,
-					["SkinID"] = "RealUI",
-					["Inherit"] = false,
-				},
 				["Bartender4_2"] = {
 					["Fonts"] = true,
 					["SkinID"] = "RealUI",
 				},
-				["Bartender4_BagBar"] = {
+				["Bartender4_3"] = {
 					["Fonts"] = true,
-					["Inherit"] = false,
 					["SkinID"] = "RealUI",
 				},
 				["Bartender4_4"] = {
 					["Fonts"] = true,
 					["SkinID"] = "RealUI",
 				},
-				["Raven"] = {
+				["Bartender4_5"] = {
 					["Fonts"] = true,
 					["SkinID"] = "RealUI",
-					["Inherit"] = false,
 				},
-				["Bartender4_10"] = {
+				["Bartender4_6"] = {
+					["Fonts"] = true,
+					["Inherit"] = false,
+					["SkinID"] = "RealUI",
+				},
+				["Bartender4_7"] = {
+					["Fonts"] = true,
+					["Inherit"] = false,
+					["SkinID"] = "RealUI",
+				},
+				["Bartender4_8"] = {
 					["Fonts"] = true,
 					["Inherit"] = false,
 					["SkinID"] = "RealUI",
@@ -59,11 +54,12 @@ MasqueDB = {
 					["Inherit"] = false,
 					["SkinID"] = "RealUI",
 				},
-				["Bartender4_5"] = {
+				["Bartender4_10"] = {
 					["Fonts"] = true,
+					["Inherit"] = false,
 					["SkinID"] = "RealUI",
 				},
-				["Bartender4_8"] = {
+				["Bartender4_BagBar"] = {
 					["Fonts"] = true,
 					["Inherit"] = false,
 					["SkinID"] = "RealUI",
@@ -73,37 +69,7 @@ MasqueDB = {
 					["Inherit"] = false,
 					["SkinID"] = "RealUI",
 				},
-				["Masque"] = {
-					["Fonts"] = true,
-					["SkinID"] = "RealUI",
-				},
 				["Bartender4_PetBar"] = {
-					["Fonts"] = true,
-					["SkinID"] = "RealUI",
-				},
-				["Bartender4"] = {
-					["Fonts"] = true,
-					["SkinID"] = "RealUI",
-				},
-				["Bartender4_7"] = {
-					["Fonts"] = true,
-					["Inherit"] = false,
-					["SkinID"] = "RealUI",
-				},
-				["Bartender4_6"] = {
-					["Fonts"] = true,
-					["Inherit"] = false,
-					["SkinID"] = "RealUI",
-				},
-			},
-		},
-		["RealUI"] = {
-			["Groups"] = {
-				["SBF_ToTDebuffs"] = {
-					["Fonts"] = true,
-					["SkinID"] = "RealUI",
-				},
-				["SBF_FocusDebuffs"] = {
 					["Fonts"] = true,
 					["SkinID"] = "RealUI",
 				},
@@ -115,36 +81,7 @@ MasqueDB = {
 					["Fonts"] = true,
 					["SkinID"] = "RealUI",
 				},
-				["Bartender4_1"] = {
-					["Fonts"] = true,
-					["SkinID"] = "RealUI",
-				},
-				["SBF_PlayerBuffs"] = {
-					["Fonts"] = true,
-					["SkinID"] = "RealUI",
-				},
-				["Bartender4_3"] = {
-					["Fonts"] = true,
-					["SkinID"] = "RealUI",
-				},
-				["SBF_PetBuffs"] = {
-					["Fonts"] = true,
-					["SkinID"] = "RealUI",
-				},
-				["Bartender4_2"] = {
-					["Fonts"] = true,
-					["SkinID"] = "RealUI",
-				},
-				["SBF_TargetBuffsMy"] = {
-					["Fonts"] = true,
-					["SkinID"] = "RealUI",
-				},
-				["Bartender4_BagBar"] = {
-					["Fonts"] = true,
-					["SkinID"] = "RealUI",
-					["Inherit"] = false,
-				},
-				["SBF"] = {
+				["Masque"] = {
 					["Fonts"] = true,
 					["SkinID"] = "RealUI",
 				},
@@ -153,24 +90,49 @@ MasqueDB = {
 					["SkinID"] = "RealUI",
 					["Inherit"] = false,
 				},
-				["Bartender4_6"] = {
-					["Fonts"] = true,
-					["SkinID"] = "RealUI",
-				},
 				["Raven_NestIcons"] = {
 					["Fonts"] = true,
 					["SkinID"] = "RealUI",
 					["Inherit"] = false,
 				},
-				["Bartender4_5"] = {
-					["Fonts"] = true,
-					["SkinID"] = "RealUI",
-				},
+			},
+		},
+		["RealUI"] = {
+			["Groups"] = {
 				["Bartender4"] = {
 					["Fonts"] = true,
 					["SkinID"] = "RealUI",
 				},
-				["SBF_Debuffs"] = {
+				["Bartender4_1"] = {
+					["Fonts"] = true,
+					["SkinID"] = "RealUI",
+				},
+				["Bartender4_2"] = {
+					["Fonts"] = true,
+					["SkinID"] = "RealUI",
+				},
+				["Bartender4_3"] = {
+					["Fonts"] = true,
+					["SkinID"] = "RealUI",
+				},
+				["Bartender4_4"] = {
+					["Fonts"] = true,
+					["SkinID"] = "RealUI",
+				},
+				["Bartender4_5"] = {
+					["Fonts"] = true,
+					["SkinID"] = "RealUI",
+				},
+				["Bartender4_6"] = {
+					["Fonts"] = true,
+					["SkinID"] = "RealUI",
+				},
+				["Bartender4_BagBar"] = {
+					["Fonts"] = true,
+					["SkinID"] = "RealUI",
+					["Inherit"] = false,
+				},
+				["Bartender4_MicroMenu"] = {
 					["Fonts"] = true,
 					["SkinID"] = "RealUI",
 					["Inherit"] = false,
@@ -179,24 +141,29 @@ MasqueDB = {
 					["Fonts"] = true,
 					["SkinID"] = "RealUI",
 				},
-				["Bartender4_MicroMenu"] = {
+				["Bartender4_StanceBar"] = {
+					["Fonts"] = true,
+					["SkinID"] = "RealUI",
+				},
+				["Bartender4_Vehicle"] = {
+					["Fonts"] = true,
+					["SkinID"] = "RealUI",
+				},
+				["Masque"] = {
+					["Fonts"] = true,
+					["SkinID"] = "RealUI",
+				},
+				["Raven"] = {
 					["Fonts"] = true,
 					["SkinID"] = "RealUI",
 					["Inherit"] = false,
 				},
-				["Bartender4_4"] = {
+				["Raven_NestIcons"] = {
 					["Fonts"] = true,
 					["SkinID"] = "RealUI",
+					["Inherit"] = false,
 				},
-				["SBF_TargetDebuffs"] = {
-					["Fonts"] = true,
-					["SkinID"] = "RealUI",
-				},
-				["SBF_PlayerDebuffs"] = {
-					["Fonts"] = true,
-					["SkinID"] = "RealUI",
-				},
-				["SBF_FocusBuffs"] = {
+				["SBF"] = {
 					["Fonts"] = true,
 					["SkinID"] = "RealUI",
 				},
@@ -204,7 +171,40 @@ MasqueDB = {
 					["Fonts"] = true,
 					["SkinID"] = "RealUI",
 				},
-				["Masque"] = {
+				["SBF_Debuffs"] = {
+					["Fonts"] = true,
+					["SkinID"] = "RealUI",
+					["Inherit"] = false,
+				},
+				["SBF_PlayerBuffs"] = {
+					["Fonts"] = true,
+					["SkinID"] = "RealUI",
+				},
+				["SBF_PlayerDebuffs"] = {
+					["Fonts"] = true,
+					["SkinID"] = "RealUI",
+				},
+				["SBF_PetBuffs"] = {
+					["Fonts"] = true,
+					["SkinID"] = "RealUI",
+				},
+				["SBF_FocusBuffs"] = {
+					["Fonts"] = true,
+					["SkinID"] = "RealUI",
+				},
+				["SBF_FocusDebuffs"] = {
+					["Fonts"] = true,
+					["SkinID"] = "RealUI",
+				},
+				["SBF_TargetBuffsMy"] = {
+					["Fonts"] = true,
+					["SkinID"] = "RealUI",
+				},
+				["SBF_TargetDebuffs"] = {
+					["Fonts"] = true,
+					["SkinID"] = "RealUI",
+				},
+				["SBF_ToTDebuffs"] = {
 					["Fonts"] = true,
 					["SkinID"] = "RealUI",
 				},

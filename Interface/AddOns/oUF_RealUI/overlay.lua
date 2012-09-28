@@ -338,6 +338,7 @@ local ReversePowers = {
 
 local StepPoints = {
 	["default"] = {0.35, 0.25},
+	["HUNTER"] = {0.35, 0.2},
 	["PALADIN"] = {0.35, 0.2},
 	["WARLOCK"] = {0.35, 0.2},
 	["WARRIOR"] = {0.35, 0.2},

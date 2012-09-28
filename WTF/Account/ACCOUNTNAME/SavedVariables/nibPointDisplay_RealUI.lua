@@ -219,6 +219,96 @@ nibPointDisplayRUIDB = {
 					},
 				},
 			},
+			["MONK"] = {
+				["types"] = {
+					["sz"] = {
+						["bars"] = {
+							["surround"] = {
+								["texture"] = "Round_Small_Surround",
+							},
+							["bg"] = {
+								["full"] = {
+									["color"] = {
+										["a"] = 0.8200000077486038,
+										["b"] = 0.4588235294117647,
+										["r"] = 0.3490196078431372,
+									},
+									["maxcolor"] = {
+										["b"] = 0.4588235294117647,
+										["r"] = 0.3490196078431372,
+									},
+									["texture"] = "Round_Small_BG",
+								},
+								["empty"] = {
+									["texture"] = "Round_Small_BG",
+								},
+							},
+						},
+						["position"] = {
+							["y"] = -25,
+							["x"] = -85,
+						},
+					},
+					["vm"] = {
+						["configmode"] = {
+							["count"] = 5,
+						},
+						["bars"] = {
+							["surround"] = {
+								["texture"] = "Round_Small_Surround",
+							},
+							["bg"] = {
+								["full"] = {
+									["color"] = {
+										["a"] = 0.8100000023841858,
+										["b"] = 0.7098039215686275,
+										["r"] = 0.1490196078431373,
+									},
+									["maxcolor"] = {
+										["b"] = 0.7098039215686275,
+										["r"] = 0.1490196078431373,
+									},
+									["texture"] = "Round_Small_BG",
+								},
+								["empty"] = {
+									["texture"] = "Round_Small_BG",
+								},
+							},
+							["position"] = {
+								["gap"] = -3,
+							},
+						},
+						["position"] = {
+							["y"] = -52,
+							["x"] = -66,
+						},
+					},
+					["chi"] = {
+						["configmode"] = {
+							["count"] = 5,
+						},
+						["bars"] = {
+							["bg"] = {
+								["full"] = {
+									["color"] = {
+										["a"] = 0.8100000023841858,
+										["b"] = 0.6980392156862745,
+										["r"] = 0.9882352941176471,
+									},
+									["maxcolor"] = {
+										["b"] = 0.6980392156862745,
+										["r"] = 0.9882352941176471,
+									},
+								},
+							},
+						},
+						["position"] = {
+							["y"] = -39,
+							["x"] = -65,
+						},
+					},
+				},
+			},
 			["PALADIN"] = {
 				["types"] = {
 					["hp"] = {
@@ -887,6 +977,68 @@ nibPointDisplayRUIDB = {
 			},
 			["MONK"] = {
 				["types"] = {
+					["sz"] = {
+						["bars"] = {
+							["surround"] = {
+								["texture"] = "Round_Small_Surround",
+							},
+							["bg"] = {
+								["full"] = {
+									["color"] = {
+										["a"] = 0.8200000077486038,
+										["b"] = 0.4588235294117647,
+										["r"] = 0.3490196078431372,
+									},
+									["maxcolor"] = {
+										["b"] = 0.4588235294117647,
+										["r"] = 0.3490196078431372,
+									},
+									["texture"] = "Round_Small_BG",
+								},
+								["empty"] = {
+									["texture"] = "Round_Small_BG",
+								},
+							},
+						},
+						["position"] = {
+							["y"] = -25,
+							["x"] = -85,
+						},
+					},
+					["vm"] = {
+						["configmode"] = {
+							["count"] = 5,
+						},
+						["bars"] = {
+							["surround"] = {
+								["texture"] = "Round_Small_Surround",
+							},
+							["bg"] = {
+								["full"] = {
+									["color"] = {
+										["a"] = 0.8100000023841858,
+										["b"] = 0.7098039215686275,
+										["r"] = 0.1490196078431373,
+									},
+									["maxcolor"] = {
+										["b"] = 0.7098039215686275,
+										["r"] = 0.1490196078431373,
+									},
+									["texture"] = "Round_Small_BG",
+								},
+								["empty"] = {
+									["texture"] = "Round_Small_BG",
+								},
+							},
+							["position"] = {
+								["gap"] = -3,
+							},
+						},
+						["position"] = {
+							["y"] = -52,
+							["x"] = -66,
+						},
+					},
 					["chi"] = {
 						["configmode"] = {
 							["count"] = 5,

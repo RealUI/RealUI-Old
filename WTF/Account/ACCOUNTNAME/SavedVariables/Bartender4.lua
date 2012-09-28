@@ -2218,33 +2218,33 @@ Bartender4DB = {
 				["RealUI"] = {
 					["version"] = 3,
 					["position"] = {
-						["y"] = -10,
-						["x"] = -32,
-						["point"] = "TOP",
+						["y"] = -110,
+						["x"] = 240,
+						["point"] = "CENTER",
 					},
 				},
 				["RealUI-HR-Healing"] = {
 					["version"] = 3,
 					["position"] = {
-						["y"] = -10,
-						["x"] = -32,
-						["point"] = "TOP",
+						["y"] = -110,
+						["x"] = 240,
+						["point"] = "CENTER",
 					},
 				},
 				["RealUI-Healing"] = {
 					["version"] = 3,
 					["position"] = {
-						["y"] = -10,
-						["x"] = -32,
-						["point"] = "TOP",
+						["y"] = -110,
+						["x"] = 240,
+						["point"] = "CENTER",
 					},
 				},
 				["RealUI-HR"] = {
 					["version"] = 3,
 					["position"] = {
-						["y"] = -10,
-						["x"] = -32,
-						["point"] = "TOP",
+						["y"] = -110,
+						["x"] = 240,
+						["point"] = "CENTER",
 					},
 				},
 			},
