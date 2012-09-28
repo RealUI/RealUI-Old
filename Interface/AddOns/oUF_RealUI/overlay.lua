@@ -339,6 +339,7 @@ local ReversePowers = {
 local StepPoints = {
 	["default"] = {0.35, 0.25},
 	["PALADIN"] = {0.35, 0.2},
+	["WARLOCK"] = {0.35, 0.2},
 	["WARRIOR"] = {0.35, 0.2},
 }
 local PlayerStepPoints
@@ -804,7 +805,7 @@ function Overlay:UpdateUnitPower(UnitID, ...)
 	local pType, pToken, altR, altG, altB = UnitPowerType(Unit)
 	
 	-- Druid Mana
-	if UF[UFUnit].power.druidmana then
+	if UF[UFUnit].power.druidmana or UF[UFUnit].power.monkmana then
 		local xDMPos = floor(PowerWidth[layoutSize][UFUnit] * (1 - (UnitPower(Unit, 0) / UnitPowerMax(Unit, 0))))
 		if xDMPos == 0 then
 			UF[UFUnit].power2:Hide()
@@ -1009,9 +1010,10 @@ function Overlay:UpdateUnitPowerBarInfo(UnitID)
 	
 	-- Druid Mana
 	UF[UFUnit].power.druidmana = false
-	if ((Unit == PLAYER_ID) and (class == "DRUID") and not(UF[PLAYER_ID].haspet)) then
+	if ((Unit == PLAYER_ID) and (class == "DRUID" or "MONK") and not(UF[PLAYER_ID].haspet)) then
 		if ((pToken ~= "MANA") and (UnitPowerMax(Unit, 0) > 0)) then
 			UF[UFUnit].power.druidmana = true
+			UF[UFUnit].power.monkmana = true
 		else
 			UF[UFUnit].power2:Hide()
 		end

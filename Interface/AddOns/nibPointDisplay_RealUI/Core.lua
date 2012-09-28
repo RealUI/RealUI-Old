@@ -42,6 +42,8 @@ nibPointDisplay_RealUI.Types = {
 		name = "Monk",
 		points = {
 			[1] = {name = "Chi", id = "chi", barcount = 5},
+			[2] = {name = "Serpents Zeal", id = "sz", barcount = 2},
+			[3] = {name = "Vital Mists", id = "vm", barcount = 5},
 		},
 	},
 	["PALADIN"] = {
@@ -179,6 +181,8 @@ local SpellInfo = {
 	["fe"] = nil,
 	["ab"] = nil,
 	["ff"] = nil,
+	["sz"] = nil,
+	["vm"] = nil,
 	["eva"] = nil,
 	["deva"] = nil,
 	["ser"] = nil,
@@ -519,6 +523,10 @@ function nibPointDisplay_RealUI:GetPoints(CurClass, CurType)
 		-- Chi
 		if CurType == "chi" then
 			NewPoints = UnitPower("player", SPELL_POWER_LIGHT_FORCE)
+		elseif CurType == "sz" then
+			NewPoints = GetBuffCount(SpellInfo[CurType], "player")
+		elseif CurType == "vm" then
+			NewPoints = GetBuffCount(SpellInfo[CurType], "player")
 		end
 	-- Priest
 	elseif CurClass == "PALADIN" then
@@ -959,7 +967,8 @@ function nibPointDisplay_RealUI:PLAYER_LOGIN()
 	SpellInfo["ab"] = GetSpellInfo(36032)		-- Arcane Blast
 	SpellInfo["ff"] = GetSpellInfo(44544)		-- Fingers of Frost
 	-- Monk
-	--SpellInfo[""] = GetSpellInfo()
+	SpellInfo["sz"] = GetSpellInfo(127722)		-- Serpents Zeal
+	SpellInfo["vm"] = GetSpellInfo(118674)		-- Vital Mists
 	-- Priest
 	SpellInfo["eva"] = GetSpellInfo(81661)		-- Evangelism
 	SpellInfo["so"] = GetSpellInfo(77487)		-- Shadow Orb
