@@ -16,7 +16,7 @@ local nibRealUICharacter_defaults = {
 
 -- Minipatch list. These get flagged on a PrimaryInstall as not being required.
 local table_MiniPatches = {
-	"72r1",
+	"73r1",
 }
 
 local table_Addons = {
@@ -484,22 +484,22 @@ end
 -- Mini Patch
 local function MiniPatchInstallation()
 	local CurVer = dbg.verinfo
-	if CurVer[1] == 7 and CurVer[2] == 2 then
+	if CurVer[1] == 7 and CurVer[2] == 3 then
 		-- Find out which Mini Patches are needed
 		local NP = {
 			[2] = true,
 		}
 		if dbg.minipatches ~= nil then
 			for k,v in pairs(dbg.minipatches) do
-				if v == "72r1" then NP[2] = false end
+				if v == "73r1" then NP[2] = false end
 			end
 		end
 		
 		-- Run through MiniPatches
 		local HasMPatched = false
 		if NP[2] then
-			nibRealUI:MiniPatch("72r1")
-			tinsert(dbg.minipatches, "72r1")
+			nibRealUI:MiniPatch("73r1")
+			tinsert(dbg.minipatches, "73r1")
 			HasMPatched = true
 		end
 		
