@@ -53,7 +53,7 @@ end
 function SavageRoar.prototype:Toggle(vis)
 	local Form = GetShapeshiftFormID()
 	local UL = UnitLevel("player")
-	if ( vis and (Form == CAT_FORM) and (UL >= 76) ) then
+	if ( vis and (Form == CAT_FORM) and (UL >= 18) ) then
 		self:Show(true)
 	else
 		self:Show(false)
