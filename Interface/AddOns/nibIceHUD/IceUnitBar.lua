@@ -124,12 +124,16 @@ function IceUnitBar.prototype:checkRole()
 	local spec = GetSpecialization()
 	--print("spec: "..tostring(spec))
 	local role
-	if spec and UnitLevel("player") >= 10 then 
-		role = GetSpecializationRole(spec)
+	if UnitLevel("player") >= 10 then
+		if spec then
+			role = GetSpecializationRole(spec)
+		else
+			role = DAMAGER
+			print(ERR_SPEC_WIPE_ERROR)
+		end
 	else
-		print(ERR_SPEC_WIPE_ERROR)
+		role = DAMAGER
 	end
 	--print("role: "..tostring(role))
 	return role
 end
-
