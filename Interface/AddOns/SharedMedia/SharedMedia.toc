@@ -1,4 +1,4 @@
-## Interface: 40300
+## Interface: 50100
 ## Title: SharedMedia
 ## Notes: Inserts some media into LibSharedMedia's storage.
 ## Version: 3.0.4-179
