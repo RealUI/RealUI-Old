@@ -22,6 +22,7 @@ nibPointDisplay_RealUI.Types = {
 			[2] = {name = "Lacerate", id = "lac", barcount = 3},
 			[3] = {name = "Wild Mushroom", id = "wm", barcount = 3},
 			[4] = {name = "Astral Alignment", id = "al", barcount = 3},
+			[5] = {name = "Dream of Cenarius", id = "dc", barcount = 2},
 		},
 	},
 	["HUNTER"] = {
@@ -179,6 +180,7 @@ local SpellInfo = {
 	["lus"] = nil,
 	["lac"] = nil,
 	["al"] = nil,
+	["dc"] = nil,
 	["rsa"] = nil,
 	["fe"] = nil,
 	["ab"] = nil,
@@ -504,10 +506,13 @@ function nibPointDisplay_RealUI:GetPoints(CurClass, CurType)
 		-- Astral Alignment
 		elseif CurType == "al" then
 			NewPoints = GetBuffCount(SpellInfo[CurType])
+		-- Dream of Cenarius
+		elseif CurType == "dc" then
+			NewPoints = GetBuffCount(SpellInfo[CurType])
 		end
 	-- Hunter
 	elseif CurClass == "HUNTER" then
-		-- Thunderstruck
+		-- Ready, Set, Aim...
 		if CurType == "rsa" then
 			NewPoints = GetBuffCount(SpellInfo[CurType])
 		-- Frenzy Effect
@@ -526,7 +531,7 @@ function nibPointDisplay_RealUI:GetPoints(CurClass, CurType)
 	elseif CurClass == "MONK" then
 		-- Chi
 		if CurType == "chi" then
-			NewPoints = UnitPower("player", SPELL_POWER_LIGHT_FORCE)
+			NewPoints = UnitPower("player", SPELL_POWER_CHI)
 		elseif CurType == "pg" then
 			NewPoints = GetBuffCount(SpellInfo[CurType], "player")
 		elseif CurType == "sz" then
@@ -968,6 +973,7 @@ function nibPointDisplay_RealUI:PLAYER_LOGIN()
 	SpellInfo["lus"] = GetSpellInfo(81192)		-- Lunar Shower
 	SpellInfo["lac"] = GetSpellInfo(33745)		-- Lacerate
 	SpellInfo["al"] = GetSpellInfo(90164)		-- Astral Alignment
+	SpellInfo["doc"] = GetSpellInfo(108381)		-- Dream of Cenarius
 	-- Hunter
 	SpellInfo["rsa"] = GetSpellInfo(82925)		-- Ready, Set, Aim...
 	SpellInfo["fe"] = GetSpellInfo(19615)		-- Frenzy Effect

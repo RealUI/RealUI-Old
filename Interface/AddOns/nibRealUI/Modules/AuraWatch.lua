@@ -550,47 +550,6 @@ local Defaults = {
 					[2] = {
 						enabled = true,
 						inactive = true,
-						personal = true,
-						incombat = true,
-						level = 1,
-						spells = {
-							[20154] = true,	-- Seal of Righteousness
-							[105361] = true, -- Seal of Command
-							[20165] = true,	-- Seal of Insight
-							[31801] = true,	-- Seal of Truth
-						},
-						negspells = {},
-						show = {
-							group = {
-								party = true,
-								raid = true,
-								solo = false,
-							},
-							location = {
-								instance = true,
-								pvp = true,
-								outinstance = false,
-							},
-							role = {
-								enabled = false,
-								dps = false,
-								heal = false,
-								tank = false,
-							},
-							spec = {
-								[1] = true,
-								[2] = true,
-								[3] = true,
-							},
-						},
-						expire = {
-							enabled = true,
-							time = 10,
-						},
-					},
-					[3] = {
-						enabled = true,
-						inactive = true,
 						incombat = true,
 						level = 1,
 						personal = false,
