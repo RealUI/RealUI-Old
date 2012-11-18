@@ -275,7 +275,9 @@ function mod:Update(win)
 				
 				if data.class and win.db.classicons and CLASS_ICON_TCOORDS[data.class] then
 					bar:ShowIcon()
-					bar:SetIconWithCoord("Interface\\Glues\\CharacterCreate\\UI-CharacterCreate-Classes", CLASS_ICON_TCOORDS[data.class])
+					local adj = 0.02
+					local l,r,t,b = unpack(CLASS_ICON_TCOORDS[data.class])
+					bar:SetIconWithCoord("Interface\\Glues\\CharacterCreate\\UI-CharacterCreate-Classes", {(l+adj),(r-adj),(t+adj),(b-adj)})
 				end
 				
 				if data.color then

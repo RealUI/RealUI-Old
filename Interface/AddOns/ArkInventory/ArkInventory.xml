@@ -308,18 +308,24 @@
 
 	<Button virtual="true" name="ARKINV_TemplateButtonMountItem" inherits="ARKINV_TemplateButtonItem" hidden="true">
 		
+		<Frames>
+			
+			<Frame parentKey="active" inherits="ARKINV_BorderPulse" setAllPoints="true" />
+			
+		</Frames>
+		
 		<Scripts>
 			
 			<OnClick>
-				ArkInventory.Frame_Item_Companion_OnClick( self, button, down )
+				ArkInventory.Frame_Item_Mount_OnClick( self, button, down )
 			</OnClick>
 			
 			<OnDragStart>
-				ArkInventory.Frame_Item_Companion_OnDrag( self )
+				ArkInventory.Frame_Item_Mount_OnDragStart( self )
 			</OnDragStart>
 			
 			<OnReceiveDrag>
-				ArkInventory.Frame_Item_Companion_OnDrag( self )
+				-- do nothing
 			</OnReceiveDrag>
 			
 		</Scripts>
@@ -360,8 +366,20 @@
 				</Layers>
 			</Frame>
 			
+			
+			<Frame parentKey="locked" hidden="true">
+				<Size x="26" y="26" />
+				<Anchors>
+					<Anchor point="CENTER" />
+				</Anchors>
+				<Layers>
+					<Layer level="OVERLAY">
+						<Texture file="Interface\PetBattles\PetBattle-LockIcon" />
+					</Layer>
+				</Layers>
+			</Frame>
+			
 		</Frames>
-		
 			
 		<Scripts>
 			
@@ -370,7 +388,7 @@
 			</OnClick>
 			
 			<OnDragStart>
-				-- do nothing
+				ArkInventory.Frame_Item_Battlepet_OnDragStart( self )
 			</OnDragStart>
 			
 			<OnReceiveDrag>
@@ -455,7 +473,7 @@
 	
 	<Button virtual="true" name="ARKINV_TemplateButtonBarEdit" inherits="ARKINV_TemplateButtonItem" hidden="true">
 
-		<Size x="20" y="20" />
+		<Size x="30" y="30" />
 		
 		<Anchors>
 			<Anchor point="TOPLEFT" />
@@ -646,6 +664,36 @@
 			
 	</Button>
 	
+	<Button virtual="true" name="ArkInventory_ChangerVaultActionTemplate" inherits="ARKINV_TemplateButton" hidden="true">
+		
+		<Size x="30" y="30" />
+		
+		<NormalTexture file="Interface\Buttons\UI-SpellbookIcon-NextPage-Up" />
+		
+		<PushedTexture file="Interface\Buttons\UI-SpellbookIcon-NextPage-Down" />
+		
+		<Scripts>
+			
+			<OnLoad>
+				ArkInventory.Frame_Changer_Vault_Action_OnLoad( self )
+			</OnLoad>
+			
+			<OnClick>
+				ArkInventory.Frame_Changer_Vault_Action_OnClick( self, button, down )
+			</OnClick>
+			
+	        <OnReceiveDrag>
+	            -- do nothing
+	        </OnReceiveDrag>
+			
+			<OnEnter>
+				ArkInventory.Frame_Changer_Vault_Action_OnEnter( self )
+			</OnEnter>
+			
+		</Scripts>
+			
+	</Button>
+	
 	<Button virtual="true" name="ArkInventory_ChangerGenericExtraTemplate" inherits="ArkInventory_ChangerPlayerMainTemplate">
 		
 		<Scripts>
@@ -673,6 +721,40 @@
 		</Scripts>
 		
 	</Button>
+	
+	<Button virtual="true" name="ArkInventory_ChangerBattlepetTemplate" inherits="ARKINV_TemplateButtonBattlepetItem" hidden="false">
+		<Scripts>
+			
+			<OnLoad>
+				ArkInventory.Frame_Changer_Battlepet_OnLoad( self )
+			</OnLoad>
+			
+			<OnClick>
+				ArkInventory.Frame_Changer_Battlepet_OnClick( self )
+			</OnClick>
+			
+			<OnDragStart>
+				ArkInventory.Frame_Changer_Battlepet_OnDragStart( self )
+			</OnDragStart>
+			
+			<OnReceiveDrag>
+				ArkInventory.Frame_Changer_Battlepet_OnClick( self )
+			</OnReceiveDrag>
+			
+			<OnEnter>
+				ArkInventory.Frame_Changer_Battlepet_OnEnter( self )
+			</OnEnter>
+			
+			<OnLeave>
+				ArkInventory.Frame_Changer_Battlepet_OnLeave( self )
+			</OnLeave>
+			
+		</Scripts>
+		
+	</Button>
+	
+	
+	
 	
 	<Frame virtual="true" name="ARKINV_TemplateFrameBar" inherits="ARKINV_TemplateFrameStandard">
 
@@ -1718,7 +1800,7 @@
 		</Anchors>
 	
 		<Frames>
-		
+			
 			<Button name="$parentBag1" inherits="ArkInventory_ChangerVaultTabTemplate">
 				<Anchors>
 					<Anchor point="LEFT" x="10" y="0" />
@@ -1748,32 +1830,38 @@
 					<Anchor point="LEFT" relativeTo="$parentBag4" relativePoint="RIGHT" x="5" y="0" />
 				</Anchors>
 			</Button>
-
+			
 			<Button name="$parentBag6" inherits="ArkInventory_ChangerVaultTabTemplate">
 				<Anchors>
 					<Anchor point="LEFT" relativeTo="$parentBag5" relativePoint="RIGHT" x="5" y="0" />
 				</Anchors>
 			</Button>
-
+			
 			<Button name="$parentBag7" inherits="ArkInventory_ChangerVaultTabTemplate">
 				<Anchors>
 					<Anchor point="LEFT" relativeTo="$parentBag6" relativePoint="RIGHT" x="5" y="0" />
 				</Anchors>
 			</Button>
-
+			
 			<Button name="$parentBag8" inherits="ArkInventory_ChangerVaultTabTemplate">
 				<Anchors>
 					<Anchor point="LEFT" relativeTo="$parentBag7" relativePoint="RIGHT" x="5" y="0" />
 				</Anchors>
 			</Button>
-
+			
 			<Button name="$parentBag9" inherits="ArkInventory_ChangerVaultTabTemplate">
 				<Anchors>
 					<Anchor point="LEFT" relativeTo="$parentBag8" relativePoint="RIGHT" x="5" y="0" />
 				</Anchors>
 			</Button>
-
-			<Button name="$parentWithdrawButton" inherits="UIPanelButtonTemplate" text="WITHDRAW" hidden="false">
+			
+			<Button name="$parentAction" inherits="ArkInventory_ChangerVaultActionTemplate">
+				<Anchors>
+					<Anchor point="RIGHT" x="-10" y="0" />
+				</Anchors>
+			</Button>
+			
+			<Button name="$parentWithdrawButton" inherits="UIPanelButtonTemplate" text="WITHDRAW" hidden="true">
 				
 				<Size x="124" y="21" />
 				
@@ -1794,9 +1882,9 @@
 				</Scripts>
 				
 			</Button>
-
-			<Frame name="$parentGoldAvailable" inherits="ArkInventory_SmallMoneyFrameTemplate">
-					
+			
+			<Frame name="$parentGoldAvailable" inherits="ArkInventory_SmallMoneyFrameTemplate" hidden="true">
+				
 				<Anchors>
 					<Anchor point="RIGHT" relativeTo="$parentWithdrawButton" relativePoint="LEFT" />
 				</Anchors>
@@ -1809,14 +1897,14 @@
 				
 			</Frame>
 
-			<Button name="$parentDepositButton" inherits="UIPanelButtonTemplate" text="DEPOSIT" hidden="false">
+			<Button name="$parentDepositButton" inherits="UIPanelButtonTemplate" text="DEPOSIT" hidden="true">
 					
 				<Size x="124" y="21" />
-						
+				
 				<Anchors>
-					<Anchor point="TOPRIGHT" x="-5" y="-5" />
+					<Anchor point="RIGHT" relativeTo="$parentGoldAvailable" relativePoint="LEFT" x="-5" y="0" />
 				</Anchors>
-						
+				
 				<Scripts>
 					<OnClick>
 						PlaySound( "igMainMenuOption" )
@@ -1830,8 +1918,8 @@
 				</Scripts>
 				
 			</Button>
-
-			<Frame name="$parentGoldTotal" inherits="ArkInventory_SmallMoneyFrameTemplate">
+			
+			<Frame name="$parentGoldTotal" inherits="ArkInventory_SmallMoneyFrameTemplate" hidden="true">
 					
 				<Anchors>
 					<Anchor point="RIGHT" relativeTo="$parentDepositButton" relativePoint="LEFT" />
@@ -1845,7 +1933,7 @@
 				
 			</Frame>
 			
-			<Frame name="$parentPurchaseInfo">
+			<Frame name="$parentPurchaseInfo" hidden="true">
 			
 				<Size x="130" y="38" />
 				
@@ -1909,6 +1997,39 @@
 
 	<Frame name="ARKINV_Frame7" inherits="ARKINV_TemplateFrameMain" id="7" /> <!-- pets -->
 	
+	<Frame parent="ARKINV_Frame7Changer" name="$parentWindow" hidden="false">
+		
+		<Size x="1" y="1" />
+		
+		<Anchors>
+			<Anchor point="TOPLEFT" />
+			<Anchor point="BOTTOMRIGHT" />
+		</Anchors>
+		
+		<Frames>
+			
+			<Button name="$parentBag1" inherits="ArkInventory_ChangerBattlepetTemplate" id="1">
+				<Anchors>
+					<Anchor point="BOTTOMRIGHT" relativeTo="$parent" relativePoint="BOTTOMLEFT" x="50" y="10" />
+				</Anchors>
+			</Button>
+			
+			<Button name="$parentBag2" inherits="ArkInventory_ChangerBattlepetTemplate" id="2">
+				<Anchors>
+					<Anchor point="BOTTOMRIGHT" relativeTo="$parentBag1" x="50" y="0" />
+				</Anchors>
+			</Button>
+			
+			<Button name="$parentBag3" inherits="ArkInventory_ChangerBattlepetTemplate" id="3">
+				<Anchors>
+					<Anchor point="BOTTOMRIGHT" relativeTo="$parentBag2" x="50" y="0" />
+				</Anchors>
+			</Button>
+			
+		</Frames>
+		
+	</Frame>
+
 	<Frame name="ARKINV_Frame8" inherits="ARKINV_TemplateFrameMain" id="8" /> <!-- tokens -->
 	
 	<Frame name="ARKINV_Frame9" inherits="ARKINV_TemplateFrameMain" id="9" /> <!-- mounts -->

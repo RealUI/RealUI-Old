@@ -1,6 +1,7 @@
 local _G = _G
 local select = _G.select
 local pairs = _G.pairs
+local ipairs = _G.ipairs
 local string = _G.string
 local type = _G.type
 local error = _G.error

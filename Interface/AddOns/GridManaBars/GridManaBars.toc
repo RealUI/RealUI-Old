@@ -1,4 +1,4 @@
-## Interface: 40300
+## Interface: 50001
 ## Title: GridManaBars
 ## Notes: Adds manabars to the sides of Grid frames.
 ## Notes-ruRU: Добовляет полоски маны в фрейм Gridа.
@@ -9,7 +9,7 @@
 ## Grid Author: Pastamancer & Maia
 ## X-Website: http://wowace.com/wiki/Grid
 ## Dependencies: Grid
-## X-Curse-Packaged-Version: v1.03
+## X-Curse-Packaged-Version: v1.04-toc5.0
 ## X-Curse-Project-Name: GridManaBars
 ## X-Curse-Project-ID: grid-mana-bars
 ## X-Curse-Repository-ID: wow/grid-mana-bars/mainline

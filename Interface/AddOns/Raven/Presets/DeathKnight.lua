@@ -23,6 +23,7 @@ Raven.classSpells.DEATHKNIGHT = {
 	{ "Dancing Rune Weapon", BUFF, p.Yellow1, cooldown = true, id = 49028 },
 	{ "Dark Command", DEBUFF, p.Orange1, cooldown = true, id = 56222 },
 	{ "Dark Simulacrum", DEBUFF, p.Purple2, cooldown = true, id = 77606 },
+	{ "Dark Succor", BUFF, p.Red1, id = 101568 },
 	{ "Dark Transformation", BUFF, p.Brown3, school = "Shadow", id = 63560 },
 	{ "Death and Decay", DEBUFF, p.Orange3, cooldown = true, school = "Shadow", id = 43265 },
 	{ "Death Coil", nil, p.Green2, lockout = true, school = "Shadow", id = 47541 },

@@ -91,12 +91,17 @@ end
 local function SpellHeal(timestamp, eventtype, srcGUID, srcName, srcFlags, dstGUID, dstName, dstFlags, ...)
 	-- Healing
 	local spellId, spellName, spellSchool, samount, soverhealing, absorbed, scritical = ...
-	samount = min(0, samount - soverhealing)
+	samount = max(0, samount - soverhealing)
 	
 	srcGUID, srcName_modified = Skada:FixMyPets(srcGUID, srcName)
 	dstGUID, dstName = Skada:FixMyPets(dstGUID, dstName)
-	log_deathlog(Skada.current, dstGUID, dstName, spellId, (srcName_modified or srcName)..L["'s "]..spellName, samount, timestamp)
-	log_deathlog(Skada.total, dstGUID, dstName, spellId, srcName..L["'s "]..spellName, samount, timestamp)
+	if srcName then
+		log_deathlog(Skada.current, dstGUID, dstName, spellId, (srcName_modified or srcName)..L["'s "]..(spellName or L["Attack"]), samount, timestamp)
+		log_deathlog(Skada.total, dstGUID, dstName, spellId, srcName..L["'s "]..spellName, samount, timestamp)
+	else
+		log_deathlog(Skada.current, dstGUID, dstName, spellId, spellName, samount, timestamp)
+		log_deathlog(Skada.total, dstGUID, dstName, spellId, spellName, samount, timestamp)
+	end
 end
 
 -- Death meter.

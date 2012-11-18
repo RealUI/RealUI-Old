@@ -538,6 +538,12 @@ function MOD:SetDispelDefaults()
 		elseif RavenCheckSpellKnown(2782) then -- Remove Corruption
 			dispelTypes.Poison = true; dispelTypes.Curse = true
 		end
+	elseif MOD.myClass == "MONK" then
+		if RavenCheckSpellKnown(115451) then -- Internal Medicine
+			dispelTypes.Poison = true; dispelTypes.Disease = true; dispelTypes.Magic = true
+		elseif RavenCheckSpellKnown(115450) then -- Detox
+			dispelTypes.Poison = true; dispelTypes.Disease = true
+		end
 	elseif MOD.myClass == "PRIEST" then
 		if RavenCheckSpellKnown(527) then
 			dispelTypes.Magic = true; dispelTypes.Disease = true -- Purify

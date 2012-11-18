@@ -35,7 +35,7 @@ if not L then return end
 	
 	
 --	location names
-	L["LOCATION_ALL"] = "Tous"
+--	L["LOCATION_ACCOUNT"] = ""
 	L["LOCATION_BANK"] = "Banque"
 	L["LOCATION_WEARING"] = "Vêtements"
 	
@@ -71,8 +71,6 @@ if not L then return end
 	
 --	system category descriptions
 	L["CATEGORY_SYSTEM_CORE_MATS"] = "Matière première"
-	L["CATEGORY_SYSTEM_EQUIPMENT"] = "Equipement non lié"
-	L["CATEGORY_SYSTEM_EQUIPMENT_SOULBOUND"] = "Equipement lié"
 	
 	
 --	consumable category descriptions
@@ -142,8 +140,9 @@ if not L then return end
 	L["MENU_ITEM_DEBUG_SLOT"] = "Emplacement"
 --	L["MENU_ITEM_DEBUG_BAG_TYPE"] = ""
 --	L["MENU_ITEM_DEBUG_PET_ID"] = ""
+--	L["MENU_ITEM_DEBUG_PET_SPECIES"] = ""
 	L["MENU_ITEM_DEBUG_AI_ID_SHORT"] = "ID court"
-	L["MENU_ITEM_DEBUG_AI_ID_CACHE"] = "ID cache"
+	L["MENU_ITEM_DEBUG_CACHE"] = "ID cache"
 	L["MENU_ITEM_DEBUG_AI_ID_RULE"] = "ID de règle"
 	L["MENU_ITEM_DEBUG_AI_ID_CATEGORY"] = "ID catégorie"
 	L["MENU_ITEM_DEBUG_LVL_ITEM"] = "Niveau de l'objet (stat)"
@@ -161,7 +160,6 @@ if not L then return end
 	
 --	bar menu
 	L["MENU_BAR_TITLE"] = "Groupe %1$s"
-	L["MENU_BAR_CATEGORY"] = "Catégorie"
 	L["MENU_BAR_CATEGORY_TEXT"] = "Assigner la catégorie %1$s à ce groupe"
 	L["MENU_BAR_CATEGORY_CURRENT"] = "Assignation actuel"
 	L["MENU_BAR_CATEGORY_ASSIGN"] = "Catégories assignables"
@@ -225,6 +223,8 @@ if not L then return end
 --	L["CONFIG_SYSTEM_TOOLTIP_VAULT_TEXT"] = ""
 --	L["CONFIG_SYSTEM_TOOLTIP_BATTLEPET_SOURCE_TEXT"] = ""
 --	L["CONFIG_SYSTEM_TOOLTIP_BATTLEPET_DESCRIPTION_TEXT"] = ""
+--	L["CONFIG_SYSTEM_TOOLTIP_BATTLEPET_CUSTOM_ENABLE_TEXT"] = ""
+--	L["CONFIG_SYSTEM_TOOLTIP_BATTLEPET_MOUSEOVER_ENABLE_TEXT"] = ""
 	
 	L["CONFIG_SYSTEM_BUGFIX"] = "Corriger/Contourner le bogue"
 	L["CONFIG_SYSTEM_BUGFIX_TEXT"] = "Activer le code pour corriger ou contourner ce problème"
@@ -249,6 +249,8 @@ if not L then return end
 --	L["CONFIG_SYSTEM_MESSAGES_TRANSLATION_INTERIM_TEXT"] = ""
 --	L["CONFIG_SYSTEM_MESSAGES_TRANSLATION_FINAL"] = ""
 --	L["CONFIG_SYSTEM_MESSAGES_TRANSLATION_FINAL_TEXT"] = ""
+--	L["CONFIG_SYSTEM_MESSAGES_BATTLEPET_OPPONENT"] = ""
+--	L["CONFIG_SYSTEM_MESSAGES_BATTLEPET_OPPONENT_TEXT"] = ""
 	
 	
 --	configuration options > auto
@@ -432,8 +434,6 @@ if not L then return end
 	
 	
 --	configuration options > categories
-	L["CONFIG_CATEGORY"] = "Catégories"
-	
 	L["CONFIG_CATEGORY_CUSTOM"] = "Catégories personnelles"
 --	L["CONFIG_CATEGORY_DELETED"] = ""
 	
@@ -515,10 +515,17 @@ if not L then return end
 	L["MISC_ALERT_FRAMELEVEL_1"] = "Correction de bogue complète"
 	L["MISC_ALERT_FRAMELEVEL_2"] = "Le FrameLevel pour la fenêtre %1$s est actuellement a %2$s et a été réinitialisé a %3$s pour être sur qu'il reste fonctionnel. Désolé pour le temps pris pour la correction de ce bogue."
 	
+--	L["BATTLEPET_OPPONENT_IMMUNE"] = ""
+--	L["BATTLEPET_OPPONENT_KNOWN_MAX"] = ""
+--	L["BATTLEPET_OPPONENT_KNOWN"] = ""
+--	L["BATTLEPET_OPPONENT_UNKNOWN"] = ""
+--	L["BATTLEPET_OPPONENT_UPGRADE"] = ""
+	
 	
 --	item count tooltip
 --	L["TOOLTIP_COUNT_ME"] = ""
 --	L["TOOLTIP_VAULT_TABS"] = ""
+--	L["TOOLTIP_GOLD_AMOUNT"] = ""
 	
 	
 --	generic text
@@ -582,6 +589,7 @@ if not L then return end
 --	L["CLICK_TO_DESELECT"] = ""
 --	L["CLICK_TO_IGNORE"] = ""	
 	L["ORDER"] = "Ordre"
+--	L["MOUSEOVER"] = ""
 	
 	
 -- libdatabroker
@@ -595,7 +603,9 @@ if not L then return end
 --	L["LDB_TRACKING_CURRENCY"] = ""
 --	L["LDB_PETS_SUMMON"] = ""
 --	L["LDB_MOUNTS_NOT_HERE"] = ""
---	L["LDB_MOUNTS_GROUND"] = ""
+--	L["LDB_MOUNTS_TYPE_L"] = ""
+--	L["LDB_MOUNTS_TYPE_U"] = ""
+--	L["LDB_MOUNTS_TYPE_S"] = ""
 --	L["LDB_MOUNTS_FLYING_DISMOUNT"] = ""
 --	L["LDB_MOUNTS_FLYING_DISMOUNT_TEXT"] = ""
 --	L["LDB_MOUNTS_FLYING_DISMOUNT_WARNING"] = ""

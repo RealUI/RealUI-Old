@@ -1,6 +1,6 @@
 ﻿-- (c) 2009-2012, all rights reserved.
--- $Revision: 996 $
--- $Date: 2012-09-24 02:47:07 +1000 (Mon, 24 Sep 2012) $
+-- $Revision: 1043 $
+-- $Date: 2012-11-15 21:15:42 +1100 (Thu, 15 Nov 2012) $
 
 
 local _G = _G
@@ -194,6 +194,10 @@ function ArkInventoryRules.System.soulbound( )
 	return not not ArkInventoryRules.Object.sb
 end
 
+function ArkInventoryRules.System.accountbound( )
+	return not not ArkInventoryRules.Object.ab
+end
+
 function ArkInventoryRules.System.id( ... )
 	
 	if not ArkInventoryRules.Object.h then
@@ -236,11 +240,9 @@ end
 
 function ArkInventoryRules.System.type( ... )
 	
-	if not ArkInventoryRules.Object.h or ArkInventoryRules.Object.class ~= "item" then
+	if not ArkInventoryRules.Object.h or ( ArkInventoryRules.Object.class ~= "item" ) then
 		return false
 	end
-	
-	local e = string.lower( select( 6, GetItemInfo( ArkInventoryRules.Object.h ) ) or "" )
 	
 	local fn = "type"
 	
@@ -250,7 +252,7 @@ function ArkInventoryRules.System.type( ... )
 		error( string.format( ArkInventory.Localise["RULE_FAILED_ARGUMENT_NONE_SPECIFIED"], fn ), 0 )
 	end
 	
-	local e = string.lower( select( 6, GetItemInfo( ArkInventoryRules.Object.h ) ) or "" )
+	local e = string.lower( select( 8, ArkInventory.ObjectInfo( ArkInventoryRules.Object.h ) ) )
 	
 	if e ~= "" then
 		
@@ -292,7 +294,7 @@ function ArkInventoryRules.System.subtype( ... )
 		error( string.format( ArkInventory.Localise["RULE_FAILED_ARGUMENT_NONE_SPECIFIED"], fn ), 0 )
 	end
 	
-	local e = string.lower( select( 7, GetItemInfo( ArkInventoryRules.Object.h ) ) or "" )
+	local e = string.lower( select( 9, ArkInventory.ObjectInfo( ArkInventoryRules.Object.h ) ) )
 	
 	if e ~= "" then
 		
@@ -326,7 +328,7 @@ function ArkInventoryRules.System.equip( ... )
 		return false
 	end
 	
-	local e = string.trim( select( 9, GetItemInfo( ArkInventoryRules.Object.h ) ) or "" )
+	local e = string.trim( select( 11, ArkInventory.ObjectInfo( ArkInventoryRules.Object.h ) ) )
 	if string.len( e ) > 1 then
 		e = _G[e]
 	end
@@ -491,7 +493,7 @@ function ArkInventoryRules.System.itemlevelstat( ... )
 		error( string.format( ArkInventory.Localise["RULE_FAILED_ARGUMENT_IS_INVALID"], fn, 2, ArkInventory.Localise["NUMBER"] ), 0 )
 	end
 	
-	local level = select( 4, GetItemInfo( ArkInventoryRules.Object.h ) ) or 0
+	local level = select( 6, ArkInventory.ObjectInfo( ArkInventoryRules.Object.h ) )
 	
 	if level >= arg1 and level <= arg2 then
 		return true
@@ -533,7 +535,7 @@ function ArkInventoryRules.System.itemleveluse( ... )
 		error( string.format( ArkInventory.Localise["RULE_FAILED_ARGUMENT_IS_INVALID"], fn, 2, ArkInventory.Localise["NUMBER"] ), 0 )
 	end
 	
-	local level = select( 5, GetItemInfo( ArkInventoryRules.Object.h ) ) or 0
+	local level = select( 7, ArkInventory.ObjectInfo( ArkInventoryRules.Object.h ) ) or 0
 	
 	if level >= arg1 and level <= arg2 then
 		return true
@@ -933,7 +935,7 @@ function ArkInventoryRules.System.vendorprice( opt, t )
 		return false
 	end
 	
-	local price_per = select( 11, GetItemInfo( ArkInventoryRules.Object.h ) )
+	local price_per = select( 12, ArkInventory.ObjectInfo( ArkInventoryRules.Object.h ) )
 	
 	if price_per == nil then
 	
@@ -1009,7 +1011,7 @@ function ArkInventoryRules.System.characterlevelrange( ... )
 	end
 	
 	local clevel = UnitLevel( "player" )
-	local ilevel = select( 5, GetItemInfo( ArkInventoryRules.Object.h ) ) or clevel
+	local ilevel = select( 6, ArkInventory.ObjectInfo( ArkInventoryRules.Object.h ) ) or clevel
 	
 	arg1 = clevel - arg1
 	arg2 = clevel + arg2
@@ -1200,17 +1202,90 @@ function ArkInventoryRules.System.trash( )
 	
 end
 
+function ArkInventoryRules.System.pettype( ... )
+	
+	if not ArkInventoryRules.Object.h or ( ArkInventoryRules.Object.class ~= "battlepet" ) then
+		return false
+	end
+	
+	local fn = "pettype"
+	
+	local ac = select( '#', ... )
+	
+	if ac == 0 then
+		error( string.format( ArkInventory.Localise["RULE_FAILED_ARGUMENT_NONE_SPECIFIED"], fn ), 0 )
+	end
+	
+	local e = string.lower( select( 8, ArkInventory.ObjectInfo( ArkInventoryRules.Object.h ) ) )
+	
+	if e ~= "" then
+		
+		for ax = 1, ac do
+			
+			local arg = select( ax, ... )
+			
+			if not arg then
+				error( string.format( ArkInventory.Localise["RULE_FAILED_ARGUMENT_IS_NIL"], fn, ax ), 0 )
+			end
+			
+			if type( arg ) == "number" then
+				arg = _G[string.format( "%s%s", "BATTLE_PET_NAME_", arg )]
+				if not arg then
+					error( string.format( ArkInventory.Localise["RULE_FAILED_ARGUMENT_IS_INVALID"], fn, ax, "within acceptable range" ), 0 )
+				end
+			end
+			
+			if type( arg ) ~= "string" then
+				error( string.format( ArkInventory.Localise["RULE_FAILED_ARGUMENT_IS_INVALID"], fn, ax, ArkInventory.Localise["STRING"] ), 0 )
+			end
+			
+			if e == string.lower( string.trim( arg ) ) then
+				return true
+			end
+			
+		end
+		
+	end
+	
+	return false
+	
+end
+
+function ArkInventoryRules.System.petiswild( ... )
+	
+	if ( not ArkInventoryRules.Object.h ) or ( ArkInventoryRules.Object.class ~= "battlepet" ) then
+		return false
+	end
+	
+	return not not ArkInventoryRules.Object.wp
+	
+end
+
+function ArkInventoryRules.System.petcanbattle( ... )
+	
+	if ( not ArkInventoryRules.Object.h ) or ( ArkInventoryRules.Object.class ~= "battlepet" ) then
+		return false
+	end
+	
+	return not not ArkInventoryRules.Object.bp
+	
+end
+
 
 ArkInventoryRules.Environment = {
 	
 	soulbound = ArkInventoryRules.System.soulbound,
 	sb = ArkInventoryRules.System.soulbound,
 	
+	accountbound = ArkInventoryRules.System.accountbound,
+	ab = ArkInventoryRules.System.accountbound,
+	
 	id = ArkInventoryRules.System.id,
 	
 	type = ArkInventoryRules.System.type,
 	
 	subtype = ArkInventoryRules.System.subtype,
+	stype = ArkInventoryRules.System.subtype,
 	
 	equip = ArkInventoryRules.System.equip,
 	
@@ -1252,6 +1327,13 @@ ArkInventoryRules.Environment = {
 	count = ArkInventoryRules.System.count,
 	
 	stacks = ArkInventoryRules.System.stacks,
+	
+	pettype = ArkInventoryRules.System.pettype,
+	ptype = ArkInventoryRules.System.pettype,
+	
+	petiswild = ArkInventoryRules.System.petiswild,
+	
+	petcanbattle = ArkInventoryRules.System.petcanbattle,
 	
 	-- 3rd party addons requried for the following functions to work
 	

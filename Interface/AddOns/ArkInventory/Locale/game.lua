@@ -1,4 +1,4 @@
-local L = LibStub( "AceLocale-3.0" ):NewLocale( "ArkInventory", "enUS", true, false )
+﻿local L = LibStub( "AceLocale-3.0" ):NewLocale( "ArkInventory", "enUS", true, false )
 if not L then return end
 
 -- game client based localisations and internal stuff
@@ -68,10 +68,13 @@ L["CATEGORY_SYSTEM_SOULBOUND"] = ITEM_SOULBOUND or true
 L["CATEGORY_CONSUMABLE_FOOD"] = TUTORIAL_TITLE11 or true
 L["CATEGORY_CONSUMABLE_DRINK"] = TUTORIAL_TITLE12 or true
 
+L["CATEGORY_SYSTEM_EQUIPMENT"] = TUTORIAL_TITLE24 or true
+L["CATEGORY_SYSTEM_EQUIPMENT_SOULBOUND"] = ( TUTORIAL_TITLE24 and ITEM_SOULBOUND and string.format( "%s (%s)", TUTORIAL_TITLE24, ITEM_SOULBOUND ) ) or true
+L["CATEGORY_SYSTEM_EQUIPMENT_ACCOUNTBOUND"] = ( TUTORIAL_TITLE24 and ITEM_ACCOUNTBOUND and string.format( "%s (%s)", TUTORIAL_TITLE24, ITEM_ACCOUNTBOUND ) ) or true
 
 -- ldb
-L["LDB_MOUNTS_FLYING"] = BATTLE_PET_NAME_3 or true -- calculated keyword
-L["LDB_MOUNTS_WATER"] = BATTLE_PET_NAME_9 or true -- calculated keyword
+L["LDB_MOUNTS_TYPE_A"] = BATTLE_PET_NAME_3 or true -- calculated keyword
+L["LDB_MOUNTS_TYPE_X"] = VIDEO_QUALITY_LABEL6 or true -- calculated keyword
 
 
 -- generic words
@@ -89,7 +92,6 @@ L["DEFAULT"] = DEFAULT or true
 L["DELETE"] = DELETE or true
 L["DESCRIPTION"] = QUEST_DESCRIPTION or true
 L["DISABLED"] = ADDON_DISABLED or true
-L["FLYING"] = BATTLE_PET_NAME_3 or true
 L["GENERAL"] = GENERAL or true
 L["ITEMS"] = ITEMS or true
 L["LOCK"] = LOCK or true
@@ -110,16 +112,27 @@ L["TRACKING"] = TRACKING or true
 L["UNKNOWN"] = UNKNOWNOBJECT or true
 L["YES"] = YES or true
 L["BATTLEPET"] = TOOLTIP_BATTLE_PET or true
+L["ALL"] = ALL or true
+L["CATEGORY"] = CATEGORY or true
+L["CATEGORIES"] = CATEGORIES or true
+L["CHARACTER"] = CHARACTER or true
+L["CUSTOM"] = CUSTOM or true
+
+
+local function ConvertToCapture( text )
+	text = string.gsub( text, "%d%$", "" ) -- remove 1$ / 2$
+	text = string.gsub( text, "%(", "%%%(" ) -- replace ( with %(
+	text = string.gsub( text, "%)", "%%%)" ) -- replace ) with %)
+	text = string.gsub( text, "%%s", "(.+)" ) -- replace %s with (.+)
+	text = string.gsub( text, "%%d", "%(%%d+%)" ) -- replace %d with (%d+)
+	return string.format( "^%s$", text )
+end
 
 -- calculated
-local text = ITEM_MIN_SKILL
-text = string.gsub( text, "1%$", "", 1 )  -- remove 1$
-text = string.gsub( text, "2%$", "", 1 ) -- remove 2$
-text = string.gsub( text, "%(", "%%%(", 1 ) -- replace ( with %(
-text = string.gsub( text, "%)", "%%%)", 1 ) -- replace ) with %)
-text = string.gsub( text, "%%s", "(.+)", 1 ) -- replace %s with (.+)
-text = string.gsub( text, "%%d", "%(%%d+%)", 1 ) -- replace %d with (%d+)
-L["WOW_TOOLTIP_SKILL"] = string.format( "^%s", text )
+L["WOW_TOOLTIP_REQUIRES_SKILL"] = ConvertToCapture( ITEM_MIN_SKILL )
+L["WOW_TOOLTIP_REQUIRES_LEVEL"] = ConvertToCapture( ITEM_MIN_LEVEL )
+L["WOW_TOOLTIP_REQUIRES_CLASS"] = ConvertToCapture( ITEM_CLASSES_ALLOWED )
+L["WOW_TOOLTIP_REQUIRES"] = ConvertToCapture( ITEM_REQ_SKILL )
 
 L["WOW_TOOLTIP_CLASS"] = string.format( "^%s", string.gsub( ITEM_CLASSES_ALLOWED, "%%s", "(.+)", 1 ) )
 L["PET_BATTLE_BOUND"] = string.format( "%s (%s)", TOOLTIP_BATTLE_PET, ITEM_ACCOUNTBOUND )

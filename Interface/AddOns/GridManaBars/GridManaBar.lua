@@ -30,8 +30,8 @@ local mb_options = {
             name = L["Size"],
             desc = L["Percentage of frame for mana bar"],
             max = 90,
-            min = 3,
-            step = 0.5,
+            min = 10,
+            step = 5,
             get = function ()
                 return GridMBFrame.db.profile.size * 100
                 end,

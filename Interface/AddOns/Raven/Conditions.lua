@@ -53,7 +53,7 @@ MOD.conditionTests = {
 	["Debuff Count"] = { enable = false, unit = "player", aura = nil, count = 1, isMine = nil, toggle = false },
 	["Debuff Type"] = { enable = false, hasDebuff = nil, toggle = false },
 	["All Cooldowns"] = { enable = false, notUsable = false, spells = nil, timeLeft = 10 },
-	["Spell Ready"] = { enable = false, spell = nil, inRange = nil, notUsable = false },
+	["Spell Ready"] = { enable = false, spell = nil, inRange = nil, notUsable = false, checkCharges = nil, charges = 1 },
 	["Spell Casting"] = { enable = false, spell = nil, unit = "player" },
 	["Item Ready"] = { enable = false, item = nil, toggle = nil, checkCount = nil, count = 1, checkCharges = nil, charges = 1 },
 }
@@ -202,12 +202,17 @@ local function CheckSpellKnown(spell)
 end
 
 -- Check if a spell is ready to be cast by the player, if rangeCheck then make sure in range of unit too
-local function CheckSpellReady(spell, unit, rangeCheck, usable)
+local function CheckSpellReady(spell, unit, rangeCheck, usable, checkCharges, charges)
 	if not spell or (spell == "") then return true end
 	if usable and not IsUsableSpell(spell) then return false end -- checks player has learned the spell, has mana and/or reagents, and reactive conditions are met
 	local cd = MOD:CheckCooldown(spell) -- checks if spell is on cooldown (note this should correctly ignore DK rune cooldowns)
-	if cd and (cd[4] ~= nil) then return false end -- verify is on cooldown and has a valid duration
+	if cd and ((cd[4] ~= nil) and (not cd[9] or cd[9] == 0)) then return false end -- verify is on cooldown and has a valid duration and no charges remaining
 	if IsOn(rangeCheck) and IsOn(unit) and ((IsSpellInRange(spell, unit) == 1) ~= rangeCheck) then return false end
+	if IsOn(checkCharges) then -- optionally check for remaining spell charges (can't count on the value of cd if not on cooldown)
+		n = GetSpellCharges(spell)
+		if not n then n = 0 end
+		if checkCharges == true then if n >= charges then return false end else if n < charges then return false end end
+	end
 	return true
 end
 
@@ -238,10 +243,12 @@ local function CheckItemReady(item, ready, checkCount, count, checkCharges, char
 	if id then item = id end
 	if IsOn(checkCount) then
 		n = GetItemCount(item, false, false)
+		if not n then n = 0 end
 		if checkCount == true then if n >= count then return false end else if n < count then return false end end
 	end
 	if IsOn(checkCharges) then
 		n = GetItemCount(item, false, true)
+		if not n then n = 0 end
 		if checkCharges == true then if n >= charges then return false end else if n < charges then return false end end
 	end
 	return true
@@ -298,7 +305,7 @@ local function CheckAllCooldowns(spells, ready, timeLeft, toggle)
 		local cdt = 0
 		if ready and not IsUsableSpell(spell) then if not CheckSpellKnown(spell) then return false end cdt = 3600 end
 		local cd = MOD:CheckCooldown(spell) -- look up in the active cooldowns table
-		if cd and (cd[1] ~= nil) then cdt = cd[1]; if timeLeft < cdt then AddTimeEvent(spell, cdt - timeLeft) end end
+		if cd and (cd[1] ~= nil) and ((cd[4] ~= nil) and (not cd[9] or cd[9] == 0)) then cdt = cd[1]; if timeLeft < cdt then AddTimeEvent(spell, cdt - timeLeft) end end
 		if toggle then
 			if cdt >= timeLeft then return false end
 		else
@@ -520,7 +527,7 @@ local function CheckTestAND(ttype, t)
 	elseif ttype == "All Cooldowns" then
 		if HasTable(t.spells) and not CheckAllCooldowns(t.spells, not t.notUsable, t.timeLeft, toggle) then return false end
 	elseif ttype == "Spell Ready" then
-		if not CheckSpellReady(t.spell, "target", t.inRange, not t.notUsable) then return false end
+		if not CheckSpellReady(t.spell, "target", t.inRange, not t.notUsable, t.checkCharges, t.charges) then return false end
 	elseif ttype == "Spell Casting" then
 		if not CheckSpellCast(t.spell, t.unit) then return false end
 	elseif ttype == "Item Ready" then
@@ -629,7 +636,7 @@ local function CheckTestOR(ttype, t)
 	elseif ttype == "All Cooldowns" then
 		if HasTable(t.spells) and CheckAllCooldowns(t.spells, not t.notUsable, t.timeLeft, toggle) then return true end
 	elseif ttype == "Spell Ready" then
-		if CheckSpellReady(t.spell, "target", t.inRange, not t.notUsable) then return true end
+		if CheckSpellReady(t.spell, "target", t.inRange, not t.notUsable, t.checkCharges, t.charges) then return true end
 	elseif ttype == "Spell Casting" then
 		if CheckSpellCast(t.spell, t.unit) then return true end
 	elseif ttype == "Item Ready" then
@@ -666,7 +673,7 @@ function MOD:UpdateConditions()
 		stat.inInstance = false; stat.inArena = false; stat.inBattleground = false end
 	stat.isResting = (IsResting() ~= nil)
 	stat.isMounted = CheckMounted()
-	stat.inVehicle = (UnitUsingVehicle("player") ~= nil)
+	stat.inVehicle = UnitHasVehicleUI("player")
 	stat.isPvP = (UnitIsPVP("player") ~= nil)
 	stat.isStealthed = (IsStealthed() ~= nil)
 	stat.talentGroup = GetActiveSpecGroup(false, false)
@@ -726,7 +733,7 @@ function MOD:UpdateConditions()
 		for _, c in pairs(ct) do if IsOn(c) then c.testResult = false; c.result = false end end
 		-- don't check conditions if dead or in vehicle or on a taxi
 		if UnitIsDeadOrGhost("player") ~= nil then return end
-		if UnitUsingVehicle("player") ~= nil then return end
+		if UnitHasVehicleUI("player") then return end
 		if UnitOnTaxi("player") ~= nil then return end		
 		-- run the tests in each condition to get intermediate testResult
 		for _, c in pairs(ct) do
@@ -1002,6 +1009,9 @@ function MOD:GetConditionText(name)
 						if IsOn(t.inRange) then
 							if t.inRange == true then a = a .. d .. L["Target In Range"] else a = a .. d .. L["Target Out Of Range"] end
 						end
+						local dcount = t.charges
+						if IsOff(dcount) then dcount = 1 end -- default value is 1
+						if t.checkCharges == true then a = a .. d .. L["Less Than"] .. " " .. dcount .. " " .. L["Charges"] elseif t.checkCharges == false then a = a .. d .. dcount .. " " .. L["Or More"] .. " " .. L["Charges"] end
 					end
 				elseif tt == "Spell Casting" then
 					if t.spell and t.spell ~= "" and IsOn(t.unit) then

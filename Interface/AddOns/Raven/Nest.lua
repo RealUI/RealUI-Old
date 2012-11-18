@@ -1294,7 +1294,7 @@ local function BarGroup_SortBars(bg, config)
 			s.timeLeft = bar.timeLeft; s.duration = bar.duration
 		end
 		local id = bar.attributes.group; if bg.attributes.targetFirst and id and tid and id == tid then id = "" end -- sorts to front of the list
-		s.group = id or ""; s.gname = bar.attributes.groupName or (bg.reverse and "ZZZZZZZZZZZZ" or "")
+		s.group = id or ""; s.gname = bar.attributes.groupName or (bg.reverse and "zzzzzzzzzzzz" or "")
 		s.isMine = bar.attributes.isMine; s.class = bar.attributes.class or ""; s.sortPlayer = bg.sortPlayer; s.sortTime = bg.sortTime
 	end
 	local isTimeline = false

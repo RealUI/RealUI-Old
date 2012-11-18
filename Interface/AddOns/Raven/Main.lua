@@ -255,8 +255,8 @@ local function CombatLogTracker(event, timeStamp, e, hc, srcGUID, srcName, sf1, 
 		end
 		if e == "SPELL_AURA_APPLIED" or e == "SPELL_AURA_APPLIED_DOSE" or e == "SPELL_AURA_REFRESH" then
 			local name, rank, icon, count, bType, duration, expire, caster, isStealable, boss, apply, _
-			local isBuff, dst = true, GetUnitIDFromGUID(dstGUID) or dstName
-			if UnitExists(dst) then
+			local isBuff, dst = true, GetUnitIDFromGUID(dstGUID)
+			if dst and UnitExists(dst) then
 				name, rank, icon, count, bType, duration, expire, caster, isStealable, _, _, apply = UnitAura(dst, spellName, nil, "HELPFUL|PLAYER")
 				if not name and (srcGUID ~= dstGUID) then -- don't get debuffs cast by player on self (e.g., Sated)
 					isBuff = false
@@ -269,8 +269,12 @@ local function CombatLogTracker(event, timeStamp, e, hc, srcGUID, srcName, sf1, 
 			if not name then
 				name = spellName; rank = ""; count = 1; bType = nil; duration = MOD:GetDuration(name)
 				if duration > 0 then expire = now + duration else duration = 0; expire = 0 end
-				caster = "player"; isStealable = nil; boss = nil
-				isBuff = (MOD.BuffTable[name] ~= nil) or (bit.band(df1, COMBATLOG_OBJECT_REACTION_MASK) ~= COMBATLOG_OBJECT_REACTION_HOSTILE)
+				caster = "player"; isStealable = nil; boss = nil; apply = nil; isBuff = false
+				if MOD.BuffTable[name] ~= nil then
+					isBuff = true
+				elseif MOD.DebuffTable[name] == nil then
+					isBuff = (bit.band(df1, COMBATLOG_OBJECT_REACTION_MASK) ~= COMBATLOG_OBJECT_REACTION_HOSTILE)
+				end
 			end
 			if name and caster == "player" and (isBuff or (srcGUID ~= dstGUID)) then
 				AddTracker(dstGUID, dstName, isBuff, name, rank, icon, count, btype, duration, expire, caster, isStealable, spellID, boss, apply, nil)
@@ -611,7 +615,7 @@ end
 
 -- Check for update requirements that are not triggered by events
 local function CheckMiscellaneousUpdates()
-	if MOD:ChangedTotems() or IsPossessBarVisible() or UnitUsingVehicle("player") then
+	if MOD:ChangedTotems() or IsPossessBarVisible() or UnitHasVehicleUI("player") then
 		updateCooldowns = true; unitUpdate.player = true; doUpdate = true
 	end
 end

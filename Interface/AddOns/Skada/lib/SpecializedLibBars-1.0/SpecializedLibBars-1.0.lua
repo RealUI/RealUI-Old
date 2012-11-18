@@ -994,33 +994,42 @@ do
 		end
 		
 		local shown = 0
+		local last_icon = false
 		for i = start, stop, step do
 			local origTo = to
 			local v = values[i]
 			if lastBar == self then
 				to = from
-				if orientation == 1 then
-					x1, x2 = (v.showIcon and thickness or 0), 0
-				else
-					x1, x2 = 0, (v.showIcon and -thickness or 0)
-				end
 				y1, y2 = 0, 0
 			else
-				x1, x2 = 0, 0
 				if growup then
 					y1, y2 = spacing, spacing
 				else
 					y1, y2 = -spacing, -spacing
 				end
 			end
+
+			x1, x2 = 0, 0
+			
+			-- Silly hack to fix icon positions. I should just rewrite the whole thing, really. WTB energy.
+			if last_icon and not v.showIcon then
+				x1 = -thickness
+			end
+			if v.showIcon and not last_icon then
+				x1 = thickness
+			end
 			
 			if shown <= maxbars then
 				v:ClearAllPoints()
+				
 				v:SetPoint(from.."LEFT", lastBar, to.."LEFT", x1, y1)
 				v:SetPoint(from.."RIGHT", lastBar, to.."RIGHT", x2, y2)
 				
 				v:Show()
 				shown = shown + 1
+				if v.showIcon then
+					last_icon = true
+				end
 				lastBar = v
 			end
 			
@@ -1030,6 +1039,8 @@ do
 		self.lastBar = lastBar
 	end
 end
+
+
 
 --[[
 ****************************************************************

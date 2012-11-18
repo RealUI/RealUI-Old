@@ -1,0 +1,46 @@
+------------------------------------------------------------------------
+r267 | tomber | 2012-11-01 03:58:07 +0000 (Thu, 01 Nov 2012) | 1 line
+Changed paths:
+   M /trunk/Conditions.lua
+
+Fix error in condition.lua that prevented tests from being run. Replaces previous build.
+------------------------------------------------------------------------
+r266 | tomber | 2012-11-01 00:39:35 +0000 (Thu, 01 Nov 2012) | 4 lines
+Changed paths:
+   M /trunk/Bars.lua
+   M /trunk/Conditions.lua
+   M /trunk/Main.lua
+   M /trunk/Nest.lua
+
+Fix sorting bug that shows up in buff/debuff tracker for mobs whose names begin with the letter Z.
+Fix condition tests for item count/charges and spell charges to default to evaluated to 0 for spells and charges that do not have count/charges.
+Fix vehicle tests to uniformly check for vehicle UI (which seems to more work more consistently than other methods in MoP).
+Fix buff/debuff tracker to work better for AoE and debuff spreading spells (e.g., Hurricane, Fire and Brimstone).
+------------------------------------------------------------------------
+r265 | tomber | 2012-10-28 03:52:42 +0000 (Sun, 28 Oct 2012) | 5 lines
+Changed paths:
+   M /trunk/Bars.lua
+   M /trunk/Conditions.lua
+   M /trunk/Localizations/enUS.lua
+   M /trunk/Presets/Mage.lua
+   M /trunk/Presets/Shaman.lua
+   M /trunk/Profile.lua
+   M /trunk/Raven_Options/Options.lua
+
+Add condition check for number of charges in the Spell Ready test. Fix issue with spells being considered on cooldown when they still had charges available.
+Fix dispel test for monk.
+Add Invoker's Energy to mage presets.
+Fix Searing Flames to be a buff in shaman presets.
+Make sure never show bar groups during cinematics.
+------------------------------------------------------------------------
+r264 | tomber | 2012-09-29 23:31:08 +0000 (Sat, 29 Sep 2012) | 4 lines
+Changed paths:
+   M /trunk/Bars.lua
+   M /trunk/Presets/DeathKnight.lua
+   M /trunk/Raven_Options/Options.lua
+
+This is a bug fix release for MoP and includes three changes:
+1. Automatically hides all bars and icons when in pet battles.
+2. Allows "none" to be entered for stance condition test.
+3. Adds Dark Succor to deathknight presets.
+------------------------------------------------------------------------

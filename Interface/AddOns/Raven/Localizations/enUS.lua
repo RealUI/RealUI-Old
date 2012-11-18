@@ -1372,6 +1372,7 @@ L["If checked, test if spell is usable (i.e., enough mana, reagents, etc.)."] = 
 L["If checked, also test if the target is in range of the spell."] = true
 L["If checked, target must be in range."] = true
 L["If checked, target must be out of range."] = true
+L["If checked, test the number of charges on the spell."] = true
 
 -- Conditions > Tests > Spell Casting
 L["Enter spell to test if being cast or channeled."] = true
