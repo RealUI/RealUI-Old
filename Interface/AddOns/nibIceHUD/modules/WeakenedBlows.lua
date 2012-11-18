@@ -1,13 +1,7 @@
 local L = LibStub("AceLocale-3.0"):GetLocale("nibIceHUD", false)
 local WeakenedBlows = IceCore_CreateClass(IceUnitBar)
-local mass
-
-if IsAddOnLoaded("Massive") then
-	mass = LibStub:GetLibrary("Massive")
-end
 
 local nibIceHUD = _G.nibIceHUD
-
 
 -- Constructor --
 function WeakenedBlows.prototype:init()
@@ -26,7 +20,6 @@ function WeakenedBlows.prototype:init()
 	self.remaining = 0
 	self.name = "Weakened Blows"
 	self.isAura = false
-	self.isTank = false
 end
 
 function WeakenedBlows.prototype:Redraw()
@@ -59,26 +52,14 @@ function WeakenedBlows.prototype:GetDefaultSettings()
 	return defaults
 end
 
-function WeakenedBlows.prototype:isTankUpdate()
-	local role = self:checkRole()
-	--print("3: "..tostring(role))
-	if role and role == "TANK" then
-		self.isTank = true
-	else
-		self.isTank = false
-	end
-end
-
 function WeakenedBlows.prototype:Enable(core)
 	WeakenedBlows.super.prototype.Enable(self, core)
 
-	self:RegisterEvent("UNIT_AURA", "isActive")
-	self:RegisterEvent("PLAYER_TALENT_UPDATE", "isTankUpdate")
-	self:RegisterEvent("PLAYER_TARGET_CHANGED", "UpdateWeakenedBlows")
+	self:RegisterEvent("UNIT_AURA", "UpdateWeakenedBlows")
+	self:RegisterEvent("PLAYER_TARGET_CHANGED", "UpdateShown")
 
 	self:UpdateShown()
 	self:UpdateWeakenedBlows()
-	--print("4: "..tostring(self.isTank))
 end
 
 function WeakenedBlows.prototype:Disable(core)
@@ -91,25 +72,36 @@ function WeakenedBlows.prototype:CreateFrame()
 	self:UpdateShown()
 end
 
-function WeakenedBlows.prototype:UpdateShown()
-	if self.isTank then
-		self:Show(true)
-	else
-		self:Show(false)
-	end
-end
-
-function WeakenedBlows.prototype:isActive()
-	if ( UnitDebuff("target", "Weakened Blows") ) then
+function WeakenedBlows.prototype:isTank()
+	local role = self:checkRole()
+	--print("role: "..tostring(role))
+	if role and role == "TANK" then
 		return true
 	else
 		return false
 	end
 end
 
+function WeakenedBlows.prototype:isActive()
+	if not ( UnitExists("target") and UnitDebuff("target", "Weakened Blows") ) then
+		return false
+	else
+		return true
+	end
+end
+
+function WeakenedBlows.prototype:UpdateShown()
+	--print("WB Active: "..tostring( self.isActive() ))
+	if self:isTank() and self.isActive() then
+		self:Show(true)
+	else
+		self:Show(false)
+	end
+end
+
 function WeakenedBlows.prototype:GetBuffInfo(unitName, buffName)
 	local name, _, _, _, _, duration, endTime = UnitDebuff(unitName, buffName)
-	--print(name.." : "..duration.." : "..endTime)
+	--print("Debuff Info : "..tostring(name).." : "..tostring(duration).." : "..tostring(endTime))
 	if name then
 		return duration, endTime - GetTime(), endTime
 	end
@@ -117,22 +109,18 @@ function WeakenedBlows.prototype:GetBuffInfo(unitName, buffName)
 end
 
 function WeakenedBlows.prototype:UpdateWeakenedBlows(event, unit, fromUpdate)
-	if unit and unit ~= "target" then
+	if not ( unit and ( UnitExists("target") and UnitCanAttack("player", "target") ) ) then
 		return
 	end
 
-	self.duration, self.remaining, self.endTime = self:GetBuffInfo("target", self.name)
-	
-	if self.isActive() then
-		if not self.remaining then
-			self.remaining = self.endTime - GetTime()
-		end
+	if self:isActive() then
+		self.duration, self.remaining, self.endTime = self:GetBuffInfo("target", self.name)
+		
 		self:UpdateBar(self.remaining / self.duration or 0, "WeakenedBlowsColor")
 		self:SetBottomText1(string.format("%d WB", ceil(self.remaining)))
-	else
---		self:UpdateBar(0, "WeakenedBlowsColor")
-		self:Show(false)
 	end
+	
+	self:UpdateShown()
 end
 
 function WeakenedBlows.prototype:MyOnUpdate()

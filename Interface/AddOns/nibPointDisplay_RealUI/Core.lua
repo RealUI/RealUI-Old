@@ -973,7 +973,7 @@ function nibPointDisplay_RealUI:PLAYER_LOGIN()
 	SpellInfo["lus"] = GetSpellInfo(81192)		-- Lunar Shower
 	SpellInfo["lac"] = GetSpellInfo(33745)		-- Lacerate
 	SpellInfo["al"] = GetSpellInfo(90164)		-- Astral Alignment
-	SpellInfo["doc"] = GetSpellInfo(108381)		-- Dream of Cenarius
+	SpellInfo["dc"] = GetSpellInfo(108381)		-- Dream of Cenarius
 	-- Hunter
 	SpellInfo["rsa"] = GetSpellInfo(82925)		-- Ready, Set, Aim...
 	SpellInfo["fe"] = GetSpellInfo(19615)		-- Frenzy Effect
