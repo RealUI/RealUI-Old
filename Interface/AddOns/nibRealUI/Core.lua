@@ -93,7 +93,7 @@ function nibRealUI:CreateBG(frame)
 end
 
 function nibRealUI:CreateFS(parent, justify, ...)
-	print("nibRealUI/Core:CreateFS parent; "..tostring(parent))
+	--print("nibRealUI/Core:CreateFS parent; "..tostring(parent))
 	local f = parent:CreateFontString(nil, "OVERLAY")
 	local size
 	if ... then 

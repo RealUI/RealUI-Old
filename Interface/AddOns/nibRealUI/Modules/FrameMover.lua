@@ -76,9 +76,9 @@ local FrameList = {
 			name = "Alternate Power Bar",
 			frames = {[1] = {name = "PlayerPowerBarAlt"},},
 		},
-		achievementalert = {
-			name = "Achievement Alert",
-		},
+--		achievementalert = {
+--			name = "Achievement Alert",
+--		},
 	},
 	hide = {
 		durabilityframe = {
@@ -1139,7 +1139,7 @@ function FrameMover:PLAYER_ENTERING_WORLD()
 		Hook_Grid()
 		Hook_Raven()
 		Hook_VSI()
-		Hook_AchieveAlert()
+		--Hook_AchieveAlert()
 		
 		self:MoveUIFrames()
 		self:MoveAddons()
