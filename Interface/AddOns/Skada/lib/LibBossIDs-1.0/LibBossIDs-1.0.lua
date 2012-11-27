@@ -1,6 +1,6 @@
 --[[
 Name: LibBossIDs-1.0
-Revision: $Revision: 79 $
+Revision: $Revision: 81 $
 Author: Elsia
 Website: http://www.wowace.com/addons/libbossids-1-0/
 Documentation:
@@ -10,7 +10,7 @@ Dependencies: LibStub
 License: Public Domain, Absolutely no Warranty.
 ]]
 
-local MAJOR, MINOR = "LibBossIDs-1.0", "$Revision: 79 $"
+local MAJOR, MINOR = "LibBossIDs-1.0", "$Revision: 81 $"
 local lib = LibStub:NewLibrary(MAJOR, MINOR)
 
 if not lib then return end
@@ -458,7 +458,12 @@ local BossIDs = {
     -------------------------------------------------------------------------------
    -- Heart of Fear (MoP-Raid 5.0.1)
    -------------------------------------------------------------------------------  
-   [62980]	= true,	-- Zorlok
+   [62837]  = true, -- Grand Empress Shek'zeer
+   [63664]  = true, -- Blade Lord Ta'yak
+   [63666]  = true, -- Amber-Shaper Un'sok
+   [63667]  = true, -- Garalon
+   [65501]  = true, -- Wind Lord Mel'jarak
+   [66791]	= true,	-- Zorlok
    
    -------------------------------------------------------------------------------
    -- Hellfire Citadel: Hellfire Ramparts
@@ -568,6 +573,12 @@ local BossIDs = {
    [17534]	= true,	-- Julianne
 
    -------------------------------------------------------------------------------
+   -- Kun-Lai Summit: MoP World bosses
+   -------------------------------------------------------------------------------
+   [60491]	= true,	-- Sha of Anger
+   [62346]	= true,	-- Galleon
+
+   -------------------------------------------------------------------------------
    -- Lost City of the Tol'vir
    -------------------------------------------------------------------------------
    [44577]	= true,	-- General Husam
@@ -636,9 +647,19 @@ local BossIDs = {
    -------------------------------------------------------------------------------
    -- Mogu'Shan Vault (MoP-Raid 5.0.1)
    -------------------------------------------------------------------------------
-	[59915]	= true, -- Jasper, Stone Guard
-	[60043]	= true, -- Jade, Stone Guard
-	[60051]	= true, -- Cobalt, Stone Guard
+   [59915]	= true, -- Jasper, Stone Guard
+   [60009]	= true, -- Feng the Accursed
+   [60043]	= true, -- Jade, Stone Guard
+   [60047]	= true, -- Amethyst, Stone Guard
+   [60051]	= true, -- Cobalt, Stone Guard
+   [60143]  = true, -- Gara'jal the Spiritbinder
+   [60399]  = true, -- Qin-xi
+   [60400]  = true, -- Jan-xi
+   [60410]  = true, -- Elegon
+   [61421]  = true, -- Zian of the Endless Shadow -- 60701?
+   [61423]  = true, -- Qiang the Merciless -- 60709?
+   [61427]  = true, -- Subetai the Swift -- 60710?
+   [61429]  = true, -- Meng the Demented
 	 
    -------------------------------------------------------------------------------
    -- Molten Core
@@ -796,7 +817,14 @@ local BossIDs = {
    [15370]	= true,	-- Buru the Gorger
    [15369]	= true,	-- Ayamiss the Hunter
    [15339]	= true,	-- Ossirian the Unscarred
- 
+
+   -------------------------------------------------------------------------------
+   -- Scarlet Halls (MoP Dungeon)
+   -------------------------------------------------------------------------------
+   [58632]  = true, -- Armsmaster Harlan
+   [59150]  = true, -- Flameweaver Koegler
+   [59303]  = true, -- Houndmaster Braun
+   
    -------------------------------------------------------------------------------
    -- Scarlet Monastery: Armory
    -------------------------------------------------------------------------------
@@ -850,12 +878,22 @@ local BossIDs = {
    [10504]	= true,	-- Lord Alexei Barov
    [10502]	= true,	-- Lady Illucia Barov
    [1853]	= true,	-- Darkmaster Gandling
+   [58633]  = true, -- Instructor Chillheart (MoP Heroic)
+   [59200]  = true, -- Lilian Voss (MoP Heroic)
 
    -------------------------------------------------------------------------------
    -- Searing Gorge
    -------------------------------------------------------------------------------
    [9026]	= true,	-- Overmaster Pyron
 
+   -------------------------------------------------------------------------------
+   -- Shado-Pan Monastery (MoP Dungeon)
+   -------------------------------------------------------------------------------
+   [56719]  = true, -- Sha of Violence
+   [56747]  = true, -- Gu Cloudstrike
+   [56884]  = true, -- Taran Zhu
+   [64387]  = true, -- Master Snowdrift
+   
    -------------------------------------------------------------------------------
    -- Shadowfang Keep
    -------------------------------------------------------------------------------
@@ -887,6 +925,13 @@ local BossIDs = {
    [15203]	= true,	-- Prince Skaldrenox <Abyssal High Council>
    [14454]	= true,	-- The Windreaver
 
+   -------------------------------------------------------------------------------
+   -- Stormstout Brewery (MoP Dungeon)
+   -------------------------------------------------------------------------------
+   [56717]  = true, -- Hoptallus
+   [57963]  = true, -- Ook-Ook
+   [59479]  = true, -- Yan-Zhu the Unsacked
+   
    -------------------------------------------------------------------------------
    -- Stormwind Stockade
    -------------------------------------------------------------------------------
@@ -1046,12 +1091,22 @@ local BossIDs = {
    -------------------------------------------------------------------------------
    -- Temple of the Jade Serpent (MoP-Dungeon 5.0.1)
    -------------------------------------------------------------------------------   
-   [56448]	= true, --Wise Mari
-   [58826]	= true, --Zao Sunseeker /Library Event
+   [56448]	= true, -- Wise Mari
+   [58826]	= true, -- Zao Sunseeker /Library Event
    [59051]	= true, -- (Strife /Library Event
    [59726]	= true, -- (Anger) /Library Event
    [56732]	= true, -- Liu Flameheart
    [56439]	= true, -- Sha of Doubt
+   
+   -------------------------------------------------------------------------------
+   -- Terrace of Endless Spring (MoP Raid)
+   -------------------------------------------------------------------------------
+   [60583]  = true, -- Protector Kaolan
+   [60585]  = true, -- Elder Regail
+   [60586]  = true, -- Elder Asani
+   [60999]  = true, -- Sha of Fear
+   [62442]  = true, -- Tsulong
+   [63099]  = true, -- Lei Shi
    
    -------------------------------------------------------------------------------
    -- The Bastion of Twilight

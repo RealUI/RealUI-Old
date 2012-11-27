@@ -4,16 +4,16 @@
 ## Title-zhCN: [背包]ArkInventory 整合背包银行
 ## Author: Arkayenro - Khaz'goroth
 ## Email: arkayenro at gmail dot com
-## Version: 30314
+## Version: 30320
 ## DefaultState: Enabled
 ## LoadOnDemand: 0
 ## SavedVariables: ARKINVDB
 
 ## Notes: Allows you to view all items from all your characters on the same realm, when-ever and where-ever you want.
 
-## OptionalDeps: Blizzard_GuildBankUI, Blizzard_VoidStorageUI, Blizzard_PetJournal, Ace3, AceGUI-3.0-SharedMediaWidgets, LibPeriodicTable-3.1, LibSharedMedia-3.0, LibPetJournal
+## OptionalDeps: Blizzard_GuildBankUI, Blizzard_VoidStorageUI, Blizzard_PetJournal, Ace3, AceGUI-3.0-SharedMediaWidgets, LibPeriodicTable-3.1, LibSharedMedia-3.0, LibPetJournal-2.0
 
-## X-Embeds: Ace3, AceGUI-3.0-SharedMediaWidgets, LibPeriodicTable-3.1, LibSharedMedia-3.0, LibPetJournal
+## X-Embeds: Ace3, AceGUI-3.0-SharedMediaWidgets, LibPeriodicTable-3.1, LibSharedMedia-3.0, LibPetJournal-2.0
 
 ## X-Category: Inventory
 ## X-Website: http://arkinventory.googlecode.com

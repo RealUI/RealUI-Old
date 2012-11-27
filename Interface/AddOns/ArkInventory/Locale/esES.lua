@@ -35,7 +35,7 @@ if not L then return end
 	
 	
 --	location names
---	L["LOCATION_ALL"] = ""
+--	L["LOCATION_ACCOUNT"] = ""
 	L["LOCATION_BANK"] = "Banco"
 --	L["LOCATION_WEARING"] = ""
 	
@@ -71,8 +71,6 @@ if not L then return end
 	
 --	system category descriptions
 	L["CATEGORY_SYSTEM_CORE_MATS"] = "MATERIAS PRIMAS"
-	L["CATEGORY_SYSTEM_EQUIPMENT"] = "EQUIPO (NO LIGADO)"
-	L["CATEGORY_SYSTEM_EQUIPMENT_SOULBOUND"] = "EQUIPO"
 	
 	
 --	consumable category descriptions
@@ -142,8 +140,9 @@ if not L then return end
 --	L["MENU_ITEM_DEBUG_SLOT"] = ""
 --	L["MENU_ITEM_DEBUG_BAG_TYPE"] = ""
 --	L["MENU_ITEM_DEBUG_PET_ID"] = ""
+--	L["MENU_ITEM_DEBUG_PET_SPECIES"] = ""
 --	L["MENU_ITEM_DEBUG_AI_ID_SHORT"] = ""
---	L["MENU_ITEM_DEBUG_AI_ID_CACHE"] = ""
+--	L["MENU_ITEM_DEBUG_CACHE"] = ""
 --	L["MENU_ITEM_DEBUG_AI_ID_RULE"] = ""
 --	L["MENU_ITEM_DEBUG_AI_ID_CATEGORY"] = ""
 --	L["MENU_ITEM_DEBUG_LVL_ITEM"] = ""
@@ -161,7 +160,6 @@ if not L then return end
 	
 --	bar menu
 --	L["MENU_BAR_TITLE"] = ""
---	L["MENU_BAR_CATEGORY"] = ""
 --	L["MENU_BAR_CATEGORY_TEXT"] = ""
 --	L["MENU_BAR_CATEGORY_CURRENT"] = ""
 --	L["MENU_BAR_CATEGORY_ASSIGN"] = ""
@@ -225,6 +223,8 @@ if not L then return end
 --	L["CONFIG_SYSTEM_TOOLTIP_VAULT_TEXT"] = ""
 --	L["CONFIG_SYSTEM_TOOLTIP_BATTLEPET_SOURCE_TEXT"] = ""
 --	L["CONFIG_SYSTEM_TOOLTIP_BATTLEPET_DESCRIPTION_TEXT"] = ""
+--	L["CONFIG_SYSTEM_TOOLTIP_BATTLEPET_CUSTOM_ENABLE_TEXT"] = ""
+--	L["CONFIG_SYSTEM_TOOLTIP_BATTLEPET_MOUSEOVER_ENABLE_TEXT"] = ""
 	
 --	L["CONFIG_SYSTEM_BUGFIX"] = ""
 --	L["CONFIG_SYSTEM_BUGFIX_TEXT"] = ""
@@ -249,6 +249,8 @@ if not L then return end
 --	L["CONFIG_SYSTEM_MESSAGES_TRANSLATION_INTERIM_TEXT"] = ""
 --	L["CONFIG_SYSTEM_MESSAGES_TRANSLATION_FINAL"] = ""
 --	L["CONFIG_SYSTEM_MESSAGES_TRANSLATION_FINAL_TEXT"] = ""
+--	L["CONFIG_SYSTEM_MESSAGES_BATTLEPET_OPPONENT"] = ""
+--	L["CONFIG_SYSTEM_MESSAGES_BATTLEPET_OPPONENT_TEXT"] = ""
 	
 	
 --	configuration options > auto
@@ -432,8 +434,6 @@ if not L then return end
 	
 	
 --	configuration options > categories
---	L["CONFIG_CATEGORY"] = ""
-	
 --	L["CONFIG_CATEGORY_CUSTOM"] = ""
 --	L["CONFIG_CATEGORY_DELETED"] = ""
 	
@@ -515,10 +515,17 @@ if not L then return end
 --	L["MISC_ALERT_FRAMELEVEL_1"] = ""
 --	L["MISC_ALERT_FRAMELEVEL_2"] = ""
 	
+--	L["BATTLEPET_OPPONENT_IMMUNE"] = ""
+--	L["BATTLEPET_OPPONENT_KNOWN_MAX"] = ""
+--	L["BATTLEPET_OPPONENT_KNOWN"] = ""
+--	L["BATTLEPET_OPPONENT_UNKNOWN"] = ""
+--	L["BATTLEPET_OPPONENT_UPGRADE"] = ""
+	
 	
 --	item count tooltip
 --	L["TOOLTIP_COUNT_ME"] = ""
 --	L["TOOLTIP_VAULT_TABS"] = ""
+--	L["TOOLTIP_GOLD_AMOUNT"] = ""
 	
 	
 --	generic text
@@ -582,6 +589,7 @@ if not L then return end
 --	L["CLICK_TO_DESELECT"] = ""
 --	L["CLICK_TO_IGNORE"] = ""	
 --	L["ORDER"] = ""
+--	L["MOUSEOVER"] = ""
 	
 	
 -- libdatabroker
@@ -595,7 +603,9 @@ if not L then return end
 --	L["LDB_TRACKING_CURRENCY"] = ""
 --	L["LDB_PETS_SUMMON"] = ""
 --	L["LDB_MOUNTS_NOT_HERE"] = ""
---	L["LDB_MOUNTS_GROUND"] = ""
+--	L["LDB_MOUNTS_TYPE_L"] = ""
+--	L["LDB_MOUNTS_TYPE_U"] = ""
+--	L["LDB_MOUNTS_TYPE_S"] = ""
 --	L["LDB_MOUNTS_FLYING_DISMOUNT"] = ""
 --	L["LDB_MOUNTS_FLYING_DISMOUNT_TEXT"] = ""
 --	L["LDB_MOUNTS_FLYING_DISMOUNT_WARNING"] = ""

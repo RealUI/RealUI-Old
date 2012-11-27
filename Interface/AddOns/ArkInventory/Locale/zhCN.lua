@@ -35,7 +35,7 @@ if not L then return end
 	
 	
 --	location names
-	L["LOCATION_ALL"] = "全部"
+--	L["LOCATION_ACCOUNT"] = ""
 	L["LOCATION_BANK"] = "银行"
 	L["LOCATION_WEARING"] = "装备"
 	
@@ -71,8 +71,6 @@ if not L then return end
 	
 --	system category descriptions
 	L["CATEGORY_SYSTEM_CORE_MATS"] = "原始材料"
-	L["CATEGORY_SYSTEM_EQUIPMENT"] = "装备 (未绑定)"
-	L["CATEGORY_SYSTEM_EQUIPMENT_SOULBOUND"] = "装备"
 	
 	
 --	consumable category descriptions
@@ -142,8 +140,9 @@ if not L then return end
 	L["MENU_ITEM_DEBUG_SLOT"] = "包格"
 	L["MENU_ITEM_DEBUG_BAG_TYPE"] = "背包类别"
 --	L["MENU_ITEM_DEBUG_PET_ID"] = ""
+--	L["MENU_ITEM_DEBUG_PET_SPECIES"] = ""
 	L["MENU_ITEM_DEBUG_AI_ID_SHORT"] = "短ID"
-	L["MENU_ITEM_DEBUG_AI_ID_CACHE"] = "缓存ID"
+	L["MENU_ITEM_DEBUG_CACHE"] = "缓存ID"
 	L["MENU_ITEM_DEBUG_AI_ID_RULE"] = "规则ID"
 	L["MENU_ITEM_DEBUG_AI_ID_CATEGORY"] = "AI 类别"
 	L["MENU_ITEM_DEBUG_LVL_ITEM"] = "物品等级 (属性等级)"
@@ -161,7 +160,6 @@ if not L then return end
 	
 --	bar menu
 	L["MENU_BAR_TITLE"] = "分组 %1$s 选项"
-	L["MENU_BAR_CATEGORY"] = "类别"
 	L["MENU_BAR_CATEGORY_TEXT"] = "指定 %1$s 到此分组"
 	L["MENU_BAR_CATEGORY_CURRENT"] = "目前使用"
 	L["MENU_BAR_CATEGORY_ASSIGN"] = "可使用类别"
@@ -225,6 +223,8 @@ if not L then return end
 --	L["CONFIG_SYSTEM_TOOLTIP_VAULT_TEXT"] = ""
 --	L["CONFIG_SYSTEM_TOOLTIP_BATTLEPET_SOURCE_TEXT"] = ""
 --	L["CONFIG_SYSTEM_TOOLTIP_BATTLEPET_DESCRIPTION_TEXT"] = ""
+--	L["CONFIG_SYSTEM_TOOLTIP_BATTLEPET_CUSTOM_ENABLE_TEXT"] = ""
+--	L["CONFIG_SYSTEM_TOOLTIP_BATTLEPET_MOUSEOVER_ENABLE_TEXT"] = ""
 	
 	L["CONFIG_SYSTEM_BUGFIX"] = "错误修正/绕开"
 	L["CONFIG_SYSTEM_BUGFIX_TEXT"] = "切换代码修正或者绕开这个问题"
@@ -249,6 +249,8 @@ if not L then return end
 --	L["CONFIG_SYSTEM_MESSAGES_TRANSLATION_INTERIM_TEXT"] = ""
 --	L["CONFIG_SYSTEM_MESSAGES_TRANSLATION_FINAL"] = ""
 --	L["CONFIG_SYSTEM_MESSAGES_TRANSLATION_FINAL_TEXT"] = ""
+--	L["CONFIG_SYSTEM_MESSAGES_BATTLEPET_OPPONENT"] = ""
+--	L["CONFIG_SYSTEM_MESSAGES_BATTLEPET_OPPONENT_TEXT"] = ""
 	
 	
 --	configuration options > auto
@@ -432,8 +434,6 @@ if not L then return end
 	
 	
 --	configuration options > categories
-	L["CONFIG_CATEGORY"] = "分类"
-	
 	L["CONFIG_CATEGORY_CUSTOM"] = "自定义分类"
 --	L["CONFIG_CATEGORY_DELETED"] = ""
 	
@@ -515,10 +515,17 @@ if not L then return end
 	L["MISC_ALERT_FRAMELEVEL_1"] = "Bug 修正完毕."
 	L["MISC_ALERT_FRAMELEVEL_2"] = "当前 %1$s 窗口界面级别在 %2$s 并且被重置到 %3$s 以确保回收模式.  由于此 bug 修正带来的 lag 现象向您道歉."
 	
+--	L["BATTLEPET_OPPONENT_IMMUNE"] = ""
+--	L["BATTLEPET_OPPONENT_KNOWN_MAX"] = ""
+--	L["BATTLEPET_OPPONENT_KNOWN"] = ""
+--	L["BATTLEPET_OPPONENT_UNKNOWN"] = ""
+--	L["BATTLEPET_OPPONENT_UPGRADE"] = ""
+	
 	
 --	item count tooltip
 	L["TOOLTIP_COUNT_ME"] = ">"
 --	L["TOOLTIP_VAULT_TABS"] = ""
+--	L["TOOLTIP_GOLD_AMOUNT"] = ""
 	
 	
 --	generic text
@@ -582,6 +589,7 @@ if not L then return end
 --	L["CLICK_TO_DESELECT"] = ""
 --	L["CLICK_TO_IGNORE"] = ""	
 	L["ORDER"] = "顺序"
+--	L["MOUSEOVER"] = ""
 	
 	
 --	libdatabroker
@@ -595,7 +603,9 @@ if not L then return end
 --	L["LDB_TRACKING_CURRENCY"] = ""
 --	L["LDB_PETS_SUMMON"] = ""
 --	L["LDB_MOUNTS_NOT_HERE"] = ""
---	L["LDB_MOUNTS_GROUND"] = ""
+--	L["LDB_MOUNTS_TYPE_L"] = ""
+--	L["LDB_MOUNTS_TYPE_U"] = ""
+--	L["LDB_MOUNTS_TYPE_S"] = ""
 --	L["LDB_MOUNTS_FLYING_DISMOUNT"] = ""
 --	L["LDB_MOUNTS_FLYING_DISMOUNT_TEXT"] = ""
 --	L["LDB_MOUNTS_FLYING_DISMOUNT_WARNING"] = ""

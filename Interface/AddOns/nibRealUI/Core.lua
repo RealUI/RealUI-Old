@@ -7,7 +7,7 @@ local mass
 local nibRealUI_Version = {
 	[1] = 7,
 	[2] = 3,
-	[3] = 1,
+	[3] = 2,
 }
 
 -- Default Options
@@ -93,6 +93,7 @@ function nibRealUI:CreateBG(frame)
 end
 
 function nibRealUI:CreateFS(parent, justify, ...)
+	--print("nibRealUI/Core:CreateFS parent; "..tostring(parent))
 	local f = parent:CreateFontString(nil, "OVERLAY")
 	local size
 	if ... then 

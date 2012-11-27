@@ -584,7 +584,7 @@ local Defaults = {
 							},
 						},
 						expire = {
-							enabled = true,
+							enabled = false,
 							time = 10,
 						},
 					},

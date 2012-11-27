@@ -1,0 +1,13 @@
+------------------------------------------------------------------------
+r8 | stassart | 2012-10-15 06:18:41 +0000 (Mon, 15 Oct 2012) | 1 line
+Changed paths:
+   M /trunk/GridStatusRaidDebuff.toc
+
+Update LibBabble libraries.
+------------------------------------------------------------------------
+r7 | stassart | 2012-08-30 04:06:32 +0000 (Thu, 30 Aug 2012) | 1 line
+Changed paths:
+   M /trunk/Core.lua
+
+Fixed warn lua error. Fixed GlyphUI taint caused by using an _ not declared local.
+------------------------------------------------------------------------

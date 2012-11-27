@@ -786,9 +786,9 @@ local function UpdateBar(bp, vbp, bg, b, icon, timeLeft, duration, count, btype,
 	
 	local bar, barname, label, src, classSort = nil, b.barLabel .. b.uniqueID, b.barLabel, b.barSource, nil
 	if vbp.sor == "C" then -- prefixes are added to the barname to facilitate sorting
-		if not src or (src == "Racial") or (src == "Spell") or (src == "Detected") then src = "ZZZZ" end -- non-class goes to end of list
+		if not src or (src == "Racial") or (src == "Spell") or (src == "Detected") then src = "zzzz" end -- non-class goes to end of list
 		if src == MOD.myClass then src = "AAAA" end -- sort player's class to front of list
-		classSort = "ZZZZ" .. string.upper(src)
+		classSort = "zzzz" .. string.upper(src)
 	end
 	if vbp.sor == "X" then barname = string.format("%05d ", b.sorder) .. barname end
 	
@@ -1209,8 +1209,8 @@ local function UpdateBarGroupBars(bp, vbp, bg)
 		(bp.showEnemy or not stat.targetEnemy) and (bp.showFriendly or not stat.targetFriend) and 
 		(not bp.checkCondition or IsOff(bp.condition) or MOD:CheckCondition(bp.condition)) and (bp.showBattleground or not stat.inBattleground) and
 		((bp.showInstance and stat.inInstance) or (bp.showNotInstance and not stat.inInstance)) and (bp.showArena or not stat.inArena) and
-		(bp.showPrimary or stat.talentGroup ~= 1) and (bp.showSecondary or stat.talentGroup ~= 2) and 
-		(not bp.showClasses or not bp.showClasses[MOD.myClass]) and (not UnitIsUnit("focus", "target") or bp.showFocusTarget)
+		(bp.showPrimary or stat.talentGroup ~= 1) and (bp.showSecondary or stat.talentGroup ~= 2) and not InCinematic() and
+		(not bp.showClasses or not bp.showClasses[MOD.myClass]) and (not UnitIsUnit("focus", "target") or bp.showFocusTarget) and not C_PetBattles.IsInBattle()
 	if show then
 		if bp.auto then -- if auto bar group then detect new auras and cooldowns
 			if bp.detectBuffs then MOD:IterateAuras(bp.detectAllBuffs and "all" or bp.detectBuffsMonitor, DetectNewBuffs, true, bp, vbp, bg) end

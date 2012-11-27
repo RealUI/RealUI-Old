@@ -1,0 +1,38 @@
+------------------------------------------------------------------------
+r406 | zarnivoop | 2012-10-20 12:36:47 +0000 (Sat, 20 Oct 2012) | 1 line
+Changed paths:
+   A /tags/1.4-5 (from /trunk:405)
+
+Tagging as 1.4-5
+------------------------------------------------------------------------
+r405 | zarnivoop | 2012-10-20 10:50:28 +0000 (Sat, 20 Oct 2012) | 2 lines
+Changed paths:
+   M /trunk/Skada.lua
+   M /trunk/modules/SkadaDeaths/Deaths.lua
+
+fix for potential error in death log
+detailed number format now hides decimals
+------------------------------------------------------------------------
+r404 | zarnivoop | 2012-10-20 09:34:58 +0000 (Sat, 20 Oct 2012) | 2 lines
+Changed paths:
+   M /trunk/BarDisplay.lua
+   M /trunk/modules/SkadaDeaths/Deaths.lua
+
+removed border from class icons
+fix for heal numbers in death log
+------------------------------------------------------------------------
+r403 | zarnivoop | 2012-10-20 07:39:51 +0000 (Sat, 20 Oct 2012) | 2 lines
+Changed paths:
+   M /trunk/Skada.lua
+   M /trunk/lib/SpecializedLibBars-1.0/SpecializedLibBars-1.0.lua
+   M /trunk/modules/SkadaHealing/Overhealing.lua
+
+fixed bars overflowing window
+bits of support code for SkadaGraphs
+------------------------------------------------------------------------
+r401 | mikk | 2012-09-29 17:51:15 +0000 (Sat, 29 Sep 2012) | 1 line
+Changed paths:
+   M /trunk/modules/SkadaDeaths/Deaths.lua
+
+Plug an error that can happen (does for my GF, not for me - huhh?) when you get healed by an external effect. We found it happening on the "Surrounding Mist" on Osul Mist Shamans.  "srcName" becomes nil and that wasn't checked for.
+------------------------------------------------------------------------

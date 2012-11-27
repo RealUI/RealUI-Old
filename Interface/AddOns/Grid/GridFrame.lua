@@ -16,7 +16,6 @@ local GridStatus
 
 local media = LibStub("LibSharedMedia-3.0", true)
 if media then
-	media:Register("statusbar", "Blizzard Raid Bar", "Interface\\RaidFrame\\Raid-Bar-Hp-Fill")
 	media:Register("statusbar", "Gradient", "Interface\\Addons\\Grid\\gradient32x32")
 end
 
@@ -176,9 +175,8 @@ function GridFrame:InitializeFrame(frame)
 	frame.Icon:SetTexture(1,1,1,0)
 
 	-- create icon text
-	frame.IconText = frame.IconBG:CreateFontString(nil, "OVERLAY")
+	frame.IconText = frame.IconBG:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
 	frame.IconText:SetAllPoints(frame.IconBG)
-	frame.IconText:SetFontObject(GameFontHighlightSmall)
 	frame.IconText:SetFont(font, GridFrame.db.profile.fontSize)
 	frame.IconText:SetJustifyH("CENTER")
 	frame.IconText:SetJustifyV("CENTER")
@@ -193,9 +191,8 @@ function GridFrame:InitializeFrame(frame)
 	end)
 
 	-- create icon stack text
-	frame.IconStackText = frame.IconBG:CreateFontString(nil, "OVERLAY")
+	frame.IconStackText = frame.IconBG:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
 	frame.IconStackText:SetPoint("BOTTOMRIGHT", frame.IconBG, 2, -2)
-	frame.IconStackText:SetFontObject(GameFontHighlightSmall)
 	frame.IconStackText:SetFont(font, GridFrame.db.profile.fontSize, "OUTLINE")
 	frame.IconStackText:SetJustifyH("RIGHT")
 	frame.IconStackText:SetJustifyV("BOTTOM")
@@ -858,10 +855,10 @@ GridFrame.defaultDB = {
 		["corner2"] = {
 		},
 		["corner3"] = {
-			debuff_curse = true,
-			debuff_disease = true,
-			debuff_magic = true,
-			debuff_poison = true,
+			dispel_curse = true,
+			dispel_disease = true,
+			dispel_magic = true,
+			dispel_poison = true,
 		},
 		["corner4"] = {
 			alert_aggro = true,
@@ -887,10 +884,10 @@ GridFrame.defaultDB = {
 			alert_heals = true,
 		},
 		["icon"] = {
-			debuff_curse = true,
-			debuff_disease = true,
-			debuff_magic = true,
-			debuff_poison = true,
+			dispel_curse = true,
+			dispel_disease = true,
+			dispel_magic = true,
+			dispel_poison = true,
 			ready_check = true,
 		}
 	},
@@ -946,7 +943,7 @@ GridFrame.options = {
 			end,
 			set = function(_, v)
 				GridFrame.db.profile.borderSize = v
-				GridFrame:WithAllFrames(function(f) f:SetBorderSize(v) end)
+				GridFrame:WithAllFrames("SetBorderSize", v)
 			end,
 		},
 		["cornersize"] = {
@@ -959,7 +956,7 @@ GridFrame.options = {
 			end,
 			set = function(_, v)
 				GridFrame.db.profile.cornerSize = v
-				GridFrame:WithAllFrames(function(f) f:SetCornerSize(v) end)
+				GridFrame:WithAllFrames("SetCornerSize", v)
 			end,
 		},
 		["tooltip"] = {
@@ -986,7 +983,7 @@ GridFrame.options = {
 			end,
 			set = function(_, v)
 				GridFrame.db.profile.orientation = v
-				GridFrame:WithAllFrames(function(f) f:SetOrientation(v) end)
+				GridFrame:WithAllFrames("SetOrientation", v)
 			end,
 		},
 		["textorientation"] = {
@@ -1000,7 +997,7 @@ GridFrame.options = {
 			end,
 			set = function(_, v)
 				GridFrame.db.profile.textorientation = v
-				GridFrame:WithAllFrames(function(f) f:SetTextOrientation(v) end)
+				GridFrame:WithAllFrames("SetTextOrientation", v)
 			end,
 		},
 		["mouseoverhighlight"] = {
@@ -1013,7 +1010,7 @@ GridFrame.options = {
 			end,
 			set = function(_, v)
 				GridFrame.db.profile.enableMouseoverHighlight = v
-				GridFrame:WithAllFrames(function(f) f:EnableMouseoverHighlight(v) end)
+				GridFrame:WithAllFrames("EnableMouseoverHighlight", v)
 			end,
 		},
 		["text2"] = {
@@ -1026,7 +1023,7 @@ GridFrame.options = {
 			end,
 			set = function(_, v)
 				GridFrame.db.profile.enableText2 = v
-				GridFrame:WithAllFrames(function(f) f:EnableText2(v) end)
+				GridFrame:WithAllFrames("EnableText2", v)
 				GridFrame:UpdateOptionsMenu()
 			end,
 		},
@@ -1147,7 +1144,7 @@ GridFrame.options = {
 					set = function(_, v)
 						GridFrame.db.profile.iconSize = v
 						local iconBorderSize = GridFrame.db.profile.iconBorderSize
-						GridFrame:WithAllFrames(function(f) f:SetIconSize(v, iconBorderSize) end)
+						GridFrame:WithAllFrames("SetIconSize", v, iconBorderSize)
 					end,
 				},
 				["bordersize"] = {
@@ -1161,7 +1158,7 @@ GridFrame.options = {
 					set = function(_, v)
 						GridFrame.db.profile.iconBorderSize = v
 						local iconSize = GridFrame.db.profile.iconSize
-						GridFrame:WithAllFrames(function(f) f:SetIconSize(iconSize, v) end)
+						GridFrame:WithAllFrames("SetIconSize", iconSize, v)
 						GridFrame:UpdateAllFrames()
 					end,
 				},
@@ -1210,7 +1207,7 @@ GridFrame.options = {
 					set = function(_, v)
 						GridFrame.db.profile.fontSize = v
 						local font = media and media:Fetch("font", GridFrame.db.profile.font) or STANDARD_TEXT_FONT
-						GridFrame:WithAllFrames(function(f) f:SetFrameFont(font, v, GridFrame.db.profile.fontOutline, GridFrame.db.profile.fontShadow) end)
+						GridFrame:WithAllFrames("SetFrameFont", font, v, GridFrame.db.profile.fontOutline, GridFrame.db.profile.fontShadow)
 					end,
 				},
 				["outline"] = {
@@ -1225,7 +1222,7 @@ GridFrame.options = {
 					set = function(_, v)
 						GridFrame.db.profile.fontOutline = v
 						local font = media and media:Fetch("font", GridFrame.db.profile.font) or STANDARD_TEXT_FONT
-						GridFrame:WithAllFrames(function(f) f:SetFrameFont(font, GridFrame.db.profile.fontSize, v, GridFrame.db.profile.fontShadow) end)
+						GridFrame:WithAllFrames("SetFrameFont", font, GridFrame.db.profile.fontSize, v, GridFrame.db.profile.fontShadow)
 					end,
 				},
 				["shadow"] = {
@@ -1239,7 +1236,7 @@ GridFrame.options = {
 					set = function(_, v)
 						GridFrame.db.profile.fontShadow = v
 						local font = media and media:Fetch("font", GridFrame.db.profile.font) or STANDARD_TEXT_FONT
-						GridFrame:WithAllFrames(function(f) f:SetFrameFont(font, GridFrame.db.profile.fontSize, GridFrame.db.profile.fontOutline, v) end)
+						GridFrame:WithAllFrames("SetFrameFont", font, GridFrame.db.profile.fontSize, GridFrame.db.profile.fontOutline, v)
 					end,
 				},
 				["length"] = {
@@ -1272,7 +1269,7 @@ if media then
 		set = function(_, v)
 			GridFrame.db.profile.font = v
 			local font = media:Fetch("font", v)
-			GridFrame:WithAllFrames(function(f) f:SetFrameFont(font, GridFrame.db.profile.fontSize, GridFrame.db.profile.fontOutline, GridFrame.db.profile.fontShadow) end)
+			GridFrame:WithAllFrames("SetFrameFont", font, GridFrame.db.profile.fontSize, GridFrame.db.profile.fontOutline, GridFrame.db.profile.fontShadow)
 		end,
 	}
 	GridFrame.options.args.bar.args.texture = {
@@ -1288,7 +1285,7 @@ if media then
 		set = function(_, v)
 			GridFrame.db.profile.texture = v
 			local texture = media:Fetch("statusbar", v)
-			GridFrame:WithAllFrames(function(f) f:SetFrameTexture(texture) end)
+			GridFrame:WithAllFrames("SetFrameTexture", texture)
 		end,
 	}
 end
@@ -1345,13 +1342,9 @@ end
 
 function GridFrame:LibSharedMedia_Update(callback, type, handle)
  	if type == "font" then
- 		self:WithAllFrames(function(f)
-			f:SetFrameFont(media:Fetch("font", self.db.profile.font), self.db.profile.fontSize, GridFrame.db.profile.fontOutline, GridFrame.db.profile.fontShadow)
-		end)
+ 		self:WithAllFrames("SetFrameFont", media:Fetch("font", self.db.profile.font), self.db.profile.fontSize, GridFrame.db.profile.fontOutline, GridFrame.db.profile.fontShadow)
  	elseif type == "statusbar" then
- 		self:WithAllFrames(function(f)
-			f:SetFrameTexture(media:Fetch("statusbar", self.db.profile.texture))
-		end)
+ 		self:WithAllFrames("SetFrameTexture", media:Fetch("statusbar", self.db.profile.texture))
 	end
 end
 
@@ -1366,7 +1359,7 @@ function GridFrame:PostReset()
 	-- Fix for font size not updating on profile change
 	-- Can probably be done better
 	local font = media and media:Fetch("font", GridFrame.db.profile.font) or STANDARD_TEXT_FONT
-	GridFrame:WithAllFrames(function(f) f:SetFrameFont(font, GridFrame.db.profile.fontSize, GridFrame.db.profile.fontOutline, GridFrame.db.profile.fontShadow) end)
+	GridFrame:WithAllFrames("SetFrameFont", font, GridFrame.db.profile.fontSize, GridFrame.db.profile.fontOutline, GridFrame.db.profile.fontShadow)
 
 	self:ResetAllFrames()
 	self:UpdateFrameUnits()
@@ -1387,43 +1380,35 @@ function GridFrame:RegisterFrame(frame)
 	self:UpdateFrameUnits()
 end
 
-function GridFrame:WithAllFrames(func)
+function GridFrame:WithAllFrames(func, ...)
 	for _, frame in pairs(self.registeredFrames) do
-		func(frame)
+		if type(frame[func]) == "function" then
+			frame[func](frame, ...)
+		end
 	end
 end
 
 function GridFrame:ResetAllFrames()
-	self:WithAllFrames(function(f)
-		f:Reset()
-	end)
+	self:WithAllFrames("Reset")
 	self:SendMessage("Grid_UpdateLayoutSize")
 end
 
 function GridFrame:ResizeAllFrames()
-	self:WithAllFrames(function(f)
-		f:SetFrameWidth(self.db.profile.frameWidth)
-		f:SetFrameHeight(self.db.profile.frameHeight)
-	end)
+	self:WithAllFrames("SetFrameWidth", self.db.profile.frameWidth)
+	self:WithAllFrames("SetFrameHeight", self.db.profile.frameHeight)
 	self:SendMessage("Grid_UpdateLayoutSize")
 end
 
 function GridFrame:UpdateAllFrames()
-	self:WithAllFrames(function(f)
-		GridFrame:UpdateIndicators(f)
-	end)
+	self:WithAllFrames("UpdateIndicators")
 end
 
 function GridFrame:InvertBarColor()
-	self:WithAllFrames(function(f)
-		f:InvertBarColor()
-	end)
+	self:WithAllFrames("InvertBarColor")
 end
 
 function GridFrame:InvertTextColor()
-	self:WithAllFrames(function(f)
-		f:InvertTextColor()
-	end)
+	self:WithAllFrames("InvertTextColor")
 end
 
 ------------------------------------------------------------------------
@@ -1535,9 +1520,10 @@ function GridFrame:StatusForIndicator(unitid, guid, indicator)
 
 			-- only check range for valid statuses
 			if valid then
-				local inRange = not status.range or self:UnitInRange(unitid)
-
-				if inRange and ((status.priority or 99) > topPriority) then
+		-- #DELETE
+		--		local inRange = not status.range or self:UnitInRange(unitid)
+		--		if inRange and ((status.priority or 99) > topPriority) then
+				if (status.priority or 99) > topPriority then
 					topStatus = status
 					topPriority = topStatus.priority
 				end
@@ -1551,7 +1537,6 @@ end
 local GridStatusRange
 function GridFrame:UnitInRange(unit)
 	if not unit or not UnitExists(unit) then return false end
-	--print("GridFrame:UnitInRange", unit)
 
 	if UnitIsUnit(unit, "player") then
 		return true

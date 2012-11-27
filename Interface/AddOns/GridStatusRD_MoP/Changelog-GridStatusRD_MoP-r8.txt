@@ -1,0 +1,24 @@
+------------------------------------------------------------------------
+r8 | stassart | 2012-11-08 21:03:34 +0000 (Thu, 08 Nov 2012) | 1 line
+Changed paths:
+   M /trunk/GridStatusRD_MoP.toc
+   M /trunk/MogushanVaults.lua
+
+Mark trash Petrification debuff as stackable.
+------------------------------------------------------------------------
+r7 | stassart | 2012-11-05 08:14:16 +0000 (Mon, 05 Nov 2012) | 1 line
+Changed paths:
+   M /trunk/GridStatusRD_MoP.toc
+   M /trunk/HeartOfFear.lua
+   M /trunk/MogushanVaults.lua
+
+Lots of Mogushan and Heart of Fear updates.
+------------------------------------------------------------------------
+r6 | stassart | 2012-08-18 20:26:45 +0000 (Sat, 18 Aug 2012) | 1 line
+Changed paths:
+   A /trunk/.pkgmeta
+   M /trunk/HeartOfFear.lua
+   M /trunk/ShaofAnger.lua
+
+Fixed color priorities to match icon priorities.
+------------------------------------------------------------------------

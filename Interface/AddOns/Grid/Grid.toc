@@ -1,7 +1,7 @@
 ## Interface: 50001
-## Version: 5.0.4.1520
-## X-ReleaseDate: "$Date: 2012-08-28 09:26:01 +0000 (Tue, 28 Aug 2012) $"
-## X-Curse-Packaged-Version: 5.0.4.1520
+## Version: 5.0.5.1548
+## X-ReleaseDate: "$Date: 2012-10-17 22:04:05 +0000 (Wed, 17 Oct 2012) $"
+## X-Curse-Packaged-Version: 5.0.5.1548
 ## X-Curse-Project-Name: Grid
 ## X-Curse-Project-ID: grid
 ## X-Curse-Repository-ID: wow/grid/mainline
@@ -10,6 +10,8 @@
 ## Notes: A compact grid of party/raid unit frames.
 ## Notes-esES: Una cuadrícula compacta de marcos de unidades para tu grupo o banda.
 ## Notes-esMX: Una cuadrícula compacta de marcos de unidades para su grupo o banda.
+## Notes-frFR: Une grille compacte de fenêtres des unités de votre groupe ou raid.
+## Notes-itIT: Una griglia compatta di riquadri delle unità nel tuo gruppo o incursione.
 ## Notes-ptBR: Uma grade compacta de quadros das unidades do grupo ou banda.
 ## Notes-zhCN: 紧凑方格队伍/团队框架。
 ## Notes-zhTW: 緊湊方格隊伍/團隊框架。
@@ -24,7 +26,7 @@
 ## X-AceForum: 2525
 ## X-WoWI-ID: 5747
 
-## OptionalDeps: Ace3, LibDBIcon-1.0, LibDualSpec-1.0, LibSharedMedia-3.0, AceGUI-3.0-SharedMediaWidgets, AceGUI-3.0-Spell-EditBox, UTF8, Clique, SharedMedia
+## OptionalDeps: Ace3, LibDBIcon-1.0, LibDualSpec-1.0, LibResInfo-1.0, LibSharedMedia-3.0, AceGUI-3.0-SharedMediaWidgets, AceGUI-3.0-Spell-EditBox, UTF8, Clique, SharedMedia
 ## SavedVariables: GridDB
 
 #@no-lib-strip@
@@ -45,6 +47,7 @@ Libs\AceTimer-3.0\AceTimer-3.0.lua
 Libs\LibDataBroker-1.1\LibDataBroker-1.1.lua
 Libs\LibDBIcon-1.0\LibDBIcon-1.0.lua
 Libs\LibDualSpec-1.0\LibDualSpec-1.0.lua
+Libs\LibResInfo-1.0\LibResInfo-1.0.lua
 Libs\LibSharedMedia-3.0\LibSharedMedia-3.0.lua
 Libs\AceGUI-3.0-SharedMediaWidgets\widget.xml
 Libs\AceGUI-3.0-Spell-EditBox\AceGUI-3.0-Spell-EditBox.xml
@@ -54,6 +57,7 @@ Libs\UTF8\utf8.lua
 Locales\GridLocale-deDE.lua
 Locales\GridLocale-esES.lua
 Locales\GridLocale-frFR.lua
+Locales\GridLocale-itIT.lua
 Locales\GridLocale-ptBR.lua
 Locales\GridLocale-ruRU.lua
 Locales\GridLocale-koKR.lua

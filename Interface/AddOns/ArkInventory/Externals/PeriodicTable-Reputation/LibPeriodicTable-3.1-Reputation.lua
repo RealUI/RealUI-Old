@@ -1,7 +1,7 @@
 -- (c) 2007 Nymbia.  see LGPLv2.1.txt for full details.
 --DO NOT MAKE CHANGES TO THIS FILE BEFORE READING THE WIKI PAGE REGARDING CHANGING THESE FILES
 if not LibStub("LibPeriodicTable-3.1", true) then error("PT3 must be loaded before data") end
-LibStub("LibPeriodicTable-3.1"):AddData("Reputation", gsub("$Rev: 95 $", "(%d+)", function(n) return n+90000 end), {
+LibStub("LibPeriodicTable-3.1"):AddData("Reputation", gsub("$Rev: 399 $", "(%d+)", function(n) return n+90000 end), {
 	["Reputation.Reward.Argent Crusade"]="41726:7,42187:8,43154:5,44139:6,44150:7,44214:7,44216:6,44239:6,44240:6,44244:7,44245:7,44247:7,44248:7,44283:8,44295:8,44296:8,44297:8",
 	["Reputation.Reward.Argent Dawn"]="18171:7,18182:8,18169:7,18170:7,18172:7,18173:7,13482:6,13810:7,13813:7,13724:5,19447:7,19446:6,19442:6,19216:6,19217:7,19328:6,19329:7,19203:6,19205:7",
 	["Reputation.Reward.Ashtongue Deathsworn"]="32490:8,32486:8,32488:8,32492:8,32493:8,32487:8,32485:8,32491:8,32489:8,32429:5,32430:5,32431:6,32447:6,32436:5,32435:5,32433:6,32434:6,32438:5,32440:5,32439:6,32437:6,32432:6,32442:5,32444:5,32443:6,32441:6",
