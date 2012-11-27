@@ -2,7 +2,7 @@
 ## Title: |cffaaaaaanib|rPointDisplay_RealUI
 ## Author: Nibelheim
 ## Notes: Customizable graphical point display (Combo Points, Holy Power, Soul Shards, Maelstrom Weapon, etc).
-## Version: 7.3 r1
+## Version: 7.3 r2
 ## SavedVariables: nibPointDisplayRUIDB
 ## OptionalDeps: nibLibs
 
