@@ -22,7 +22,6 @@ nibPointDisplay_RealUI.Types = {
 			[2] = {name = "Lacerate", id = "lac", barcount = 3},
 			[3] = {name = "Wild Mushroom", id = "wm", barcount = 3},
 			[4] = {name = "Astral Alignment", id = "al", barcount = 3},
-			[5] = {name = "Dream of Cenarius", id = "dc", barcount = 2},
 		},
 	},
 	["HUNTER"] = {
@@ -43,10 +42,8 @@ nibPointDisplay_RealUI.Types = {
 		name = "Monk",
 		points = {
 			[1] = {name = "Chi", id = "chi", barcount = 5},
-			[2] = {name = "Power Guard", id = "pg", barcount = 3},
-			[3] = {name = "Serpents Zeal", id = "sz", barcount = 2},
-			[4] = {name = "Vital Mists", id = "vm", barcount = 5},
-			[5] = {name = "Tiger Power", id = "tp", barcount = 3},
+			[2] = {name = "Serpents Zeal", id = "sz", barcount = 2},
+			[3] = {name = "Vital Mists", id = "vm", barcount = 5},
 		},
 	},
 	["PALADIN"] = {
@@ -180,15 +177,12 @@ local SpellInfo = {
 	["lus"] = nil,
 	["lac"] = nil,
 	["al"] = nil,
-	["dc"] = nil,
 	["rsa"] = nil,
 	["fe"] = nil,
 	["ab"] = nil,
 	["ff"] = nil,
-	["pg"] = nil,
 	["sz"] = nil,
 	["vm"] = nil,
-	["tp"] = nil,
 	["eva"] = nil,
 	["deva"] = nil,
 	["ser"] = nil,
@@ -506,9 +500,6 @@ function nibPointDisplay_RealUI:GetPoints(CurClass, CurType)
 		-- Astral Alignment
 		elseif CurType == "al" then
 			NewPoints = GetBuffCount(SpellInfo[CurType])
-		-- Dream of Cenarius
-		elseif CurType == "dc" then
-			NewPoints = GetBuffCount(SpellInfo[CurType])
 		end
 	-- Hunter
 	elseif CurClass == "HUNTER" then
@@ -532,13 +523,9 @@ function nibPointDisplay_RealUI:GetPoints(CurClass, CurType)
 		-- Chi
 		if CurType == "chi" then
 			NewPoints = UnitPower("player", SPELL_POWER_CHI)
-		elseif CurType == "pg" then
-			NewPoints = GetBuffCount(SpellInfo[CurType], "player")
 		elseif CurType == "sz" then
 			NewPoints = GetBuffCount(SpellInfo[CurType], "player")
 		elseif CurType == "vm" then
-			NewPoints = GetBuffCount(SpellInfo[CurType], "player")
-		elseif CurType == "tp" then
 			NewPoints = GetBuffCount(SpellInfo[CurType], "player")
 		end
 	-- Priest
@@ -973,7 +960,6 @@ function nibPointDisplay_RealUI:PLAYER_LOGIN()
 	SpellInfo["lus"] = GetSpellInfo(81192)		-- Lunar Shower
 	SpellInfo["lac"] = GetSpellInfo(33745)		-- Lacerate
 	SpellInfo["al"] = GetSpellInfo(90164)		-- Astral Alignment
-	SpellInfo["dc"] = GetSpellInfo(108381)		-- Dream of Cenarius
 	-- Hunter
 	SpellInfo["rsa"] = GetSpellInfo(82925)		-- Ready, Set, Aim...
 	SpellInfo["fe"] = GetSpellInfo(19615)		-- Frenzy Effect
@@ -981,10 +967,8 @@ function nibPointDisplay_RealUI:PLAYER_LOGIN()
 	SpellInfo["ab"] = GetSpellInfo(36032)		-- Arcane Blast
 	SpellInfo["ff"] = GetSpellInfo(44544)		-- Fingers of Frost
 	-- Monk
-	SpellInfo["pg"] = GetSpellInfo(118636)		-- Power Guard
 	SpellInfo["sz"] = GetSpellInfo(127722)		-- Serpents Zeal
 	SpellInfo["vm"] = GetSpellInfo(118674)		-- Vital Mists
-	SpellInfo["tp"] = GetSpellInfo(125359)		-- Tiger Power
 	-- Priest
 	SpellInfo["eva"] = GetSpellInfo(81661)		-- Evangelism
 	SpellInfo["so"] = GetSpellInfo(77487)		-- Shadow Orb
