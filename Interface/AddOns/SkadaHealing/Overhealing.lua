@@ -48,7 +48,7 @@ function mod:Update(win, set)
 
 			d.valuetext = Skada:FormatValueText(
 											Skada:FormatNumber(player.overhealing), self.metadata.columns.Overheal,
-											string.format("%02.1f%%", player.overhealing / player.healing * 100), self.metadata.columns.Percent
+											string.format("%02.1f%%", player.overhealing / math.max(1, player.healing) * 100), self.metadata.columns.Percent
 										)
 			d.class = player.class
 			

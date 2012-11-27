@@ -1212,7 +1212,7 @@ local function SetTestFieldString(ttype, fname, s)
 	if whiteStart == 1 then s = string.sub(s, whiteEnd + 1) end
 	local str = string.reverse(s) -- get the string after white space, reverse again to restore original order
 	if str ~= "" then -- make sure not empty string
-		if fname ~= "item" and fname ~= "spec" and fname ~= "glyph" then str = ValidateSpellName(str) end
+		if fname ~= "item" and fname ~= "spec" and fname ~= "glyph" and fname ~= "stance" then str = ValidateSpellName(str) end
 		SetTestField(ttype, fname, str)
 	else
 		SetTestField(ttype, fname, nil)
@@ -9122,6 +9122,36 @@ MOD.OptionsTable = {
 											disabled = function(info) return IsTestFieldOff("Spell Ready", "inRange") end,
 											get = function(info) return GetTestField("Spell Ready", "inRange") == false end,
 											set = function(info, value) SetTestField("Spell Ready", "inRange", false) end,
+										},
+									},
+								},
+								ChargesGroup = {
+									type = "group", order = 30, name = L["Charges"], inline = true,
+									args = {
+										CheckCharges = {
+											type = "toggle", order = 1, name = L["Enable"],
+											desc = L["If checked, test the number of charges on the spell."],
+											get = function(info) return IsTestFieldOn("Spell Ready", "checkCharges") end,
+											set = function(info, value) local v = Off if value then v = true end SetTestField("Spell Ready", "checkCharges", v) end,
+										},
+										ChargesValue = {
+											type = "range", order = 10, name = L["Charges"], min = 1, max = 10, step = 1,
+											desc = L["Enter value to compare with the number of charges."],
+											disabled = function(info) return IsTestFieldOff("Spell Ready", "checkCharges") end,
+											get = function(info) local d = GetTestField("Spell Ready", "charges"); if d then return d else return 1 end end,
+											set = function(info, value) local d = GetTestField("Spell Ready", "charges"); if not d then d = 1 end; SetTestField("Spell Ready", "charges", value) end,
+										},
+										CountMinMax = {
+											type = "select", order = 20, name = L["Comparison"],
+											get = function(info) if GetTestField("Spell Ready", "checkCharges") == true then return 1 else return 2 end end,
+											set = function(info, value) if value == 1 then SetTestField("Spell Ready", "checkCharges", true) else SetTestField("Spell Ready", "checkCharges", false) end end,
+											disabled = function(info) return IsTestFieldOff("Spell Ready", "checkCharges") end,
+											values = function(info)
+												local d = GetTestField("Spell Ready", "charges")
+												if not d then d = 1 end
+												return { "Less Than " .. d, d .. " Or More" }
+											end,
+											style = "dropdown",
 										},
 									},
 								},

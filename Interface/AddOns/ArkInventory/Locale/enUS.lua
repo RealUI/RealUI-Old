@@ -35,7 +35,7 @@ if not L then return end
 	
 	
 --	location names
-	L["LOCATION_ALL"] = "All"
+	L["LOCATION_ACCOUNT"] = "Account"
 	L["LOCATION_BANK"] = "Bank"
 	L["LOCATION_WEARING"] = "Wearing"
 	
@@ -71,8 +71,6 @@ if not L then return end
 	
 --	system category descriptions
 	L["CATEGORY_SYSTEM_CORE_MATS"] = "Core Mats"
-	L["CATEGORY_SYSTEM_EQUIPMENT"] = "Equipment (Not Soulbound)"
-	L["CATEGORY_SYSTEM_EQUIPMENT_SOULBOUND"] = "Equipment (Soulbound)"
 	
 	
 --	consumable category descriptions
@@ -142,8 +140,9 @@ if not L then return end
 	L["MENU_ITEM_DEBUG_SLOT"] = "Slot"
 	L["MENU_ITEM_DEBUG_BAG_TYPE"] = "Type"
 	L["MENU_ITEM_DEBUG_PET_ID"] = "Pet ID"
+	L["MENU_ITEM_DEBUG_PET_SPECIES"] = "Pet Species"
 	L["MENU_ITEM_DEBUG_AI_ID_SHORT"] = "Short ID"
-	L["MENU_ITEM_DEBUG_AI_ID_CACHE"] = "Cache ID"
+	L["MENU_ITEM_DEBUG_CACHE"] = "Cache ID"
 	L["MENU_ITEM_DEBUG_AI_ID_RULE"] = "Rule ID"
 	L["MENU_ITEM_DEBUG_AI_ID_CATEGORY"] = "Category ID"
 	L["MENU_ITEM_DEBUG_LVL_ITEM"] = "Item Level (Stat)"
@@ -161,7 +160,6 @@ if not L then return end
 	
 --	bar menu
 	L["MENU_BAR_TITLE"] = "Bar %1$s"
-	L["MENU_BAR_CATEGORY"] = "Category"
 	L["MENU_BAR_CATEGORY_TEXT"] = "assign category %1$s to this bar"
 	L["MENU_BAR_CATEGORY_CURRENT"] = "Categories assigned"
 	L["MENU_BAR_CATEGORY_ASSIGN"] = "Assignable Categories"
@@ -225,6 +223,8 @@ if not L then return end
 	L["CONFIG_SYSTEM_TOOLTIP_VAULT_TEXT"] = "include data from %1$s" -- %1$s = vault
 	L["CONFIG_SYSTEM_TOOLTIP_BATTLEPET_SOURCE_TEXT"] = "include source text in tooltip"
 	L["CONFIG_SYSTEM_TOOLTIP_BATTLEPET_DESCRIPTION_TEXT"] = "include description text in tooltip"
+	L["CONFIG_SYSTEM_TOOLTIP_BATTLEPET_CUSTOM_ENABLE_TEXT"] = "replace the in-built battlepet tooltip with custom tooltip to allow for item counts"
+	L["CONFIG_SYSTEM_TOOLTIP_BATTLEPET_MOUSEOVER_ENABLE_TEXT"] = "include extra text in mouseover tooltips for player, npc and wild battlepets"
 	
 	L["CONFIG_SYSTEM_BUGFIX"] = "Bug Fixes / Workarounds"
 	L["CONFIG_SYSTEM_BUGFIX_TEXT"] = "toggle the code to fix or work around this issue"
@@ -249,6 +249,8 @@ if not L then return end
 	L["CONFIG_SYSTEM_MESSAGES_TRANSLATION_INTERIM_TEXT"] = "Show message for each translation attempt"
 	L["CONFIG_SYSTEM_MESSAGES_TRANSLATION_FINAL"] = "Final"
 	L["CONFIG_SYSTEM_MESSAGES_TRANSLATION_FINAL_TEXT"] = "Show final message for successful translation"
+	L["CONFIG_SYSTEM_MESSAGES_BATTLEPET_OPPONENT"] = "Opponent Details"
+	L["CONFIG_SYSTEM_MESSAGES_BATTLEPET_OPPONENT_TEXT"] = "Display Opponent Details upon entering a pet battle"
 	
 	
 --	configuration options > auto
@@ -434,8 +436,6 @@ if not L then return end
 	
 	
 --	configuration options > categories
-	L["CONFIG_CATEGORY"] = "Categories"
-	
 	L["CONFIG_CATEGORY_CUSTOM"] = "Custom Categories"
 	L["CONFIG_CATEGORY_DELETED"] = "**Deleted Category [%s]**"
 	
@@ -473,7 +473,7 @@ if not L then return end
 	L["RULE_FAILED_FORMULA_NIL"] = "formula is missing"
 	L["RULE_FAILED_FORMULA_BAD"] = "invalid formula"
 	L["RULE_FAILED_ARGUMENT_IS_NIL"] = "%1$s( ... ), argument %2$i is nil"
-	L["RULE_FAILED_ARGUMENT_IS_INVALID"] = "%1$s( ... ), argument %2$i is not a %3$s"
+	L["RULE_FAILED_ARGUMENT_IS_INVALID"] = "%1$s( ... ), argument %2$i is not %3$s"
 	L["RULE_FAILED_ARGUMENT_NONE_SPECIFIED"] = "%1$s( ... ), no arguments specified"
 	
 	
@@ -517,10 +517,17 @@ if not L then return end
 	L["MISC_ALERT_FRAMELEVEL_1"] = "Bug fix complete."
 	L["MISC_ALERT_FRAMELEVEL_2"] = "The FrameLevel for the %1$s window is currently at %2$s and has been reset to %3$s to ensure that it remains functional.  Sorry for the lag spike caused by the fix."
 	
+	L["BATTLEPET_OPPONENT_IMMUNE"] = "Cannot be Captured"
+	L["BATTLEPET_OPPONENT_KNOWN_MAX"] = "Limit Reached"
+	L["BATTLEPET_OPPONENT_KNOWN"] = "Owned"
+	L["BATTLEPET_OPPONENT_UNKNOWN"] = "Not Owned"
+	L["BATTLEPET_OPPONENT_UPGRADE"] = "Upgrade?"
+	
 	
 --	item count tooltip
 	L["TOOLTIP_COUNT_ME"] = ">"
 	L["TOOLTIP_VAULT_TABS"] = "Tab"
+	L["TOOLTIP_GOLD_AMOUNT"] = "Amount"
 	
 	
 --	generic text
@@ -584,6 +591,7 @@ if not L then return end
 	L["CLICK_TO_DESELECT"] = "Click to deselect"
 	L["CLICK_TO_IGNORE"] = "Click to ignore"
 	L["ORDER"] = "Order"
+	L["MOUSEOVER"] = "Mouse Over"
 	
 	
 --	libdatabroker
@@ -597,7 +605,9 @@ if not L then return end
 	L["LDB_TRACKING_CURRENCY"] = "Currencies / Tokens"
 	L["LDB_PETS_SUMMON"] = "Summon Pet"
 	L["LDB_MOUNTS_NOT_HERE"] = "None of your mounts are usable here"
-	L["LDB_MOUNTS_GROUND"] = "Ground"
+	L["LDB_MOUNTS_TYPE_L"] = "Land"
+	L["LDB_MOUNTS_TYPE_U"] = "Underwater"
+	L["LDB_MOUNTS_TYPE_S"] = "Water Surface"
 	L["LDB_MOUNTS_FLYING_DISMOUNT"] = "Dismount in flight"
 	L["LDB_MOUNTS_FLYING_DISMOUNT_TEXT"] = "Enabled = allows you to dismount while flying.\n\nDisabled = you need to land before you can dismount"
 	L["LDB_MOUNTS_FLYING_DISMOUNT_WARNING"] = "You are currently flying, please land to select another mount"

@@ -96,7 +96,7 @@ ArkInventory.Const.MoneyTypeInfo["GUILDBANK_WITHDRAW"] = {
 		
 		local amount = 0
 		
-		if CanWithdrawGuildBankMoney( ) or CanGuildBankRepair() then
+		if CanWithdrawGuildBankMoney( ) or CanGuildBankRepair( ) then
 			amount = min( GetGuildBankMoney( ),  GetGuildBankWithdrawMoney( ) )
 			if amount < 0 then
 				amount = GetGuildBankMoney( )
@@ -471,10 +471,10 @@ function ArkInventory.MoneyFrame_Tooltip( tooltip )
 	local player = UnitName( "player" )
 	local f = UnitFactionGroup( "player" )
 	
-	tooltip:AddDoubleLine( "Character", "Amount" )
+	tooltip:AddDoubleLine( ArkInventory.Localise["CHARACTER"], ArkInventory.Localise["TOOLTIP_GOLD_AMOUNT"] )
 	for pn, pd in ArkInventory.spairs( ArkInventory.db.realm.player.data ) do
 		
-		if pd.info.name and pd.info.faction and string.sub( pn, 1, 1 ) ~= ArkInventory.Const.GuildTag then
+		if ( pd.info.name ) and ( pd.info.faction ) and ( not ( ( pd.info.class == "GUILD" ) or ( pd.info.class == "ACCOUNT" ) ) ) then
 			
 			if ( not ArkInventory.db.global.option.tooltip.faction ) or ( ArkInventory.db.global.option.tooltip.faction and f == pd.info.faction ) then
 				
@@ -510,8 +510,8 @@ function ArkInventory.MoneyFrame_Tooltip( tooltip )
 	
 	if not ArkInventory.db.global.option.tooltip.me and ArkInventory.db.global.option.tooltip.add.vault then
 		
-		for n in pairs( ArkInventory.db.realm.player.data ) do
-			if string.sub( n, 1, 1 ) == ArkInventory.Const.GuildTag then
+		for n, d in pairs( ArkInventory.db.realm.player.data ) do
+			if d.info.class == "GUILD" then
 				total = 1
 			end
 		end
@@ -531,7 +531,9 @@ function ArkInventory.MoneyFrame_Tooltip( tooltip )
 						
 						if ( not ArkInventory.db.global.option.tooltip.me ) or ( ArkInventory.db.global.option.tooltip.me and pn == player ) then
 							
-							if string.sub( pn, 1, 1 ) == ArkInventory.Const.GuildTag then
+							if pd.info.class == "GUILD" then
+								
+								--ArkInventory.Output( pd.info )
 								
 								local name = pd.info.name
 								if paint then

@@ -73,7 +73,7 @@ Raven.classSpells.SHAMAN = {
 	{ "Riptide", BUFF, p.Blue2, cooldown = true, school = "Nature", id = 61295 },
 	{ "Rockbiter Weapon", BUFF, p.Brown2, school = "Nature", id = 8017 },
 	{ "Rolling Thunder", BUFF, p.Gray, id = 88764 },
-	{ "Searing Flames", DEBUFF, p.Orange3, id = 77657 },
+	{ "Searing Flames", BUFF, p.Orange3, id = 77657 },
 	{ "Searing Totem", nil, p.Orange3, id = 3599 },
 	{ "Shamanistic Rage", BUFF, p.Red1, cooldown = true, id = 30823 },
 	{ "Spiritwalker's Grace", BUFF, p.Green3, cooldown = true, school = "Nature", id = 79206 },

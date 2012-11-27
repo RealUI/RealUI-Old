@@ -1,6 +1,7 @@
 local _G = _G
 local select = _G.select
 local pairs = _G.pairs
+local ipairs = _G.ipairs
 local string = _G.string
 local type = _G.type
 local error = _G.error
@@ -210,7 +211,7 @@ local function GetWowTooltipTextHelper( id, key )
 	
 	ArkInventory.TooltipSetHyperlink( ArkInventory.Global.Tooltip.Scan, string.format( "item:%s", id ) )
 	
-	local _, _, skill, level = ArkInventory.TooltipFind( ArkInventory.Global.Tooltip.Scan, ArkInventory.Localise["WOW_TOOLTIP_SKILL"], false, true, true )
+	local _, _, skill, level = ArkInventory.TooltipFind( ArkInventory.Global.Tooltip.Scan, ArkInventory.Localise["WOW_TOOLTIP_REQUIRES_SKILL"], false, true, true )
 	
 	if skill and level then
 		--ArkInventory.Output( "tooltip: got ", id, ", skill = ", skill, ", level = ", level )
@@ -354,6 +355,7 @@ frame:SetScript( "OnUpdate",
 				
 				ArkInventory.ItemCacheClear( )
 				ArkInventory.ScanLocation( )
+				ArkInventory.MountDataUpdate( )
 				ArkInventory.Frame_Main_Generate( nil, ArkInventory.Const.Window.Draw.Recalculate )
 				
 			end

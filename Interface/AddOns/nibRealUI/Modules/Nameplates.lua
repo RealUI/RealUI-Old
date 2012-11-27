@@ -2,11 +2,6 @@
 local nibRealUI = LibStub("AceAddon-3.0"):GetAddon("nibRealUI");
 local LSM = LibStub("LibSharedMedia-3.0")
 local db, ndbc
-local mass
-
-if IsAddOnLoaded("Massive") then
-	mass = LibStub:GetLibrary("Massive")
-end
 
 local MODNAME = "Nameplates";
 local Nameplates = nibRealUI:NewModule(MODNAME, "AceEvent-3.0");
@@ -92,7 +87,7 @@ local strlen = _G.strlen
 local strsub = _G.strsub
 local gsub = _G.gsub
 
-local CreateBG = function(parent, r, g, b, a, layer)
+local function CreateBG(parent, r, g, b, a, layer)
 	local offset = UIParent:GetScale() / parent:GetEffectiveScale()
 	local bg = parent:CreateTexture(nil, layer or "BACKGROUND")
 	bg:SetTexture(r or 0, g or 0, b or 0, a or 1)
@@ -106,71 +101,74 @@ local function IsValidFrame(frame)
 	return name and name:find("NamePlate")
 end
 
-local ThreatUpdate = function(self, elapsed)
+local function ThreatUpdate(self, elapsed)
 	self.elapsed = self.elapsed + elapsed
 	if self.elapsed >= usThreat then
-		if self.oldglow:IsShown() then
-			local _, green = self.oldglow:GetVertexColor()
+		if self.barFrame.threat:IsShown() then
+			local _, green = self.barFrame.threat:GetVertexColor()
 			if(green > .7) then
-				self.healthBar:SetStatusBarColor(.8, .8, .2) -- medium threat
+				self.barFrame.healthBar:SetStatusBarColor(.8, .8, .2) -- medium threat
 			elseif(green > .1) then
-				self.healthBar:SetStatusBarColor(.8, .4, 0) -- losing aggro
+				self.barFrame.healthBar:SetStatusBarColor(.8, .4, 0) -- losing aggro
 			else
-				self.healthBar:SetStatusBarColor(.2, .8, .2) -- tanking
+				self.barFrame.healthBar:SetStatusBarColor(.2, .8, .2) -- tanking
 			end
 		else
-			self.healthBar:SetStatusBarColor(self.r, self.g, self.b) -- normal colours e.g. not tanking/not NPC
+			self.barFrame.healthBar:SetStatusBarColor(self.r, self.g, self.b) -- normal colours e.g. not tanking/not NPC
 		end
 		self.elapsed = 0
 	end
 end
 
-local UpdateFrame = function(self)
-	local r, g, b = self.healthBar:GetStatusBarColor()
+local function UpdateFrame(self)
+	--print("Nameplates:UpdateFrame self.barFrame; "..tostring(self.barFrame))
+	local r, g, b = self.barFrame.healthBar:GetStatusBarColor()
+	--print("Nameplates:UpdateFrame r,b,g; "..tostring(r)..", "..tostring(b)..", "..tostring(g)..", ")
 	local newr, newg, newb
 	if g + b == 0 then
 		-- Enemy, Red
 		newr, newg, newb = 0.7, 0, 0
-		self.healthBar:SetStatusBarColor(0.7, 0, 0)
+		self.barFrame.healthBar:SetStatusBarColor(0.7, 0, 0)
 	elseif r + b == 0 then
 		-- Friendly, Green
 		newr, newg, newb = 0.33, 0.59, 0.33
-		self.healthBar:SetStatusBarColor(0.33, 0.59, 0.33)
+		self.barFrame.healthBar:SetStatusBarColor(0.33, 0.59, 0.33)
 	elseif r + g == 0 then
 		-- Friendly player, Blue
 		newr, newg, newb = 0.31, 0.45, 0.63
-		self.healthBar:SetStatusBarColor(0.31, 0.45, 0.63)
+		self.barFrame.healthBar:SetStatusBarColor(0.31, 0.45, 0.63)
 	elseif 2 - (r + g) < 0.05 and b == 0 then
 		-- Neutral, Yellow
 		newr, newg, newb = 0.7, 0.7, .2
-		self.healthBar:SetStatusBarColor(0.8, 0.8, .2)
+		self.barFrame.healthBar:SetStatusBarColor(0.8, 0.8, .2)
 	elseif r > 0.9 and g > 0.5 and g < 0.6 and b > 0.7 and b < 0.8 then
 		-- Pink
 		newr, newg, newb = paladinR * 0.9, paladinG * 0.9, paladinB * 0.9
-		self.healthBar:SetStatusBarColor(paladinR * 0.9, paladinG * 0.9, paladinB * 0.9)
+		self.barFrame.healthBar:SetStatusBarColor(paladinR * 0.9, paladinG * 0.9, paladinB * 0.9)
 	elseif g > 0.4 and g < 0.5 and b > 0.8 and b < 0.9 then
 		-- Blue
 		newr, newg, newb = shamanR, shamanG, shamanB
-		self.healthBar:SetStatusBarColor(shamanR, shamanG, shamanB)
+		self.barFrame.healthBar:SetStatusBarColor(shamanR, shamanG, shamanB)
 	else
 		newr, newg, newb = r, g, b
 	end
 
 	self.r, self.g, self.b = newr, newg, newb
 
-	self.healthBar:ClearAllPoints()
-	self.healthBar:SetPoint("CENTER", self.healthBar:GetParent())
-	self.healthBar:SetHeight(db.barsize.normal.height + db.resolution[ndbc.resolution].height)
-	self.healthBar:SetWidth(db.barsize.normal.width + db.resolution[ndbc.resolution].width)
+	self.barFrame.healthBar:ClearAllPoints()
+	self.barFrame.healthBar:SetPoint("CENTER", self.barFrame.healthBar:GetParent())
+	self.barFrame.healthBar:SetHeight(db.barsize.normal.height + db.resolution[ndbc.resolution].height)
+	self.barFrame.healthBar:SetWidth(db.barsize.normal.width + db.resolution[ndbc.resolution].width)
 
-	self.castBar:ClearAllPoints()
-	self.castBar:SetPoint("TOP", self.healthBar, "BOTTOM", 0, -2)
-	self.castBar:SetHeight(db.barsize.normal.height + db.resolution[ndbc.resolution].height)
-	self.castBar:SetWidth(db.barsize.normal.width + db.resolution[ndbc.resolution].width)
+	self.barFrame.castBar:ClearAllPoints()
+	self.barFrame.castBar:SetPoint("TOP", self.barFrame.healthBar, "BOTTOM", 0, -2)
+	self.barFrame.castBar:SetHeight(6)--db.barsize.normal.height + db.resolution[ndbc.resolution].height)
+	--print("Nameplates:UpdateFrame.SetHeight; "..tostring(self.nameFrame.name:GetText())..", Width: "..tostring(self.barFrame.castBar:GetWidth())..", Height: "..tostring(self.barFrame.castBar:GetHeight()))
+	self.barFrame.castBar:SetWidth(db.barsize.normal.width + db.resolution[ndbc.resolution].width)
 
-	self.highlight:SetTexture(nil)
+	--self.barFrame.highlight:SetTexture(nil)
 	
-	local oldName = self.oldname:GetText()
+	local oldName = self.nameFrame.oldname:GetText()
 	local newName = oldName
 	local maxNameLength = ceil((db.barsize.normal.width + db.resolution[ndbc.resolution].width) / db.resolution[ndbc.resolution].maxnamelength)
 	if db.general.abbreviate then
@@ -179,59 +177,67 @@ local UpdateFrame = function(self)
 			newName = strsub(newName, 1, maxNameLength - 1)..".."
 		end
 	end
-	self.name:SetText(newName)
+	self.nameFrame.name:SetText(newName)
 
-	local level, elite, mylevel = tonumber(self.level:GetText()), self.elite:IsShown(), UnitLevel("player")
-	self.level:ClearAllPoints()
-	self.level:SetPoint("RIGHT", self.healthBar, "LEFT", -2, 0)
-	self.level:SetFont(nibRealUI.font.pixel1[1], nibRealUI.font.pixel1[2] * UIParent:GetScale(), nibRealUI.font.pixel1[3])
-	self.level:SetShadowColor(0, 0, 0, 0)
-	if self.boss:IsShown() then
-		self.level:SetText("B")
-		self.level:SetTextColor(0.8, 0.05, 0)
-		self.level:Show()
+	local level, elite, mylevel = tonumber(self.barFrame.level:GetText()), self.barFrame.dragon:IsShown(), UnitLevel("player")
+	self.barFrame.level:ClearAllPoints()
+	self.barFrame.level:SetPoint("RIGHT", self.barFrame.healthBar, "LEFT", -2, 0)
+	self.barFrame.level:SetFont(nibRealUI.font.pixel1[1], nibRealUI.font.pixel1[2] * UIParent:GetScale(), nibRealUI.font.pixel1[3])
+	self.barFrame.level:SetShadowColor(0, 0, 0, 0)
+	if self.barFrame.boss:IsShown() then
+		self.barFrame.level:SetText("B")
+		self.barFrame.level:SetTextColor(0.8, 0.05, 0)
+		self.barFrame.level:Show()
 	elseif not elite and level == mylevel then
-		self.level:Hide()
+		self.barFrame.level:Hide()
 	else
-		self.level:SetText(level..(elite and "+" or ""))
+		self.barFrame.level:SetText(level..(elite and "+" or ""))
 	end
 end
 
-local FixCastbar = function(self)
-	self.castbarOverlay:Hide()
+local function FixCastbar(self)
+	self.border:Hide()
 
-	self:SetHeight(db.barsize.normal.height + db.resolution[ndbc.resolution].height)
+	--self:SetHeight(3)--db.barsize.normal.height + db.resolution[ndbc.resolution].height)
 	-- self:SetWidth(80)
-	self:ClearAllPoints()
-	self:SetPoint("TOP", self.healthBar, "BOTTOM", 0, -2)
+	--self:ClearAllPoints()
+	--self:SetPoint("TOP", frame.barFrame.healthBar, "BOTTOM", 0, -2)
+	--print("CastBar Fixed!!")
 end
 
-local ColorCastBar = function(self, shielded)
+local function ColorCastBar(self, shielded)
 	if shielded then
-		self.iconbg:SetTexture(1, 0, 0)
-	else
-		self.iconbg:SetTexture(0, 0, 0)
+		self.icon:SetVertexColor(1, 0, 0)
+--	else
+--		self.icon.bg:SetVertexColor(0, 0, 0)
 	end
 end
 
-local OnSizeChanged = function(self)
+local function OnSizeChanged(self)
+	--print("Nameplates:OnSizeChanged; Width: "..tostring(self:GetWidth())..", Height: "..tostring(self:GetHeight()))
 	self.needFix = true
 end
 
-local OnValueChanged = function(self, curValue)
+local function OnValueChanged(self, curValue)
+	--print("OnValueChanged")
 	if self.needFix then
 		FixCastbar(self)
 		self.needFix = nil
 	end
 end
 
-local OnShow = function(self)
+local function OnShow(self)
+	--print("Nameplates:OnShow; Width: "..tostring(self:GetWidth())..", Height: "..tostring(self:GetHeight()))
 	self.channeling  = UnitChannelInfo("target") 
 	FixCastbar(self)
-	ColorCastBar(self, self.shieldedRegion:IsShown())
+	--self:SetHeight(3);
+	--print("Nameplates:OnShowFixed; Width: "..tostring(self:GetWidth())..", Height: "..tostring(self:GetHeight()))
+	--print("Nameplates:OnShow self.shield:IsShown(); "..tostring(self.shield:IsShown()))
+	ColorCastBar(self, self.shield:IsShown())
 end
 
-local OnEvent = function(self, event, unit)
+local function OnEvent(self, event, unit)
+	--print("OnEvent")
 	if unit == "target" and event == "UNIT_SPELLCAST_NOT_INTERRUPTIBLE" or event == "UNIT_SPELLCAST_INTERRUPTIBLE" then
 		if self:IsShown() then
 			ColorCastBar(self, event == "UNIT_SPELLCAST_NOT_INTERRUPTIBLE")
@@ -240,100 +246,94 @@ local OnEvent = function(self, event, unit)
 end
 
 local CreateFrame = function(frame)
-	if frame.done then return end
+	local frame = frame
+	if frame.done or (not frame) then return end
 	
 	frame.nameplate = true
 	
-	frame.healthBar, frame.castBar = frame:GetChildren()
-	local healthBar, castBar = frame.healthBar, frame.castBar
-	local glowRegion, overlayRegion, highlightRegion, nameTextRegion, levelTextRegion, bossIconRegion, raidIconRegion, stateIconRegion = frame:GetRegions()
-	local _, castbarOverlay, shieldedRegion, spellIconRegion = castBar:GetRegions()
+	-- /cheer @zork for posting the new Nameplate structure
+	frame.barFrame, frame.nameFrame = frame:GetChildren()
+	frame.barFrame.threat, frame.barFrame.border, frame.barFrame.highlight, frame.barFrame.level, frame.barFrame.boss, frame.barFrame.raid, frame.barFrame.dragon = frame.barFrame:GetRegions()
+	frame.barFrame.healthBar, frame.barFrame.castBar = frame.barFrame:GetChildren()
+	frame.barFrame.healthBar.texture =  frame.barFrame.healthBar:GetRegions()
+	frame.barFrame.castBar.texture, frame.barFrame.castBar.border, frame.barFrame.castBar.shield, frame.barFrame.castBar.icon =  frame.barFrame.castBar:GetRegions()
 	
-	frame.oldname = nameTextRegion
-	nameTextRegion:Hide()
+	frame.nameFrame.name = frame.nameFrame:GetRegions()
 	
-	local newNameRegion = nibRealUI:CreateFS(healthBar, "CENTER", nibRealUI.font.pixel1[2] * UIParent:GetScale())
-	newNameRegion:SetPoint("BOTTOM", healthBar, "TOP", 0, 2.5)
+	frame.nameFrame.oldname = frame.nameFrame.name
+	frame.nameFrame.name:Hide()
+	
+	local newNameRegion = nibRealUI:CreateFS(frame, "CENTER", nibRealUI.font.pixel1[2] * UIParent:GetScale())
+	--print("Nameplates:CreateFrame.newNameRegion; "..tostring(frame.nameFrame.name:GetText())..", Width: "..tostring(frame:GetWidth())..", Height: "..tostring(frame:GetHeight()))
+	newNameRegion:SetPoint("BOTTOM", frame.barFrame.healthBar, "TOP", 0, 0)
 	newNameRegion:SetWidth(db.barsize.normal.width + db.resolution[ndbc.resolution].width)
 	newNameRegion:SetHeight(8)
-	frame.name = newNameRegion
+	frame.nameFrame.name = newNameRegion
 	
-	frame.level = levelTextRegion
-	
-	healthBar:SetStatusBarTexture(nibRealUI.media.textures.plain)
-	local newHPRegion = nibRealUI:CreateFS(healthBar, "CENTER", nibRealUI.font.pixel1[2] * UIParent:GetScale())
-	newHPRegion:SetPoint("CENTER", healthBar, "CENTER", 0, db.resolution[ndbc.resolution].hpoffset)
+	--print("Nameplates:CreateFrame.newHPregion frame.barFrame.healthBar; "..tostring(frame.barFrame.healthBar))
+	local newHPRegion = nibRealUI:CreateFS(frame.barFrame.healthBar, "CENTER", nibRealUI.font.pixel1[2] * UIParent:GetScale())
+	newHPRegion:SetPoint("CENTER", frame.barFrame.healthBar, "CENTER", 0, db.resolution[ndbc.resolution].hpoffset)
 	newHPRegion:SetWidth(db.barsize.normal.width + db.resolution[ndbc.resolution].width)
 	newHPRegion:SetHeight(8)
-	frame.hp = newHPRegion
-	healthBar.elapsed = 0
-	healthBar:SetScript("OnUpdate", function(s, e)
-		s.elapsed = s.elapsed + e
-		if s.elapsed >= 0.2 and db.general.showhp then
-			s.elapsed = 0
+	frame.barFrame.healthBar.hp = newHPRegion
+	frame.elapsed = 0
+	frame.barFrame.healthBar:SetScript("OnUpdate", function(s, e)
+		frame.elapsed = frame.elapsed + e
+		if frame.elapsed >= 0.2 and db.general.showhp then
+			frame.elapsed = 0
 			local minHP, maxHP = s:GetMinMaxValues()
 			local perHP = (s:GetValue() / maxHP) * 100
 			if perHP < 100 then
-				frame.hp:SetFormattedText("%d%%", perHP)
+				frame.barFrame.healthBar.hp:SetFormattedText("%d%%", perHP)
 			else
-				frame.hp:SetText("")
+				frame.barFrame.healthBar.hp:SetText("")
 			end
 		end
 	end)
 	
-	castBar.castbarOverlay = castbarOverlay
-	castBar.healthBar = healthBar
-	castBar.shieldedRegion = shieldedRegion
-	castBar:SetStatusBarTexture(nibRealUI.media.textures.plain)
-	
-	castBar:HookScript("OnShow", OnShow)
-	castBar:HookScript("OnSizeChanged", OnSizeChanged)
-	castBar:HookScript("OnValueChanged", OnValueChanged)
-	castBar:HookScript("OnEvent", OnEvent)
-	castBar:RegisterEvent("UNIT_SPELLCAST_INTERRUPTIBLE")
-	castBar:RegisterEvent("UNIT_SPELLCAST_NOT_INTERRUPTIBLE")
-	
-	frame.highlight = highlightRegion
-	
-	raidIconRegion:ClearAllPoints()
-	raidIconRegion:SetPoint("BOTTOM", healthBar, "TOP", 0, 10)
-	raidIconRegion:SetHeight(14)
-	raidIconRegion:SetWidth(14)
-	
-	frame.oldglow = glowRegion
-	frame.elite = stateIconRegion
-	frame.boss = bossIconRegion
-	
-	frame.done = true
-	
-	glowRegion:SetTexture(nil)
-	overlayRegion:SetTexture(nil)
-	shieldedRegion:SetTexture(nil)
-	castbarOverlay:SetTexture(nil)
-	stateIconRegion:SetTexture(nil)
-	bossIconRegion:SetTexture(nil)
+	nibRealUI:CreateBG(frame.barFrame.healthBar)
+	nibRealUI:CreateBG(frame.barFrame.castBar)
 	
 	UpdateFrame(frame)
 	frame:SetScript("OnShow", UpdateFrame)
 	frame:SetScript("OnHide", OnHide)
-	
-	frame.elapsed = 0
 	frame:SetScript("OnUpdate", ThreatUpdate)
+	frame.elapsed = 0
+
+	frame.barFrame.raid:ClearAllPoints()
+	frame.barFrame.raid:SetPoint("RIGHT", frame.nameFrame.name, "LEFT", 0, 0)
+	frame.barFrame.raid:SetHeight(14)
+	frame.barFrame.raid:SetWidth(14)
 	
-	nibRealUI:CreateBG(castBar)
-	nibRealUI:CreateBG(healthBar)
+	frame.barFrame.castBar:HookScript("OnShow", OnShow)
+	frame.barFrame.castBar:HookScript("OnSizeChanged", OnSizeChanged)
+	frame.barFrame.castBar:HookScript("OnValueChanged", OnValueChanged)
+	frame.barFrame.castBar:HookScript("OnEvent", OnEvent)
+	frame.barFrame.castBar:RegisterEvent("UNIT_SPELLCAST_INTERRUPTIBLE")
+	frame.barFrame.castBar:RegisterEvent("UNIT_SPELLCAST_NOT_INTERRUPTIBLE")
 	
-	local iconFrame = CreateFrame("Frame", nil, castBar)
-	iconFrame:SetPoint("TOPLEFT", healthBar, "TOPRIGHT", 2, 2)
+	local iconFrame = CreateFrame("Frame", nil, frame.barFrame.castBar)
+	iconFrame:SetPoint("TOPLEFT", frame.barFrame.healthBar, "TOPRIGHT", 2, 2)
 	iconFrame:SetHeight(16)
 	iconFrame:SetWidth(16)
 	iconFrame:SetFrameLevel(0)
 	
-	castBar.iconbg = nibRealUI:CreateBG(iconFrame)
+	frame.barFrame.castBar.icon:ClearAllPoints()
+	frame.barFrame.castBar.icon:SetAllPoints(iconFrame)
+	frame.barFrame.castBar.icon:SetTexCoord(.1, .9, .1, .9)
+	frame.barFrame.castBar.icon.bg = nibRealUI:CreateBG(iconFrame)
 	
-	spellIconRegion:ClearAllPoints()
-	spellIconRegion:SetAllPoints(iconFrame)
-	spellIconRegion:SetTexCoord(.1, .9, .1, .9)
+	--frame.barFrame.highlight:SetTexture(nil)
+	frame.barFrame.border:SetTexture(nil)
+	frame.barFrame.boss:SetTexture(nil)
+	frame.barFrame.threat:SetTexture(nil)
+	frame.barFrame.dragon:SetTexture(nil)
+	frame.barFrame.healthBar.texture:SetTexture(nibRealUI.media.textures.plain)
+	frame.barFrame.castBar.shield:SetTexture(nil)
+	frame.barFrame.castBar.border:SetTexture(nil)
+	frame.barFrame.castBar.texture:SetTexture(nibRealUI.media.textures.plain) 
+	
+	frame.done = true
 end
 
 local numKids = 0
@@ -343,7 +343,8 @@ local OnUpdate = function(self, elapsed)
 
 	if last > usNamePlates then
 		last = 0
-
+		
+		local frame
 		if WorldFrame:GetNumChildren() ~= numKids then
 			numKids = WorldFrame:GetNumChildren()
 			for i = 1, select("#", WorldFrame:GetChildren()) do

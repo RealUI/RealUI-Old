@@ -55,6 +55,7 @@ Raven.classSpells.MAGE = {
 	{ "Inferno Blast", nil, p.Red3, cooldown = true, school = "Fire", id = 108853 }, 
 	{ "Invisibility", BUFF, p.Blue3, cooldown = true, school = "Arcane", id = 66 }, 
 	{ "Invocation", BUFF, p.Purple3, id = 114003 }, 
+	{ "Invoker's Energy", BUFF, p.Purple2, school = "Physical", id = 116257 }, 
 	{ "Living Bomb", DEBUFF, p.Red3, school = "Fire", id = 44457 }, 
 	{ "Mage Armor", BUFF, p.Blue1, school = "Arcane", id = 6117 }, 
 	{ "Mana Attunement", BUFF, p.Blue2, id = 121039 }, 

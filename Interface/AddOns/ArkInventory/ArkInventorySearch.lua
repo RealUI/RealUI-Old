@@ -1,6 +1,7 @@
 local _G = _G
 local select = _G.select
 local pairs = _G.pairs
+local ipairs = _G.ipairs
 local string = _G.string
 local type = _G.type
 local error = _G.error
@@ -309,8 +310,7 @@ function ArkInventory.Frame_Search_Table_Scroll( frame )
 
 			_G[string.format( "%s%s", linename, "T1" )]:SetTexture( r.t )
 			
-			local cr, cg, cb = GetItemQualityColor( r.q )
-			local cc = ArkInventory.ColourRGBtoCode( cr, cg, cb )
+			local cc = select( 5, ArkInventory.GetItemQualityColor( r.q ) )
 			_G[string.format( "%s%s", linename, "C1" )]:SetText( string.format( "%s%s", cc, r.name ) )
 
 			_G[linename]:Show( )

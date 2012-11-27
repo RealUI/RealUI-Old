@@ -530,6 +530,9 @@ function GridLayout:PostEnable()
 	self:RestorePosition()
 	self:Scale()
 
+	self:RegisterEvent("PET_BATTLE_OPENING_START", "UpdateVisibility")
+	self:RegisterEvent("PET_BATTLE_CLOSE", "UpdateVisibility")
+
 	self:RegisterMessage("Grid_ReloadLayout", "PartyTypeChanged")
 	self:RegisterMessage("Grid_PartyTransition", "PartyTypeChanged")
 
@@ -969,8 +972,7 @@ end
 
 function GridLayout:UpdateVisibility()
 	--self:Debug("UpdateVisibility")
-	local party_type = GridRoster:GetPartyState()
-	if self.db.profile.layouts[party_type] == L["None"] then
+	if C_PetBattles.IsInBattle() or self.db.profile.layouts[(GridRoster:GetPartyState())] == L["None"] then
 		self.frame:Hide()
 	else
 		self.frame:Show()

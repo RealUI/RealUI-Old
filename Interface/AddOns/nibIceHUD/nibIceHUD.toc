@@ -1,9 +1,9 @@
-## Interface: 50001
+## Interface: 50100
 ## Author: Parnic (modified by Nibelheim (MoP update by Gethe)) (originally created by Iceroth)
 ## Name: nibIceHUD
 ## Title: |cffaaaaaanib|rIceHUD
 ## Notes: IceHUD, now with 75% less fat
-## Version: 7.3 r1
+## Version: 7.3 r2
 ## SavedVariables: IceCoreRealUIDB
 ## Dependencies: nibLibs
 
