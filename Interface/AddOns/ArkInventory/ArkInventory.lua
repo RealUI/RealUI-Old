@@ -1,6 +1,6 @@
 -- (c) 2006-2012, all rights reserved.
--- $Revision: 1042 $
--- $Date: 2012-11-15 21:15:32 +1100 (Thu, 15 Nov 2012) $
+-- $Revision: 1046 $
+-- $Date: 2012-11-28 20:15:56 +1100 (Wed, 28 Nov 2012) $
 
 
 local _G = _G
@@ -818,6 +818,7 @@ ArkInventory.Const = { -- constants
 		name = true,
 		vendorprice = true,
 		itemage = true,
+		id = true,
 	},
 
 	Skills = {
@@ -2607,7 +2608,7 @@ function ArkInventory.ItemSortKeyGenerate( i, bar_id )
 		s["!bagslot"] = string.format( "%04i %04i", i.bag_id, i.slot_id )
 	end
 	
-	if sorting.used and not sorting.bagslot then
+	if ( sorting.used ) and ( not sorting.bagslot ) then
 		
 		local t
 		local class, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11 = ArkInventory.ObjectInfo( i.h )
@@ -2735,9 +2736,16 @@ function ArkInventory.ItemSortKeyGenerate( i, bar_id )
 			end
 			
 		end
-		
 		s["category"] = string.format( "%02i %04i %04i", cat_type, cat_order, cat_code )
 		
+		
+		-- id
+		local id = "!"
+		if i.h and sorting.active.id then
+			id = ArkInventory.ObjectIDTooltip( i.h )
+		end
+		s["id"] = string.format( "%s", id )
+
 		
 		-- build key
 		for k, v in ipairs( sorting.order ) do

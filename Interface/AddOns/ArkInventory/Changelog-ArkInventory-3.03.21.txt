@@ -1,0 +1,173 @@
+------------------------------------------------------------------------
+r386 | arkayenro | 2012-11-28 09:27:13 +0000 (Wed, 28 Nov 2012) | 7 lines
+Changed paths:
+   A /tags/3.03.21 (from /trunk:385)
+
+*3.03.21 (28-NOV-2012)*
+ * changed - toc updated to 50100
+ * fixed - issue with item tracking object not updating
+ * fixed - issue with battlepet opponent detail output not linking all your pets
+ * fixed - issue with normaltexture going green
+ * added - new sort key - internal id (class:itemid:soulbound)
+
+------------------------------------------------------------------------
+r385 | arkayenro | 2012-11-28 09:20:03 +0000 (Wed, 28 Nov 2012) | 7 lines
+Changed paths:
+   M /trunk/ArkInventory.lua
+   M /trunk/ArkInventory.toc
+   M /trunk/ArkInventory.xml
+   M /trunk/ArkInventoryLDB.lua
+   M /trunk/ArkInventoryStorage.lua
+   M /trunk/Locale/deDE.lua
+   M /trunk/Locale/enUS.lua
+   M /trunk/Locale/esES.lua
+   M /trunk/Locale/esMX.lua
+   M /trunk/Locale/frFR.lua
+   M /trunk/Locale/koKR.lua
+   M /trunk/Locale/ruRU.lua
+   M /trunk/Locale/zhCN.lua
+   M /trunk/Locale/zhTW.lua
+   M /trunk/Modules/ArkInventoryRules/ArkInventoryRules.toc
+   M /trunk/Modules/ArkInventoryRulesExample/ArkInventoryRulesExample.toc
+   M /trunk/VersionHistory.txt
+
+*3.03.21 (28-NOV-2012)*
+ * changed - toc updated to 50100
+ * fixed - issue with item tracking object not updating
+ * fixed - issue with battlepet opponent detail output not linking all your pets
+ * fixed - issue with normaltexture going green
+ * added - new sort key - internal id (class:itemid:soulbound)
+
+------------------------------------------------------------------------
+r383 | arkayenro | 2012-11-16 10:09:00 +0000 (Fri, 16 Nov 2012) | 3 lines
+Changed paths:
+   M /trunk/ArkInventory.toc
+   M /trunk/ArkInventoryTooltip.lua
+   M /trunk/VersionHistory.txt
+
+*3.03.20 (16-NOV-2012)*
+ * fixed - code error
+
+------------------------------------------------------------------------
+r381 | arkayenro | 2012-11-15 10:16:55 +0000 (Thu, 15 Nov 2012) | 15 lines
+Changed paths:
+   M /trunk/ArkInventory.lua
+   M /trunk/ArkInventory.toc
+   M /trunk/ArkInventoryCompanion.lua
+   M /trunk/ArkInventoryConfig.lua
+   M /trunk/ArkInventoryLDB.lua
+   M /trunk/ArkInventoryMenu.lua
+   M /trunk/ArkInventorySearch.lua
+   M /trunk/ArkInventoryStorage.lua
+   M /trunk/ArkInventoryTooltip.lua
+   M /trunk/Locale/deDE.lua
+   M /trunk/Locale/enUS.lua
+   M /trunk/Locale/esES.lua
+   M /trunk/Locale/esMX.lua
+   M /trunk/Locale/frFR.lua
+   M /trunk/Locale/game.lua
+   M /trunk/Locale/koKR.lua
+   M /trunk/Locale/ruRU.lua
+   M /trunk/Locale/zhCN.lua
+   M /trunk/Locale/zhTW.lua
+   M /trunk/Modules/ArkInventoryRules/ArkInventoryRules.lua
+   M /trunk/VersionHistory.txt
+
+*3.03.19 (15-NOV-2012)*
+ * changed - the equipment category name is now sourced from blizzard text
+ * added - category: system > equippable items (account bound)
+ * added - rule function: accountbound | ab
+ * note - accountbound items are also considered soulbound so rule order will be important
+ * added - option to disable adding information to mouseover tooltips
+ * added - options to add source and description text to mouseover tooltips
+ * changed - battlepet mouseover tooltips should now work with unit frames
+ * changed - battlepet mouseover display format to show more detailed information about your matching uncaged battlepets
+ * changed - battlepet opponent text will now link your existing pets if the opponent quality is equal or higher
+ * added - rule function: pettype | ptype
+ * added - rule function: petiswild
+ * added - rule function: petcanbattle
+ * potentially fixed - locked journal issue when multiple accounts on a battle.net account are logged in at the same time
+
+------------------------------------------------------------------------
+r379 | arkayenro | 2012-11-08 09:54:47 +0000 (Thu, 08 Nov 2012) | 4 lines
+Changed paths:
+   M /trunk/ArkInventory.lua
+   M /trunk/ArkInventory.toc
+   M /trunk/ArkInventoryStorage.lua
+   M /trunk/VersionHistory.txt
+
+*3.03.18 (08-NOV-2012)*
+ * changed - guild money amounts will only update when at the guild now (should stop them from zero'ing)
+ * fixed - issue with void storage scanning
+
+------------------------------------------------------------------------
+r377 | arkayenro | 2012-11-06 09:05:16 +0000 (Tue, 06 Nov 2012) | 5 lines
+Changed paths:
+   M /trunk/ArkInventory.toc
+   M /trunk/ArkInventoryMenu.lua
+   M /trunk/ArkInventoryMoney.lua
+   M /trunk/ArkInventoryStorage.lua
+   M /trunk/ArkInventoryTooltip.lua
+   M /trunk/Locale/game.lua
+   M /trunk/VersionHistory.txt
+
+*3.03.17 (06-NOV-2012)*
+ * fixed - bug in item count code
+ * fixed - the virtual account will no longer appear in the ldb money object
+ * fixed - translation issue of german global constant being a different format to all other languages
+
+------------------------------------------------------------------------
+r375 | arkayenro | 2012-11-05 09:26:35 +0000 (Mon, 05 Nov 2012) | 24 lines
+Changed paths:
+   M /trunk/ArkInventory.lua
+   M /trunk/ArkInventory.toc
+   M /trunk/ArkInventory.xml
+   M /trunk/ArkInventoryCompanion.lua
+   M /trunk/ArkInventoryConfig.lua
+   M /trunk/ArkInventoryLDB.lua
+   M /trunk/ArkInventoryMenu.lua
+   M /trunk/ArkInventoryMoney.lua
+   M /trunk/ArkInventoryRestack.lua
+   M /trunk/ArkInventorySearch.lua
+   M /trunk/ArkInventoryStorage.lua
+   M /trunk/ArkInventoryTooltip.lua
+   M /trunk/ArkInventoryTranslate.lua
+   M /trunk/ArkInventoryUpgrades.lua
+   M /trunk/Locale/deDE.lua
+   M /trunk/Locale/enUS.lua
+   M /trunk/Locale/esES.lua
+   M /trunk/Locale/esMX.lua
+   M /trunk/Locale/frFR.lua
+   M /trunk/Locale/game.lua
+   M /trunk/Locale/koKR.lua
+   M /trunk/Locale/ruRU.lua
+   M /trunk/Locale/zhCN.lua
+   M /trunk/Locale/zhTW.lua
+   M /trunk/Modules/ArkInventoryRules/ArkInventoryRules.lua
+   M /trunk/VersionHistory.txt
+
+*3.03.16 (05-NOV-2012)*
+ * changed - pets are now stored under a virtual account user (so only one copy of pet data per realm is saved)
+ * changed - mounts are now stored under a virtual account user (so only one copy of mount data per realm is saved)
+ * note - rules do not currently work with battlepets or mounts
+ * added - for sorting purposes, itemlevel is pet level
+ * added - for sorting purposes, itemtype is pet family
+ * fixed - issue with caged battlepets in vaults, although the blizzard interface has the same bug as well which didnt help
+ * fixed - pet renames, level ups and favourite tags are now picked within 5 seconds
+ * fixed - issue with pet item counts not updating properly
+ * fixed - issue with random pet and mount summoning code (caused by translation delay)
+ * fixed - drag and drop of pets will now work onto action bars as well as battle pet slots
+ * added - item counts to mouseover tooltip for capturable and other players battlepets
+ * added - config option to disable the custom battlepet tooltip used to display itemcounts
+ * added - upon entering a pet battle the opponents pet details (hyperlinks) will be displayed to the chat window - can be disabled via config > mesages > battlepet > opponent
+ * fixed - when summoning a ground mount in a non flying area and you have none it will attempt to use a flying mount if you have one of those
+ * fixed - issue with zone restricted mounts
+ * fixed - issue with dismounting while in combat
+ * changed - mount capabilities are now retrieved from internal blizzard data, zone restrictions are still hand coded
+ * changed - ldb mount menus are now disabled if your skill isnt high enough
+ * note - the ability to ride a sea turtle when you have no riding skill and/or are less than level 20 is a blizzard bug (then again its no faster than walking so i doubt they care too much)
+ * fixed - issue with cursor not updating properly when an item is updated underneath it
+ * removed - shapeshift mount forms, i cant cast them from unsecure code anyway
+ * changed - vault actions moved from the tab icons to a new menu button in the changer window
+
+------------------------------------------------------------------------

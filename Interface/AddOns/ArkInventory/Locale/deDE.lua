@@ -414,6 +414,8 @@ if not L then return end
 --	L["CONFIG_SORTMETHOD_INCLUDE_ITEMAGE_TEXT"] = ""
 	L["CONFIG_SORTMETHOD_INCLUDE_VENDORPRICE"] = "Preis beim H\195\164ndler"
 	L["CONFIG_SORTMETHOD_INCLUDE_VENDORPRICE_TEXT"] = "Der Verkaufspreis (gestapelte Gegenst\195\164nde werden aufsummiert) bestimmt die Sortierreihenfolge."
+--	L["CONFIG_SORTMETHOD_INCLUDE_ID"] = ""
+--	L["CONFIG_SORTMETHOD_INCLUDE_ID_TEXT"] = ""
 	
 	L["CONFIG_SORTMETHOD_DIRECTION_TEXT"] = "Gegenst\195\164nde in aufsteigender oder absteigender Reihenfolge sortieren."
 	L["CONFIG_SORTMETHOD_ORDER"] = "Sortierreihenfolge"

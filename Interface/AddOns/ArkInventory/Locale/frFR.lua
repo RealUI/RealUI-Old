@@ -414,6 +414,8 @@ if not L then return end
 --	L["CONFIG_SORTMETHOD_INCLUDE_ITEMAGE_TEXT"] = ""
 	L["CONFIG_SORTMETHOD_INCLUDE_VENDORPRICE"] = "Prix du vendeur"
 	L["CONFIG_SORTMETHOD_INCLUDE_VENDORPRICE_TEXT"] = "inclure le prix des vendeurs (par taille de pile) pour trier l'inventaire"
+--	L["CONFIG_SORTMETHOD_INCLUDE_ID"] = ""
+--	L["CONFIG_SORTMETHOD_INCLUDE_ID_TEXT"] = ""
 	
 	L["CONFIG_SORTMETHOD_DIRECTION_TEXT"] = "Définir dans quel sens vous voulez trier vos objets"
 	L["CONFIG_SORTMETHOD_ORDER"] = "Ordre de tri"

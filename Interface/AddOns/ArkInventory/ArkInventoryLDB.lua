@@ -171,7 +171,7 @@ function ArkInventory.LDB.Tracking_Item:Update( )
 	for k in ArkInventory.spairs( ArkInventory.db.global.option.tracking.items )  do
 		if ArkInventory.db.char.option.ldb.tracking.item.tracked[k] then
 			local count = GetItemCount( k )
-			if k == 6265 then
+			if ( k == 6265 ) then
 				-- soul shards for cataclysm
 				count = UnitPower( "player", 7 ) or 0
 			end

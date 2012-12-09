@@ -7,7 +7,7 @@ local mass
 local nibRealUI_Version = {
 	[1] = 7,
 	[2] = 3,
-	[3] = 2,
+	[3] = 3,
 }
 
 -- Default Options

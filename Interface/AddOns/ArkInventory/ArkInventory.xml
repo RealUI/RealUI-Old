@@ -237,8 +237,6 @@
 
 	<Button virtual="true" name="ARKINV_TemplateButtonItem" inherits="ContainerFrameItemButtonTemplate" hidden="true">
 		
-		<NormalTexture name="$parentNormalTexture" urgency="5" file="" />
-		
 		<Frames>
 			
 			<Frame name="$parentArkBorder" inherits="ARKINV_Border" />
@@ -425,8 +423,6 @@
 
 	<Button virtual="true" name="ARKINV_TemplateButtonItemTainted" inherits="ContainerFrameItemButtonTemplate" hidden="true">
 		
-		<NormalTexture name="$parentNormalTexture" urgency="5" file="" />
-		
 		<Layers>
 			<Layer level="OVERLAY">
 				<Texture name="$parentTainted" setAllPoints="true" hidden="false">
@@ -568,8 +564,6 @@
 	
 	<Button virtual="true" name="ArkInventory_ChangerPlayerMainTemplate" inherits="PaperDollItemSlotButtonTemplate">
 	
-		<NormalTexture name="$parentNormalTexture" file="" />
-		
 		<Frames>
 			<Frame name="$parentArkBorder" inherits="ARKINV_Border" />
 		</Frames>

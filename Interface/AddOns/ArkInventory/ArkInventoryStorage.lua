@@ -1106,6 +1106,7 @@ function ArkInventory:LISTEN_PET_BATTLE_OPENING_DONE( event )
 		h = string.format( "%s|Hbattlepet:%s:%s:%s:%s:%s:%s:|h[%s]|h|r", select( 5, ArkInventory.GetItemQualityColor( rarity ) ), speciesID, level, rarity, health, power, speed, name )
 		
 		if ( not canBattle ) then
+			
 			-- opponent cannot battle (and yet it is)
 			if C_PetBattles.IsWildBattle( ) then
 				-- wild battle, so its one of the secondary non-capturabe opponents
@@ -1113,8 +1114,11 @@ function ArkInventory:LISTEN_PET_BATTLE_OPENING_DONE( event )
 			else
 				-- trainer pets
 			end
+			
 		else
+			
 			local count = ArkInventory.ObjectCountGet( h )
+			
 			if ArkInventory.Table.IsEmpty( count ) then
 				
 				owned = string.format( "%s- %s", RED_FONT_COLOR_CODE, ArkInventory.Localise["BATTLEPET_OPPONENT_UNKNOWN"] )
@@ -1130,19 +1134,30 @@ function ArkInventory:LISTEN_PET_BATTLE_OPENING_DONE( event )
 					
 				elseif C_PetBattles.IsWildBattle( ) then
 					
+					local upgrade = false
+					
 					for _, pid in ArkInventory.Lib.Pet:IteratePetIDs( ) do
 						local sid = C_PetJournal.GetPetInfoByPetID( pid )
 						if ( sid == speciesID ) then
 							local q = ( select( 5, C_PetJournal.GetPetStats( pid ) ) ) - 1
-							--ArkInventory.Output( "h=", h, ", s=[", speciesID, "], q=[", q, " > ", rarity, "]" )
+							--local mh = C_PetJournal.GetBattlePetLink( pid )
+							--ArkInventory.Output( "s=[", speciesID, "], ", h, ", [", rarity, "] / ", mh, " [", q, "]" )
 							if ( rarity >= q ) then
-								if string.len( owned ) < 2 then
-									owned = string.format( "- %s ", ArkInventory.Localise["BATTLEPET_OPPONENT_UPGRADE"] )
-									--owned = string.format( "- " )
-								end
-								owned = string.format( "%s%s", owned, C_PetJournal.GetBattlePetLink( pid ) )
+								upgrade = true
 							end
+							
+							if string.len( owned ) < 2 then
+								owned = string.format( "- %s ", ArkInventory.Localise["BATTLEPET_OPPONENT_UPGRADE"] )
+								--owned = string.format( "- " )
+							end
+							
+							owned = string.format( "%s%s", owned, C_PetJournal.GetBattlePetLink( pid ) )
+							
 						end
+					end
+					
+					if not upgrade then
+						owned = ""
 					end
 					
 				end
@@ -2470,7 +2485,7 @@ function ArkInventory.ScanBattlePet( )
 		
 		i.q = rarity
 		
-		i.count = 1
+		i.count = count
 		
 		i.pid = petID
 		i.bp = ( canBattle and true ) or nil
@@ -2713,7 +2728,7 @@ function ArkInventory.ScanChanged( old, h, sb, count )
 		
 		-- slot has an item
 		
-		if not old.h then
+		if ( not old.h ) then
 			
 			-- item added to previously empty slot
 			ArkInventory.ItemCacheClear( h )
@@ -2724,7 +2739,8 @@ function ArkInventory.ScanChanged( old, h, sb, count )
 			
 		end
 		
-		if ArkInventory.ObjectIDInternal( h ) ~= ArkInventory.ObjectIDInternal( old.h ) then
+		--if ( ArkInventory.ObjectIDInternal( h ) ~= ArkInventory.ObjectIDInternal( old.h ) ) then
+		if ( ArkInventory.ObjectIDTooltip( h ) ~= ArkInventory.ObjectIDTooltip( old.h ) ) then
 			
 			-- different item
 			ArkInventory.ItemCacheClear( h )
@@ -2736,7 +2752,7 @@ function ArkInventory.ScanChanged( old, h, sb, count )
 			
 		end
 		
-		if sb ~= old.sb then
+		if ( sb ~= old.sb ) then
 			
 			-- soulbound changed
 			ArkInventory.ItemCacheClear( old.h )
@@ -2746,7 +2762,7 @@ function ArkInventory.ScanChanged( old, h, sb, count )
 			
 		end
 		
-		if count ~= old.count then
+		if ( count ) and ( old.count ) and ( count ~= old.count ) then
 			
 			-- same item, previously existed, count has changed
 			ArkInventory.ScanCleanupCount( old.h, old.loc_id )
@@ -2774,6 +2790,7 @@ function ArkInventory.ScanCleanupCount( h, loc_id )
 	if not ArkInventoryScanCleanupList[h] then
 		ArkInventoryScanCleanupList[h] = { }
 	end
+	
 	ArkInventoryScanCleanupList[h][loc_id] = true
 	
 end
@@ -2810,6 +2827,8 @@ function ArkInventory.ScanCleanup( cp, loc_id, bag_id, bag, old_bag_count )
 		cp.location[loc_id].slot_count = ArkInventory.Table.Sum( cp.location[loc_id].bag, function( a ) return a.count end )
 		ArkInventory:SendMessage( "LISTEN_STORAGE_EVENT", ArkInventory.Const.Event.BagUpdate, loc_id, bag_id, ArkInventory.Const.Window.Draw.Recalculate )
 	end
+	
+	ArkInventory.LDB.Tracking_Item:Update( )
 	
 end
 
@@ -3582,7 +3601,8 @@ function ArkInventory.ObjectCountGet( search_id, just_me, ignore_vaults, ignore_
 	
 	--ArkInventory.Output( "get count for ", search_id )
 	
-	if not ArkInventory.Global.Cache.ItemCountRaw[search_id] then
+	-- /run ArkInventory.Output( ArkInventory.Global.Cache.ItemCountRaw["battlepet:817"] )
+	if ( not ArkInventory.Global.Cache.ItemCountRaw[search_id] ) then
 		ArkInventory.Global.Cache.ItemCountRaw[search_id] = {
 --		[player_id] = {
 --			["location"] = {

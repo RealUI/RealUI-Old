@@ -32,8 +32,8 @@ local is5_0 = select(4, GetBuildInfo()) < 50100
 --
 
 local _G = _G
-local hooksecurefunc, tinsert, pairs, wipe = _G.hooksecurefunc, _G.table.insert, _G.pairs, _G.wipe
-local ipairs = _G.ipairs
+local assert, hooksecurefunc, ipairs, IsLoggedIn, pairs, tinsert, wipe
+    = assert, hooksecurefunc, ipairs, IsLoggedIn, pairs, tinsert, wipe
 local C_PetJournal = _G.C_PetJournal
 
 local start_background
@@ -364,7 +364,7 @@ lib.event_frame:SetScript("OnUpdate", function(frame, elapsed)
     timer = timer + elapsed
     if timer > 2 then        
         if lib:LoadPets() then
-            lib.callbacks:Fire("PetsUpdated", self)
+            lib.callbacks:Fire("PetsUpdated", lib)
         end
         timer = 0
     end

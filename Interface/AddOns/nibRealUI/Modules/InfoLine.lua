@@ -2169,7 +2169,7 @@ local function Guild_Update(self)
 		end
 		
 		-- Add to list
-		if online then
+		if (online or mobile) then
 			tinsert(GuildTabletData, gPrelist)
 			guildonline = guildonline + 1
 		end

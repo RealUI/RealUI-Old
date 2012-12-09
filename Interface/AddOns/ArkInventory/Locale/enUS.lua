@@ -416,6 +416,8 @@ if not L then return end
 	L["CONFIG_SORTMETHOD_INCLUDE_ITEMAGE_TEXT"] = "include item age when sorting."
 	L["CONFIG_SORTMETHOD_INCLUDE_VENDORPRICE"] = "vendor price"
 	L["CONFIG_SORTMETHOD_INCLUDE_VENDORPRICE_TEXT"] = "include vendor price (per current stack size) when sorting."
+	L["CONFIG_SORTMETHOD_INCLUDE_ID"] = "internal id"
+	L["CONFIG_SORTMETHOD_INCLUDE_ID_TEXT"] = "include internal id (class:id:soulbound) when sorting."
 	
 	L["CONFIG_SORTMETHOD_DIRECTION_TEXT"] = "select what direction you want your items sorted in"
 	L["CONFIG_SORTMETHOD_ORDER"] = "Sort Order"
