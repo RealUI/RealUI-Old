@@ -1,4 +1,4 @@
-local mod = Chatter:NewModule("Alt Linking", "AceHook-3.0", "AceEvent-3.0")
+local mod = Chatter:NewModule("Alt Linking", "AceHook-3.0", "AceEvent-3.0", "AceTimer-3.0")
 local L = LibStub("AceLocale-3.0"):GetLocale("Chatter")
 local LA
 mod.modName = L["Alt Linking"]
@@ -20,12 +20,14 @@ local leftBracket, rightBracket
 local defaults = { 
 	realm = {}, 
 	profile = {
-		guildNotes=true,
-		altNotesFallback=true,
-		colorMode = "COLOR_MOD", 
-		color = {0.6, 0.6, 0.6},
 		leftBracket = "[",
 		rightBracket = "]",
+		colorMode = "COLOR_MOD", 
+		color = {0.6, 0.6, 0.6},
+		guildNotes=true,
+		guildprefix = "",
+		guildsuffix = "",
+		guildranks = {}
 	} 
 }
 local colorModes = {
@@ -46,35 +48,33 @@ local customColorNames = setmetatable({}, {
 local options
 function mod:GetOptions()
 	options = options or {
-		guildNotes = {
-			order=100,
-			type = "toggle",
-			name = L["Use guildnotes"],
-			desc = L["Look in guildnotes for character names, unless a note is set manually"],
-			get = function()
-				return mod.db.profile.guildNotes
-			end,
-			set = function(info, v)
-				mod.db.profile.guildNotes = v
-				mod:EnableGuildNotes(v)
+		outputheader = {
+			type = "header",
+			name = L["Output"],
+			order = 100,
+		},
+		leftbracket = {
+			order = 101, 
+			type = "input",
+			name = L["Left Bracket"],
+			desc = L["Character to use for the left bracket"],
+			get = function() return mod.db.profile.leftBracket end,
+			set = function(i, v)
+				mod.db.profile.leftBracket = v
+				leftBracket = v
+			end
+		},
+		rightbracket = {
+			order = 102,
+			type = "input",
+			name = L["Right Bracket"],
+			desc = L["Character to use for the right bracket"],
+			get = function() return mod.db.profile.rightBracket end,
+			set = function(i, v)
+				mod.db.profile.rightBracket = v
+				rightBracket = v
 			end,
 		},
-		altNotesFallback = {
-			order=101,
-			type = "toggle",
-			name = L["Alt note fallback"],
-			desc = L["If no name can be found for an 'alt' rank character, use entire note"],
-			disabled = function()
-				return not mod.db.profile.guildNotes
-			end,
-			get = function()
-				return mod.db.profile.altNotesFallback
-			end,
-			set = function(info, v)
-				mod.db.profile.altNotesFallback = v
-				mod:ScanGuildNotes()
-			end,
-		},	
 		colorMode = {
 			order=110,
 			type = "select",
@@ -106,30 +106,71 @@ function mod:GetOptions()
 			end,
 			disabled = function() return mod.db.profile.colorMode ~= "CUSTOM" end
 		},
-		leftbracket = {
-			type = "input",
-			name = L["Left Bracket"],
-			desc = L["Character to use for the left bracket"],
-			get = function() return mod.db.profile.leftBracket end,
-			set = function(i, v)
-				mod.db.profile.leftBracket = v
-				leftBracket = v
-			end
+		guildHeader = {
+			order = 200,
+			type = "header",
+			name = L["Guild Notes"],
 		},
-		rightbracket = {
+		guildNotes = {
+			order = 201,
+			type = "toggle",
+			name = L["Use guildnotes"],
+			desc = L["Look in guildnotes for character names, unless a note is set manually"],
+			get = function()
+				return mod.db.profile.guildNotes
+			end,
+			set = function(info, v)
+				mod.db.profile.guildNotes = v
+				mod:EnableGuildNotes(v)
+			end,
+		},
+		guildprefix = {
+			order = 202,
 			type = "input",
-			name = L["Right Bracket"],
-			desc = L["Character to use for the right bracket"],
-			get = function() return mod.db.profile.rightBracket end,
-			set = function(i, v)
-				mod.db.profile.rightBracket = v
-				rightBracket = v
-			end
+			name = L["Guild note prefix"],
+			desc = L["Enter the starting character for guild note delimiters, or leave blank for none."],
+			disabled = function() return not mod.db.profile.guildNotes end,
+			get = function() return mod.db.profile.guildprefix end,
+			set = function(info,v) 
+				mod.db.profile.guildprefix = v 
+				mod:ScanGuildNotes()
+			end,
+		},	
+		guildsuffix = {
+			order = 202,
+			type = "input",
+			name = L["Guild note suffix"],
+			desc = L["Enter the ending character for guild note delimiters, or leave blank for none."],
+			disabled = function() return not mod.db.profile.guildNotes end,
+			get = function() return mod.db.profile.guildsuffix end,
+			set = function(info,v) 
+				mod.db.profile.guildsuffix = v 
+				mod:ScanGuildNotes()
+			end,
+		},	
+		rankHeader = {
+			order = 204,
+			type = "header",
+			name = L["Alt Ranks"],
 		},
 	}
 	return options
 end
 
+local function escape(s)
+	return (s:gsub('%%', '%%%%')
+	     	:gsub('%^', '%%%^')
+		:gsub('%$', '%%%$')
+		:gsub('%(', '%%%(')
+		:gsub('%)', '%%%)')
+		:gsub('%.', '%%%.')
+		:gsub('%[', '%%%[')
+		:gsub('%]', '%%%]')
+		:gsub('%*', '%%%*')
+		:gsub('%+', '%%%+')
+		:gsub('%-', '%%%-')
+		:gsub('%?', '%%%?'))
+end
 
 
 local accept = function(frame, char, editBox)
@@ -189,12 +230,6 @@ function mod:LA_SetAlt(event,main,alt,source)
 	if not source then
 		NAMES[alt] = main
 	end
---	if IsInGuild() then
---		local gname = (GetGuildInfo("player"))
---		if gname and source == LA.GUILD_PREFIX..gname then
---			GUILDNOTES[alt] = main
---		end
---	end
 end
 
 function mod:LA_RemoveAlt(event,main,alt,source)
@@ -222,8 +257,6 @@ function mod:OnEnable()
 
 	leftBracket, rightBracket = self.db.profile.leftBracket, self.db.profile.rightBracket
 	
-	mod:EnableGuildNotes(mod.db.profile.guildNotes)
-	
 	for i = 1, NUM_CHAT_WINDOWS do
 		local cf = _G["ChatFrame" .. i]
 		if cf ~= COMBATLOG then
@@ -237,6 +270,7 @@ function mod:OnEnable()
 		end
 	end
 	self.colorMod = Chatter:GetModule("Player Class Colors")
+	mod:EnableGuildNotes(mod.db.profile.guildNotes)
 end
 
 local types = {"SELF", "PLAYER", "FRIEND", "PARTY"}
@@ -320,18 +354,48 @@ end
 function mod:EnableGuildNotes(enable)
 	GUILDNOTES={}
 	if enable then
-		mod:RegisterEvent("GUILD_ROSTER_UPDATE")
 		if IsInGuild() then
 			GuildRoster()
+			local ranks = {}
+			for i = 1, (GetNumGuildMembers()) do
+				local _, rank, index = GetGuildRosterInfo(i)
+				ranks[index] = rank
+			end
+			for k,v in pairs(ranks) do
+				self.db.profile.guildranks[k] = self.db.profile.guildranks[k] or false
+				options["rank"..k] = {
+					type = "toggle",
+					name = v,
+					desc = L["Use notes as main character names for this rank."],
+					order = 205+k,
+					get = function() return self.db.profile.guildranks[k] end,
+					set = function(info,value) self.db.profile.guildranks[k] = value end,
+					disabled = function() return not mod.db.profile.guildNotes end,
+				}
+			end
+
 		end
 		mod:ScanGuildNotes()	-- Unfortunately we can't count on GuildRoster() triggering the event if someone else triggered it recently. So we try once at first straight off the bat.
+		mod:RegisterEvent("GUILD_ROSTER_UPDATE")
 	else
 		mod:UnregisterEvent("GUILD_ROSTER_UPDATE")
 	end
 end
 
 local doscan=true	-- always the first time we start up
+local guild_available=false
 function mod:GUILD_ROSTER_UPDATE(event,arg1)
+	if not guild_available then
+		local check = GetGuildRosterInfo(1)
+		if not check then
+			self:ScheduleTimer("GUILD_ROSTER_UPDATE", 0.1, true)
+			return
+		else
+			self:CancelTimer("GUILD_ROSTER_UPDATE", true)
+			guild_available=true
+		end
+	end
+	
 	-- arg1 gets set for SOME changes to the guild, but notably not for player notes.. doh  (unless you're the one editing them yourself)
 	-- we force a scan when the guild frame is actually visible (i.e. when we know the player is actually interested in seeing changes)
 	-- i'd like to be able to not have the guildframe check there, but there's plenty of stupid-ass addons that spam GuildRoster() every 10/15/20 seconds, so ... no.
@@ -362,7 +426,7 @@ function mod:ScanGuildNotes()
 	
 	-- #1: find all names
 	for i=1,GetNumGuildMembers(true) do
-		local name = GetGuildRosterInfo(i)
+		local name = (GetGuildRosterInfo(i))
 		names[strlower(name or "?")] = name
 	end
 	
@@ -370,25 +434,17 @@ function mod:ScanGuildNotes()
 	for i=1,GetNumGuildMembers(true) do
 		local name, rank, rankIndex, level, class, zone, note, officernote, online, status = GetGuildRosterInfo(i);
 		local success
-		for word in gmatch(strlower(note), "[%a\128-\255]+") do
-			if names[word] then
-				GUILDNOTES[name] = names[word]
-				LA:SetAlt(name,names[word],LA.GUILD_PREFIX..gName)
-				success = true
-				--DBG n=n+1
-				break
-			end
-		end
-		if not success and mod.db.profile.altNotesFallback and note~="" then
-			-- #3:  no joy? then if this is an 'alt' rank, use the entire note
-			rank=strlower(rank)
-			if strfind(rank, "alt") or
-				strfind(rank, L["alt2"]) or
-				strfind(rank, L["alt3"]) then
-				GUILDNOTES[name] = note
-				LA:SetAlt(name,note,LA.GUILD_PREFIX..gName)
-				--DBG print("Fallback: ",note)
-				--DBG nFallback=nFallback+1
+		if self.db.profile.guildranks[rankIndex] then
+			for word in gmatch(strlower(note), self.db.profile.guildprefix.."[%a\128-\255]+"..self.db.profile.guildsuffix) do
+				word = gsub(word, "^"..(escape(self.db.profile.guildprefix)), "")
+				word = gsub(word, (escape(self.db.profile.guildsuffix)).."$", "")
+				if names[word] then
+					GUILDNOTES[name] = names[word]
+					LA:SetAlt(name,names[word],LA.GUILD_PREFIX..gName)
+					success = true
+					--DBG n=n+1
+					break
+				end
 			end
 		end
 	end

@@ -160,7 +160,9 @@ function mod:OnEnable()
 		"BATTLEGROUND_LEADER", L["Battleground"],
 		"WHISPER", L["Whisper"],
 		"BN_WHISPER", L["RealID Whisper"],
-		"BN_CONVERSATION", L["RealID Conversation"]
+		"BN_CONVERSATION", L["RealID Conversation"],
+		"INSTANCE_CHAT", L["Instance"],
+		"INSTANCE_CHAT_LEADER", L["Instance Leader"]
 	)
 end
 

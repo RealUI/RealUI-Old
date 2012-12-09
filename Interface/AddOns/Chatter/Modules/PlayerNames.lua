@@ -436,6 +436,7 @@ function mod:CHAT_MSG_CHANNEL_LEAVE(evt, _, name, _, _, _, _, _, _, chan)
 end
 
 function mod:GetColor(className, isLocal)
+	if not className then return "7f7f7f" end
 	if isLocal then
 		className = localizedToSystemClass[className]
 	end
@@ -490,7 +491,7 @@ local function changeBNetName(misc, id, moreMisc, fakeName, tag, colon)
 		bleftBracket = leftBracket
 		brightBracket = rightBracket
 	end
-	if englishClass ~= "" then --Friend logging off/Starcraft 2
+	if engilshClass and englishClass ~= "" then --Friend logging off/Starcraft 2
 		if not strmatch(fakeName, "|cff") then
 			-- Handle coloring here
 			if mod.db.profile.nameColoring == "CLASS" then

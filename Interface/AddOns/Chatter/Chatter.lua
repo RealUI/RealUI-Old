@@ -1,4 +1,4 @@
-Chatter = LibStub("AceAddon-3.0"):NewAddon("Chatter", "AceConsole-3.0", "AceHook-3.0") 	--, "AceHook-3.0", "AceTimer-3.0", "AceConsole-3.0", "AceEvent-3.0", "LibSink-2.0")
+Chatter = LibStub("AceAddon-3.0"):NewAddon("Chatter", "AceConsole-3.0", "AceHook-3.0", "AceTimer-3.0") 	--, "AceHook-3.0", "AceConsole-3.0", "AceEvent-3.0", "LibSink-2.0")
 local L = LibStub("AceLocale-3.0"):GetLocale("Chatter")
 local AceConfig = LibStub("AceConfig-3.0")
 local AceConfigDialog = LibStub("AceConfigDialog-3.0")

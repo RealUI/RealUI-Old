@@ -200,7 +200,6 @@ local function FixCastbar(self)
 	if not self.barFrame then return end
 	
 	self.barFrame.castBar:SetHeight(3)--db.barsize.normal.height + db.resolution[ndbc.resolution].height)
-	--self:SetWidth(80)
 	self.barFrame.castBar:ClearAllPoints()
 	self.barFrame.castBar:SetPoint("TOP", self.barFrame.healthBar, "BOTTOM", 0, -2)
 	--print("CastBar Fixed!!")

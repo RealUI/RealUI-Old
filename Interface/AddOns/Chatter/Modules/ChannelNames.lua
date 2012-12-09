@@ -26,6 +26,8 @@ local defaults = {
 			[L["LookingForGroup"]] = "[LFG]",
 			[L["Battleground"]] = "[BG]",
 			[L["Battleground Leader"]] = "[BL]",
+			[L["Instance"]] = "[I]",
+			[L["Instance Leader"]] = "[IL]",
 			-- Not localized here intentionally
 			["Whisper From"] = "[W:From]",
 			["Whisper To"] = "[W:To]",
@@ -179,12 +181,14 @@ function mod:AddMessage(frame, text, ...)
 		text = gsub(text, "^|Hchannel:(%S-)|h(%[([%d. ]*)([^%]]+)%])|h ", replaceChannel)
 		text = gsub(text, "^(%[(" .. L["Raid Warning"] .. ")%]) ", replaceChannelRW)
 	end
-	text = gsub(text, L["To (|Hplayer.-|h):"], mod.db.profile.channels["Whisper To"] .. (mod.db.profile.addSpace and " %1:" or "%1:"))
-	text = gsub(text, L["(|Hplayer.-|h) whispers:"], mod.db.profile.channels["Whisper From"] .. (mod.db.profile.addSpace and " %1:" or "%1:"))
-	text = gsub(text, L["To (|HBNplayer.-|h):"], mod.db.profile.channels["BN Whisper To"] .. (mod.db.profile.addSpace and " %1:" or "%1:"))
-	text = gsub(text, L["To <Away>(|HBNplayer.-|h):"], mod.db.profile.channels["away BN Whisper To"] .. (mod.db.profile.addSpace and " %1:" or "%1:"))
-	text = gsub(text, L["To <Busy>(|HBNplayer.-|h):"], mod.db.profile.channels["busy BN Whisper To"] .. (mod.db.profile.addSpace and " %1:" or "%1:"))
-	text = gsub(text, L["(|HBNplayer.-|h): whispers:"], mod.db.profile.channels["BN Whisper From"] .. (mod.db.profile.addSpace and " %1:" or "%1:"))
+	if mod.db.profile.channels then
+		text = gsub(text, L["To (|Hplayer.-|h):"], (mod.db.profile.channels["Whisper To"] or "[W:From]") .. (mod.db.profile.addSpace and " %1:" or "%1:"))
+		text = gsub(text, L["(|Hplayer.-|h) whispers:"], (mod.db.profile.channels["Whisper From"] or "[W:To]") .. (mod.db.profile.addSpace and " %1:" or "%1:"))
+		text = gsub(text, L["To (|HBNplayer.-|h):"], (mod.db.profile.channels["BN Whisper To"] or "[BN:From]") .. (mod.db.profile.addSpace and " %1:" or "%1:"))
+		text = gsub(text, L["To <Away>(|HBNplayer.-|h):"], (mod.db.profile.channels["away BN Whisper To"] or "[BN:To]") .. (mod.db.profile.addSpace and " %1:" or "%1:"))
+		text = gsub(text, L["To <Busy>(|HBNplayer.-|h):"], (mod.db.profile.channels["busy BN Whisper To"] or "<Away>[BN:To]") .. (mod.db.profile.addSpace and " %1:" or "%1:"))
+		text = gsub(text, L["(|HBNplayer.-|h): whispers:"], (mod.db.profile.channels["BN Whisper From"] or "<Busy>[BN:To") .. (mod.db.profile.addSpace and " %1:" or "%1:"))
+	end
 	return self.hooks[frame].AddMessage(frame, text, ...)
 end
 

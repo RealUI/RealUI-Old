@@ -43,8 +43,14 @@ L["Character to use for the right bracket"] = true
 L["Who is %s's main?"] = true
 L["Set Main"] = true
 L["Enables you to right-click a person's name in chat and set a note on them to be displayed in chat, such as their main character's name. Can also scan guild notes for character names to display, if no note has been manually set."] = true
-L["alt2"] = true
-L["alt3"] = true
+L["Output"] = true
+L["Guild Notes"] = true
+L["Guild note prefix"] = true
+L["Enter the starting character for guild note delimiters, or leave blank for none."] = true
+L["Guild note suffix"] = true
+L["Enter the ending character for guild note delimiters, or leave blank for none."] = true
+L["Alt Ranks"] = true
+L["Use notes as main character names for this rank."] = true
 
 --./Modules/AutoPopup.lua
 L["Automatic Whisper Windows"] = true
@@ -86,7 +92,8 @@ L["Battleground"] = true
 L["Battleground Leader"] = true
 L["Whisper"] = true
 L["Select a color for this channel"] = true
-
+L["Instance Leader"] = true
+L["Instance"] = true
 -- ./Modules/ChannelNames.lua
 L["Channel Names"] = true
 L["$$EMPTY$$"] = true
@@ -137,6 +144,7 @@ L["Lets you link items, enchants, spells, talents, achievements and quests in cu
 -- ./Module/chatPosition.lua
 L["Disable server side storage of chat frame position and size."] = true
 L["Server Positioning"] = true
+L["Disable Server Positioning"] = true
 
 -- ./Modules/ChatScroll.lua
 L["Mousewheel Scroll"] = true
