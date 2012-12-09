@@ -76,9 +76,9 @@ local FrameList = {
 			name = "Alternate Power Bar",
 			frames = {[1] = {name = "PlayerPowerBarAlt"},},
 		},
---		achievementalert = {
---			name = "Achievement Alert",
---		},
+		achievementalert = {
+			name = "Achievement Alert",
+		},
 	},
 	hide = {
 		durabilityframe = {
@@ -1202,7 +1202,9 @@ function FrameMover:OnInitialize()
 				["**"] = {
 					move = true,
 				},
-				achievementalert = {},
+				achievementalert = {
+					move = false,
+				},
 				zonetext = {
 					frames = {
 						[1] = {name = "ZoneTextFrame", parent = "UIParent", point = "TOP", rpoint = "TOP", x = 0, y = -85},

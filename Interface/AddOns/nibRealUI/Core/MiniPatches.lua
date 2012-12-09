@@ -1,9 +1,4 @@
 local nibRealUI = LibStub("AceAddon-3.0"):GetAddon("nibRealUI")
-local mass
-
-if IsAddOnLoaded("Massive") then
-	mass = LibStub:GetLibrary("Massive")
-end
 
 function nibRealUI:MiniPatch(ver)
 	-- 3 action bars
@@ -40,6 +35,12 @@ function nibRealUI:MiniPatch(ver)
 				IceCoreRealUIDB["profiles"]["RealUI"]["modules"]["zCT-Dru-Sunfire"]["scale"] = 0.745
 				IceCoreRealUIDB["profiles"]["RealUI"]["modules"]["zCT-Dru-Sunfire"]["widthModifier"] = -22
 				IceCoreRealUIDB["profiles"]["RealUI"]["modules"]["zCT-Dru-Sunfire"]["textVerticalOffset"] = 14
+			end
+		end
+	elseif ver == "73r5" then
+		if IsAddOnLoaded("nibRealUI") and nibRealUIDB then
+			if nibRealUIDB["namespaces"]["FrameMover"]["uiframes"]["achievementalert"] then
+				nibRealUIDB["namespaces"]["FrameMover"]["uiframes"]["achievementalert"]["move"] = false
 			end
 		end
 	end

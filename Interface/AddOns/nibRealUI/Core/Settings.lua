@@ -2,11 +2,6 @@ local nibRealUI = LibStub("AceAddon-3.0"):GetAddon("nibRealUI")
 local L = LibStub("AceLocale-3.0"):GetLocale("nibRealUI")
 local LSM = LibStub("LibSharedMedia-3.0")
 local db, dbc, dbg
-local mass
-
-if IsAddOnLoaded("Massive") then
-	mass = LibStub:GetLibrary("Massive")
-end
 
 local nibRealUICharacter_defaults = {
 	initialized = false,
@@ -17,6 +12,7 @@ local nibRealUICharacter_defaults = {
 -- Minipatch list. These get flagged on a PrimaryInstall as not being required.
 local table_MiniPatches = {
 	"73r1",
+	"73r5"
 }
 
 local table_Addons = {
@@ -67,7 +63,7 @@ end
 -- CVars
 local function SetDefaultCVars()
 	-- Screenshots
-	SetCVar("screenshotFormat", "png")				-- PNG format
+	SetCVar("screenshotFormat", "jpg")				-- JPG format
 	SetCVar("screenshotQuality", "10")				-- Highest quality
 	-- Help
 	SetCVar("showGameTips", 0)						-- Turn off Loading Screen Tips
