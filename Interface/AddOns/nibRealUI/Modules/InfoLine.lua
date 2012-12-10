@@ -1379,7 +1379,7 @@ local function Currency_GetWeeklyValues()
 	if Name and IsDiscovered then
 		valorTotal = earnedTotal or 0
 		valorThisWeek = earnedThisWeek or 0
-		valorWeeklyMax = weeklyMax or 0
+		valorWeeklyMax = weeklyMax/100 or 0
 	end
 	
 	-- Conquest
