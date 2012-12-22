@@ -1372,7 +1372,7 @@ end
 
 local function Currency_GetWeeklyValues()
 	local Name, earnedTotal, earnedThisWeek, weeklyMax, IsDiscovered
-	local valorTotal, valorThisWeek, valorWeeklyMax, conquestTotal, conquestThisWeek, conquestWeeklyMax
+	local valorTotal, valorThisWeek, valorWeeklyMax, conquestTotal, conquestThisWeek, conquestWeeklyMax = 0,0,0,0,0,0
 	
 	-- Valor
 	Name, earnedTotal, _, earnedThisWeek, weeklyMax, _, IsDiscovered = GetCurrencyInfo(396)
