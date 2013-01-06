@@ -83,8 +83,7 @@ Raven.classSpells.SHAMAN = {
 	{ "Stone Bulwark", BUFF, p.Brown1, school = "Nature", id = 114893 }, -- from stone bulwark totem
 	{ "Stone Bulwark Totem", nil, p.Brown1, cooldown = true, id = 108270 },
 	{ "Stormblast", DEBUFF, p.Purple3, cooldown = true, id = 115356 },
-	{ "Stormlash", BUFF, p.Purple2, school = "Nature", id = 120687 }, -- from stormlash totem
-	{ "Stormlash Totem", nil, p.Purple2, cooldown = true, id = 120668 },
+	{ "Stormlash Totem", BUFF, p.Purple2, cooldown = true, id = 120668 },
 	{ "Stormstrike", BUFF, p.Blue1, cooldown = true, id = 17364 },
 	{ "Thunderstorm", nil, p.Blue3, cooldown = true, school = "Nature", id = 51490 },
 	{ "Tidal Waves", BUFF, p.Cyan, id = 51564 },

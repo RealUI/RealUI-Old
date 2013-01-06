@@ -10,7 +10,7 @@ local damagedmod = Skada:NewModule(L["Damaged mobs"])
 
 local function getDPS(set, player)
 	local totaltime = Skada:PlayerActiveTime(set, player)
-	
+
 	return player.damage / math.max(1,totaltime)
 end
 
@@ -30,7 +30,7 @@ local function log_damage(set, dmg)
 	-- Get the player.
 	local player = Skada:get_player(set, dmg.playerid, dmg.playername)
 	if player then
-	
+
 		-- Subtract overkill
 --		local amount = math.max(0,dmg.amount - dmg.overkill)
 		-- Or don't. Seems to be the way other meters do it.
@@ -39,28 +39,28 @@ local function log_damage(set, dmg)
 
 		-- Also add to set total damage.
 		set.damage = set.damage + amount
-		
+
 		-- Add spell to player if it does not exist.
 		if not player.damagespells[dmg.spellname] then
 			player.damagespells[dmg.spellname] = {id = dmg.spellid, hit = 0, totalhits = 0, damage = 0, critical = 0, glancing = 0, crushing = 0, ABSORB = 0, BLOCK = 0, DEFLECT = 0, DODGE= 0, EVADE = 0, IMMUNE = 0, PARRY = 0, REFLECT = 0, RESIST = 0, MISS = 0}
 		end
-    		
+
 		-- Add to player total damage.
 		player.damage = player.damage + amount
-		
+
 		-- Get the spell from player.
 		local spell = player.damagespells[dmg.spellname]
-		
+
 		spell.totalhits = spell.totalhits + 1
-	
+
 		if spell.max == nil or amount > spell.max then
 			spell.max = amount
 		end
-		
+
 		if (spell.min == nil or amount < spell.min) and not dmg.missed then
 			spell.min = amount
 		end
-		
+
 		spell.damage = spell.damage + amount
 		if dmg.critical then
 			spell.critical = spell.critical + 1
@@ -75,7 +75,7 @@ local function log_damage(set, dmg)
 		else
 			spell.hit = spell.hit + 1
 		end
-		
+
 		-- For now, only save damaged info to current set.
 		-- Saving this to Total may become a memory hog deluxe, and besides, it does not make much sense
 		-- to see in Total. Why care which particular mob you damaged the most in a whole raid, for example?
@@ -84,11 +84,11 @@ local function log_damage(set, dmg)
 			if not player.damaged[dmg.dstname] then
 				player.damaged[dmg.dstname] = 0
 			end
-			
+
 			-- Add to destination.
 			player.damaged[dmg.dstname] = player.damaged[dmg.dstname] + dmg.amount
 		end
-		
+
 	end
 end
 
@@ -98,7 +98,7 @@ local function SpellDamage(timestamp, eventtype, srcGUID, srcName, srcFlags, dst
 	-- Spell damage.
 	if srcGUID ~= dstGUID then
 		local spellId, spellName, spellSchool, samount, soverkill, sschool, sresisted, sblocked, sabsorbed, scritical, sglancing, scrushing = ...
-		
+
 		dmg.playerid = srcGUID
 		dmg.playerflags = srcFlags
 		dmg.dstname = dstName
@@ -125,7 +125,7 @@ local function SwingDamage(timestamp, eventtype, srcGUID, srcName, srcFlags, dst
 	-- White melee.
 	if srcGUID ~= dstGUID then
 		local samount, soverkill, sschool, sresisted, sblocked, sabsorbed, scritical, sglancing, scrushing = ...
-		
+
 		dmg.playerid = srcGUID
 		dmg.playername = srcName
 		dmg.playerflags = srcFlags
@@ -141,7 +141,7 @@ local function SwingDamage(timestamp, eventtype, srcGUID, srcName, srcFlags, dst
 		dmg.glancing = sglancing
 		dmg.crushing = scrushing
 		dmg.missed = nil
-		
+
 		Skada:FixPets(dmg)
 		log_damage(Skada.current, dmg)
 		log_damage(Skada.total, dmg)
@@ -167,7 +167,7 @@ local function SwingMissed(timestamp, eventtype, srcGUID, srcName, srcFlags, dst
 		dmg.glancing = nil
 		dmg.crushing = nil
 		dmg.missed = select(1, ...)
-		
+
 		Skada:FixPets(dmg)
 		log_damage(Skada.current, dmg)
 		log_damage(Skada.total, dmg)
@@ -193,7 +193,7 @@ local function SpellMissed(timestamp, eventtype, srcGUID, srcName, srcFlags, dst
 		dmg.glancing = nil
 		dmg.crushing = nil
 		dmg.missed = missType
-		
+
 		Skada:FixPets(dmg)
 		log_damage(Skada.current, dmg)
 		log_damage(Skada.total, dmg)
@@ -204,18 +204,18 @@ end
 function mod:Update(win, set)
 	-- Max value.
 	local max = 0
-	
+
 	local nr = 1
 	for i, player in ipairs(set.players) do
 		if player.damage > 0 then
 			local dps = getDPS(set, player)
-			
+
 			local d = win.dataset[nr] or {}
 			win.dataset[nr] = d
 			d.label = player.name
-			
+
 			d.valuetext = Skada:FormatValueText(
-											Skada:FormatNumber(player.damage), self.metadata.columns.Damage, 
+											Skada:FormatNumber(player.damage), self.metadata.columns.Damage,
 											string.format("%02.1f", dps), self.metadata.columns.DPS,
 											string.format("%02.1f%%", player.damage / set.damage * 100), self.metadata.columns.Percent
 										)
@@ -229,7 +229,7 @@ function mod:Update(win, set)
 			nr = nr + 1
 		end
 	end
-	
+
 	win.metadata.maxvalue = max
 end
 
@@ -246,7 +246,7 @@ local function dps_tooltip(win, id, label, tooltip)
 		tooltip:AddDoubleLine(L["Active time"], activetime.."s", 255,255,255,255,255,255)
 		tooltip:AddDoubleLine(L["Damage done"], Skada:FormatNumber(player.damage), 255,255,255,255,255,255)
 		tooltip:AddDoubleLine(Skada:FormatNumber(player.damage) .. " / " .. activetime .. ":", ("%02.1f"):format(player.damage / math.max(1,activetime)), 255,255,255,255,255,255)
-		
+
 	end
 end
 
@@ -290,13 +290,13 @@ end
 -- Detail view of a player.
 function playermod:Update(win, set)
 	-- View spells for this player.
-		
+
 	local player = Skada:find_player(set, self.playerid)
 	local max = 0
-	
+
 	-- If we reset we have no data.
 	if player then
-		
+
 		local nr = 1
 		if player then
 			for spellname, spell in pairs(player.damagespells) do
@@ -319,7 +319,7 @@ function playermod:Update(win, set)
 			end
 		end
 	end
-	
+
 	win.metadata.maxvalue = max
 end
 
@@ -333,10 +333,10 @@ end
 function damagedmod:Update(win, set)
 	local player = Skada:find_player(set, self.playerid)
 	local max = 0
-	
+
 	-- If we reset we have no data.
 	if player then
-		
+
 		local nr = 1
 		if player then
 			for mob, amount in pairs(player.damaged) do
@@ -357,14 +357,14 @@ function damagedmod:Update(win, set)
 			end
 		end
 	end
-	
+
 	win.metadata.maxvalue = max
 end
 
 local function add_detail_bar(win, nr, title, value)
 	local d = win.dataset[nr] or {}
 	win.dataset[nr] = d
-	
+
 	d.value = value
 	d.label = title
 	d.id = title
@@ -382,13 +382,13 @@ end
 
 function spellmod:Update(win, set)
 	local player = Skada:find_player(set,playermod.playerid)
-	
+
 	if player then
 		local spell = player.damagespells[self.spellname]
-		
+
 		if spell then
 			win.metadata.maxvalue = spell.totalhits
-			
+
 			if spell.hit > 0 then
 				add_detail_bar(win, 1, L["Hit"], spell.hit)
 			end
@@ -431,7 +431,7 @@ function spellmod:Update(win, set)
 			if spell.RESIST and spell.RESIST > 0 then
 				add_detail_bar(win, 14, L["Resist"], spell.RESIST)
 			end
-			
+
 		end
 	end
 
@@ -445,10 +445,10 @@ end
 function dpsmod:Update(win, set)
 	local max = 0
 	local nr = 1
-	
+
 	for i, player in ipairs(set.players) do
 		local dps = getDPS(set, player)
-		
+
 		if dps > 0 then
 			local d = win.dataset[nr] or {}
 			win.dataset[nr] = d
@@ -460,11 +460,11 @@ function dpsmod:Update(win, set)
 			if dps > max then
 				max = dps
 			end
-			
+
 			nr = nr + 1
 		end
 	end
-	
+
 	win.metadata.maxvalue = max
 end
 
@@ -474,21 +474,21 @@ function mod:OnEnable()
 	mod.metadata = 			{post_tooltip = damage_tooltip, showspots = true, click1 = playermod, click2 = damagedmod, columns = {Damage = true, DPS = true, Percent = true}}
 	damagedmod.metadata = 	{columns = {Damage = true, Percent = true}}
 	spellmod.metadata =		{columns = {Damage = true, Percent = true}}
-	
+
 	Skada:RegisterForCL(SpellDamage, 'DAMAGE_SHIELD', {src_is_interesting = true, dst_is_not_interesting = true})
 	Skada:RegisterForCL(SpellDamage, 'SPELL_DAMAGE', {src_is_interesting = true, dst_is_not_interesting = true})
 	Skada:RegisterForCL(SpellDamage, 'SPELL_PERIODIC_DAMAGE', {src_is_interesting = true, dst_is_not_interesting = true})
 	Skada:RegisterForCL(SpellDamage, 'SPELL_BUILDING_DAMAGE', {src_is_interesting = true, dst_is_not_interesting = true})
 	Skada:RegisterForCL(SpellDamage, 'RANGE_DAMAGE', {src_is_interesting = true, dst_is_not_interesting = true})
-	
+
 	Skada:RegisterForCL(SwingDamage, 'SWING_DAMAGE', {src_is_interesting = true, dst_is_not_interesting = true})
 	Skada:RegisterForCL(SwingMissed, 'SWING_MISSED', {src_is_interesting = true, dst_is_not_interesting = true})
-	
+
 	Skada:RegisterForCL(SpellMissed, 'SPELL_MISSED', {src_is_interesting = true, dst_is_not_interesting = true})
 	Skada:RegisterForCL(SpellMissed, 'SPELL_PERIODIC_MISSED', {src_is_interesting = true, dst_is_not_interesting = true})
 	Skada:RegisterForCL(SpellMissed, 'RANGE_MISSED', {src_is_interesting = true, dst_is_not_interesting = true})
 	Skada:RegisterForCL(SpellMissed, 'SPELL_BUILDING_MISSED', {src_is_interesting = true, dst_is_not_interesting = true})
-	
+
 	Skada:AddFeed(L["Damage: Personal DPS"], function()
 								if Skada.current then
 									local player = Skada:find_player(Skada.current, UnitGUID("player"))
@@ -507,7 +507,7 @@ end
 
 function mod:OnDisable()
 	Skada:RemoveMode(self)
-	
+
 	Skada:RemoveFeed(L["Damage: Personal DPS"])
 	Skada:RemoveFeed(L["Damage: Raid DPS"])
 end
@@ -526,7 +526,7 @@ end
 
 function mod:GetSetSummary(set)
 	return Skada:FormatValueText(
-						Skada:FormatNumber(set.damage), self.metadata.columns.Damage, 
+						Skada:FormatNumber(set.damage), self.metadata.columns.Damage,
 						("%02.1f"):format(getRaidDPS(set)), self.metadata.columns.DPS
 					)
 end

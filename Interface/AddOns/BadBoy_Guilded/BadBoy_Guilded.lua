@@ -1,15 +1,22 @@
 
 local strfind = string.find
 local prevLineId, result, triggers = 0, nil, {
-	"wowstead",
-	"guildlaunch",
-	"corplaunch",
-	"enjin",
+	"wowstead%.com",
+	"guildlaunch%.com",
+	"corplaunch%.com",
+	"guildportal%.com",
+	"shivtr%.com",
+	"enjin%.com",
+	"guildomatic%.com",
 	"re[cq]rui?t",
-	"^wtb guild",
-	"^wtb %d+%+? guild",
-	"^wtb %d+%+? level guild$",
+	"recuiting",
+	"^wt[bs] guild",
+	"wt[bs] %d+%+? guild",
+	"wt[bs] %d+%+? le?ve?l guild",
+	"wt[bs] le?ve?l %d+%+? guild",
+	"selling le?ve?l ?%d+ ?guild", --selling lvl25guild 100k
 	"^wtb a guild", --WTB a guild around lvl 15, make me an offer!
+	"^wtb low le?ve?l guild", --wtb low lvl guild for cheap money, any lvl will do
 	"looking for.*join [ou][us]r?",--<> is Looking for Dedicated and skilled DPS and Healer classes to join us in the current 10 man  raids and expand to 25 man raids. Raids on mon,wed,thurs,sunday 21.00-24.00 18+
 	"www.*apply", --pls go to www.*.com to apply or wisp me for extra info.
 	"looking.*members", -- <<>> is a social levelling looking for all members no lvl requirement, Once we have more members were looking to do Raids and PvP premades, /w if you would like to join please or  /w me for info.
@@ -17,12 +24,12 @@ local prevLineId, result, triggers = 0, nil, {
 	"apply.*www", --<> We Are Looking For people Item lvl 333+ for our25man Cataclysm Raiding team. Must Be over 18+ to Apply or Have some insane Skills. If you Got Any Questions Go to www.<>.net Or contact me or a officer.
 	"gu?ilde?.*[/w][/w]", --<> is a newly formed social guild for all classes and levels. Our aim is to have fun and we hope to do raids when we are big enough. For any more info or an invite /w me. Thank You.
 	"pvp.*pve.*wh?isper", --instead of joining solo and end up loosing with randoms. Ofcourse we group up for Random HCs with both PvP and PvE players aswell and if the PvE group need an extra player for the raid, PvP guys can get invited. Whisper me for more info.
+	"whisper.*info.*http", --Whisper me for more info or visit [http://*.com/]
 	"looking for.*http", --<> Looking for: Resto shaman&Tank. You need skill, focus and patience to learn and pass the fights. If you want to clear bosses before the nerfs then this is the right place for you /w or go to http://<>.info
 	"guild.*pst",--<> an adult guild looking for more players who are active ,like to have fun ,talk in vent & will help others. LVL 5 GUILD !we'd like fun people to enjoy the new content of CATA,all lvls, classes, races are welcome PST FOR MORE INFO/INVI
 	"guild.*bank.*tabs", --Looking for a guild to relax after a hard day of work or school? <> is layed back and alota fun. We are a lev 7 guild and have 7 Guild Bank tabs. we have vent as well so stop by and check us out. come run some dungeons..
 	"guild.*wh?isper m[ey]", -- <> is a layed-back social level 10  heroic/raiding guild. We organize a few heroics/raids a week and ALWAYS use teamspeak while doing so. Is this something you like to do? Whisper me!
 	"looking.*strengthen.*raid", --<> is looking for, 1 ele sham, 1 balance druid, 1 holy pala,  to strengthen our raid teams for the current 10 man raids. Raids 21.00-24.00 Mon,Wed,Thurs,Sun. 349+ gear req age 18+
-	"looking for.*/w.*info", --<><level10>Is looking for more people to start raiding with. We are in need of everything and dps needs to do atleast 10k+ dps and have atleast 345 Item level, /w me for an inv, or for more info
 	"guild.*welcome", -->< is a new dungeon/raid guild we are setting up our raid/HC group. ofc every lvl is welcome in our guild but we preff 60-85 all classes/races. You also have to be an active player
 	"guild.*looking", -->< raiding guild. (5/12) we are looking for exp/dedicated players for our 10mans. slowly moving into 25mans. must have a ilvl 350+ (need 1 tank, 2 ranged(pref. boomkin), 1 melee(pref enhance)
 	"lookk?ing.*welcome", --<> is a lvl 11 recuiting for their 10man group, lookking for people with experiance with a min 348 ilvl (2ranged dps ) all other players are welcome we are 6/12 with cataclysm bosses - raid times are mon - thurs 8:00pm to 12:00am (midnight) Pst
@@ -53,6 +60,15 @@ local prevLineId, result, triggers = 0, nil, {
 	"searching.*raiders.*progress", -- * We are searching for hardcore raiders for HC DS progression, You will need 395+ Ilvl, Achievement (8/8 Normal, Minimum), Microphone and to be above 16+. Searching for Druid (Tank) or a Death Knight (Tank).
 	"guild.*seeking.*exp", --REGAIN {skull}25 lvl{skull} 8/8 HC DS raiding guild seeking for raiders/pvpers and socials for MoP. RBG team leaded by 2.4k experienced pvpers.
 	"guild.*classes.*members", --* are currently lvl 17 and are rebuilding the guild so were accepting all classes and lvls, we are not interested in what item lvl you have we are interested in social members and want people to enjoy the game,whisp for info :)
+	"looking for.*player.*class", --* lv 25 We are looking for solid players who are wanting to be part of a guild that will be competitive and will advance quickly in MOP.We are a active friendly raiding guild currently accepting all classes.we are 8/8 heroic DS
+	"looking for.*pvp.*whisper", -->* is looking for more PvPers to fill our ranks. If you're level 85 and enjoy killing Alliance then whisper me now for an invite. Come get ready for the big adventure into MOP.
+	"guild.*dungeons.*mount", --* Are LF more 85's to do guild heroics and dungeons Also working on Filling out our raid teams As well as giving away great prizes every lvl gain as well as choppers .We do mount runs all over the place
+	"new guild.*join", --New guild formed : * : is a new harcore pvp guild req to join is 2400 exp in arena or rbg , doing rbg every week so be active
+	"lv%d+.*guild.*need.*wh?isp", --{rt1}{rt3} * LV25 guild. Is LF heals for rbg team. we need a extra shamen, holy and disc. do you have gear/skills wisp me {rt3}{rt1}
+	"<.*>.*looking.*%d/%d", --<*> Currently looking for Healers with atleast 6/6 experiance, prefer Druids/Paladin & Warlock/DK Dps  we currently have 6/6 down in MsV10 & 2/6 HoF! Whisper me for more information!
+	"[12][05]m.*progress", --{rt3} * {rt3} (10man) (6/6 MSV)(2/6 HoF). Our core is in need of tank (dk,druid) and 1 ranged dps (hunter,druid). If you are skilled and want to progress in new raids, feel free to whisper (18+). Raid days / time: Wed, Thur, Sun / 20:00-23:00
+	"looking for experienced raiders", --<*> is looking for experienced raiders! What we need 1tank:Druid,DK,War / 1heal: Shaman,Druid (with good dps os) / some dps: Mage, Shaman(elemental with good heal os), Moonkin(with good heal os), Rogue / We raid 3-4times a week 19:30-22:00
+	"social.*guild.*join", --* lvl 1 asocial guild open for members. Join us if you want a guild tag and a tabard.
 
 	--Dutch
 	"guild.*zoek naar.*social", -- [25] Nederlands sprekende Guild <*> zijn op zoek naar Tanks: Geen / Melee dps: Warrior / Ranger dps: warlock, Mage / Healers: Paladin / raid tijden ma, di ,do van 20:00ST tot 23:00ST, social [invite] is ook mogelijk whisper voor meer info.
@@ -63,16 +79,23 @@ local prevLineId, result, triggers = 0, nil, {
 	"guild.*folk.*whisp", --<*> Nystartad, svensk, seriös PvE-guild som satsar på att få in seriöst folk till våra 10-manna DS Heroics. Raidar fre 20-00 samt sön 19-22. Låter detta intressant så whispar DU mig för vidare information.
 	"söker.*guild", --<*> Söker nu efter aktiva gamers som vill ingå ett helt fresh RBG team inom guilden. Vårat mål är 2.4-HOTA. T2/legendary/Bra pve items är STORT PLUS. REQ: 2.2k exp RBG/ARENA. Störst behov: Boomkin, Rshaman eller Rdruid och Disc
 	"söker.*progg?ress", --<*> DS 2/8 HC Söker nu efter 1 healer (hpala,dpriest,rshammy) för HC proggress i DS /w mig så tar vi ett snack.
-	"guild.*letar.*spelare", --Guilden "*" Letar efter nya spelare till Ds 10, Vi har 4 hc on farm och letar efter mer folk som kan bidra till en full Hcclear inom sin tid!
 	"guild.*info.*välkommna", --HEJ ! nu startar vi en ny svensk guild för barna runt 13 år . Vi kommer köra raids som BH , FL , DS kanske börja lite lätt med BwD och BoT , vi vill gärna att ni ska ha skype :) w spec och class / w för mer info!!! ni är välkommna :)
 	"letar.*söker.*info", --<*> letar efter raiders till vårat DS 10 manna team. Just nu så söker vi efter 1 warrior tank och en paladin tank, 1 disc präst och 1 holy paladin och 1 Mage. Vi kommer att raida från 19:00-22:30.  Viska mig för mer info
+	--Guilden "*" Letar efter nya spelare till Ds 10, Vi har 4 hc on farm och letar efter mer folk som kan bidra till en full Hcclear inom sin tid!
+	--Är du svensk och letar efter en svensk guild?Vi i Guildet "*" är en nystartad i level 11 och letar alla sorters medlemmar, vi är just nu en social guild som kommer satsa på Raiding och förhoppningsvis PVP också.
+	"guild.*letar", --* 10m semi-hardcore raiding guild letar efter en healer (ej paladin) för fortsatt progress. Även en hunter/eleshaman/spriest/boomkin eftertraktas. Hör av dig om du är intresserad!
+	"gille.*söker", --<<<<*>>>> Vi är ett 10 manna gille som söker fler spelare till våran core [grupp.Vi]har 1/6 Hc MSV 6/6 HOF 3/4 ToES vi söker 1 Healer 1 Meele  ilvl 480+ 18+ om du är inresserad hör av dig för mer info...
+	"letar.*raid.*social", --<*>(25) letar efter erfarna  rutinerad Warlock, Spriest & Reserver med healing os med sinne för humor till vårt core team för raids i MsV/HoF och annat kul, Raidtider Ons och Mån/Tis 19-23 /w för mer info (socials är välkommn
 
 	--Norwegian
 	"søker.*medlemmer", --"*" Søker flere norske medlemmer. Vi er nyoppstarta og begynner med DS10 + noen HC i denne uka. /w for mer info. Social er også velkomne
+	"rekruterer", -->>>*<<< Er en Norsk social /raiding guild. Vi rekruterer for å starte en ny 10man group får å cleare alt som kan cleares. Guilden er lvl 25 og nyflyttet fra bloodfeather, Vis du vil bli med bare gi oss en whisper, alle er velkommen!
 
 	--Danish
 	"søger.*medlemmer", --* søger flere medlemmer danskere svenskere og nordmæn
 	"leder efter.*members.*social", --* er lvl3 atm leder efter flere members til raid mangler healers tanks og ranged dps alle er velkommen selv om i vil raid eller være sociale bare kom med det gode humør du skal være dansk for at join eller kunne snakke det nogen lunde rent.
+	"guild.*søger", --<*> Dansk guild, søger holy/disc priest til at begynde raid. holdet består af 9/10 irl venner indtil videre.
+	"spillere.*søger.*class", --* står overfor en fornyelse. Vi er en håndfuld spillere der, efter længere tids fravær, har besluttet os at starte igen. Vi søger derfor folk til at starte fra bunden af det nuværende Tier. Alle classes og specs vil blive overvejet.
 
 	--Finnish
 	"kilta.*etsii", --*, Suomalainen PvE-kilta joka etsii vain pelaajia jotka osaavat liikkua tulesta ja joita kiinnostaisi raidata 10man DS normaalia ja heroiccia jatkossa, tähtäämme parempaan tasoon kuin suurin osa servun suomikilloista! /w jos kysyttävää
@@ -80,6 +103,7 @@ local prevLineId, result, triggers = 0, nil, {
 	"etsii.*kilta", --<*> Etsii suomalaisia pelaajia joukkoonsa. Kilta on casual PvE/PvP/social. Kaikki ovat tervetulleita! Nyt haetaan pelaajia aloittamaan DS10 progress.
 	"etsii.*ihmisiä.*progress", --[*] Etsii suomalaisia, raidaamisesta kiinnostuneita motivoituneita ihmisiä liittymään meidän HC Main-raid grouppiin. Nykyinen progress 5/8 Hc ja eteenpäin mennään.
 	"kilta.*tarvetta olisi", --<*> On juuri tehty Suomalainen PvP Kilta rennolla meiningillä. Aloitamme rbg:een kunhan saamme kelvollisen setupin. Tarvetta olisi Fc:lle (Warru), Hiiluja (Pally, Shaman, Priest) ja depsuja melkein kaikki classit. Whisperillä lisää infoa.
+	"etsii.*tervetulleita", --{rt3}*{rt3} 1/6hc MSV, 5/6 HoF Etsii osaavaa depsiä (pref rogue/mage) core porukkaansa. /w jos haluat tietää lisää. Sossut ovat myös tervetulleita.
 
 	--German
 	"sucht.*willkommen", --<> sucht für ihre 10er Raids Mi + Fr 19.30-23.00 (10/12) noch tatkräftige Unterstützung! Hirn, flinke Finger, wache Augen und ein sehr! gutes Klassenverständnis sind uns in jeder Klasse willkommen. [www.xyz.de]
@@ -99,20 +123,33 @@ local prevLineId, result, triggers = 0, nil, {
 	"progres.*so[cs][iy]al", --* [25 Lvl]10M5/8 HC Progresimizi ilerletmeye yardimci olabilecek HC Tecrubesi olan Mage Lock sp alimi yapilacaktir. Ayrica sosyal alimimiz da vardir
 	"progres.*arıyor", --* (25 lvl) 6/8 hc progress, Spine ve Madness progressine katkıda bulunabilecek online süresi yüksek yeterli gear ve oyunculuk seviyesine sahip 1 melee dps arıyor. Bilgi için /w
 	"progres.*aran?maktadır", --*/10m  5/8 HC  ACIL OLARAK, PROGRESS ekibi için en az 3 boss HC deneyimi olan 395-400 arasında ilvl a sahip, raidlere düzenli takılabilecek ELEM SHMY, BLANCE DRUID ve LOCK oyuncular aranmaktadır. Basvuru ve bilgi icin /w.
-	"progres.*guild", --8:30 da basliycak olan hc progresimize 1 burst dps gerek! guild run 6/8 hc progresimiz war Spine hc icin sabırlı 1 dps lazim ''*'' !!! Spine dan baslanıcak!!!
+	"progres.*gu[iı]+ld", --8:30 da basliycak olan hc progresimize 1 burst dps gerek! guild run 6/8 hc progresimiz war Spine hc icin sabırlı 1 dps lazim ''*'' !!! Spine dan baslanıcak!!!
 	"aran?maktadır.*progres", --*  - * yeni transfer olmustur ve suanki tier ve MOP icin kadrosuna classina hakim oyuncular aramaktadır ,Suanki 1/8 HC progressimiz devam ettirmek istiyoruz oncelikli Tank ve Healer alimi vardir.
-	"guild.*raid.*oyuncu", --* guildi kurulmuş olan 25 man kadrosunu güçlendiriyor. Raidlere istekli katılacak, saygılı ve paylaşımı seven türk oyuncuları bekliyoruz.
+	"gu[iı]+ld.*raid.*oyuncu", --* guildi kurulmuş olan 25 man kadrosunu güçlendiriyor. Raidlere istekli katılacak, saygılı ve paylaşımı seven türk oyuncuları bekliyoruz.
 	"başvuru.*www", --Hurish Başvuru için lütfen "www.*.com" adresine giriş yaparak formu doldurunuz.
-	"aranmaktadır.*bilgi.*/w", --* (7/8 Hc) Hc Madness ve MoP icin Off-tank(warrior-paladin) aranmaktadır. Daha fazla bilgi icin /w
+	--{rt3} * {rt3} 1/6HC 15/16 normal main kadrosu icin  haftada 4 aksam 8-12 arasi raid yapabilecek yetenekli, classina hakim oyuncular aramaktadir. Tercih edilen classlar (lock/ele shammy/SP) Bilgi icin /w
+	"aran?maktad[iı]+r.*bilgi.*/w", --* (7/8 Hc) Hc Madness ve MoP icin Off-tank(warrior-paladin) aranmaktadır. Daha fazla bilgi icin /w
+	"classlara.*ihtiyacı olup.*ulassın", -- -*- MoP Paketinde Yeniden Yapılandırma Surecinde Olan Guildimizin Raider Classlara Ihtiyacı Olup , Online Suresi Yuksek, Classına Hakim Range/Caster Dps  Alımı Yapacaktır.Ilgilenenler Ulassın . Tesekkurler.
+	"le?ve?l.*gu[iı]+ld.*whisper", --<*> Level 25 * dan *'a yeni transfer edilen guildimize main kadroya healer(Resto Druid/Shaman/Monk) ve Tank(DK/Pala/Druid) arıyoruz. Ilgilenenler whisper atabilir.
+	"le?ve?l.*gu[iı]+ld.*/w", --&&& * &&& 25 LVL PVP Guıldimize Rbg için Resto Druıd ve Resto Shaman alınacaktır. /w me
+	"guild.*%d%dm.*bilgi", ---*- Semi-Hardcore Guildimizi 25man e cevirmek amaclı classına hakim online suresi yuksek raider arkadaslara ihtiyac duyulmaktadır.Gerekli bilgi icin lutfen ulasın.Tesekkurler..
+	"gu[iı]+ld.*progres", --(*) Guıdimize 10 man progresi crsm cuma  ve cmts gunlerı raıd e katılcak gear duzeyı ıyı olan karekterıne hakım  arkadasları beklıyoruz ( TANK VE HEALER  )
 
 	--Croatian
 	"le?ve?l.*primamo.*igrace", -- * (lvl25) za sve one koji ovo razumeju. Primamo sve zainteresovane igrace 85lvl koji igru pre svega shvataju kao zabavu a ne obavezu. Za vise informacija/w
+	"guild.*trazimo ljude", --* je balkanski guild lvl25 i trazimo ljude za pvp a i ostali clanovi su dobrodosli, trenutni fokus je na rbg i arenama, a i pravit ce se tim za pve progress,Clanova: 104 atm Svi  su dobrodosli{rt8}
 
 	--Hungarian
 	"guild.*játékosokat keres", --* Guild játékosokat keres.Létszámtól függően Old Dungeon,RBG,Content Raid szervezése.Fejlödö szintü karaktereket is várunk.
 	"guild.*info.*wh?isp", --Hali ! * lvl 25 guild tagfelvételt hirdet minden class számára! Raidek szombaton és vasárnap délután MOP-tól! További info wisp: *
 	"klán.*raid.*karakter", --A * klán (lvl25) felnött vagy felnött gondolkodású embereket keres raidezésre, pvp-re és egyéb szórakozásokra. Nem számít a karakter vagy a felszerelés szintje, csak az igény a könnyed, stresszmentes szórakozásra.
 	"klán.*jelentkezését", --* lvl 25-ös klán újra aktív. Aktív játékosok jelentkezését várjuk, akik Pandaria altt is raidelni szeretnénke majd. Infóért írjatok rám nyugodtan.
+	"guild.*keresünk", --* guild tagfelvételt hírdet, amit keresünk az heal( pap,Shaman) és dps( rugó, Hunter,)! Célunk az aktuális content minél elöbbi kitakarítása normálban(ill. hcban)! Részletek whispben.
+	"guild.*keres.*játékost", --<*> Frissen alakult Magyar guild tagokat keres. Várunk szeretettel minden játékost szint/gear megkötés nélkül! Ha szeretnél tagja lenni egy aktív csapatnak írj bátran nekem, vagy Woolfie-nak!
+	"raider.*keres.*info", --* [14/16] aktív raider jelentkezöket keres 10 fös csapatába! Bövebb információk a www.*.in weblapon.
+
+	--Polish
+	"gildia.*szuka", --Polska gildia RP-PvE szuka graczy do wspolnej zabawy. Chcemy stworzyc porzadna ekipe do gry zarówno PvE jak i PvP! Jednoczesnie chcemy aby w "*" panowała miła atmosfera. Gildia stworzona przez ludzi z duzym doswiadczeniem w WoW i innych grach MMO
 }
 
 ChatFrame_AddMessageEventFilter("CHAT_MSG_CHANNEL", function(_,event,msg,player,_,_,_,_,chanId,_,_,_,lineId)
@@ -136,7 +173,7 @@ end)
 
 local whispers = {
 	"would.*join my.*guild", --Would you like to join my social raiding guild?.. lv1 but it will grow fast with your help :D and lottery. u can win 50g a week. MORE later!!
-	"wanna.*join my.*guild", --wanna join my guild im not one of those f*gs that spamf*ck the trade but you have to start from somewhere well pst if u want in if u dont idc i only have me and my best friend in it right now and we have only been using it for storage... 
+	"wanna.*join my.*guild", --wanna join my guild im not one of those f*gs that spamf*ck the trade but you have to start from somewhere well pst if u want in if u dont idc i only have me and my best friend in it right now and we have only been using it for storage...
 	"would.*join our.*guild", --Would you like to join our guild ? if you join We will pay your all repair costrs...
 	"would.*join a.*guild", --Would You Like To Join a New Guild ? Help us Grow. That Will Give You Free Repair When You Reach Lvl 5! wen you reach 85 u will Get 2000g
 	"would.*join.*social.*guild", --Hello <>,how are you? would you like to join <> a newly created socialplayer guild!
@@ -237,9 +274,25 @@ local whispers = {
 	"recruit.*casual.*progres", --<*> <1> Is Now Recruiting. Formed by an 8/8HM experienced GM. <*> aims to become one of the major casual hubs for coming MoP, while at the same time, allowing for progression in a HM environemnt. Aus weeknight raiding (Late Night US).
 	"open.*repair.*join", --<*> We're open for everyone to come chill while playing. Free Repairs! No requirements or expectations. Press Accept to Join
 	"recruit.*bonus.*exp", --<*> of * recruiting! Earn 5% BONUS experience with *!
+	"join.*bonus.*exp", --<*> Join us for 5% BONUS Experience!
 	"le?ve?l.*guild.*perk", --Enjoy level 25 guild perks without responsibility.
 	"le?ve?l.*guild.*info", --<*> is just form and we pay you to lvl! 10g for lvl10 and 20g for lvl 20 and so on! 300g for lvl 85! (must lvl while in guild) Pst for more info and invite! (looking for some good ppl to be officers!)
 	"wonder.*wanted.*join.*cool", --Hey * ... I was wondering you know... If you wanted to join <*>... It's pretty cool. We like to party. And pants. Sorry. I'll go now.
+	"pve.*players.*join", --Hey! do you enjoy PVP, PVE, and hanging with other players? join <*> !
+	"currently.*le?ve?l.*guild", --<*> Currently Running Heroic MoP dugneons - lf people leveling or who are already at 90! Casual laid back guild with alot of experience
+	"le?ve?l.*friendly.*pst", --Lfm for * . lvl 25 .friendly and light raiding . pst for invite or info Ty
+	"join.*le?ve?l.*fun.*activ", --JOIN <*> level9 we are fun activive and freindly and wanna grow so come joing and just chill
+	"le?ve?l.*want.*raid.*www", --<*> lvl 25 WANTS YOU for raids and rbgs. www.*.com
+	"guild.*repair.*invite", --* is a pvp guild with repair for levelling toons, let me know if you would like an invite!
+	"guild.*invite.*le?ve?l", --Hey there.. I know you probably get sapmmed a lot by these guys becasue you're guildless.. but would you like an invite to one? We all use vent and are a good group yo level with and gear up.
+	"^enterinvitemessagehere", --Enter invite message here...
+	"^alltheguildperksyouneed", --All the guild perks you need :)
+	"hello.*join my guild.*free", --Hello *! JOIN MY GUILD FOR FREE SHIZZ HAHA AND GET FREE GOLD
+	"invite.*guild.*social", --Hey, I’d like to invite you to * guild, which is a social and nice group of WoW players. We are going to take as much fun from playing WoW as it's possible. Also, some PVP & PVE contents are in plans tho.
+	"guild.*perk.*social", --Hey! I apologize for the spontaneous request, but I would like to hear if you would like to become a part of this brand new guild <*>, We've only just reached lvl 6. Our goal is not only to provide perks, but also to create a social community!-GM
+	"guild.*le?ve?l.*accept", --Greetings! Do you want to be a part of a Guild, which is a leveling guild atm. but will later be a pvp guild? then press accept :=)
+
+	"gilde.*kommen.*level", --Hättest du lust in meine Gilde zu kommen? Nur bist du 90 bist oder was besseres geunden hast oder so? Damit du nebenbei meine Gilde mit Leveln würdest, haben schon Stufe 4
 }
 
 local tbl, whispPrevLineId, whispResult = {}, 0, nil

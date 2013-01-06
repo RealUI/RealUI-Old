@@ -22,7 +22,7 @@ local opts = {
 				inline=true,
 				order=1,
 				args={
-			
+
 					flash = {
 						type="toggle",
 						name=L["Flash screen"],
@@ -31,7 +31,7 @@ local opts = {
 						set=function(self, val) Skada.db.profile.modules.threatflash = val end,
 						order=2,
 					},
-					
+
 					shake = {
 						type="toggle",
 						name=L["Shake screen"],
@@ -40,7 +40,7 @@ local opts = {
 						set=function(self, val) Skada.db.profile.modules.threatshake = not Skada.db.profile.modules.threatshake end,
 						order=3,
 					},
-					
+
 					playsound = {
 						type="toggle",
 						name=L["Play sound"],
@@ -49,7 +49,7 @@ local opts = {
 						set=function(self, val) Skada.db.profile.modules.threatsound = not Skada.db.profile.modules.threatsound end,
 						order=4,
 					},
-					
+
 					sound = {
 				         type = 'select',
 				         dialogControl = 'LSM30_Sound',
@@ -60,7 +60,7 @@ local opts = {
 				         set = function(self,val) Skada.db.profile.modules.threatsoundname = val end,
 						order=5,
 				    },
-				    
+
 					treshold = {
 				         type = 'range',
 				         name = L["Threat threshold"],
@@ -72,7 +72,7 @@ local opts = {
 				         set = function(self,val) Skada.db.profile.modules.threattreshold = val end,
 						order=6,
 				    },
-				    
+
 					notankwarnings = {
 						type = "toggle",
 						name = L["Do not warn while tanking"],
@@ -80,10 +80,10 @@ local opts = {
 						set = function() Skada.db.profile.modules.notankwarnings = not Skada.db.profile.modules.notankwarnings end,
 						order=2,
 					},
-				    
+
 				},
 			},
-			
+
 			rawthreat = {
 				type = "toggle",
 				name = L["Show raw threat"],
@@ -92,7 +92,7 @@ local opts = {
 				set = function() Skada.db.profile.modules.threatraw = not Skada.db.profile.modules.threatraw end,
 				order=2,
 			},
-			
+
 			focustarget = {
 				type = "toggle",
 				name = L["Use focus target"],
@@ -101,7 +101,7 @@ local opts = {
 				set = function() Skada.db.profile.modules.threatfocustarget = not Skada.db.profile.modules.threatfocustarget end,
 				order=2,
 			},
-			
+
 		},
 	}
 }
@@ -123,7 +123,7 @@ function mod:OnEnable()
 									end
 								end
 							end)
-							
+
 	-- Enable us
 	Skada:AddMode(self)
 end
@@ -161,14 +161,14 @@ local function add_to_threattable(win, name, target)
 				else
 					d.value = threatvalue
 				end
-				
+
 				if threatvalue > maxthreat then
 					maxthreat = threatvalue
 				end
 			end
 		else
 			if threatpct then
-			
+
 				local d = win.dataset[nr] or {}
 				win.dataset[nr] = d
 				d.label = name
@@ -177,10 +177,10 @@ local function add_to_threattable(win, name, target)
 				d.value = threatpct
 				d.isTanking = isTanking
 				d.threat = threatvalue
-				
+
 			end
 		end
-		
+
 		nr = nr + 1
 	end
 end
@@ -198,7 +198,7 @@ end
 local function getTPS(threatvalue)
 	if Skada.current then
 		local totaltime = time() - Skada.current.starttime
-		
+
 		return format_threatvalue(threatvalue / math.max(1,totaltime))
 	else
 		-- If we are not in combat and have no active set, we are screwed, since we have no time reference.
@@ -219,14 +219,14 @@ function mod:Update(win, set)
 	elseif UnitExists("target") and UnitIsFriend("player", "target") and UnitExists("targettarget") and not UnitIsFriend("player", "targettarget") then
 		target = "targettarget"
 	end
-	
+
 	if target then
 		-- Set window title.
 		win.metadata.title = UnitName(target)
-	
+
 		-- Reset our counter which we use to keep track of current index in the dataset.
 		nr = 1
-		
+
 		-- Reset out max threat value.
 		maxthreat = 0
 
@@ -236,7 +236,7 @@ function mod:Update(win, set)
 				local name = (UnitName(type..tostring(i)))
 				if name then
 					add_to_threattable(win, name, target)
-					
+
 					if UnitExists(type..i.."pet") then
 						add_to_threattable(win, select(1, UnitName(type..i.."pet")), target)
 					end
@@ -247,27 +247,27 @@ function mod:Update(win, set)
 		if type ~= "raid" then
 			-- Add ourself because we're in a party or alone.
 			add_to_threattable(win, UnitName("player"), target)
-			
+
 			-- Maybe we have a pet?
 			if UnitExists("pet") then
 				add_to_threattable(win, UnitName("pet"), target)
 			end
 		end
-	
+
 		-- If we are going by raw threat we got the max threat from above; otherwise it's always 100.
 		if not Skada.db.profile.modules.threatraw then
 			maxthreat = 100
 		end
-		
+
 		win.metadata.maxvalue = maxthreat
-		
+
 		local we_should_warn = false
-		
+
 		-- We now have a a complete threat table.
 		-- Now we need to add valuetext.
 		for i, data in ipairs(win.dataset) do
 			if data.id then
-			
+
 				if data.threat and data.threat > 0 then
 					-- Warn if this is ourselves and we are over the treshold.
 					local percent = data.value / math.max(0.000001, maxthreat) * 100
@@ -276,7 +276,7 @@ function mod:Update(win, set)
 							we_should_warn = true
 						end
 					end
-					
+
 					data.valuetext = Skada:FormatValueText(
 													format_threatvalue(data.threat), self.metadata.columns.Threat,
 													getTPS(data.threat), self.metadata.columns.TPS,
@@ -285,10 +285,10 @@ function mod:Update(win, set)
 				else
 					data.id = nil
 				end
-				
+
 			end
 		end
-		
+
 		-- Warn
 		if we_should_warn and time() - last_warn > 2 then
 			if Skada.db.profile.modules.threatflash then
@@ -298,9 +298,9 @@ function mod:Update(win, set)
 				self:Shake()
 			end
 			if Skada.db.profile.modules.threatsound then
-				PlaySoundFile(media:Fetch("sound", Skada.db.profile.modules.threatsoundname)) 
+				PlaySoundFile(media:Fetch("sound", Skada.db.profile.modules.threatsoundname))
 			end
-			
+
 			last_warn = time()
 		end
 	else

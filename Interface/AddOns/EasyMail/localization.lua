@@ -1,10 +1,13 @@
 
 EASYMAIL_FORWARDTEXT = "Forward";
 EASYMAIL_CLEAROPTION = "Clear Field";
+EASYMAIL_ADDNAMEOPTION = "Add Name";
 EASYMAIL_ATTBUTTONTEXT = "Take All";
 EASYMAIL_CHECKALLTEXT = "Mark All";
 EASYMAIL_CLEARALLTEXT = "Clear All";
-EASYMAIL_GETALLTEXT = "Get Attachments";
+EASYMAIL_GETALLTEXT = "Get Marked";
+EASYMAIL_CHECKPAGETEXT = "Mark Page";
+EASYMAIL_CLEARPAGETEXT = "Clear Page";
 EASYMAIL_GUILDTEXT = "Guild Members";
 EASYMAIL_FRIENDSTEXT = "Friends";
 EASYMAIL_RECEIVEMONEY = "You receive money: %s %s";
@@ -17,6 +20,9 @@ EASYMAIL_FORWARD_PREFIX = "FW:"
 
 EASYMAIL_CLEARQUESTION = "Clear all recently-mailed addressees from the EasyMail addressee list?";
 EASYMAIL_CLEARMSG = "EasyMail recently-mailed addressees cleared.";
+EASYMAIL_ADDNAMETEXT = "Enter character name to add to addressee list:"
+EASYMAIL_ADDNAMEERR = "Entered name '%s' already exists in addressee list."
+EASYMAIL_ADDNAMEMSG = "Name '%s' added to the addressee list."
 EASYMAIL_DELNAMEQUESTION = "Delete %s from the addressee list?";
 EASYMAIL_DELNAMEMSG = "EasyMail deleted %s from the addressee list.";
 EASYMAIL_DELETEQUESTION = "Delete mail from %s?";

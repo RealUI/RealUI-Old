@@ -11,17 +11,20 @@ get all attachments from all selected mails.
 ---------------------------------------------------
 -- Global vars
 ---------------------------------------------------
--- Set defaults
+EasyMail = {};
+
 EASYMAIL_ADDONNAME = "EasyMail";
-EASYMAIL_SLASHCMD = "easymail";
 
 -- List length default and constraints
-EASYMAIL_DEFAULTLISTLEN = 15;
-EASYMAIL_MINLISTLEN = 8;
-EASYMAIL_MAXLISTLEN = 40;
+EasyMail.DefaultListLen = 15;
+EasyMail.MinListLen = 8;
+EasyMail.MaxListLen = 40;
 
-EASYMAIL_LISTLENMAX = 15;
-EASYMAIL_BUTTONHEIGHT = 16;
+EasyMail.ListLenMax = 15;
+EasyMail.ButtonHeight = 16;
+
+-- Default addressee width
+EasyMail.AddrWidth = 0;
 
 -- Clear list dialog
 StaticPopupDialogs["EASYMAIL_CLEARLIST"] = {
@@ -29,7 +32,7 @@ StaticPopupDialogs["EASYMAIL_CLEARLIST"] = {
 	button1 = TEXT(YES),
 	button2 = TEXT(NO),
 	OnAccept = function()
-		EasyMail_ClearList();
+		EasyMail.ClearList();
 	end,
 	timeout = 0,
 	showAlert = 1,
@@ -42,7 +45,7 @@ StaticPopupDialogs["EASYMAIL_DELETENAME"] = {
 	button1 = TEXT(YES),
 	button2 = TEXT(NO),
 	OnAccept = function()
-		EasyMail_DeleteName();
+		EasyMail.DeleteName();
 	end,
 	timeout = 0,
 	showAlert = 1,
@@ -55,12 +58,54 @@ StaticPopupDialogs["EASYMAIL_DELETEMAIL"] = {
 	button1 = TEXT(YES),
 	button2 = TEXT(NO),
 	OnAccept = function()
-		EasyMail_ClickDelete();
+		EasyMail.ClickDelete();
 	end,
 	timeout = 0,
 	showAlert = 1,
 	exclusive = 1,
 	hideOnEscape = 1
+};
+
+-- Add Name dialog
+StaticPopupDialogs["EASYMAIL_ADDNAME"] = {
+	text = EASYMAIL_ADDNAMETEXT,
+	button1 = ACCEPT,
+	button2 = CANCEL,
+	hasEditBox = 1,
+	maxLetters = 12,
+	OnAccept = function(self)
+		local text = self.editBox:GetText();
+		EasyMail.SaveAddressee(text, 2);
+	end,
+	EditBoxOnEnterPressed = function(self)
+		local text = self:GetText();
+		EasyMail.SaveAddressee(text, 2);
+		self:GetParent():Hide();
+	end,
+	OnShow = function(self)
+		self.editBox:SetFocus();
+	end,
+	OnHide = function(self)
+		ChatEdit_FocusActiveWindow();
+		self.editBox:SetText("");
+	end,
+	timeout = 0,
+	exclusive = 1,
+	whileDead = 1,
+	hideOnEscape = 1
+};
+
+StaticPopupDialogs["EASYMAIL_ADDNAMEMSG"] = {
+	text = "temp",
+	button1 = OKAY,
+	button2 = nil,
+	timeout = 0,
+	OnAccept = function()
+	end,
+	OnCancel = function()
+	end,
+	whileDead = 1,
+	hideOnEscape = 1,
 };
 
 -- Set up saved variables
@@ -104,6 +149,7 @@ local CurAtt = nil;
 -- Checkbox table
 local CheckBoxes = {};
 local CheckAll = true;
+local CheckPage = true;
 
 -- Get all mail attachment variables
 local GettingAll = false;
@@ -139,20 +185,20 @@ local SendingMail = false;
 
 
 ---------------------------------------------------
--- EasyMail_OnLoad
+-- EasyMail.OnLoad
 -- Register events when the addon is loaded - Frame: EasyMail_MainFrame
 ---------------------------------------------------
-function EasyMail_OnLoad(self)
+function EasyMail.OnLoad(self)
 	-- Register event that fires when the player logs in
 	self:RegisterEvent("PLAYER_LOGIN");
 end
 
 
 ---------------------------------------------------
--- EasyMail_OnEvent
+-- EasyMail.OnEvent
 -- Handle registered events - Frame: EasyMail_MainFrame
 ---------------------------------------------------
-function EasyMail_OnEvent(self, event, ...)
+function EasyMail.OnEvent(self, event, ...)
 	local arg1 = ...;
 	
 	-- PLAYER_LOGIN fires after all addons have loaded and just before the player enters the world
@@ -176,7 +222,7 @@ function EasyMail_OnEvent(self, event, ...)
 		self:RegisterEvent("GUILD_ROSTER_UPDATE");
 		self:RegisterEvent("PLAYER_GUILD_UPDATE");
 		
-		EasyMail_SetupOptions();
+		EasyMail.SetupOptions();
 		
 		-- Setup saved variables
 		if (not EasyMail_SavedVars[CurRealm]) then
@@ -201,37 +247,42 @@ function EasyMail_OnEvent(self, event, ...)
 		end
 		
 		if (not EasyMail_SavedVars[CurRealm][CurFaction].MailListLen) then
-			EasyMail_SetDefaults();
+			EasyMail.SetDefaults();
 		end
 		
-		-- Create the sorted recently-mailed list
-		EasyMail_SortList();
+		-- Place dropdown button and set field width
+		EasyMail.AddrWidth = SendMailNameEditBox:GetWidth();
+		EasyMail.HideDropdown(EasyMail_SavedVars.BlizzList == "Y");
 		
-		-- Shorten the addressee field to accomodate dropdown button
-		SendMailNameEditBox:SetWidth(SendMailNameEditBox:GetWidth() - 24);
+		-- Create the sorted recently-mailed list
+		EasyMail.SortList();
 		
 		-- Hook to the send mail button to know what addressee was entered since Blizzard clears it on a successful 
 		-- mailing
 		--hooksecurefunc("SendMailMailButton_OnClick", EasyMail_GetAddressee);
-		SendMailMailButton:HookScript("OnClick", EasyMail_GetAddressee);
+		SendMailMailButton:HookScript("OnClick", EasyMail.GetAddressee);
 		
 		-- Hook to Blizzard's mail reset function to fill in the addressee field with the last mailed name
-		hooksecurefunc("SendMailFrame_Reset", function() EasyMail_SetAddressee(nil, CurrentAddressee); end);
+		hooksecurefunc("SendMailFrame_Reset", function() EasyMail.SetAddressee(nil, CurrentAddressee); end);
 		
 		-- Hook to the redraw function for the open mail to move the attachments down a bit to make room for the 
 		-- Take All button
-		hooksecurefunc("OpenMail_Update", EasyMail_AdjustAtt);
+		hooksecurefunc("OpenMail_Update", EasyMail.AdjustAtt);
 		
 		-- Replace inbox onclick to cancel Take All if user changes open emails and to handle right-click
 		for t = 1, INBOXITEMS_TO_DISPLAY do
-			getglobal("MailItem"..t.."Button"):SetScript("OnClick", EasyMail_MailItemOnClickHandler);
+			getglobal("MailItem"..t.."Button"):SetScript("OnClick", EasyMail.MailItemOnClickHandler);
 		end
 		
 		-- Place the Take All button
 		EasyMail_AttButton:SetParent(OpenMailFrame);
 		
 		-- Hook the inbox update function to draw the checkboxes
-		hooksecurefunc("InboxFrame_Update", EasyMail_InboxUpdate);
+		hooksecurefunc("InboxFrame_Update", EasyMail.InboxUpdate);
+		
+		-- Hook the prev and next buttons to reset the Mark Page button
+		InboxPrevPageButton:HookScript("OnClick", EasyMail.ResetMarkPage);
+		InboxNextPageButton:HookScript("OnClick", EasyMail.ResetMarkPage);
 		
 		-- Save settings for default inbox
 		_, _, _, MailItemX, MailItemY = MailItem1:GetPoint(1);
@@ -240,24 +291,28 @@ function EasyMail_OnEvent(self, event, ...)
 		_, _, _, ExpireTimeX, ExpireTimeY = MailItem1ExpireTime:GetPoint(1);
 
 		-- Adjust inbox to accomodate checkboxes
-		EasyMail_ShowCheckBoxes();
+		EasyMail.ShowCheckBoxes();
+		
+		-- Set up Inbox for mousewheel
+		InboxFrame:EnableMouseWheel(true);
+		InboxFrame:SetScript("OnMouseWheel", EasyMail.MouseWheelHandler);
 		
 		-- Hook the mail frame hide function to cancel the get all process
-		MailFrame:HookScript("OnHide", EasyMail_StopGetAll);
+		MailFrame:HookScript("OnHide", EasyMail.StopGetAll);
 		
 		-- Hook the mail frame show function to reset the Mark All button
-		MailFrame:SetScript("OnShow", EasyMail_ResetMarkAll);
+		MailFrame:SetScript("OnShow", EasyMail.ResetMarkAll);
 		
 		-- Hook the take attachment function to display money received
-		OpenMailMoneyButton:HookScript("OnClick", EasyMail_PrintMoney);
+		OpenMailMoneyButton:HookScript("OnClick", EasyMail.PrintMoney);
 		
 		-- Set scroll frame so that it resets the dropdown hide counter
-		EasyMailDropdownScrollFrameScrollBar:SetScript("OnEnter", EasyMail_ScrollOnEnter);
-		EasyMailDropdownScrollFrameScrollBar:SetScript("OnLeave", EasyMail_ScrollOnLeave);
-		EasyMailDropdownScrollFrameScrollBarScrollUpButton:SetScript("OnEnter", EasyMail_ScrollOnEnter);
-		EasyMailDropdownScrollFrameScrollBarScrollUpButton:SetScript("OnLeave", EasyMail_ScrollOnLeave);
-		EasyMailDropdownScrollFrameScrollBarScrollDownButton:SetScript("OnEnter", EasyMail_ScrollOnEnter);
-		EasyMailDropdownScrollFrameScrollBarScrollDownButton:SetScript("OnLeave", EasyMail_ScrollOnLeave);
+		EasyMailDropdownScrollFrameScrollBar:SetScript("OnEnter", EasyMail.ScrollOnEnter);
+		EasyMailDropdownScrollFrameScrollBar:SetScript("OnLeave", EasyMail.ScrollOnLeave);
+		EasyMailDropdownScrollFrameScrollBarScrollUpButton:SetScript("OnEnter", EasyMail.ScrollOnEnter);
+		EasyMailDropdownScrollFrameScrollBarScrollUpButton:SetScript("OnLeave", EasyMail.ScrollOnLeave);
+		EasyMailDropdownScrollFrameScrollBarScrollDownButton:SetScript("OnEnter", EasyMail.ScrollOnEnter);
+		EasyMailDropdownScrollFrameScrollBarScrollDownButton:SetScript("OnLeave", EasyMail.ScrollOnLeave);
 		
 		-- Create invis buttons for scrollbar to hide dropdown
 		CreateFrame("Button", "EasyMail_UpButton", EasyMailDropdownScrollFrameScrollBarScrollUpButton,
@@ -268,37 +323,40 @@ function EasyMail_OnEvent(self, event, ...)
 		EasyMail_DownButton:SetAllPoints(EasyMailDropdownScrollFrameScrollBarScrollDownButton);
 		
 		-- Hook to money frame to set subject automatically
-		SendMailMoneyGold:HookScript("OnTextChanged", EasyMail_MoneySubject);
-		SendMailMoneySilver:HookScript("OnTextChanged", EasyMail_MoneySubject);
-		SendMailMoneyCopper:HookScript("OnTextChanged", EasyMail_MoneySubject);
+		SendMailMoneyGold:HookScript("OnTextChanged", EasyMail.MoneySubject);
+		SendMailMoneySilver:HookScript("OnTextChanged", EasyMail.MoneySubject);
+		SendMailMoneyCopper:HookScript("OnTextChanged", EasyMail.MoneySubject);
 		
 		-- Hook to inbox item tooltip to display text
-		hooksecurefunc("InboxFrameItem_OnEnter", EasyMail_Tooltip);
+		hooksecurefunc("InboxFrameItem_OnEnter", EasyMail.Tooltip);
 		
 		-- Hook to auto-complete with names from recently-mailed list
 		--Old_PlayerNameAutocomplete = PlayerNameAutocomplete;
 		--PlayerNameAutocomplete = EasyMail_SendeeAutocomplete;
 		
 		-- Hooks to addressee edit box for custom auto-complete
-		SendMailNameEditBox:SetScript("OnTabPressed", EasyMail_OnTabPressed);
-		SendMailNameEditBox:SetScript("OnEditFocusLost", EasyMail_OnEditFocusLost);
-		SendMailNameEditBox:SetScript("OnCharComposition", EasyMail_OnCharComposition);
-		SendMailNameEditBox:SetScript("OnChar", EasyMail_OnChar);
-		SendMailNameEditBox:SetScript("OnEnterPressed", EasyMail_OnEnterPressed);
-		SendMailNameEditBox:SetScript("OnEscapePressed", EasyMail_OnEscapePressed);
-		SendMailNameEditBox:SetScript("OnTextChanged", EasyMail_OnTextChanged);
+		SendMailNameEditBox:SetScript("OnTabPressed", EasyMail.OnTabPressed);
+		SendMailNameEditBox:SetScript("OnEditFocusLost", EasyMail.OnEditFocusLost);
+		SendMailNameEditBox:SetScript("OnCharComposition", EasyMail.OnCharComposition);
+		SendMailNameEditBox:SetScript("OnChar", EasyMail.OnChar);
+		SendMailNameEditBox:SetScript("OnEnterPressed", EasyMail.OnEnterPressed);
+		SendMailNameEditBox:SetScript("OnEscapePressed", EasyMail.OnEscapePressed);
+		SendMailNameEditBox:SetScript("OnTextChanged", EasyMail.OnTextChanged);
 		
 		-- Reposition too many mails warning at top of inbox
 		InboxTooMuchMail:SetPoint("CENTER", InboxTooMuchMail:GetParent(), "CENTER", 7, 232);
 		
 		-- Add logged-in character to list if option is enabled
 		if (EasyMail_SavedVars.AutoAdd == "Y") then
-			EasyMail_SaveAddressee(CurPlayer, true);
+			EasyMail.SaveAddressee(CurPlayer, 1);
 		end
 		
-		EasyMail_Copper = EasyMail_Trim(gsub(COPPER_AMOUNT, "%%d", ""));
-		EasyMail_Silver = EasyMail_Trim(gsub(SILVER_AMOUNT, "%%d", ""));
-		EasyMail_Gold = EasyMail_Trim(gsub(GOLD_AMOUNT, "%%d", ""));
+		EasyMail_Copper = EasyMail.Trim(gsub(COPPER_AMOUNT, "%%d", ""));
+		EasyMail_Silver = EasyMail.Trim(gsub(SILVER_AMOUNT, "%%d", ""));
+		EasyMail_Gold = EasyMail.Trim(gsub(GOLD_AMOUNT, "%%d", ""));
+		
+		-- Hook to open bags when Send Mail tab is clicked
+		hooksecurefunc("MailFrameTab_OnClick", EasyMail.OpenBags);
 		
 		InterfaceOptions_AddCategory(EasyMail_OptionsPanel);
 	end
@@ -306,14 +364,14 @@ function EasyMail_OnEvent(self, event, ...)
 	-- MAIL_SHOW fires when the mailbox is opened and when the user opens a mail
 	if ( event == "MAIL_SHOW") then
 		-- Set the addressee field to the last mailed name when the user opens the mail frame
-		EasyMail_SetAddressee(nil, EasyMail_SavedVars[CurRealm][CurFaction].LastAddressee[CurPlayer]);
+		EasyMail.SetAddressee(nil, EasyMail_SavedVars[CurRealm][CurFaction].LastAddressee[CurPlayer]);
 	end
 	
 	-- MAIL_SEND_SUCCESS fires when a mail is successfully sent (check for nil arg1 since it also fires at other
 	-- odd times)
 	if ( event == "MAIL_SEND_SUCCESS" and SendingMail) then
 		-- Save the addressee to the list and set the last mailed addressee for the current character
-		EasyMail_SaveAddressee(CurrentAddressee);
+		EasyMail.SaveAddressee(CurrentAddressee);
 	end
 	
 	-- MAIL_INBOX_UPDATE fires many times during mail work, but I only care about it if we are taking an attachment
@@ -346,21 +404,36 @@ function EasyMail_OnEvent(self, event, ...)
 	-- Process guild list
 	if (IsInGuild() and (event == "GUILD_ROSTER_UPDATE" or event == "PLAYER_GUILD_UPDATE") 
 			and EasyMail_SavedVars.Guild == "Y") then
-		EasyMail_GetGuildNames();
+		EasyMail.GetGuildNames();
 	end
 	
 	-- Process friend list
 	if ((event == "FRIENDLIST_SHOW" or event == "FRIENDLIST_UPDATE") and EasyMail_SavedVars.Friends == "Y") then
-		EasyMail_GetFriends();
+		EasyMail.GetFriends();
 	end
 end
 
 
 ---------------------------------------------------
--- EasyMail_OnClick
+-- EasyMail.HideDropdown
+-- Hide the dropdown button
+---------------------------------------------------
+function EasyMail.HideDropdown(hide)
+	if (hide) then
+		EasyMail_MailButton:Hide();
+		SendMailNameEditBox:SetWidth(EasyMail.AddrWidth);
+	else
+		EasyMail_MailButton:Show();
+		SendMailNameEditBox:SetWidth(EasyMail.AddrWidth - 18);
+	end
+end
+
+
+---------------------------------------------------
+-- EasyMail.OnClick
 -- Process the mail dropdown button click
 ---------------------------------------------------
-function EasyMail_OnClick()
+function EasyMail.OnClick()
 	-- Set cursor focus to the addressee field
 	SendMailNameEditBox:SetFocus();
 
@@ -378,10 +451,10 @@ end
 
 
 ---------------------------------------------------
--- EasyMail_DropdownOnShow
+-- EasyMail.DropdownOnShow
 -- Build the full dropdown list
 ---------------------------------------------------
-function EasyMail_DropdownOnShow(self)
+function EasyMail.DropdownOnShow(self)
 	local t, r;
 	FullList = {};
 	
@@ -391,6 +464,12 @@ function EasyMail_DropdownOnShow(self)
 		FullList[r] = {};
 		FullList[r].text = SortedList[t];
 	end
+	
+	-- Create Add Name entry
+	r = #FullList + 1;
+	FullList[r] = {};
+	FullList[r].text = "|cff00ee00"..EASYMAIL_ADDNAMEOPTION;
+	FullList[r].value = "^"..EASYMAIL_ADDNAMEOPTION;
 	
 	-- Add friends
 	if (EasyMail_SavedVars.Friends == "Y" and #FriendList > 0) then
@@ -430,10 +509,10 @@ function EasyMail_DropdownOnShow(self)
 	
 	MenuResized = false;
 	
-	EasyMail_DropdownUpdate();
+	EasyMail.DropdownUpdate();
 	
 	-- Add scrolling capability to the dropdown list
-	if (#FullList > EASYMAIL_LISTLENMAX) then
+	if (#FullList > EasyMail.ListLenMax) then
 		EasyMailDropdownScrollFrame:SetParent(EasyMail_MailDropdown);
 		EasyMailDropdownScrollFrame:SetPoint("TOPRIGHT", EasyMail_MailDropdown, "TOPRIGHT", -33, -12);
 		EasyMailDropdownScrollFrame:Show();
@@ -441,27 +520,27 @@ function EasyMail_DropdownOnShow(self)
 		EasyMailDropdownScrollFrame:Hide();
 	end
 	
-	EasyMail_StartCounting();
+	EasyMail.StartCounting();
 end
 
 
 ---------------------------------------------------
--- EasyMail_DropdownUpdate
+-- EasyMail.DropdownUpdate
 -- Scroll the dropdown list
 ---------------------------------------------------
-function EasyMail_DropdownUpdate()
+function EasyMail.DropdownUpdate()
 	local t, index;
 	local numButtons = #FullList;
 	local button, buttonText, invisButton;
 	local maxwidth = 0;
 	
-	if (numButtons > EASYMAIL_LISTLENMAX) then
-		numButtons = EASYMAIL_LISTLENMAX;
+	if (numButtons > EasyMail.ListLenMax) then
+		numButtons = EasyMail.ListLenMax;
 	end
 	
 	local offset = FauxScrollFrame_GetOffset(EasyMailDropdownScrollFrame);
 	
-	for t = 1, EASYMAIL_LISTLENMAX do
+	for t = 1, EasyMail.ListLenMax do
 		index = t + offset;
 		button = getglobal("EasyMail_MailDropdownButton"..t);
 		
@@ -493,12 +572,12 @@ function EasyMail_DropdownUpdate()
 	
 	-- Adjust menu width
 	if (not MenuResized) then
-		for t = 1,  EASYMAIL_LISTLENMAX do
+		for t = 1,  EasyMail.ListLenMax do
 			button = getglobal("EasyMail_MailDropdownButton"..t);
 			button:SetWidth(maxwidth);
 		end
 		
-		if (#FullList > EASYMAIL_LISTLENMAX) then
+		if (#FullList > EasyMail.ListLenMax) then
 			maxwidth = maxwidth + 15;
 		end
 		
@@ -507,10 +586,10 @@ function EasyMail_DropdownUpdate()
 		MenuResized = true;
 	
 		-- Adjust menu height
-		EasyMail_MailDropdown:SetHeight((numButtons * EASYMAIL_BUTTONHEIGHT) + 27);
+		EasyMail_MailDropdown:SetHeight((numButtons * EasyMail.ButtonHeight) + 27);
 	end
 	
-	if (#FullList > EASYMAIL_LISTLENMAX) then
+	if (#FullList > EasyMail.ListLenMax) then
 		-- Show or hide scrollbar invis buttons
 		if (offset == 0) then
 			EasyMail_UpButton:Show();
@@ -518,7 +597,7 @@ function EasyMail_DropdownUpdate()
 			EasyMail_UpButton:Hide();
 		end
 
-		if (offset == #FullList - EASYMAIL_LISTLENMAX) then
+		if (offset == #FullList - EasyMail.ListLenMax) then
 			EasyMail_DownButton:Show();
 		else
 			EasyMail_DownButton:Hide();
@@ -526,21 +605,21 @@ function EasyMail_DropdownUpdate()
 	end
 
 	-- ScrollFrame stuff
-	FauxScrollFrame_Update(EasyMailDropdownScrollFrame, #FullList, EASYMAIL_LISTLENMAX, EASYMAIL_BUTTONHEIGHT);
+	FauxScrollFrame_Update(EasyMailDropdownScrollFrame, #FullList, EasyMail.ListLenMax, EasyMail.ButtonHeight);
 end
 
 
 ---------------------------------------------------
--- EasyMail_DropdownButtonOnClick
+-- EasyMail.DropdownButtonOnClick
 -- Called when a dropdown entry is clicked (had to enhance blizzard's version to pass the mouse button param)
 ---------------------------------------------------
-function EasyMail_DropdownButtonOnClick(self, button)
+function EasyMail.DropdownButtonOnClick(self, button)
 	local value = self.value;
 	
 	PlaySound("UChatScrollButton");
 	
 	if (button == "RightButton") then
-		if (EasyMail_InMailList(value) > 0) then
+		if (EasyMail.InMailList(value) > 0) then
 			NameToDel = value;
 			StaticPopupDialogs["EASYMAIL_DELETENAME"].text = format(EASYMAIL_DELNAMEQUESTION, value);
 			StaticPopup_Show("EASYMAIL_DELETENAME");
@@ -551,7 +630,7 @@ function EasyMail_DropdownButtonOnClick(self, button)
 	
 	if (button == "LeftButton") then
 		-- Call the SetAddressee function
-		EasyMail_SetAddressee(nil, value);
+		EasyMail.SetAddressee(nil, value);
 	end
 	
 	EasyMail_MailDropdown:Hide();
@@ -559,74 +638,80 @@ end
 
 
 ---------------------------------------------------
--- EasyMail_DeleteName
+-- EasyMail.DeleteName
 -- Remove the right-clicked name from the addressee list
 ---------------------------------------------------
-function EasyMail_DeleteName()
-	table.remove(EasyMail_SavedVars[CurRealm][CurFaction].EasyMailList, EasyMail_InMailList(NameToDel));
-	EasyMail_SortList();
-	EasyMail_Print(format(EASYMAIL_DELNAMEMSG, NameToDel));
+function EasyMail.DeleteName()
+	table.remove(EasyMail_SavedVars[CurRealm][CurFaction].EasyMailList, EasyMail.InMailList(NameToDel));
+	EasyMail.SortList();
+	EasyMail.Print(format(EASYMAIL_DELNAMEMSG, NameToDel));
 end
 
 
 ---------------------------------------------------
--- EasyMail_ScrollOnEnter
+-- EasyMail.ScrollOnEnter
 -- Stop the dropdown list hide counter
 ---------------------------------------------------
-function EasyMail_ScrollOnEnter()
-	EasyMail_StopCounting();
+function EasyMail.ScrollOnEnter()
+	EasyMail.StopCounting();
 end
 
 
 ---------------------------------------------------
--- EasyMail_ScrollOnLeave
+-- EasyMail.ScrollOnLeave
 -- Restart the dropdown list hide counter
 ---------------------------------------------------
-function EasyMail_ScrollOnLeave()
-	EasyMail_StartCounting();
+function EasyMail.ScrollOnLeave()
+	EasyMail.StartCounting();
 end
 
 
 ---------------------------------------------------
--- EasyMail_StartCounting
+-- EasyMail.StartCounting
 -- Start the dropdown hide countdown 
 ---------------------------------------------------
-function EasyMail_StartCounting()
+function EasyMail.StartCounting()
 	DropdownTimer = UIDROPDOWNMENU_SHOW_TIME;
 	IsDropdownCounting = true;
 end
 
 
 ---------------------------------------------------
--- EasyMail_StopCounting
+-- EasyMail.StopCounting
 -- Stop the dropdown hide countdown 
 ---------------------------------------------------
-function EasyMail_StopCounting()
+function EasyMail.StopCounting()
 	IsDropdownCounting = false;
 end
 
 
 ---------------------------------------------------
--- EasyMail_GetAddressee
+-- EasyMail.GetAddressee
 -- Get the addressee last mailed from the text field
 ---------------------------------------------------
-function EasyMail_GetAddressee()
+function EasyMail.GetAddressee()
 	SendingMail = true;
 	
 	local text = SendMailNameEditBox:GetText();
 	
-	CurrentAddressee = EasyMail_NameCase(text);
+	CurrentAddressee = EasyMail.NameCase(text);
 end
 
 
 ---------------------------------------------------
--- EasyMail_SetAddressee
+-- EasyMail.SetAddressee
 -- Update the addressee field with the string passed to the function
 ---------------------------------------------------
-function EasyMail_SetAddressee(self, namestr, arg2, checked, button)
+function EasyMail.SetAddressee(self, namestr, arg2, checked, button)
 	if (not namestr or namestr == "^"..EASYMAIL_CLEAROPTION) then
-		-- User selected the CLear Field option on the dropdown
+		-- User selected the Clear Field option on the dropdown
 		SendMailNameEditBox:SetText("");
+		return;
+	end
+
+	if (namestr == "^"..EASYMAIL_ADDNAMEOPTION) then
+		-- User selected the Add Name option on the dropdown
+		StaticPopup_Show("EASYMAIL_ADDNAME");
 		return;
 	end
 	
@@ -638,22 +723,30 @@ end
 
 
 ---------------------------------------------------
--- EasyMail_SaveAddressee
+-- EasyMail.SaveAddressee
 -- Save the last mailed addressee to the list and to the last addressee variable for the current character
 ---------------------------------------------------
-function EasyMail_SaveAddressee(namestr, addlogged)
+function EasyMail.SaveAddressee(namestr, type)
+	-- type = nil for name used when mailing, 1 for adding current logged in char, 2 for manual add
 	local index, t;
 	local listlen = #EasyMail_SavedVars[CurRealm][CurFaction].EasyMailList;
 	
 	-- Make sure the first letter is uppercase and the rest are lower
-	local namestr = EasyMail_NameCase(namestr);
+	local namestr = EasyMail.NameCase(namestr);
 	
 	-- Locate the name in the list if it's there
-	index = EasyMail_InMailList(namestr);
+	index = EasyMail.InMailList(namestr);
 	
 	-- If we are trying to add a logged-in char, don't do it if the list is at max length or if the name already exists
-	if (addlogged and (index > 0 or listlen >= EasyMail_SavedVars[CurRealm][CurFaction].MailListLen)) then
+	if (type == 1 and (index > 0 or listlen >= EasyMail_SavedVars[CurRealm][CurFaction].MailListLen)) then
 		return;
+	end
+	
+	-- If the manually added name already exists alert the user
+	if (type == 2 and index > 0) then
+		StaticPopupDialogs["EASYMAIL_ADDNAMEMSG"].text = format(EASYMAIL_ADDNAMEERR, namestr);
+		StaticPopup_Show("EASYMAIL_ADDNAMEMSG");
+		return
 	end
 	
 	-- Add names that don't already exist in the list, or if the name exists, move it to the top
@@ -675,21 +768,25 @@ function EasyMail_SaveAddressee(namestr, addlogged)
 		end
 	end
 	
-	-- Save the name as the last mailed addressee for the current character only if the function is not called with 
-	-- parameter of true (used when adding logged-in char to list)
-	if (not addlogged) then
+	-- Save the name as the last mailed addressee for the current character only if the name passed was used in a mail
+	if (not type) then
 		EasyMail_SavedVars[CurRealm][CurFaction].LastAddressee[CurPlayer] = namestr;
 	end;
 	
-	EasyMail_SortList();
+	-- Output message on successful manual add
+	if (type == 2) then
+		EasyMail.Print(format(EASYMAIL_ADDNAMEMSG, namestr));
+	end
+	
+	EasyMail.SortList();
 end
 
 
 ---------------------------------------------------
--- EasyMail_InMailList
+-- EasyMail.InMailList
 -- Returns the table index if the specified name exists in the list, 0 otherwise
 ---------------------------------------------------
-function EasyMail_InMailList(namestr)
+function EasyMail.InMailList(namestr)
 	local t;
 	
 	for t = 1, #EasyMail_SavedVars[CurRealm][CurFaction].EasyMailList do
@@ -703,10 +800,10 @@ end
 
 
 ---------------------------------------------------
--- EasyMail_SortList
+-- EasyMail.SortList
 -- Sort the recently-mailed list
 ---------------------------------------------------
-function EasyMail_SortList()
+function EasyMail.SortList()
 	local t = 1;
 	local count = 1;
 	
@@ -751,10 +848,10 @@ end
 
 
 ---------------------------------------------------
--- EasyMail_GetGuildNames
+-- EasyMail.GetGuildNames
 -- Build guild list to add to dropdown
 ---------------------------------------------------
-function EasyMail_GetGuildNames()
+function EasyMail.GetGuildNames()
 	local t;
 	local count = 1;
 	GuildList = {};
@@ -777,10 +874,10 @@ end
 
 
 ---------------------------------------------------
--- EasyMail_GetFriends
+-- EasyMail.GetFriends
 -- Build friend list to add to dropdown
 ---------------------------------------------------
-function EasyMail_GetFriends()
+function EasyMail.GetFriends()
 	local t;
 	FriendList = {};
 	
@@ -797,10 +894,14 @@ end
 
 
 ---------------------------------------------------
--- EasyMail_AdjustAtt
+-- EasyMail.AdjustAtt
 -- Move the attachments down to make room for the Take All button
 ---------------------------------------------------
-function EasyMail_AdjustAtt()
+function EasyMail.AdjustAtt()
+	if ( not InboxFrame.openMailID ) then
+		return;
+	end
+	
 	-- Resize the scroll frame (taken from MailFrame.lua)
 	local scrollHeight = OpenMailScrollFrame:GetHeight() - 8
 	
@@ -814,27 +915,36 @@ function EasyMail_AdjustAtt()
 	OpenStationeryBackgroundRight:SetHeight(scrollHeight);
 	OpenStationeryBackgroundRight:SetTexCoord(0, 1.0, 0, min(scrollHeight, 256) / 256);
 	
-	local point, relativeTo, relativePoint, xOfs, yOfs = OpenMailAttachmentText:GetPoint(1);
-	OpenMailAttachmentText:SetPoint(point, relativeTo, relativePoint, xOfs, yOfs + 4);
-	
-	-- Position Take All button
-	EasyMail_AttButton:SetPoint("TOPRIGHT", "OpenMailFrame", "TOPRIGHT", -9, 
-		0 - OpenMailScrollFrame:GetHeight() - 92);
-	
-	-- Disable the button when mail is COD, there are no money or item attachments, or we are taking attachments
-	if (GettingAtt or OpenMailFrame.cod or not (OpenMailFrame.money or EasyMail_HasAttachments())) then
-		EasyMail_AttButton:Disable();
+	-- Adjust the attchment text
+	if ( OpenMailFrame.itemButtonCount > 0 ) then
+		OpenMailAttachmentText:SetPoint("TOPLEFT", "OpenMailHorizontalBarLeft", "BOTTOMLEFT", 12, -2);
 	else
-		EasyMail_AttButton:Enable();
+		OpenMailAttachmentText:SetPoint("TOPLEFT", "OpenMailFrame", "BOTTOMLEFT", (OpenMailFrame:GetWidth() - OpenMailAttachmentText:GetWidth()) / 2, 62);
+	end
+
+	-- Position Take All button
+	EasyMail_AttButton:SetPoint("TOPRIGHT", "OpenMailHorizontalBarLeft", "BOTTOMRIGHT", 67, 5);
+	
+	-- Hide or disable the button when mail is COD, there are no money or item attachments, or we are taking attachments
+	if (not (OpenMailFrame.money or EasyMail.HasAttachments())) then
+		EasyMail_AttButton:Hide();
+	else
+		EasyMail_AttButton:Show();
+		
+		if (GettingAtt or OpenMailFrame.cod) then
+			EasyMail_AttButton:Disable();
+		else
+			EasyMail_AttButton:Enable();
+		end
 	end
 end
 
 
 ---------------------------------------------------
--- EasyMail_HasAttachments
+-- EasyMail.HasAttachments
 -- Check to see if the mail has attachments to take
 ---------------------------------------------------
-function EasyMail_HasAttachments()
+function EasyMail.HasAttachments()
 	if (InboxFrame.openMailID and InboxFrame.openMailID > 0) then
 		-- Loop through list of attachment buttons
 		for t = 1, ATTACHMENTS_MAX do
@@ -850,10 +960,10 @@ end
 
 
 ---------------------------------------------------
--- EasyMail_GetAll
+-- EasyMail.GetAll
 -- Start process to take all attachments from all checked mails
 ---------------------------------------------------
-function EasyMail_GetAll()
+function EasyMail.GetAll()
 	PlaySound("igMainMenuOptionCheckBoxOn");
 	
 	if (GettingAll) then
@@ -864,16 +974,17 @@ function EasyMail_GetAll()
 		
 	GettingAll = true;
 	CheckAll = true;
+	CheckPage = true;
 	CurMail = GetInboxNumItems() + 1;
 	TotalMoney = 0;
 end
 
 
 ---------------------------------------------------
--- EasyMail_MailAtt
+-- EasyMail.MailAtt
 -- Start the process to take all attachments from the specified mail
 ---------------------------------------------------
-function EasyMail_MailAtt(mailid)
+function EasyMail.MailAtt(mailid)
 	if (GettingAtt) then
 		return;
 	end
@@ -896,10 +1007,10 @@ end
 
 
 ---------------------------------------------------
--- EasyMail_OnUpdate
+-- EasyMail.OnUpdate
 -- Process all attachments for single open mail or for checked mails, also process guild and friend list
 ---------------------------------------------------
-function EasyMail_OnUpdate(self, elapsed)
+function EasyMail.OnUpdate(self, elapsed)
 	if (not EasyMail_MailDropdown:IsShown() and not MailFrame:IsShown()) then
 		return;
 	end
@@ -950,7 +1061,7 @@ function EasyMail_OnUpdate(self, elapsed)
 						end
 						
 						if (EasyMail_SavedVars.Money == "Y") then
-							EasyMail_PrintMoney();
+							EasyMail.PrintMoney();
 						end
 					else
 						TakeInboxItem(InboxFrame.openMailID, getglobal(CurAtt:GetName()):GetID());				
@@ -964,10 +1075,10 @@ function EasyMail_OnUpdate(self, elapsed)
 				-- of the attachments
 				if (AttTimer > AttTimeout) then
 					-- Timed out
-					EasyMail_PrintError(format(EASYMAIL_ERRTIMEOUT, AttTimeout));
+					EasyMail.PrintError(format(EASYMAIL_ERRTIMEOUT, AttTimeout));
 					
 					-- Stop the Get all process also - something bad is happening
-					EasyMail_StopGetAll();
+					EasyMail.StopGetAll();
 				else
 					if (OpenMailFrame:IsVisible()) then
 						HideUIPanel(OpenMailFrame);
@@ -994,7 +1105,7 @@ function EasyMail_OnUpdate(self, elapsed)
 			CurMail = CurMail - 1;
 			
 			local packageIcon, stationeryIcon, sender, subject, money, CODAmount = GetInboxHeaderInfo(CurMail);
-			local pending = (subject and EasyMail_MatchTemplate(AUCTION_INVOICE_MAIL_SUBJECT, subject));
+			local pending = (subject and EasyMail.MatchTemplate(AUCTION_INVOICE_MAIL_SUBJECT, subject));
 			
 			-- Skip unchecked, COD mails, and pending auction mails if the option is selected
 			if (CheckBoxes[CurMail] and (not CODAmount or CODAmount == 0)
@@ -1016,13 +1127,13 @@ function EasyMail_OnUpdate(self, elapsed)
 			end
 		else
 			-- Done processing mails
-			EasyMail_StopGetAll();
+			EasyMail.StopGetAll();
 		end
 	end
 	
 	if (GettingAll and not GettingAtt and DeleteCount == 0 and OpenMailFrame:IsVisible()) then
 		-- Start the take process for the selected open mail
-		EasyMail_MailAtt(CurMail);
+		EasyMail.MailAtt(CurMail);
 	end
 	
 	if (DeleteCount > 0) then
@@ -1080,10 +1191,10 @@ end
 
 
 ---------------------------------------------------
--- EasyMail_StopGetAll
+-- EasyMail.StopGetAll
 -- Stop the attachment getting process
 ---------------------------------------------------
-function EasyMail_StopGetAll()
+function EasyMail.StopGetAll()
 	SendingMail = false;
 	
 	if (not GettingAll) then
@@ -1091,7 +1202,7 @@ function EasyMail_StopGetAll()
 	end
 	
 	if (TotalMoney > 0) then
-		EasyMail_PrintTotal();
+		EasyMail.PrintTotal();
 		TotalMoney = 0;
 	end
 	
@@ -1101,16 +1212,16 @@ end
 
 
 ---------------------------------------------------
--- EasyMail_MailItemOnClickHandler
+-- EasyMail.MailItemOnClickHandler
 -- Stop the attachment getting process if the user clicks an inbox button
 -- Also drives right-click inbox functionality
 ---------------------------------------------------
-function EasyMail_MailItemOnClickHandler(self, button)
+function EasyMail.MailItemOnClickHandler(self, button)
 	local index = self.index;
 	local modifiedClick = IsModifiedClick("MAILAUTOLOOTTOGGLE");
 
 	if (GettingAtt) then
-		EasyMail_StopGetAll();
+		EasyMail.StopGetAll();
 	end
 	
 	if ( modifiedClick ) then
@@ -1142,7 +1253,7 @@ function EasyMail_MailItemOnClickHandler(self, button)
 	   DeleteMail = index;
 	   
 	   if (wasRead and EasyMail_SavedVars.DelPrompt ~= "Y") then
-		   EasyMail_ClickDelete();
+		   EasyMail.ClickDelete();
 		else
 		   if (not wasRead) then
 		      StaticPopupDialogs["EASYMAIL_DELETEMAIL"].text = format(EASYMAIL_DELETEUNREADQUESTION, sender);
@@ -1156,18 +1267,18 @@ function EasyMail_MailItemOnClickHandler(self, button)
       return;
 	end
 
-	EasyMail_OpenMail(index);
+	EasyMail.OpenMail(index);
 	
 	if (doGet) then
-		EasyMail_MailAtt(index);
+		EasyMail.MailAtt(index);
 	end
 end
 
 ---------------------------------------------------
--- EasyMail_OpenMail
+-- EasyMail.OpenMail
 -- Open a mail using its index (from MailFrame.lua InboxFrame_OnClick)
 ---------------------------------------------------
-function EasyMail_OpenMail(index)
+function EasyMail.OpenMail(index)
 	local isShown = OpenMailFrame:IsShown();
 	
 	InboxFrame.openMailID = index;
@@ -1185,28 +1296,28 @@ end
 
 
 ---------------------------------------------------
--- EasyMail_ClickDelete
+-- EasyMail.ClickDelete
 -- Processes the right click deletion
 ---------------------------------------------------
-function EasyMail_ClickDelete()
-	EasyMail_OpenMail(DeleteMail);
+function EasyMail.ClickDelete()
+	EasyMail.OpenMail(DeleteMail);
 	OpenMail_Delete();
 end
 
 
 ---------------------------------------------------
--- EasyMail_ShowCheckBoxes
+-- EasyMail.ShowCheckBoxes
 -- Show or hide the checkboxes when addon is enabled or disabled
 ---------------------------------------------------
-function EasyMail_ShowCheckBoxes()
+function EasyMail.ShowCheckBoxes()
 	-- Move the inbox frames over to the right to make room for the checkboxes
-	MailItem1:SetPoint("TOPLEFT", "InboxFrame", "TOPLEFT", 35, -70);
+	MailItem1:SetPoint("TOPLEFT", "InboxFrame", "TOPLEFT", 30, -70);
 
 	for t = 1, INBOXITEMS_TO_DISPLAY do
 		-- Shorten the widths of the inbox frames, shorten the subject, and move the expire time text over
-		getglobal("MailItem"..t):SetWidth(275);
-		getglobal("MailItem"..t.."Subject"):SetWidth(223);
-		getglobal("MailItem"..t.."ExpireTime"):SetPoint("TOPRIGHT", "MailItem"..t, "TOPRIGHT", 10, -4);
+		getglobal("MailItem"..t):SetWidth(288);
+		getglobal("MailItem"..t.."Subject"):SetWidth(231);
+		--getglobal("MailItem"..t.."ExpireTime"):SetPoint("TOPRIGHT", "MailItem"..t, "TOPRIGHT", 10, -4);
 		
 		-- Create checkboxes and locate them
 		local frame;
@@ -1222,21 +1333,24 @@ end
 
 
 ---------------------------------------------------
--- EasyMail_InboxUpdate
+-- EasyMail.InboxUpdate
 -- Draw the inbox checkboxes
 ---------------------------------------------------
-function EasyMail_InboxUpdate()
+function EasyMail.InboxUpdate()
 	EasyMail_CheckAllButton:SetText((CheckAll and EASYMAIL_CHECKALLTEXT) or EASYMAIL_CLEARALLTEXT);
+	EasyMail_CheckPageButton:SetText((CheckPage and EASYMAIL_CHECKPAGETEXT) or EASYMAIL_CLEARPAGETEXT);
 	
 	local numItems, totalItems = GetInboxNumItems();
 	
 	if (numItems > 0) then
 		EasyMail_CheckAllButton:Enable();
-		EasyMail_GetAllButton:Enable();
+		EasyMail_CheckPageButton:Enable();
 	else
 		EasyMail_CheckAllButton:Disable();
-		EasyMail_GetAllButton:Disable();
+		EasyMail_CheckPageButton:Disable();
 	end
+	
+	EasyMail.EnableGetButton();
 	
 	-- Trim the checkbox table if necessary
 	while numItems < #CheckBoxes do
@@ -1271,26 +1385,49 @@ end
 
 
 ---------------------------------------------------
--- EasyMail_CheckButtonOnMouseUp
+-- EasyMail.EnableGetButton
+-- Enable or disable the get attachments button
+---------------------------------------------------
+function EasyMail.EnableGetButton()
+	local t;
+	local val = false;
+	
+	for t = 1, #CheckBoxes do
+		if (CheckBoxes[t]) then
+			val = true;
+			break;
+		end
+	end
+	
+	if (val) then
+		EasyMail_GetAllButton:Enable();
+	else
+		EasyMail_GetAllButton:Disable();
+	end
+end
+
+
+---------------------------------------------------
+-- EasyMail.CheckButtonOnMouseUp
 -- Toggle the check box for the inbox item
 ---------------------------------------------------
-function EasyMail_CheckButtonOnMouseUp(self)
-	PlaySound("igMainMenuOptionCheckBoxOn");
-	
+function EasyMail.CheckButtonOnMouseUp(self)
 	-- Get the inbox button for the selected mail
 	local index = gsub(self:GetName(), "EasyMail_CheckButton(%d+)", "%1");
 	local button = getglobal("MailItem"..index.."Button");
 	
 	-- Toggle the table entry indicated by the mail index field on the inbox button
 	CheckBoxes[button.index] = not CheckBoxes[button.index];
+	
+	EasyMail.EnableGetButton();
 end
 
 
 ---------------------------------------------------
--- EasyMail_CheckAll
+-- EasyMail.CheckAll
 -- Check or uncheck all checkboxes
 ---------------------------------------------------
-function EasyMail_CheckAll()
+function EasyMail.CheckAll()
 	PlaySound("igMainMenuOptionCheckBoxOn");
 	
 	if (not GettingAll) then
@@ -1300,19 +1437,47 @@ function EasyMail_CheckAll()
 		
 		CheckAll = not CheckAll;
 		
-		EasyMail_InboxUpdate();
+		EasyMail.InboxUpdate();
 	end
 end
 
 
 ---------------------------------------------------
--- EasyMail_ResetMarkAll
+-- EasyMail.CheckPage
+-- Check or uncheck all checkboxes on current inbox page
+---------------------------------------------------
+function EasyMail.CheckPage()
+	PlaySound("igMainMenuOptionCheckBoxOn");
+	
+	if (not GettingAll) then
+		local index = ((InboxFrame.pageNum - 1) * INBOXITEMS_TO_DISPLAY) + 1;
+		
+		for i=1, INBOXITEMS_TO_DISPLAY do
+			if (index > #CheckBoxes) then
+				break;
+			end
+			
+			CheckBoxes[index] = CheckPage;
+			index = index + 1;
+		end
+		
+		CheckPage = not CheckPage;
+		
+		EasyMail.InboxUpdate();
+	end
+end
+
+
+---------------------------------------------------
+-- EasyMail.ResetMarkAll
 -- Set the Mark All button back to Mark All rather than Clear All when the user opens the mail box
 -- Also execute friend and quild queries to refresh the lists when the inbox is opened
 ---------------------------------------------------
-function EasyMail_ResetMarkAll()
+function EasyMail.ResetMarkAll()
 	CheckAll = true;
+	CheckPage = true;
 	EasyMail_CheckAllButton:Disable();
+	EasyMail_CheckPageButton:Disable();
 	EasyMail_GetAllButton:Disable();
 	
 	-- Query for the friends and guild lists
@@ -1327,10 +1492,33 @@ end
 
 
 ---------------------------------------------------
--- EasyMail_MatchTemplate
+-- EasyMail.ResetMarkPage
+-- Set the Clear Page button back to Mark Page when paging in inbox
+---------------------------------------------------
+function EasyMail.ResetMarkPage()
+	CheckPage = true;
+	EasyMail.InboxUpdate();
+end
+
+
+---------------------------------------------------
+-- EasyMail.MouseWheelHandler
+-- Allow mousewheel paging in inbox
+---------------------------------------------------
+function EasyMail.MouseWheelHandler(self, delta)
+	if (delta > 0) then
+		InboxPrevPageButton:Click();
+	else
+		InboxNextPageButton:Click();
+	end
+end
+
+
+---------------------------------------------------
+-- EasyMail.MatchTemplate
 -- Determine if a string matches a Blizzard text template
 ---------------------------------------------------
-function EasyMail_MatchTemplate(template, str)
+function EasyMail.MatchTemplate(template, str)
 	local loc = strfind(template, "%s", 1, true);
 	local front = strsub(template, 1, loc - 1);
 	local back = strsub(template, loc + 2);
@@ -1343,10 +1531,10 @@ end
 
 
 ---------------------------------------------------
--- EasyMail_PrintMoney
+-- EasyMail.PrintMoney
 -- Output money received from mail
 ---------------------------------------------------
-function EasyMail_PrintMoney()
+function EasyMail.PrintMoney()
 	local fromtext = "";
 	local auctiontext = AUCTION_SOLD_MAIL_SUBJECT;
 	local subject = OpenMailSubject:GetText();
@@ -1355,37 +1543,37 @@ function EasyMail_PrintMoney()
 	local front = strsub(auctiontext, 1, loc - 1);
 	local back = strsub(auctiontext, loc + 2);
 	
-	if (subject and EasyMail_MatchTemplate(auctiontext, subject)) then
+	if (subject and EasyMail.MatchTemplate(auctiontext, subject)) then
 		fromtext = format(EASYMAIL_FROMAUCTION, gsub(subject, front.."(.+)"..back, "%1"))
 	else
 		fromtext = format(EASYMAIL_FROM, OpenMailSender:GetText())
 	end
 	
-	EasyMail_Print("|cffffff00"..format(EASYMAIL_RECEIVEMONEY, GetLongMoneyString(OpenMailFrame.money),
+	EasyMail.Print("|cffffff00"..format(EASYMAIL_RECEIVEMONEY, EasyMail.GetLongMoneyString(OpenMailFrame.money),
 		fromtext));
 end
 
 
 ---------------------------------------------------
--- EasyMail_PrintTotal
+-- EasyMail.PrintTotal
 -- Output money received from mail
 ---------------------------------------------------
-function EasyMail_PrintTotal()
-	EasyMail_Print("|cffffff00"..format(EASYMAIL_TOTALMONEY, 
-	   HIGHLIGHT_FONT_COLOR_CODE..GetLongMoneyString(TotalMoney)));
+function EasyMail.PrintTotal()
+	EasyMail.Print("|cffffff00"..format(EASYMAIL_TOTALMONEY, 
+	   HIGHLIGHT_FONT_COLOR_CODE..EasyMail.GetLongMoneyString(TotalMoney)));
 end
 
 
 ---------------------------------------------------
--- EasyMail_MoneySubject
+-- EasyMail.MoneySubject
 -- Set the subject of a new mail to automatically indicate amount sent
 ---------------------------------------------------
-function EasyMail_MoneySubject()
+function EasyMail.MoneySubject()
 	if (MoneySubject or SendMailSubjectEditBox:GetText() == "") then
 		local copper = MoneyInputFrame_GetCopper(SendMailMoney)
 		
 		if (copper > 0) then
-			SendMailSubjectEditBox:SetText(format(EASYMAIL_MONEYSUBJECT, GetShortMoneyString(copper)));
+			SendMailSubjectEditBox:SetText(format(EASYMAIL_MONEYSUBJECT, EasyMail.GetShortMoneyString(copper)));
 			MoneySubject = true;
 		else
 			SendMailSubjectEditBox:SetText("");
@@ -1396,10 +1584,10 @@ end
 
 
 ---------------------------------------------------
--- GetLongMoneyString
+-- EasyMail.GetLongMoneyString
 -- Return a long string version of an amount in copper
 ---------------------------------------------------
-function GetLongMoneyString(money)
+function EasyMail.GetLongMoneyString(money)
 	local moneytext = "";
 	
 	local gold = floor(money / (COPPER_PER_SILVER * SILVER_PER_GOLD));
@@ -1431,22 +1619,22 @@ end
 
 
 ---------------------------------------------------
--- GetShortMoneyString
+-- EasyMail.GetShortMoneyString
 -- Return a short string version of an amount in copper
 ---------------------------------------------------
-function GetShortMoneyString(money)
+function EasyMail.GetShortMoneyString(money)
 	local gold = floor(money / (COPPER_PER_SILVER * SILVER_PER_GOLD));
 	local silver = floor((money - (gold * COPPER_PER_SILVER * SILVER_PER_GOLD)) / COPPER_PER_SILVER);
 	local copper = mod(money, COPPER_PER_SILVER);
 
 	local copperString = "";
 	if ( copper > 0 ) then
-		copperString = copper..EasyMail_Lower(strsub(EasyMail_Copper, 1, 1));
+		copperString = copper..EasyMail.Lower(strsub(EasyMail_Copper, 1, 1));
 	end
 	
 	local silverString = "";
 	if ( silver > 0 ) then
-		silverString = silver..EasyMail_Lower(strsub(EasyMail_Silver, 1, 1));
+		silverString = silver..EasyMail.Lower(strsub(EasyMail_Silver, 1, 1));
 		if ( copper > 0 ) then
 			silverString = silverString.." ";
 		end
@@ -1454,7 +1642,7 @@ function GetShortMoneyString(money)
 	
 	local goldString = "";
 	if ( tonumber(gold) > 0 ) then
-		goldString = gold..EasyMail_Lower(strsub(EasyMail_Gold, 1, 1));
+		goldString = gold..EasyMail.Lower(strsub(EasyMail_Gold, 1, 1));
 		if ( copper > 0 or silver > 0 ) then
 			goldString = goldString.." ";
 		end
@@ -1464,10 +1652,10 @@ end
 
 
 ---------------------------------------------------
--- EasyMail_Tooltip
+-- EasyMail.Tooltip
 -- Show the mail text in the inbox item tooltip
 ---------------------------------------------------
-function EasyMail_Tooltip(self)
+function EasyMail.Tooltip(self)
    if (EasyMail_SavedVars.TextTooltip ~= "Y") then
       return;
    end
@@ -1495,7 +1683,7 @@ function EasyMail_Tooltip(self)
          while (remainder) do
             if (strlen(remainder) > MaxTooltipWidth) then
                local lastchar, nextstart;
-               local lastspace = EasyMail_ReverseFind(strsub(remainder, 1, MaxTooltipWidth + 1), " ");
+               local lastspace = EasyMail.ReverseFind(strsub(remainder, 1, MaxTooltipWidth + 1), " ");
                
                if (lastspace and lastspace ~= MaxTooltipWidth + 1) then
                   lastchar = lastspace - 1;
@@ -1525,10 +1713,10 @@ end
 
 
 ---------------------------------------------------
--- EasyMail_ReverseFind
+-- EasyMail.ReverseFind
 -- Locate the last occurrance of a char in a string
 ---------------------------------------------------
-function EasyMail_ReverseFind(str, ch)
+function EasyMail.ReverseFind(str, ch)
    local t;
    local location;
    
@@ -1544,10 +1732,10 @@ end
 
 
 ---------------------------------------------------
--- EasyMail_OnTabPressed
+-- EasyMail.OnTabPressed
 -- Standard Blizzard or custom auto-complete
 ---------------------------------------------------
-function EasyMail_OnTabPressed(self)
+function EasyMail.OnTabPressed(self)
 	if (EasyMail_SavedVars.BlizzList ~= "Y" or not AutoCompleteEditBox_OnTabPressed(self)) then
 		EditBox_HandleTabbing(self, SEND_MAIL_TAB_LIST);
 	end
@@ -1555,10 +1743,10 @@ end
 
 
 ---------------------------------------------------
--- EasyMail_OnEditFocusLost
+-- EasyMail.OnEditFocusLost
 -- Standard Blizzard or custom auto-complete
 ---------------------------------------------------
-function EasyMail_OnEditFocusLost(self)
+function EasyMail.OnEditFocusLost(self)
 	if (EasyMail_SavedVars.BlizzList == "Y") then
 		AutoCompleteEditBox_OnEditFocusLost(self);
 	end
@@ -1568,32 +1756,32 @@ end
 
 
 ---------------------------------------------------
--- EasyMail_OnCharComposition
+-- EasyMail.OnCharComposition
 -- Standard Blizzard or custom auto-complete
 ---------------------------------------------------
-function OnCharComposition(self, text)
+function EasyMail.OnCharComposition(self, text)
 	if (EasyMail_SavedVars.BlizzList ~= "Y") then
-		EasyMail_AutoComplete(self, text);
+		EasyMail.AutoComplete(self, text);
 	end
 end
 
 
 ---------------------------------------------------
--- EasyMail_OnChar
+-- EasyMail.OnChar
 -- Standard Blizzard or custom auto-complete
 ---------------------------------------------------
-function EasyMail_OnChar(self, text)
+function EasyMail.OnChar(self, text)
 	if (EasyMail_SavedVars.BlizzList ~= "Y" and not self:IsInIMECompositionMode()) then
-		EasyMail_AutoComplete(self, text);
+		EasyMail.AutoComplete(self, text);
 	end
 end
 
 
 ---------------------------------------------------
--- EasyMail_OnEnterPressed
+-- EasyMail.OnEnterPressed
 -- Standard Blizzard or custom auto-complete
 ---------------------------------------------------
-function EasyMail_OnEnterPressed(self)
+function EasyMail.OnEnterPressed(self)
 	if (EasyMail_SavedVars.BlizzList ~= "Y" or not AutoCompleteEditBox_OnEnterPressed(self)) then
 		SendMailSubjectEditBox:SetFocus();
 	end
@@ -1601,10 +1789,10 @@ end
 
 
 ---------------------------------------------------
--- EasyMail_OnEscapePressed
+-- EasyMail.OnEscapePressed
 -- Standard Blizzard or custom auto-complete
 ---------------------------------------------------
-function EasyMail_OnEscapePressed(self)
+function EasyMail.OnEscapePressed(self)
 	if (EasyMail_SavedVars.BlizzList ~= "Y" or not AutoCompleteEditBox_OnEscapePressed(self)) then
 		EditBox_ClearFocus(self);
 	end
@@ -1612,10 +1800,10 @@ end
 
 
 ---------------------------------------------------
--- EasyMail_OnTextChanged
+-- EasyMail.OnTextChanged
 -- Standard Blizzard or custom auto-complete
 ---------------------------------------------------
-function EasyMail_OnTextChanged(self, userInput)
+function EasyMail.OnTextChanged(self, userInput)
 	if (EasyMail_SavedVars.BlizzList == "Y") then
 		AutoCompleteEditBox_OnTextChanged(self, userInput);
 	end
@@ -1625,17 +1813,17 @@ end
 
 
 ---------------------------------------------------
--- EasyMail_AutoComplete
+-- EasyMail.AutoComplete
 -- Build name in addressee field while typing
 ---------------------------------------------------
-function EasyMail_AutoComplete(self, char, skipFriends, skipGuild)
+function EasyMail.AutoComplete(self, char, skipFriends, skipGuild)
 	local text = self:GetText();
 	local textlen = strlen(text);
 	local numFriends, name;
 	
 	-- Check addressee list
 	for i=1, #SortedList do
-		if (text and (strfind(EasyMail_Upper(SortedList[i]), EasyMail_Upper(text), 1, 1) == 1) ) then
+		if (text and (strfind(EasyMail.Upper(SortedList[i]), EasyMail.Upper(text), 1, 1) == 1) ) then
 			self:SetText(SortedList[i]);
 			
 			if ( self:IsInIMECompositionMode() ) then
@@ -1689,10 +1877,10 @@ end
 
 
 ---------------------------------------------------
--- EasyMail_Trim
--- Trim spaces from front and back of string (why doesn't strtrim work!?!?)
+-- EasyMail.Forward
+-- Make forwarding eaiser
 ---------------------------------------------------
-function EasyMail_Forward()
+function EasyMail.Forward()
 	MailFrameTab_OnClick(nil, 2);
 	SendMailNameEditBox:SetText("");
 	local subject = OpenMailSubject:GetText();
@@ -1702,8 +1890,9 @@ function EasyMail_Forward()
 	end
 	SendMailSubjectEditBox:SetText(subject);
 	local bodytext;
-	if (OpenMailBodyText:GetText())	then
-		bodytext = "\n---\n"..OpenMailBodyText:GetText();
+	local currentText = GetInboxText(InboxFrame.openMailID);
+	if (currentText)	then
+		bodytext = "\n---\n"..currentText;
 	else
 		bodytext = "";
 	end
@@ -1717,19 +1906,30 @@ end
 
 
 ---------------------------------------------------
--- EasyMail_Trim
+-- EasyMail.OpenBags
+-- Open bags when Send Mail tab is clicked
+---------------------------------------------------
+function EasyMail.OpenBags(self, tabID)
+	if (tabID ~= 1) then
+		OpenAllBags(MailFrame);
+	end
+end
+
+
+---------------------------------------------------
+-- EasyMail.Trim
 -- Trim spaces from front and back of string (why doesn't strtrim work!?!?)
 ---------------------------------------------------
-function EasyMail_Trim(str)
+function EasyMail.Trim(str)
 	return gsub(str, "%s*(.*)%s*", "%1");
 end
 
 
 ---------------------------------------------------
--- EasyMail_NameCase
+-- EasyMail.NameCase
 -- Force first letter of player name to uppercase, lower case the rest
 ---------------------------------------------------
-function EasyMail_NameCase(instr)
+function EasyMail.NameCase(instr)
 	if (not strfind("koKRzhCNzhTW", GetLocale())) then
 		local ch = strbyte(strsub(instr, 1, 1));
 		local pos = 1;
@@ -1750,38 +1950,38 @@ end
 
 
 ---------------------------------------------------
--- EasyMail_Upper
+-- EasyMail.Upper
 -- Upper case only if casing is used in locale
 ---------------------------------------------------
-function EasyMail_Upper(str)
+function EasyMail.Upper(str)
 	return ((strfind("koKRzhCNzhTW", GetLocale()) and str) or strupper(str));
 end
 
 
 ---------------------------------------------------
--- EasyMail_Lower
+-- EasyMail.Lower
 -- Lower case only if casing is used in locale
 ---------------------------------------------------
-function EasyMail_Lower(str)
+function EasyMail.Lower(str)
 	return ((strfind("koKRzhCNzhTW", GetLocale()) and str) or strlower(str));
 end
 
 
 ---------------------------------------------------
--- EasyMail_PrintError
+-- EasyMail.PrintError
 -- Output a message to Blizzard's error frame
 ---------------------------------------------------
-function EasyMail_PrintError(errMsg)
+function EasyMail.PrintError(errMsg)
 	PlaySound("igQuestFailed");
 	DEFAULT_CHAT_FRAME:AddMessage(EASYMAIL_ADDONNAME..": "..errMsg, 1.0, 0.1, 0.1);
 end
 
 
 ---------------------------------------------------
--- EasyMail_Print
+-- EasyMail.Print
 -- Output a message to the chat frame
 ---------------------------------------------------
-function EasyMail_Print(msg)
+function EasyMail.Print(msg)
 	if ( DEFAULT_CHAT_FRAME ) then
 		DEFAULT_CHAT_FRAME:AddMessage(msg, 0, 1, 0);
 	end

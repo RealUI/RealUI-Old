@@ -1,0 +1,53 @@
+------------------------------------------------------------------------
+r421 | zarnivoop | 2012-12-24 09:37:38 +0000 (Mon, 24 Dec 2012) | 1 line
+Changed paths:
+   A /tags/1.4-8 (from /trunk:420)
+
+Tagging as 1.4-8
+------------------------------------------------------------------------
+r420 | zarnivoop | 2012-12-10 18:06:54 +0000 (Mon, 10 Dec 2012) | 2 lines
+Changed paths:
+   M /trunk/Menus.lua
+   M /trunk/Skada.lua
+   M /trunk/locale/enUS.lua
+
+initial support for LibDualSpec (standalone lib needed)
+instance chat reporting
+------------------------------------------------------------------------
+r419 | funkydude | 2012-12-04 01:12:49 +0000 (Tue, 04 Dec 2012) | 1 line
+Changed paths:
+   M /trunk/Skada.lua
+
+Completely avoid any static popup taint by making our own popup.
+------------------------------------------------------------------------
+r418 | funkydude | 2012-11-29 19:26:55 +0000 (Thu, 29 Nov 2012) | 1 line
+Changed paths:
+   M /trunk/BarDisplay.lua
+   M /trunk/Menus.lua
+   M /trunk/Skada.lua
+
+make the popup create on demand to see if it helps with the taint
+------------------------------------------------------------------------
+r416 | zarnivoop | 2012-11-28 13:33:28 +0000 (Wed, 28 Nov 2012) | 1 line
+Changed paths:
+   M /trunk/Skada.toc
+   M /trunk/modules/SkadaCC/SkadaCC.toc
+   M /trunk/modules/SkadaDamage/SkadaDamage.toc
+   M /trunk/modules/SkadaDamageTaken/SkadaDamageTaken.toc
+   M /trunk/modules/SkadaDeaths/SkadaDeaths.toc
+   M /trunk/modules/SkadaDebuffs/SkadaDebuffs.toc
+   M /trunk/modules/SkadaDispels/SkadaDispels.toc
+   M /trunk/modules/SkadaEnemies/SkadaEnemies.toc
+   M /trunk/modules/SkadaHealing/SkadaHealing.toc
+   M /trunk/modules/SkadaPower/SkadaPower.toc
+   M /trunk/modules/SkadaThreat/SkadaThreat.toc
+
+.toc update
+------------------------------------------------------------------------
+r415 | funkydude | 2012-11-28 01:13:19 +0000 (Wed, 28 Nov 2012) | 1 line
+Changed paths:
+   M /trunk/Menus.lua
+   M /trunk/Skada.lua
+
+Use a popup index of 4 and don't recreate the popup table on every reset call
+------------------------------------------------------------------------

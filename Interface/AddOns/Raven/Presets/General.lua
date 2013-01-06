@@ -60,6 +60,11 @@ Raven.internalCooldowns = {
 	{ id = 59626, duration = 35, }, -- Black Magic
 	
 	-- Item internal cooldowns
+	{ id = 128985, duration = 50, item = 79331 }, -- [MOP] Relic of Yu'lon [Int DPS DMC]
+	{ id = 128987, duration = 45, item = 79330 }, -- [MOP] Relic of Chi'ji [Int HPS DMC]
+	{ id = 128984, duration = 55, item = 79328 }, -- [MOP] Relic of Xuen [Agi DMC]
+	{ id = 128986, duration = 45, item = 79327 }, -- [MOP] Relic of Xuen [Str DMC]
+	{ id = 60234, duration = 55, item = 75274 }, -- [MOP] Zen Alchemist Stone
 	{ id = 89091, duration = 45, item = 62047, }, -- Darkmoon Card: Volcano
 	{ id = 91192, duration = 50, item = 62467, }, -- Mandala of Stirring Patterns
 	{ id = 91047, duration = 75, item = 62465, }, -- Stump of Time

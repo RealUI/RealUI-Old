@@ -32,6 +32,10 @@ local animationPool = {} -- pool of available animations
 local animations = {} -- active animations
 local displayWidth, displayHeight = UIParent:GetWidth(), UIParent:GetHeight()
 local defaultBackdropColor = { r = 1, g = 1, b = 1, a = 1 }
+local pixelScale = 1 -- adjusted by screen resolution and uiScale
+local pixelPerfect -- global setting to enable pixel perfect size and position
+local rectIcons = false -- allow rectangular icons
+local inPetBattle = nil
 
 local MSQ = nil -- Masque support
 local MSQ_ButtonData = nil
@@ -62,6 +66,11 @@ local barTemplate = { -- these fields are cleared with a bar is deleted
 	startTime = 0, offsetTime = 0, timeLeft = 0, duration = 0, maxTime = 0, alpha = 0, flash = 0, label = 0, iconCount = 0, tooltipAnchor = 0,
 	soundDone = 0, expireDone = 0, cr = 0, cg = 0, cb = 0, ca = 0, br = 0, bg = 0, bb = 0, ba = 0, ibr = 0, ibg = 0, ibb = 0, iba = 0
 }
+
+-- Check if using Tukui skin for icon and bar borders (which may require a reloadui)
+local function UseTukui() return Raven.frame.CreateBackdrop and Raven.frame.SetOutside and Raven.db.global.TukuiSkin end
+local function GetTukuiFont(font) if Raven.db.global.TukuiFont and ChatFrame1 then return ChatFrame1:GetFont() else return font end end
+local function PS(x) if pixelPerfect then return pixelScale * math.floor(x / pixelScale + 0.5) else return x end end
 
 -- Calculate alpha for flashing bars, period is how long the total flash time should last
 function Nest_FlashAlpha(maxAlpha, period)
@@ -117,10 +126,17 @@ local function UpdateAnimations()
 end
 
 -- Show the timeline specific frames for a bar group
-local function ShowTimeline(bg) local back = bg.background
+local function ShowTimeline(bg)
+	local back = bg.background
 	if back then
 		back:Show(); back.bar:ClearAllPoints(); back.bar:SetAllPoints(back); back.bar:Show()
-		if bg.borderTexture then back.backdrop:ClearAllPoints(); back.backdrop:SetPoint("CENTER", back, "CENTER", 0, 0); back.backdrop:Show() end
+		if bg.tlTexture then back.bar:SetTexture(bg.tlTexture) end
+		local t = bg.tlColor; if t then back.bar:SetVertexColor(t.r, t.g, t.b, t.a) end
+		if bg.borderTexture then
+			back.backdrop:ClearAllPoints(); back.backdrop:SetPoint("CENTER", back, "CENTER", 0, 0); back.backdrop:Show()
+		else
+			back.backdrop:Hide()
+		end
 		for _, v in pairs(back.labels) do if v.hidden then v:Hide() else v:Show() end end
 	end
 end
@@ -351,13 +367,13 @@ end
 function Nest_SetBarGroupBarLayout(bg, barWidth, barHeight, iconSize, scale, spacingX, spacingY, iconOffsetX, iconOffsetY,
 			labelOffset, labelInset, labelWrap, labelAlign, labelCenter, timeOffset, timeInset, timeAlign, timeIcon, iconOffset, iconInset,
 			iconHide, iconAlign, configuration, reverse, wrap, wrapDirection, snapCenter, fillBars, maxBars, strata)
-	bg.barWidth = barWidth; bg.barHeight = barHeight; bg.iconSize = iconSize; bg.scale = scale or 1
+	bg.barWidth = PS(barWidth); bg.barHeight = PS(barHeight); bg.iconSize = PS(iconSize); bg.scale = scale or 1
 	bg.fillBars = fillBars; bg.maxBars = maxBars; bg.strata = strata
-	bg.spacingX = spacingX or 0; bg.spacingY = spacingY or 0; bg.iconOffsetX = iconOffsetX or 0; bg.iconOffsetY = iconOffsetY or 0
-	bg.labelOffset = labelOffset or 0; bg.labelInset = labelInset or 0; bg.labelWrap = labelWrap;
+	bg.spacingX = PS(spacingX or 0); bg.spacingY = PS(spacingY or 0); bg.iconOffsetX = (iconOffsetX or 0); bg.iconOffsetY = PS(iconOffsetY or 0)
+	bg.labelOffset = PS(labelOffset or 0); bg.labelInset = PS(labelInset or 0); bg.labelWrap = labelWrap;
 	bg.labelCenter = labelCenter; bg.labelAlign = labelAlign or "MIDDLE"
-	bg.timeOffset = timeOffset or 0; bg.timeInset = timeInset or 0; bg.timeAlign = timeAlign or "normal"; bg.timeIcon = timeIcon
-	bg.iconOffset = iconOffset or 0; bg.iconInset = iconInset or 0; bg.iconHide = iconHide; bg.iconAlign = iconAlign or "CENTER"
+	bg.timeOffset = PS(timeOffset or 0); bg.timeInset = PS(timeInset or 0); bg.timeAlign = timeAlign or "normal"; bg.timeIcon = timeIcon
+	bg.iconOffset = PS(iconOffset or 0); bg.iconInset = PS(iconInset or 0); bg.iconHide = iconHide; bg.iconAlign = iconAlign or "CENTER"
 	bg.configuration = configuration or 1; bg.reverse = reverse; bg.wrap = wrap or 0; bg.wrapDirection = wrapDirection; bg.snapCenter = snapCenter
 	bg.update = true
 end
@@ -378,6 +394,7 @@ end
 -- Set label font options for a bar group
 function Nest_SetBarGroupLabelFont(bg, font, fsize, alpha, color, outline, shadow, thick, mono)
 	if not color then color = { r = 1, g = 1, b = 1, a = 1 } end
+	if UseTukui() then font = GetTukuiFont(font) end
 	bg.labelFont = font; bg.labelFSize = fsize or 9; bg.labelAlpha = alpha or 1; bg.labelColor = color
 	bg.labelFlags = TextFlags(outline, thick, mono); bg.labelShadow = shadow
 	bg.update = true
@@ -386,6 +403,7 @@ end
 -- Set time text font options for a bar group
 function Nest_SetBarGroupTimeFont(bg, font, fsize, alpha, color, outline, shadow, thick, mono)
 	if not color then color = { r = 1, g = 1, b = 1, a = 1 } end
+	if UseTukui() then font = GetTukuiFont(font) end
 	bg.timeFont = font; bg.timeFSize = fsize or 9; bg.timeAlpha = alpha or 1; bg.timeColor = color
 	bg.timeFlags = TextFlags(outline, thick, mono); bg.timeShadow = shadow
 	bg.update = true
@@ -394,6 +412,7 @@ end
 -- Set icon text font options for a bar group
 function Nest_SetBarGroupIconFont(bg, font, fsize, alpha, color, outline, shadow, thick, mono)
 	if not color then color = defaultBackdropColor end; if not fill then fill = defaultBackdropColor end
+	if UseTukui() then font = GetTukuiFont(font) end
 	bg.iconFont = font; bg.iconFSize = fsize or 9; bg.iconAlpha = alpha or 1; bg.iconColor = color
 	bg.iconFlags = TextFlags(outline, thick, mono); bg.iconShadow = shadow
 	bg.update = true
@@ -402,7 +421,7 @@ end
 -- Set bar border options for a bar group
 function Nest_SetBarGroupBorder(bg, texture, width, offset, color)
 	if not color then color = defaultBackdropColor end
-	bg.borderTexture = texture; bg.borderWidth = width; bg.borderOffset = offset; bg.borderColor = color
+	bg.borderTexture = texture; bg.borderWidth = PS(width); bg.borderOffset = PS(offset); bg.borderColor = color
 	bg.update = true
 end
 
@@ -410,8 +429,8 @@ end
 function Nest_SetBarGroupBackdrop(bg, panel, texture, width, inset, offset, color, fill)
 	if not color then color = { r = 1, g = 1, b = 1, a = 1 } end
 	if not fill then fill = { r = 1, g = 1, b = 1, a = 1 } end
-	bg.backdropPanel = panel; bg.backdropTexture = texture; bg.backdropWidth = width; bg.backdropInset = inset
-	bg.backdropOffset = offset; bg.backdropColor = color; bg.backdropFill = fill
+	bg.backdropPanel = panel; bg.backdropTexture = texture; bg.backdropWidth = PS(width); bg.backdropInset = PS(inset or 0)
+	bg.backdropOffset = PS(offset or 0); bg.backdropColor = color; bg.backdropFill = fill
 	bg.update = true
 end
 
@@ -431,7 +450,7 @@ end
 
 -- Set parameters related to timeline configurations
 function Nest_SetBarGroupTimeline(bg, w, h, duration, scale, hide, alternate, splash, texture, alpha, color, labels)
-	bg.tlWidth = w; bg.tlHeight = h; bg.tlDuration = duration; bg.tlScale = scale; bg.tlHide = hide; bg.tlAlternate = alternate
+	bg.tlWidth = PS(w); bg.tlHeight = PS(h); bg.tlDuration = duration; bg.tlScale = scale; bg.tlHide = hide; bg.tlAlternate = alternate
 	bg.tlSplash = splash; bg.tlTexture = texture; bg.tlAlpha = alpha; bg.tlColor = color; bg.tlLabels = labels
 	bg.update = true
 end
@@ -492,18 +511,18 @@ function Nest_SetAnchorPoint(bg, left, right, bottom, top, scale, width, height)
 			if bottom > 0.5 then yoffset = dh - (top * dh) - height end
 		end
 		bg.frame:SetScale(scale); bg.frame:SetSize(width, height)
-		bg.frame:ClearAllPoints(); bg.frame:SetPoint("BOTTOMLEFT", nil, "BOTTOMLEFT", xoffset / scale, yoffset / scale)
+		bg.frame:ClearAllPoints(); bg.frame:SetPoint("BOTTOMLEFT", nil, "BOTTOMLEFT", PS(xoffset / scale), PS(yoffset / scale))
 	end
 end
 
 -- Set a bar group's display position as relative to another bar group
 function Nest_SetRelativeAnchorPoint(bg, rTo, rFrame, rPoint, rX, rY, rLB, rEmpty, rRow, rColumn)
 	if rFrame and GetClickFrame(rFrame) then -- set relative to a specific frame
-		bg.frame:ClearAllPoints(); bg.frame:SetPoint(rPoint or "CENTER", rFrame, rPoint or "CENTER", rX, rY)
+		bg.frame:ClearAllPoints(); bg.frame:SetPoint(rPoint or "CENTER", rFrame, rPoint or "CENTER", PS(rX), PS(rY))
 		bg.relativeTo = nil -- remove relative anchor point	
 	elseif bg.relativeTo and not rTo then -- removing a relative anchor point
 		local left, bottom = bg.frame:GetLeft(), bg.frame:GetBottom()
-		bg.frame:ClearAllPoints(); bg.frame:SetPoint("BOTTOMLEFT", nil, "BOTTOMLEFT", left, bottom)
+		bg.frame:ClearAllPoints(); bg.frame:SetPoint("BOTTOMLEFT", nil, "BOTTOMLEFT", PS(left), PS(bottom))
 		bg.relativeTo = nil -- remove relative anchor point
 	else
 		bg.relativeTo = rTo -- if relativeTo is nil then relative anchor point is not set
@@ -569,8 +588,8 @@ function Nest_CreateBar(bg, name)
 		bar = {}
 		bar.frame = CreateFrame("Frame", bname .. "Frame", bg.frame)
 		bar.container = CreateFrame("Frame", bname .. "Container", bar.frame)
-		bar.fgTexture = bar.container:CreateTexture(nil, "BORDER")	
-		bar.bgTexture = bar.container:CreateTexture(nil, "BACKGROUND")
+		bar.fgTexture = bar.container:CreateTexture(nil, "BACKGROUND", nil, 2)	
+		bar.bgTexture = bar.container:CreateTexture(nil, "BACKGROUND", nil, 1)
 		bar.backdrop = CreateFrame("Frame", bname .. "Backdrop", bar.container)
 		bar.spark = bar.container:CreateTexture(nil, "OVERLAY")
 		bar.spark:SetTexture([[Interface\CastingBar\UI-CastingBar-Spark]])
@@ -584,9 +603,14 @@ function Nest_CreateBar(bg, name)
 		bar.iconTexture = bar.icon:CreateTexture(bname .. "IconTexture", "ARTWORK") -- texture for the bar's icon
 		bar.cooldown = CreateFrame("Cooldown", bname .. "Cooldown", bar.frame) -- cooldown overlay to animate timer
 		bar.cooldown.noCooldownCount = Raven.db.global.HideOmniCC
+		bar.cooldown.noOCC = Raven.db.global.HideOmniCC -- added for Tukui
 		bar.iconTextFrame = CreateFrame("Frame", bname .. "IconTextFrame", bar.frame)
-		bar.iconText = bar.iconTextFrame:CreateFontString(nil, "OVERLAY")
-		bar.iconBorder = bar.iconTextFrame:CreateTexture(nil, "BACKGROUND")
+		bar.iconText = bar.iconTextFrame:CreateFontString(nil, "OVERLAY", nil, 4)
+		bar.iconBorder = bar.iconTextFrame:CreateTexture(nil, "BACKGROUND", nil, 3)		
+		if UseTukui() then
+			bar.frame:CreateBackdrop("Transparent"); bar.frame.backdrop:SetOutside(bar.frame)
+			bar.tukcolor_r, bar.tukcolor_g, bar.tukcolor_b, bar.tukcolor_a = bar.frame.backdrop:GetBackdropBorderColor() -- save default border color
+		end
 		
 		local anim = bar.icon:CreateAnimationGroup()
 		anim:SetLooping("NONE")
@@ -616,6 +640,7 @@ function Nest_CreateBar(bg, name)
 	bar.icon:SetScript("OnEnter", Bar_OnEnter)
 	bar.icon:SetScript("OnLeave", Bar_OnLeave)
 	bar.icon:RegisterForClicks("LeftButtonUp", "RightButtonUp")
+	if UseTukui() then bar.frame:Show(); bar.container:Show() end
 	bar.startTime = GetTime()
 	bar.name = name
 	bar.update = true
@@ -661,6 +686,8 @@ function Nest_DeleteBar(bg, bar)
 	bar.icon:ClearAllPoints(); bar.cooldown:ClearAllPoints(); bar.iconText:ClearAllPoints()
 	bar.labelText:ClearAllPoints(); bar.timeText:ClearAllPoints(); bar.iconBorder:ClearAllPoints()
 	if callbacks.release then callbacks.release(bar) end
+	
+	if UseTukui() then bar.frame:Hide(); bar.container:Hide() end -- no need to reset default border colors since won't change once set
 	
 	local i = 1
 	while i <= bg.count do -- find and remove the corresponding entry in the sorting table
@@ -807,7 +834,7 @@ local function BarGroup_UpdateAnchor(bg, config)
 		if not bg.reverse then align = "TOPLEFT" end -- align bottoms for going up (reverse=true), tops for down (reverse=false)
 	end
 	bg.anchor:ClearAllPoints(); bg.anchor:SetPoint(align, bg.frame, align)
-	if not bg.locked then bg.anchor:Show() else bg.anchor:Hide() end
+	if not bg.locked and not inPetBattle then bg.anchor:Show() else bg.anchor:Hide() end
 end
 
 -- Update a bar group's background image, currently only required for timeline configuration
@@ -834,7 +861,6 @@ local function BarGroup_UpdateBackground(bg, config)
 			offX = 0; offY = -dir
 		end
 		back:SetSize(w, h); back:SetAlpha(bg.tlAlpha); back.bar:SetSize(w, h); 
-		back.bar:SetTexture(bg.tlTexture); local t = bg.tlColor; if t then back.bar:SetVertexColor(t.r, t.g, t.b, t.a) end
 		if bg.borderTexture then
 			local offset, edgeSize = bg.borderOffset, bg.borderWidth; if (edgeSize < 0.1) then edgeSize = 0.1 end
 			bg.borderTable.edgeFile = bg.borderTexture; bg.borderTable.edgeSize = edgeSize
@@ -862,7 +888,7 @@ local function BarGroup_UpdateBackground(bg, config)
 					local delta = Timeline_Offset(bg, secs) + ((bg.iconSize + bg.labelFSize) / 2)
 					local offsetX = (offX == 0) and 0 or ((delta - w) * dir)
 					local offsetY = (offY == 0) and 0 or ((delta - h) * dir)
-					fs:SetPoint(edge, back, edge, offsetX + bg.labelInset, offsetY + bg.labelOffset); fs.hidden = false; i = i + 1
+					fs:SetPoint(edge, back, edge, PS(offsetX + bg.labelInset), PS(offsetY + bg.labelOffset)); fs.hidden = false; i = i + 1
 				end
 			end
 			while i <= back.labelCount do back.labels[i].hidden = true; i = i + 1 end
@@ -895,7 +921,8 @@ end
 local function Bar_UpdateLayout(bg, bar, config)
 	bar.icon:ClearAllPoints(); bar.iconTexture:ClearAllPoints(); bar.spark:ClearAllPoints(); bar.labelText:ClearAllPoints(); bar.cooldown:ClearAllPoints()
 	bar.timeText:ClearAllPoints(); bar.fgTexture:ClearAllPoints(); bar.bgTexture:ClearAllPoints(); bar.backdrop:ClearAllPoints()
-	bar.icon:SetSize(bg.iconSize, bg.iconSize)
+	local iconWidth = (config.iconOnly and rectIcons) and bg.barWidth or bg.iconSize
+	bar.icon:SetSize(iconWidth or bg.iconSize, bg.iconSize)
 	local w, h = bg.width, bg.height
 	if config.iconOnly then -- icon only layouts
 		bar.icon:SetPoint("TOPLEFT", bar.frame, "TOPLEFT", 0, 0)
@@ -988,9 +1015,9 @@ local function Bar_UpdateLayout(bg, bar, config)
 		bar.iconText:SetPoint("RIGHT", bar.icon, "RIGHT", bg.iconInset + 12, bg.iconOffset) -- pad right to center time text better
 		bar.iconText:SetJustifyH(bg.iconAlign); bar.iconText:SetJustifyV("MIDDLE")
 		if MSQ and bg.MSQ_Group and Raven.db.global.ButtonFacadeIcons then -- if using Masque, set custom fields in button data table and add to skinnning group
-			bar.cooldown:SetSize(bg.iconSize, bg.iconSize); bar.cooldown:SetPoint("CENTER", bar.icon, "CENTER")
+			bar.cooldown:SetSize(iconWidth, bg.iconSize); bar.cooldown:SetPoint("CENTER", bar.icon, "CENTER")
 			bar.iconTexture:SetTexCoord(0, 1, 0, 1)
-			bar.iconTexture:SetSize(bg.iconSize, bg.iconSize); bar.iconTexture:SetPoint("CENTER", bar.icon, "CENTER")
+			bar.iconTexture:SetSize(iconWidth, bg.iconSize); bar.iconTexture:SetPoint("CENTER", bar.icon, "CENTER")
 			bg.MSQ_Group:RemoveButton(bar.icon, true) -- needed so size changes work when icon is reused
 			local bdata = bar.buttonData
 			bdata.Icon = bar.iconTexture
@@ -1000,17 +1027,21 @@ local function Bar_UpdateLayout(bg, bar, config)
 			bg.MSQ_Group:AddButton(bar.icon, bdata)
 		else -- if not then use a default button arrangment
 			if bg.MSQ_Group then bg.MSQ_Group:RemoveButton(bar.icon) end -- remove skin, if any
-			if not Raven.db.global.HideBorder then
-				local trim, crop, slice = 0.04, 0.96, 0.92 * bg.iconSize
-				bar.cooldown:SetSize(slice, slice); bar.cooldown:SetPoint("CENTER", bar.icon, "CENTER")
+			if not (UseTukui() or Raven.db.global.HideBorder) then
+				local trim, crop, sliceWidth, sliceHeight = 0.06, 0.94, 0.88 * iconWidth, 0.88 * bg.iconSize
+				bar.cooldown:SetSize(sliceWidth, sliceHeight); bar.cooldown:SetPoint("CENTER", bar.icon, "CENTER")
 				bar.iconTexture:SetTexCoord(trim, crop, trim, crop)
-				bar.iconTexture:SetSize(slice, slice); bar.iconTexture:SetPoint("CENTER", bar.icon, "CENTER")
+				bar.iconTexture:SetSize(sliceWidth, sliceHeight); bar.iconTexture:SetPoint("CENTER", bar.icon, "CENTER")
 				bar.iconBorder:SetTexture("Interface\\AddOns\\Raven\\Normal")
 			else
-				bar.cooldown:SetSize(bg.iconSize, bg.iconSize); bar.cooldown:SetPoint("CENTER", bar.icon, "CENTER")
-				bar.iconTexture:SetTexCoord(0, 1, 0, 1)
-				bar.iconTexture:SetSize(bg.iconSize, bg.iconSize); bar.iconTexture:SetPoint("CENTER", bar.icon, "CENTER")
-				bar.iconBorder:SetTexture("Interface\\AddOns\\Raven\\Normal")
+				bar.cooldown:SetSize(iconWidth, bg.iconSize); bar.cooldown:SetPoint("CENTER", bar.icon, "CENTER")
+				if UseTukui() or Raven.db.global.TrimIcon then
+					local trim, crop = 0.06, 0.94
+					bar.iconTexture:SetTexCoord(trim, crop, trim, crop)
+				else
+					bar.iconTexture:SetTexCoord(0, 1, 0, 1)
+				end
+				bar.iconTexture:SetSize(iconWidth, bg.iconSize); bar.iconTexture:SetPoint("CENTER", bar.icon, "CENTER")
 				bar.iconBorder:SetTexture(0, 0, 0, 0)
 			end
 		end
@@ -1115,24 +1146,32 @@ local function Bar_UpdateSettings(bg, bar, config)
 			local nx = MSQ:GetNormal(bar.icon)
 			if Raven.db.global.ButtonFacadeNormal and nx and nx.SetVertexColor then nx:SetVertexColor(bar.ibr, bar.ibg, bar.ibb, bar.iba) end
 		else
-			if not Raven.db.global.HideBorder then
+			if UseTukui() then
+				if bar.frame.backdrop then
+					if bar.attributes.iconColors == "None" then
+						bar.frame.backdrop:SetBackdropBorderColor(bar.tukcolor_r, bar.tukcolor_g, bar.tukcolor_b, bar.tukcolor_a)
+					else
+						bar.frame.backdrop:SetBackdropBorderColor(bar.ibr, bar.ibg, bar.ibb, bar.iba)
+					end
+				end
+			elseif not Raven.db.global.HideBorder then
 				bx:SetAllPoints(bar.icon); bx:SetVertexColor(bar.ibr, bar.ibg, bar.ibb, bar.iba); showBorder = true
 			else showBorder = false end
 		end
 	else
 		bar.icon:Hide()
 	end
-	if showBorder then bx:Show() else bx:Hide() end
+	if showBorder and bar.iconPath then bx:Show() else bx:Hide() end
 	if bg.showIcon and not bg.iconHide and not isHeader and bar.iconCount then bi:SetText(tostring(bar.iconCount)); bi:Show() else bi:Hide() end
 	if bg.showIcon and not isHeader and bg.showCooldown and config.bars ~= "timeline" and bar.timeLeft and (bar.timeLeft >= 0) and not ba:IsPlaying() then
-		-- missing in MoP??? bar.cooldown:SetDrawEdge(bg.attributes.clockEdge)
+--		bar.cooldown:SetDrawEdge(bg.attributes.clockEdge) -- Removed in 5.0.4 release and apparently not coming back
 		bar.cooldown:SetReverse(bg.attributes.clockReverse)
 		bar.cooldown:SetCooldown(bar.startTime - bar.offsetTime, bar.duration); bar.cooldown:Show()
 	else
 		bar.cooldown:Hide()
 	end
 	local ct, cm, expiring, ea, ec = bar.attributes.colorTime, bar.attributes.colorMinimum, false, bg.bgAlpha, nil
-	if bar.timeLeft and ct and cm and ct > bar.timeLeft and bar.duration >= cm then
+	if bar.timeLeft and ct and cm and ct >= bar.timeLeft and bar.duration >= cm then
 		ec = bar.attributes.expireLabelColor; if ec and ec.a > 0 then bl:SetTextColor(ec.r, ec.g, ec.b, ec.a) end
 		ec = bar.attributes.expireTimeColor; if ec and ec.a > 0 then bt:SetTextColor(ec.r, ec.g, ec.b, ec.a) end
 		expiring = true
@@ -1188,15 +1227,15 @@ local function Bar_RefreshAnimations(bg, bar, config)
 		timeText = Nest_FormatTime(remaining, bg.timeFormat, bg.timeSpaces, bg.timeCase) -- set timer text
 		if bg.showTimeText then bar.timeText:SetText(timeText) end
 		local expireTime, expireMinimum = bar.attributes.expireTime, bar.attributes.expireMinimum
-		if expireTime and not bar.expireDone and expireTime > remaining and (expireTime - remaining) < 1 then
+		if expireTime and not bar.expireDone and expireTime >= remaining and (expireTime - remaining) < 1 then
 			if expireMinimum and bar.duration >= bar.attributes.expireMinimum then
 				PlaySoundFile(bar.attributes.soundExpire, Raven.db.global.SoundChannel); bar.expireDone = true
 			end
 		end
 		local colorTime = bar.attributes.colorTime -- if need to change color then force update to re-color the bar
-		if colorTime and colorTime > remaining and (colorTime - remaining) < 0.25 then Raven:ForceUpdate() end
+		if colorTime and colorTime >= remaining and (colorTime - remaining) < 0.25 then Raven:ForceUpdate() end
 		if bar.attributes.expireMSBT and bar.attributes.minimumMSBT and not bar.warningDone and bar.duration >= bar.attributes.minimumMSBT
-			and bar.attributes.expireMSBT > remaining and (bar.attributes.expireMSBT - remaining) < 1 then
+			and bar.attributes.expireMSBT >= remaining and (bar.attributes.expireMSBT - remaining) < 1 then
 			local ec, crit, icon = bar.attributes.colorMSBT, bar.attributes.criticalMSBT, bar.iconTexture:GetTexture()
 			local t = string.format("%s [%s] %s", bar.label, bg.name, L["expiring"])
 			if MikSBT then
@@ -1236,8 +1275,6 @@ local function Bar_RefreshAnimations(bg, bar, config)
 	end
 end
 
-local lastPrint = 0
-
 -- Update icon positions on timeline after animation refresh
 local function BarGroup_RefreshTimeline(bg, config)
 	local dir = bg.reverse and 1 or -1 -- plus or minus depending on direction
@@ -1273,7 +1310,7 @@ local function BarGroup_RefreshTimeline(bg, config)
 			SetBarFrameLevel(bar, clevel, true)
 			lastDelta = delta; lastBar = bar; lastLevel = clevel
 			local x1 = isVertical and 0 or ((delta - w) * dir); local y1 = isVertical and ((delta - h) * dir) or 0
-			bar.frame:ClearAllPoints(); bar.frame:SetPoint(edge, back, edge, x1, y1); bar.frame:Show()
+			bar.frame:ClearAllPoints(); bar.frame:SetPoint(edge, back, edge, PS(x1), PS(y1)); bar.frame:Show()
 		else
 			lastBar = nil; bar.frame:Hide()
 		end
@@ -1365,7 +1402,7 @@ local function BarGroup_SortBars(bg, config)
 			if i <= maxBars then
 				local w, skip = i - 1, 0; if wrap > 0 then skip = floor(w / wrap); w = w % wrap end
 				x1 = x0 + (dx * w) + (wx * skip); y1 = y0 + (dy * w) + (wy * skip)
-				bar.frame:SetPoint(anchorPoint, bg.frame, anchorPoint, x1, y1); bar.frame:Show()
+				bar.frame:SetPoint(anchorPoint, bg.frame, anchorPoint, PS(x1), PS(y1)); bar.frame:Show()
 			else
 				bar.frame:Hide()
 			end
@@ -1375,8 +1412,8 @@ local function BarGroup_SortBars(bg, config)
 	bg.anchorPoint = anchorPoint -- reference position for attaching bar groups together
 	local back = bg.background
 	if back then
-		if isTimeline and (not bg.tlHide or (count > 0)) then
-			back:ClearAllPoints(); back:SetPoint(back.anchorPoint, bg.frame, back.anchorPoint, x0, y0); ShowTimeline(bg)
+		if isTimeline and (not bg.tlHide or (count > 0)) and not inPetBattle then
+			back:ClearAllPoints(); back:SetPoint(back.anchorPoint, bg.frame, back.anchorPoint, PS(x0), PS(y0)); ShowTimeline(bg)
 			count = 1 -- trigger drawing backdrop
 		else HideTimeline(bg) end
 	end
@@ -1447,7 +1484,7 @@ local function UpdateRelativePositions()
 						elseif bg.relativeColumn and rbg.lastColumn then offsetY = offsetY + rbg.lastColumn end
 					end
 				end
-				bg.frame:ClearAllPoints(); bg.frame:SetPoint(align, rbg.frame, align, offsetX, offsetY)
+				bg.frame:ClearAllPoints(); bg.frame:SetPoint(align, rbg.frame, align, PS(offsetX), PS(offsetY))
 			end
 		end
 	end
@@ -1457,14 +1494,14 @@ end
 local function SetBarGroupEffectiveDimensions(bg, config)
 	local w, h, minimumWidth, minimumHeight = bg.barWidth or 10, bg.barHeight or 10, 5, 5
 	if config.iconOnly then
-		w = bg.iconSize; h = bg.iconSize -- icon configs start with icon size and add room for bar and time text, if they are displayed
+		w = rectIcons and bg.barWidth or bg.iconSize; h = bg.iconSize -- icon configs start with icon size and add room for bar and time text, if they are displayed
 		h = h + (bg.showBar and (bg.barHeight + math.max(0, bg.iconOffsetY)) or 0)
 	else
 		if bg.showIcon then w = w + bg.iconSize end -- bar config start with bar size and add room for icon if it is displayed
 	end
 	if h < minimumHeight then h = minimumHeight end -- enforce minimums for dimensions
 	if w < minimumWidth then w = minimumWidth end
-	bg.width = w; bg.height = h
+	bg.width = PS(w); bg.height = PS(h)
 	if not bg.scale then bg.scale = 1 end
 end
 
@@ -1492,6 +1529,9 @@ function Nest_Initialize()
 		MSQ_ButtonData = { AutoCast = false, AutoCastable = false, Border = false, Checked = false, Cooldown = false, Count = false, Duration = false,
 			Disabled = false, Flash = false, Highlight = false, HotKey = false, Icon = false, Name = false, Normal = false, Pushed = false }
 	end
+	pixelScale = 768 / string.match(GetCVar("gxResolution"), "%d+x(%d+)") / GetCVar("uiScale") -- used for pixel perfect size and position
+	pixelPerfect = (not Raven.db.global.TukuiSkin and Raven.db.global.PixelPerfect) or (Raven.db.global.TukuiSkin and Raven.db.global.TukuiScale)
+	rectIcons = (Raven.db.global.RectIcons == true)
 end
 
 -- Update routine does all the actual work of setting up and displaying bar groups.
@@ -1503,6 +1543,11 @@ function Nest_Update()
 			if not alpha or (alpha < 0) or (alpha > 1) then alpha = 1 end; bg.frame:SetAlpha(alpha)
 			if not bg.moving then bg.frame:SetFrameStrata(bg.strata or "MEDIUM") end
 			SetBarGroupEffectiveDimensions(bg, config) -- stored in bg.width and bg.height
+			if C_PetBattles.IsInBattle() then -- force update when entering or leaving pet battles to hide anchor and timeline
+				if not inPetBattle then inPetBattle = true; bg.update = true end
+			else
+				if inPetBattle then inPetBattle = false; bg.update = true end
+			end
 			if update or bg.update then BarGroup_UpdateAnchor(bg, config); BarGroup_UpdateBackground(bg, config) end
 			for _, bar in pairs(bg.bars) do
 				if update or bg.update or bar.update then -- see if any bar configurations need to be updated

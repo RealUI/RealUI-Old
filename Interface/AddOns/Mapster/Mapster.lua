@@ -133,8 +133,8 @@ function Mapster:OnEnable()
 	WorldMapQuestShowObjectives:SetChecked(db.questObjectives ~= 0)
 	WorldMapQuestShowObjectives.Show = function() end
 	WorldMapQuestShowObjectives_Toggle()
-	local questObj = CreateFrame("Frame", "MapsterQuestObjectivesDropDown", WorldMapFrame, "UIDropDownMenuTemplate")
-	questObj:SetPoint("BOTTOMRIGHT", "WorldMapPositioningGuide", "BOTTOMRIGHT", -5, -2)
+	MapsterQuestObjectivesDropDown = CreateFrame("Frame", "MapsterQuestObjectivesDropDown", WorldMapFrame, "UIDropDownMenuTemplate")
+	MapsterQuestObjectivesDropDown:SetPoint("BOTTOMRIGHT", "WorldMapPositioningGuide", "BOTTOMRIGHT", -5, -2)
 
 	WorldMapShowDropDown:SetScript("OnShow", function(f) f:Hide() end)
 
@@ -153,15 +153,10 @@ function Mapster:OnEnable()
 		EncounterJournal_AddMapButtons()
 	end)
 
-	local text = questObj:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+	local text = MapsterQuestObjectivesDropDown:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
 	text:SetText(L["Quest Objectives"])
-	text:SetPoint("RIGHT", questObj, "LEFT", 5, 3)
-	-- Init DropDown
-	UIDropDownMenu_Initialize(questObj, questObjDropDownInit)
-	UIDropDownMenu_SetWidth(questObj, 150)
-	questObjDropDownUpdate()
+	text:SetPoint("RIGHT", MapsterQuestObjectivesDropDown, "LEFT", 5, 3)
 
-	wmfOnShow(WorldMapFrame)
 	hooksecurefunc(WorldMapTooltip, "Show", function(self)
 		self:SetFrameStrata("TOOLTIP")
 	end)
@@ -536,6 +531,15 @@ function wmfOnShow(frame)
 	Mapster:SetScale()
 	realZone = getZoneId()
 
+	if not MapsterQuestObjectivesDropDown.dropdownInitialized then
+		-- Init DropDown
+		UIDropDownMenu_Initialize(MapsterQuestObjectivesDropDown, questObjDropDownInit)
+		UIDropDownMenu_SetWidth(MapsterQuestObjectivesDropDown, 150)
+		questObjDropDownUpdate()
+
+		MapsterQuestObjectivesDropDown.dropdownInitialized = true
+	end
+
 	if WORLDMAP_SETTINGS.selectedQuest then
 		WorldMapFrame_SelectQuestFrame(WORLDMAP_SETTINGS.selectedQuest)
 	end
@@ -747,7 +751,8 @@ local function hasOverlays()
 end
 
 function Mapster:UpdateDetailTiles()
-	if db.hideBorder and GetCurrentMapZone() > 0 and hasOverlays() then
+	local mapFileName, textureHeight, _, isMicroDungeon, microDungeonMapName = GetMapInfo()
+	if db.hideBorder and GetCurrentMapZone() > 0 and hasOverlays() and not isMicroDungeon then
 		for i=1, GetNumberOfDetailTiles() do
 			_G["WorldMapDetailTile"..i]:Hide()
 		end

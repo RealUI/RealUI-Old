@@ -97,6 +97,7 @@ if not L then return end
 	L["STATUS_NAME_MOUNT"] = "Mount"
 	L["STATUS_NAME_TOKEN"] = "Tkn"
 	L["STATUS_NAME_TACKLE"] = "Tkl"
+	L["STATUS_NAME_COOKING"] = "Cook"
 	
 	
 --	main menu
@@ -349,6 +350,8 @@ if not L then return end
 	L["CONFIG_SETTINGS_ITEMS_FADE_TEXT"] = "fade offline items"
 	L["CONFIG_SETTINGS_ITEMS_TINT_USABLE"] = "Tint Unusable"
 	L["CONFIG_SETTINGS_ITEMS_TINT_USABLE_TEXT"] = "tint unusable items red"
+	L["CONFIG_SETTINGS_ITEMS_ITEMLEVEL_SHOW"] = "Item Level"
+	L["CONFIG_SETTINGS_ITEMS_ITEMLEVEL_SHOW_TEXT"] = "show item level for equippable items"
 	L["CONFIG_SETTINGS_ITEMS_BORDER_SHOW_TEXT"] = "show borders around items or not"
 	L["CONFIG_SETTINGS_ITEMS_BORDER_STYLE_TEXT"] = "set the border style for items"
 	L["CONFIG_SETTINGS_ITEMS_BORDER_RARITY"] = "Rarity coloured border"

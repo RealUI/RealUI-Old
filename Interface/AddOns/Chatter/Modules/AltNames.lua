@@ -1,5 +1,7 @@
+local addon, private = ...
+local Chatter = LibStub("AceAddon-3.0"):GetAddon(addon)
 local mod = Chatter:NewModule("Alt Linking", "AceHook-3.0", "AceEvent-3.0", "AceTimer-3.0")
-local L = LibStub("AceLocale-3.0"):GetLocale("Chatter")
+local L = LibStub("AceLocale-3.0"):GetLocale(addon)
 local LA
 mod.modName = L["Alt Linking"]
 
@@ -182,7 +184,7 @@ local accept = function(frame, char, editBox)
 end
 
 StaticPopupDialogs['MENUITEM_SET_MAIN'] = {
-	preferredIndex = 3,
+	preferredindex = STATICPOPUP_NUMDIALOGS,
 	text		= L["Who is %s's main?"],
 	button1		= TEXT(ACCEPT),
 	button2		= TEXT(CANCEL),

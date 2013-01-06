@@ -1423,6 +1423,8 @@ function ArkInventory.BagType( blizzard_id )
 					return ArkInventory.Const.Slot.Type.Mining
 				elseif s == ArkInventory.Localise["WOW_AH_CONTAINER_TACKLE"] then
 					return ArkInventory.Const.Slot.Type.Tackle
+				elseif s == ArkInventory.Localise["WOW_AH_CONTAINER_COOKING"] then
+					return ArkInventory.Const.Slot.Type.Cooking
 				end
 				
 			end
@@ -2440,16 +2442,20 @@ function ArkInventory.ScanBattlePet( )
 	local old_level
 	local rarity, speciesID, customName, level, isWild, canBattle, tradable
 	
+	cp.info.level = 1
+	
 	for _, petID in ArkInventory.Lib.Pet:IteratePetIDs( ) do
-		
-		rarity = select( 5, C_PetJournal.GetPetStats( petID ) )
-		speciesID, customName, level, _, _, _, _, _, _, _, _, _, isWild, canBattle, tradable = C_PetJournal.GetPetInfoByPetID( petID )
-		
-		h = C_PetJournal.GetBattlePetLink( petID )
 		
 		companionData[petID] = true
 		
-		if ( cp.info.level or 1 ) < level then
+		local h = C_PetJournal.GetBattlePetLink( petID )
+		
+		rarity = select( 5, C_PetJournal.GetPetStats( petID ) )
+		
+		speciesID, customName, level, _, _, _, _, _, _, _, _, _, _, isWild, canBattle, tradable = C_PetJournal.GetPetInfoByPetID( petID )
+		level = level or 1
+		
+		if cp.info.level < level then
 			-- save highest pet level for tint unusable
 			cp.info.level = level
 		end
@@ -2507,6 +2513,8 @@ function ArkInventory.ScanBattlePet( )
 	bag.count = slot_id
 	
 	ArkInventory.ScanCleanup( cp, loc_id, bag_id, bag, old_bag_count )
+	
+	--ArkInventory.Output( "ScanBattlePet( ) end" )
 	
 end
 
@@ -3767,7 +3775,7 @@ end
 
 function ArkInventory.BattlepetBaseHyperlinkFromPetID( petID )
 	if petID then
-		local speciesID, _, level, _, _, _, name, _, _, _, _, _, isWild, canBattle = C_PetJournal.GetPetInfoByPetID( petID )
+		local speciesID, _, level, _, _, _, _, name, _, _, _, _, _, isWild, canBattle = C_PetJournal.GetPetInfoByPetID( petID )
 		local _, maxHealth, power, speed, rarity = C_PetJournal.GetPetStats( petID )
 		if isWild and canBattle then
 			rarity = ( rarity and ( rarity - 1 ) ) or -1

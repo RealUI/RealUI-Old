@@ -1,8 +1,8 @@
 
 do
-	BadBoyCCleanerConfigTitle:SetText("BadBoy_CCleaner v3.61") --wowace magic, replaced with tag version
+	BadBoyCCleanerConfigTitle:SetText("BadBoy_CCleaner v3.62") --wowace magic, replaced with tag version
 
-	local ccleanerNoIcons = CreateFrame("CheckButton", "BadBoyCCleanerNoIconButton", BadBoyConfig, "OptionsBaseCheckButtonTemplate")
+	local ccleanerNoIcons = CreateFrame("CheckButton", nil, BadBoyConfig, "OptionsBaseCheckButtonTemplate")
 	ccleanerNoIcons:SetPoint("TOPLEFT", BadBoyConfigPopupButton, "BOTTOMLEFT", 0, -135)
 	ccleanerNoIcons:SetScript("OnClick", function(frame)
 		local tick = frame:GetChecked()
@@ -14,8 +14,11 @@ do
 			BADBOY_NOICONS = nil
 		end
 	end)
+	ccleanerNoIcons:SetScript("OnShow", function(frame)
+		frame:SetChecked(BADBOY_NOICONS)
+	end)
 
-	local noIconsMsgText = ccleanerNoIcons:CreateFontString("BadBoyCCleanerNoIconButtonTitle", "ARTWORK", "GameFontHighlight")
+	local noIconsMsgText = ccleanerNoIcons:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
 	noIconsMsgText:SetPoint("LEFT", ccleanerNoIcons, "RIGHT", 0, 1)
 
 	noIconsMsgText:SetText("Remove raid icons from public chat")
@@ -42,7 +45,7 @@ do
 		noIconsMsgText:SetText("Remove raid icons from public chat")
 	end
 
-	local ccleanerInput = CreateFrame("EditBox", "BadBoyCCleanerInput", BadBoyConfig, "InputBoxTemplate")
+	local ccleanerInput = CreateFrame("EditBox", nil, BadBoyConfig, "InputBoxTemplate")
 	ccleanerInput:SetPoint("TOPLEFT", ccleanerNoIcons, "BOTTOMLEFT", 10, -5)
 	ccleanerInput:SetAutoFocus(false)
 	ccleanerInput:EnableMouse(true)
@@ -53,24 +56,24 @@ do
 		frame:SetText("")
 		frame:ClearFocus()
 	end)
-	ccleanerInput:SetScript("OnTextChanged", function(_, changed)
+	ccleanerInput:SetScript("OnTextChanged", function(frame, changed)
 		if changed then
-			local msg = (BadBoyCCleanerInput:GetText()):lower()
+			local msg = (frame:GetText()):lower()
 			msg = (msg):gsub("[%(%)%.%%%+%-%*%?%[%^%$%]]", "")
-			BadBoyCCleanerInput:SetText(msg)
+			frame:SetText(msg)
 		end
 	end)
 	ccleanerInput:Show()
 
-	local ccleanerButton = CreateFrame("Button", "BadBoyCCleanerButton", ccleanerInput, "UIPanelButtonTemplate")
+	local ccleanerButton = CreateFrame("Button", nil, ccleanerInput, "UIPanelButtonTemplate")
 	ccleanerButton:SetWidth(110)
 	ccleanerButton:SetHeight(20)
 	ccleanerButton:SetPoint("LEFT", ccleanerInput, "RIGHT")
 	ccleanerButton:SetText(ADD.."/"..REMOVE)
 	ccleanerButton:SetScript("OnClick", function(frame)
-		BadBoyCCleanerInput:ClearFocus()
-		local t = BadBoyCCleanerInput:GetText()
-		if t == "" or t:find("^ *$") then BadBoyCCleanerInput:SetText("") return end
+		ccleanerInput:ClearFocus()
+		local t = ccleanerInput:GetText()
+		if t == "" or t:find("^ *$") then ccleanerInput:SetText("") return end
 		t = (t):lower()
 		t = (t):gsub("[%(%)%.%%%+%-%*%?%[%^%$%]]", "")
 		local found
@@ -92,9 +95,9 @@ do
 			end
 		end
 		BadBoyCCleanerEditBox:SetText(text or "")
-		BadBoyCCleanerInput:SetText("")
+		ccleanerInput:SetText("")
 	end)
-	ccleanerInput:SetScript("OnEnterPressed", function() BadBoyCCleanerButton:Click() end)
+	ccleanerInput:SetScript("OnEnterPressed", function() ccleanerButton:Click() end)
 
 	local ccleanerScrollArea = CreateFrame("ScrollFrame", "BadBoyCCleanerConfigScroll", BadBoyConfig, "UIPanelScrollFrameTemplate")
 	ccleanerScrollArea:SetPoint("TOPLEFT", ccleanerInput, "BOTTOMLEFT", 0, -7)
@@ -112,7 +115,7 @@ do
 
 	ccleanerScrollArea:SetScrollChild(ccleanerEditBox)
 
-	local ccleanerBackdrop = CreateFrame("Frame", "BadBoyCCleanerBackdrop", BadBoyConfig)
+	local ccleanerBackdrop = CreateFrame("Frame", nil, BadBoyConfig)
 	ccleanerBackdrop:SetBackdrop({bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background",
 		edgeFile = "Interface\\DialogFrame\\UI-DialogBox-Border",
 		tile = true, tileSize = 16, edgeSize = 16,

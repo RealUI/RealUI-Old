@@ -1,5 +1,7 @@
+local addon, private = ...
+local Chatter = LibStub("AceAddon-3.0"):GetAddon(addon)
 local mod = Chatter:NewModule("Tiny Chat")
-local L = LibStub("AceLocale-3.0"):GetLocale("Chatter")
+local L = LibStub("AceLocale-3.0"):GetLocale(addon)
 mod.modName = L["Tiny Chat"]
 
 function mod:Info()

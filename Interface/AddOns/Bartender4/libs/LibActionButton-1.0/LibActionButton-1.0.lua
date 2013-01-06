@@ -29,7 +29,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ]]
 local MAJOR_VERSION = "LibActionButton-1.0"
-local MINOR_VERSION = 32
+local MINOR_VERSION = 35
 
 if not LibStub then error(MAJOR_VERSION .. " requires LibStub.") end
 local lib, oldversion = LibStub:NewLibrary(MAJOR_VERSION, MINOR_VERSION)
@@ -103,7 +103,7 @@ local type_meta_map = {
 
 local ButtonRegistry, ActiveButtons = lib.buttonRegistry, lib.activeButtons
 
-local Update, UpdateButtonState, UpdateUsable, UpdateCount, UpdateCooldown, UpdateTooltip
+local Update, UpdateButtonState, UpdateUsable, UpdateCount, UpdateCooldown, UpdateLossOfControlCooldown, UpdateTooltip
 local StartFlash, StopFlash, UpdateFlash, UpdateHotkeys, UpdateRangeTimer, UpdateOverlayGlow
 local UpdateFlyout, ShowGrid, HideGrid, UpdateGrid, SetupSecureSnippets, WrapOnClick
 local ShowOverlayGlow, HideOverlayGlow, GetOverlayGlow, OverlayGlowAnimOutFinished
@@ -674,6 +674,8 @@ function InitializeEventHandler()
 	lib.eventFrame:RegisterEvent("SPELL_UPDATE_USABLE")
 	lib.eventFrame:RegisterEvent("PLAYER_EQUIPMENT_CHANGED")
 
+	lib.eventFrame:RegisterEvent("LOSS_OF_CONTROL_UPDATE")
+
 	lib.eventFrame:Show()
 	lib.eventFrame:SetScript("OnUpdate", OnUpdate)
 end
@@ -715,6 +717,8 @@ function OnEvent(frame, event, arg1, ...)
 				UpdateTooltip(button)
 			end
 		end
+	elseif event == "LOSS_OF_CONTROL_UPDATE" then
+		ForAllButtons(UpdateLossOfControlCooldown, true)
 	elseif event == "TRADE_SKILL_SHOW" or event == "TRADE_SKILL_CLOSE"  or event == "ARCHAEOLOGY_CLOSED" then
 		ForAllButtons(UpdateButtonState, true)
 	elseif event == "PLAYER_ENTER_COMBAT" then
@@ -748,6 +752,13 @@ function OnEvent(frame, event, arg1, ...)
 			local spellId = button:GetSpellId()
 			if spellId and spellId == arg1 then
 				ShowOverlayGlow(button)
+			else
+				if button._state_type == "action" then
+					local actionType, id = GetActionInfo(button._state_action)
+					if actionType == "flyout" and FlyoutHasSpell(id, arg1) then
+						ShowOverlayGlow(button)
+					end
+				end
 			end
 		end
 	elseif event == "SPELL_ACTIVATION_OVERLAY_GLOW_HIDE" then
@@ -755,6 +766,13 @@ function OnEvent(frame, event, arg1, ...)
 			local spellId = button:GetSpellId()
 			if spellId and spellId == arg1 then
 				HideOverlayGlow(button)
+			else
+				if button._state_type == "action" then
+					local actionType, id = GetActionInfo(button._state_action)
+					if actionType == "flyout" and FlyoutHasSpell(id, arg1) then
+						HideOverlayGlow(button)
+					end
+				end
 			end
 		end
 	elseif event == "PLAYER_EQUIPMENT_CHANGED" then
@@ -950,6 +968,7 @@ function Update(self)
 		UpdateButtonState(self)
 		UpdateUsable(self)
 		UpdateCooldown(self)
+		UpdateLossOfControlCooldown(self)
 		UpdateFlash(self)
 	else
 		ActiveButtons[self] = nil
@@ -1085,6 +1104,11 @@ end
 function UpdateCooldown(self)
 	local start, duration, enable, charges, maxCharges = self:GetCooldown()
 	CooldownFrame_SetTimer(self.cooldown, start, duration, enable, charges, maxCharges)
+end
+
+function UpdateLossOfControlCooldown(self)
+	local start, duration = self:GetLossOfControlCooldown()
+	self.cooldown:SetLossOfControlCooldown(start, duration)
 end
 
 function StartFlash(self)
@@ -1286,6 +1310,7 @@ Generic.IsInRange               = function(self)
 end
 Generic.SetTooltip              = function(self) return nil end
 Generic.GetSpellId              = function(self) return nil end
+Generic.GetLossOfControlCooldown = function(self) return 0, 0 end
 
 -----------------------------------------------------------
 --- Action Button
@@ -1312,6 +1337,7 @@ Action.GetSpellId              = function(self)
 		return spellId
 	end
 end
+Action.GetLossOfControlCooldown = function(self) return GetActionLossOfControlCooldown(self._state_action) end
 
 -----------------------------------------------------------
 --- Spell Button

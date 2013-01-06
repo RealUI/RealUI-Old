@@ -32,18 +32,18 @@ function mod:Update(win, set)
 			maxvalue = player.healing + player.overhealing
 		end
 	end
-	
+
 	local nr = 1
 	local max = 0
-	
+
 	for i, player in ipairs(set.players) do
 		if player.healing > 0 or player.overhealing > 0 then
-		
+
 			local mypercent = (player.healing + player.overhealing) / maxvalue
-			
+
 			local d = win.dataset[nr] or {}
 			win.dataset[nr] = d
-			
+
 			d.id = player.id
 			d.value = player.healing
 			d.label = player.name
@@ -51,15 +51,16 @@ function mod:Update(win, set)
 			d.color = green
 			d.backgroundcolor = red
 			d.backgroundwidth = mypercent
-			
+			d.class = player.class
+
 			if player.healing + player.overhealing > max then
 				max = player.healing + player.overhealing
 			end
-			
+
 			nr = nr + 1
 		end
 	end
-	
+
 	win.metadata.maxvalue = max
 end
 

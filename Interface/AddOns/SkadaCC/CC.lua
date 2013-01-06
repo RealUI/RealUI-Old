@@ -35,7 +35,7 @@ local function log_ccbreak(set, srcGUID, srcName)
 	if player then
 		-- Add to player count.
 		player.ccbreaks = player.ccbreaks + 1
-		
+
 		-- Add to set count.
 		set.ccbreaks = set.ccbreaks + 1
 	end
@@ -48,7 +48,7 @@ local function SpellAuraBroken(timestamp, eventtype, srcGUID, srcName, srcFlags,
 		spellId, spellName, spellSchool, auraType = ...
 	else
 		spellId, spellName, spellSchool, extraSpellId, extraSpellName, extraSchool, auraType = ...
-	end	
+	end
 
 	if CCId[spellId] then
 
@@ -60,7 +60,7 @@ local function SpellAuraBroken(timestamp, eventtype, srcGUID, srcName, srcFlags,
 		-- Log CC break.
 		log_ccbreak(Skada.current, srcGUID, srcName)
 		log_ccbreak(Skada.total, srcGUID, srcName)
-		
+
 		-- Optional announce
 		local inInstance, instanceType = IsInInstance()
 		if Skada.db.profile.modules.ccannounce and IsInRaid() and UnitInRaid(srcName) and not (instanceType == "pvp") then
@@ -89,15 +89,15 @@ local function SpellAuraBroken(timestamp, eventtype, srcGUID, srcName, srcFlags,
 			else
 				SendChatMessage(string.format(L["%s on %s removed by %s"], spellName, dstName, srcName), "RAID")
 			end
-		
+
 		end
-		
+
 	end
 end
 
 function mod:OnEnable()
 	mod.metadata = {showspots = true}
-	
+
 	Skada:RegisterForCL(SpellAuraBroken, 'SPELL_AURA_BROKEN', {src_is_interesting = true})
 	Skada:RegisterForCL(SpellAuraBroken, 'SPELL_AURA_BROKEN_SPELL', {src_is_interesting = true})
 
@@ -135,10 +135,10 @@ function mod:Update(win, set)
 	local nr = 1
 	for i, player in ipairs(set.players) do
 		if player.ccbreaks > 0 then
-		
+
 			local d = win.dataset[nr] or {}
 			win.dataset[nr] = d
-			
+
 			d.value = player.ccbreaks
 			d.label = player.name
 			d.valuetext = tostring(player.ccbreaks)
@@ -147,11 +147,11 @@ function mod:Update(win, set)
 			if player.ccbreaks > max then
 				max = player.ccbreaks
 			end
-			
+
 			nr = nr + 1
 		end
 	end
-	
+
 	win.metadata.maxvalue = max
 end
 
@@ -168,7 +168,7 @@ local opts = {
 				set = function() Skada.db.profile.modules.ccannounce = not Skada.db.profile.modules.ccannounce end,
 				order=1,
 			},
-			
+
 			ignoremaintanks = {
 				type = "toggle",
 				name = L["Ignore Main Tanks"],
@@ -176,7 +176,7 @@ local opts = {
 				set = function() Skada.db.profile.modules.ccignoremaintanks = not Skada.db.profile.modules.ccignoremaintanks end,
 				order=2,
 			},
-					
+
 		},
 	}
 }

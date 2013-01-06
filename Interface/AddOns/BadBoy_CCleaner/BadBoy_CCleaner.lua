@@ -55,7 +55,6 @@ BadBoyConfig:SetScript("OnEvent", function(frame, evt, addon)
 		end
 	end
 	BadBoyCCleanerEditBox:SetText(text or "")
-	BadBoyCCleanerNoIconButton:SetChecked(BADBOY_NOICONS)
 
 	--main filtering function
 	local filter = function(_,event,msg,player,lang,chan,tar,flag,chanid,chanNum,chanName,u,lineId,...)

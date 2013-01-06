@@ -2,7 +2,7 @@
 ---------------------------------------------------
 -- Global vars
 ---------------------------------------------------
-EasyMail_ClearAll = false;
+EasyMail.ClearAll = false;
 
 ---------------------------------------------------
 -- Local vars
@@ -24,24 +24,23 @@ StaticPopupDialogs["EASYMAIL_LENGTHWARNING"] = {
 };
 
 ---------------------------------------------------
--- EasyMail_SetupOptions
--- Set up slash commands and register in Khaos
+-- EasyMail.SetupOptions
 ---------------------------------------------------
-function EasyMail_SetupOptions()
+function EasyMail.SetupOptions()
 	CurRealm = GetRealmName();
 	CurFaction = UnitFactionGroup("player");
 
 	Old_InterfaceOptionsFrameOkay_OnClick = InterfaceOptionsFrameOkay_OnClick;
-	InterfaceOptionsFrameOkay_OnClick = EasyMail_InterfaceOptionsFrameOkayOnClick;
+	InterfaceOptionsFrameOkay_OnClick = EasyMail.InterfaceOptionsFrameOkayOnClick;
 end
 
 
 ---------------------------------------------------
--- EasyMail_SetDefaults
+-- EasyMail.SetDefaults
 ---------------------------------------------------
-function EasyMail_SetDefaults()
+function EasyMail.SetDefaults()
 	EasyMail_SavedVars[CurRealm][CurFaction].LastAddressee = {};
-	EasyMail_SavedVars[CurRealm][CurFaction].MailListLen = EASYMAIL_DEFAULTLISTLEN;
+	EasyMail_SavedVars[CurRealm][CurFaction].MailListLen = EasyMail.DefaultListLen;
 	EasyMail_SavedVars.AutoAdd = "N";
 	EasyMail_SavedVars.Guild = "N";
 	EasyMail_SavedVars.Friends = "N";
@@ -57,19 +56,19 @@ end
 
 
 ---------------------------------------------------
--- EasyMail_OptionsDefault
+-- EasyMail.OptionsDefault
 ---------------------------------------------------
-function EasyMail_OptionsDefault()
-	EasyMail_SetDefaults();
-	EasyMail_ClearAll = true;
-	EasyMail_UpdateInterface();
+function EasyMail.OptionsDefault()
+	EasyMail.SetDefaults();
+	EasyMail.ClearAll = true;
+	EasyMail.UpdateInterface();
 end
 
 
 ---------------------------------------------------
--- EasyMail_OptionsRefresh
+-- EasyMail.OptionsRefresh
 ---------------------------------------------------
-function EasyMail_OptionsRefresh(self)
+function EasyMail.OptionsRefresh(self)
 	EasyMail_OptionsPanelAutoAdd:SetChecked(EasyMail_SavedVars.AutoAdd == "Y");
 	EasyMail_OptionsPanelListLen:SetNumber(EasyMail_SavedVars[CurRealm][CurFaction].MailListLen);
 	EasyMail_OptionsPanelListLen:SetCursorPosition(0);
@@ -87,15 +86,15 @@ end
 
 
 ---------------------------------------------------
--- EasyMail_InterfaceOptionsFrameOkayOnClick
+-- EasyMail.InterfaceOptionsFrameOkayOnClick
 ---------------------------------------------------
-function EasyMail_InterfaceOptionsFrameOkayOnClick(isApply)
+function EasyMail.InterfaceOptionsFrameOkayOnClick(isApply)
 	-- Check for valid entries
 	local listlen = EasyMail_OptionsPanelListLen:GetNumber();
 
-	if (listlen < EASYMAIL_MINLISTLEN or listlen > EASYMAIL_MAXLISTLEN) then
+	if (listlen < EasyMail.MinListLen or listlen > EasyMail.MaxListLen) then
 		StaticPopupDialogs["EASYMAIL_LENGTHWARNING"].text 
-			= format(EASYMAIL_ERROUTOFRANGE, EASYMAIL_MINLISTLEN, EASYMAIL_MAXLISTLEN);
+			= format(EASYMAIL_ERROUTOFRANGE, EasyMail.MinListLen, EasyMail.MaxListLen);
 		StaticPopup_Show("EASYMAIL_LENGTHWARNING");
 		EasyMail_OptionsPanelListLen:SetFocus();
 		return;
@@ -106,9 +105,9 @@ end
 
 
 ---------------------------------------------------
--- EasyMail_OptionsOkay
+-- EasyMail.OptionsOkay
 ---------------------------------------------------
-function EasyMail_OptionsOkay()
+function EasyMail.OptionsOkay()
 	EasyMail_SavedVars.AutoAdd = ((EasyMail_OptionsPanelAutoAdd:GetChecked() and "Y") or "N");
 	EasyMail_SavedVars[CurRealm][CurFaction].MailListLen = EasyMail_OptionsPanelListLen:GetNumber();
 	EasyMail_SavedVars.Guild = ((EasyMail_OptionsPanelGuild:GetChecked() and "Y") or "N");
@@ -122,17 +121,17 @@ function EasyMail_OptionsOkay()
 	EasyMail_SavedVars.TextTooltip = ((EasyMail_OptionsPanelTextTooltip:GetChecked() and "Y") or "N");
 	EasyMail_SavedVars.DelPrompt = ((EasyMail_OptionsPanelDelPrompt:GetChecked() and "Y") or "N");
 	
-	EasyMail_UpdateInterface();
+	EasyMail.UpdateInterface();
 end
 
 
 ---------------------------------------------------
--- EasyMail_UpdateInterface
+-- EasyMail.UpdateInterface
 ---------------------------------------------------
-function EasyMail_UpdateInterface()
-	if (EasyMail_ClearAll) then
+function EasyMail.UpdateInterface()
+	if (EasyMail.ClearAll) then
 		EasyMail_SavedVars[CurRealm][CurFaction].EasyMailList = {};
-		EasyMail_ClearAll = false;
+		EasyMail.ClearAll = false;
 	else
 		local newLen = EasyMail_SavedVars[CurRealm][CurFaction].MailListLen;
 		
@@ -145,7 +144,7 @@ function EasyMail_UpdateInterface()
 	end
 	
 	if (EasyMail_SavedVars.AutoAdd == "Y") then
-		EasyMail_SaveAddressee(UnitName("player"), true);
+		EasyMail.SaveAddressee(UnitName("player"), true);
 	end;
 	
 	if (IsInGuild() and EasyMail_SavedVars.Guild == "Y") then
@@ -158,5 +157,7 @@ function EasyMail_UpdateInterface()
 		FriendQueryInterval = .5;
 	end
 	
-	EasyMail_SortList();
+	EasyMail.HideDropdown(EasyMail_SavedVars.BlizzList == "Y");
+	
+	EasyMail.SortList();
 end

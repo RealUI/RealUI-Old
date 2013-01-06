@@ -1,5 +1,7 @@
+local addon, private = ...
+local Chatter = LibStub("AceAddon-3.0"):GetAddon(addon)
 local mod = Chatter:NewModule("Player Class Colors", "AceHook-3.0", "AceEvent-3.0")
-local L = LibStub("AceLocale-3.0"):GetLocale("Chatter")
+local L = LibStub("AceLocale-3.0"):GetLocale(addon)
 local AceTab = LibStub("AceTab-3.0")
 
 mod.modName = L["Player Names"]
@@ -277,7 +279,7 @@ function mod:OnEnable()
 		self:RawHook(cf, "AddMessage", true)
 	end
 	if self.db.profile.useTabComplete then
-		AceTab:RegisterTabCompletion("Chatter", nil, tabComplete)
+		AceTab:RegisterTabCompletion(addon, nil, tabComplete)
 	end
 
 	if CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS.RegisterCallback then
@@ -295,8 +297,8 @@ function mod:OnEnable()
 end
 
 function mod:OnDisable()
-	if AceTab:IsTabCompletionRegistered("Chatter") then
-		AceTab:UnregisterTabCompletion("Chatter")
+	if AceTab:IsTabCompletionRegistered(addon) then
+		AceTab:UnregisterTabCompletion(addon)
 	end
 
 	if CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS.UnregisterCallback then
@@ -436,11 +438,11 @@ function mod:CHAT_MSG_CHANNEL_LEAVE(evt, _, name, _, _, _, _, _, _, chan)
 end
 
 function mod:GetColor(className, isLocal)
-	if not className then return "7f7f7f" end
 	if isLocal then
 		className = localizedToSystemClass[className]
 	end
 	local tbl = CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[className] or RAID_CLASS_COLORS[className]
+	if not tbl then return end
 	return format("%02x%02x%02x", tbl.r*255, tbl.g*255, tbl.b*255)
 end
 
@@ -458,12 +460,11 @@ local function fixLogin(head,id,misc,who,xtra,colon)
 	end
 end
 
-
 --[[
 	Taken from Basic Chat Mods since funkeh already did the work
 --]]
 local function changeBNetName(misc, id, moreMisc, fakeName, tag, colon)
-	local _, charName, _, _, _, _, _, englishClass = BNGetToonInfo(id)
+	local _, charName, _, _, _, _, _, localizedClass = BNGetToonInfo(id)
 	if charName ~= "" then
 		if storedName then storedName[id] = charName end --Store name for logoff events, if enabled
 		--Replace real name with charname if enabled
@@ -491,16 +492,19 @@ local function changeBNetName(misc, id, moreMisc, fakeName, tag, colon)
 		bleftBracket = leftBracket
 		brightBracket = rightBracket
 	end
-	if engilshClass and englishClass ~= "" then --Friend logging off/Starcraft 2
+
+	if localizedClass then --Friend logging off/Starcraft 2
 		if not strmatch(fakeName, "|cff") then
 			-- Handle coloring here
 			if mod.db.profile.nameColoring == "CLASS" then
-				fakeName = "|cFF"..mod:GetColor(englishClass, true)..fakeName.."|r"
+				local color = mod:GetColor(localizedClass, true)
+				if color then fakeName = "|cFF"..color..fakeName.."|r" end
 			elseif mod.db.profile.nameColoring == "NAME" then
 				fakeName = mod:ColorName(fakeName)
 			end
 		end
 	end
+
 	if waslogin then
 		return misc..moreMisc..bleftBracket..fakeName..brightBracket..tag
 	else
@@ -738,10 +742,10 @@ function mod:GetOptions()
 				get = function() return mod.db.profile.useTabComplete end,
 				set = function(info, v)
 					mod.db.profile.useTabComplete = v
-					if v and not AceTab:IsTabCompletionRegistered("Chatter") then
-						AceTab:RegisterTabCompletion("Chatter", nil, tabComplete)
-					elseif not v and AceTab:IsTabCompletionRegistered("Chatter") then
-						AceTab:UnregisterTabCompletion("Chatter")
+					if v and not AceTab:IsTabCompletionRegistered(addon) then
+						AceTab:RegisterTabCompletion(addon, nil, tabComplete)
+					elseif not v and AceTab:IsTabCompletionRegistered(addon) then
+						AceTab:UnregisterTabCompletion(addon)
 					end
 				end
 			},

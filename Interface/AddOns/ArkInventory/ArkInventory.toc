@@ -1,14 +1,10 @@
 ## Interface: 50100
-## X-Curse-Packaged-Version: 3.03.21
-## X-Curse-Project-Name: ArkInventory
-## X-Curse-Project-ID: ark-inventory
-## X-Curse-Repository-ID: wow/ark-inventory/mainline
 
 ## Title: ArkInventory
 ## Title-zhCN: [背包]ArkInventory 整合背包银行
 ## Author: Arkayenro - Khaz'goroth
 ## Email: arkayenro at gmail dot com
-## Version: 30321
+## Version: 30324
 ## DefaultState: Enabled
 ## LoadOnDemand: 0
 ## SavedVariables: ARKINVDB

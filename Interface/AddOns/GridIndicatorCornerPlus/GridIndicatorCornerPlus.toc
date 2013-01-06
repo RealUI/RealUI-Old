@@ -1,13 +1,13 @@
-## Interface: 50001
+## Interface: 50100
 ## Title: GridIndicatorCornerPlus
-## Author: kunda
 ## Notes: Adds 3 corner indicators to each corner of the Grid frames.
 ## Notes-deDE: Fügt 3 Eckenindikatoren in jede Ecke eines Gridfensters hinzu.
 ## Notes-zhTW: [Grid] 在 Grid 框架的每個角落中加入另外3個提示。
 ## Notes-zhCN: [Grid] 在 Grid 框体的每个角落中加入另外3个提示。
-## Version: 50001-1
+## Author: kunda
+## Version: 50100-1
 ## Dependencies: Grid
-## X-Curse-Packaged-Version: 50001-1
+## X-Curse-Packaged-Version: 50100-1
 ## X-Curse-Project-Name: GridIndicatorCornerPlus
 ## X-Curse-Project-ID: grid-indicator-corner-plus
 ## X-Curse-Repository-ID: wow/grid-indicator-corner-plus/mainline

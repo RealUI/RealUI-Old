@@ -97,6 +97,7 @@ if not L then return end
 	L["STATUS_NAME_MOUNT"] = "坐骑"
 	L["STATUS_NAME_TOKEN"] = "牌子"
 --	L["STATUS_NAME_TACKLE"] = ""
+--	L["STATUS_NAME_COOKING"] = ""
 	
 	
 --	main menu
@@ -347,6 +348,8 @@ if not L then return end
 	L["CONFIG_SETTINGS_ITEMS_FADE_TEXT"] = "设定是否淡化显示脱机物品"
 	L["CONFIG_SETTINGS_ITEMS_TINT_USABLE"] = "着色无效物品"
 	L["CONFIG_SETTINGS_ITEMS_TINT_USABLE_TEXT"] = "给不能使用的物品蒙上红色"
+--	L["CONFIG_SETTINGS_ITEMS_ITEMLEVEL_SHOW"] = ""
+--	L["CONFIG_SETTINGS_ITEMS_ITEMLEVEL_SHOW_TEXT"] = ""
 	L["CONFIG_SETTINGS_ITEMS_BORDER_SHOW_TEXT"] = "设置物品边框是否显示"
 	L["CONFIG_SETTINGS_ITEMS_BORDER_STYLE_TEXT"] = "设置物品边框的风格"
 	L["CONFIG_SETTINGS_ITEMS_BORDER_RARITY"] = "稀有物品边框着色"

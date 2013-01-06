@@ -95,6 +95,7 @@ local fireSpells = nil -- special case support for mage Impact procs
 local petGUID = nil -- cache pet GUID so can properly remove trackers for them when dismissed
 local enteredWorld = nil -- set by PLAYER_ENTERING_WORLD event
 local trackerTag = 0 -- used for mark/sweep in AddTrackers
+local professions = {} -- temporary table for profession indices
 
 -- Initialization called when addon is loaded
 function MOD:OnInitialize()
@@ -599,8 +600,11 @@ local function CheckBlizzFrames()
 	visible = ConsolidatedBuffs:IsShown()
 	if MOD.db.profile.hideConsolidated or (GetNumGroupMembers() == 0) then -- make sure hide when solo
 		if visible then ConsolidatedBuffs:Hide() end
-	else
-		if not visible then if GetCVarBool("consolidateBuffs") then ConsolidatedBuffs:Show() end end
+--	else
+--		if not visible then if GetCVarBool("consolidateBuffs") then ConsolidatedBuffs:Show() end end
+	elseif GetCVarBool("consolidateBuffs") then
+		if not visible then ConsolidatedBuffs:Show() end
+		RaidBuffTray_Update()
 	end
 	visible = RuneFrame:IsShown()
 	if MOD.db.profile.hideRunes then
@@ -615,9 +619,8 @@ end
 
 -- Check for update requirements that are not triggered by events
 local function CheckMiscellaneousUpdates()
-	if MOD:ChangedTotems() or IsPossessBarVisible() or UnitHasVehicleUI("player") then
-		updateCooldowns = true; unitUpdate.player = true; doUpdate = true
-	end
+	if MOD:ChangedTotems() then updateCooldowns = true; unitUpdate.player = true; doUpdate = true; forceUpdate = true end
+	if IsPossessBarVisible() or UnitHasVehicleUI("player") then updateCooldowns = true; unitUpdate.player = true; doUpdate = true end
 end
 
 -- Update routine called before each frame is displayed, throttled to minimize CPU usage
@@ -1003,7 +1006,7 @@ local function GetPowerBuffs()
 	local power, id = nil, nil
 	if MOD.myClass == "PALADIN" then power = UnitPower("player", SPELL_POWER_HOLY_POWER); id = 85247
 	elseif MOD.myClass == "PRIEST" then power = UnitPower("player", SPELL_POWER_SHADOW_ORBS); id = 95740
-	elseif MOD.myClass == "MONK" then power = UnitPower("player", SPELL_POWER_LIGHT_FORCE); id = 97272
+	elseif MOD.myClass == "MONK" then power = UnitPower("player", SPELL_POWER_CHI); id = 97272
 	elseif MOD.myClass == "WARLOCK" then
 		if IsSpellKnown(108647) then
 			power = UnitPower("player", SPELL_POWER_BURNING_EMBERS, true); id = 108647
@@ -1315,6 +1318,28 @@ function MOD:UpdateCooldowns()
 										end
 									end
 								end
+							end
+						end
+					end
+				end
+			end
+		end
+		
+		local p = professions -- scan professions for spells on cooldown
+		p[1], p[2], p[3], p[4], p[5], p[6] = GetProfessions()
+		for index = 1, 6 do
+			if p[index] then
+				local prof, _, _, _, numSpells, offset = GetProfessionInfo(p[index])
+				for i = 1, numSpells do
+					local index = i + offset
+					local stype, id = GetSpellBookItemInfo(index, "spell")
+					if stype == "SPELL" then -- use spellbook index to check for cooldown
+						local start, duration, enable = GetSpellCooldown(index, "spell")
+						if start and (start > 0) and (enable == 1) and (duration > 1.5) then -- don't include global cooldowns
+							local name, _, icon = GetSpellInfo(index, "spell")
+							if name then -- make sure we have a valid spell name
+								local link = GetSpellLink(index, "spell")
+								AddCooldown(name, id, icon, start, duration, "spell link", link, "player")
 							end
 						end
 					end

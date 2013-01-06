@@ -1,10 +1,10 @@
-## Interface: 50001
+## Interface: 50100
 ## Title: GridStatusThreat
-## Author: kunda
 ## Notes: Adds a simple percentage threat status to Grid.
-## Version: 50001-1
+## Author: kunda
+## Version: 50100-1
 ## Dependencies: Grid
-## X-Curse-Packaged-Version: 50001-1
+## X-Curse-Packaged-Version: 50100-1
 ## X-Curse-Project-Name: GridStatusThreat
 ## X-Curse-Project-ID: grid-status-threat
 ## X-Curse-Repository-ID: wow/grid-status-threat/mainline

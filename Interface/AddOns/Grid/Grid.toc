@@ -1,7 +1,7 @@
-## Interface: 50001
-## Version: 5.0.5.1548
-## X-ReleaseDate: "$Date: 2012-10-17 22:04:05 +0000 (Wed, 17 Oct 2012) $"
-## X-Curse-Packaged-Version: 5.0.5.1548
+## Interface: 50100
+## Version: 5.1.0.1553
+## X-ReleaseDate: "$Date: 2012-11-30 21:51:17 +0000 (Fri, 30 Nov 2012) $"
+## X-Curse-Packaged-Version: 5.1.0.1553
 ## X-Curse-Project-Name: Grid
 ## X-Curse-Project-ID: grid
 ## X-Curse-Repository-ID: wow/grid/mainline

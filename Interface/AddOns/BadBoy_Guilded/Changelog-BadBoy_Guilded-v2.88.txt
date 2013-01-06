@@ -1,0 +1,123 @@
+------------------------------------------------------------------------
+r177 | funkydude | 2012-12-29 22:17:25 +0000 (Sat, 29 Dec 2012) | 1 line
+Changed paths:
+   A /tags/v2.88 (from /trunk:176)
+
+Tagging as v2.88
+------------------------------------------------------------------------
+r176 | funkydude | 2012-12-29 22:15:53 +0000 (Sat, 29 Dec 2012) | 1 line
+Changed paths:
+   M /trunk/BadBoy_Guilded.lua
+
+more ads
+------------------------------------------------------------------------
+r175 | funkydude | 2012-12-23 15:20:26 +0000 (Sun, 23 Dec 2012) | 1 line
+Changed paths:
+   M /trunk/BadBoy_Guilded.lua
+
+more ads
+------------------------------------------------------------------------
+r174 | funkydude | 2012-12-22 18:43:50 +0000 (Sat, 22 Dec 2012) | 1 line
+Changed paths:
+   M /trunk/BadBoy_Guilded.lua
+
+more ads
+------------------------------------------------------------------------
+r173 | funkydude | 2012-12-22 18:05:26 +0000 (Sat, 22 Dec 2012) | 1 line
+Changed paths:
+   M /trunk/BadBoy_Guilded.lua
+
+more ads
+------------------------------------------------------------------------
+r172 | funkydude | 2012-12-22 16:06:14 +0000 (Sat, 22 Dec 2012) | 1 line
+Changed paths:
+   M /trunk/BadBoy_Guilded.lua
+
+more ads
+------------------------------------------------------------------------
+r171 | funkydude | 2012-12-22 15:13:27 +0000 (Sat, 22 Dec 2012) | 1 line
+Changed paths:
+   M /trunk/BadBoy_Guilded.lua
+
+more ads
+------------------------------------------------------------------------
+r170 | funkydude | 2012-12-13 23:59:29 +0000 (Thu, 13 Dec 2012) | 1 line
+Changed paths:
+   M /trunk/BadBoy_Guilded.lua
+
+more ads
+------------------------------------------------------------------------
+r169 | funkydude | 2012-12-10 17:31:37 +0000 (Mon, 10 Dec 2012) | 1 line
+Changed paths:
+   M /trunk/BadBoy_Guilded.lua
+
+more ads
+------------------------------------------------------------------------
+r168 | funkydude | 2012-12-10 16:19:05 +0000 (Mon, 10 Dec 2012) | 1 line
+Changed paths:
+   M /trunk/BadBoy_Guilded.lua
+
+rule tweak
+------------------------------------------------------------------------
+r167 | funkydude | 2012-12-10 00:16:11 +0000 (Mon, 10 Dec 2012) | 1 line
+Changed paths:
+   M /trunk/BadBoy_Guilded.lua
+
+more ads
+------------------------------------------------------------------------
+r166 | funkydude | 2012-12-09 14:11:56 +0000 (Sun, 09 Dec 2012) | 1 line
+Changed paths:
+   M /trunk/BadBoy_Guilded.lua
+
+more ads
+------------------------------------------------------------------------
+r165 | funkydude | 2012-12-08 15:43:36 +0000 (Sat, 08 Dec 2012) | 1 line
+Changed paths:
+   M /trunk/BadBoy_Guilded.lua
+   M /trunk/BadBoy_Guilded.toc
+
+more ads
+------------------------------------------------------------------------
+r163 | funkydude | 2012-12-07 02:01:07 +0000 (Fri, 07 Dec 2012) | 1 line
+Changed paths:
+   M /trunk/BadBoy_Guilded.lua
+
+more ads
+------------------------------------------------------------------------
+r162 | funkydude | 2012-12-07 01:54:40 +0000 (Fri, 07 Dec 2012) | 1 line
+Changed paths:
+   M /trunk/BadBoy_Guilded.lua
+
+more ads
+------------------------------------------------------------------------
+r161 | funkydude | 2012-12-03 20:08:33 +0000 (Mon, 03 Dec 2012) | 1 line
+Changed paths:
+   M /trunk/BadBoy_Guilded.lua
+
+more ads
+------------------------------------------------------------------------
+r160 | funkydude | 2012-12-03 01:24:46 +0000 (Mon, 03 Dec 2012) | 1 line
+Changed paths:
+   M /trunk/BadBoy_Guilded.lua
+
+more ads
+------------------------------------------------------------------------
+r159 | funkydude | 2012-12-02 23:54:23 +0000 (Sun, 02 Dec 2012) | 1 line
+Changed paths:
+   M /trunk/BadBoy_Guilded.lua
+
+more ads
+------------------------------------------------------------------------
+r158 | funkydude | 2012-12-02 14:12:03 +0000 (Sun, 02 Dec 2012) | 1 line
+Changed paths:
+   M /trunk/BadBoy_Guilded.lua
+
+more ads
+------------------------------------------------------------------------
+r157 | funkydude | 2012-12-02 02:04:47 +0000 (Sun, 02 Dec 2012) | 1 line
+Changed paths:
+   M /trunk/BadBoy_Guilded.lua
+   M /trunk/BadBoy_Guilded.toc
+
+more ads
+------------------------------------------------------------------------

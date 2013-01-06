@@ -1,6 +1,9 @@
+local addon, private = ...
+local Chatter = LibStub("AceAddon-3.0"):GetAddon(addon)
 local mod = Chatter:NewModule("URL Copy", "AceHook-3.0")
-local L = LibStub("AceLocale-3.0"):GetLocale("Chatter")
+local L = LibStub("AceLocale-3.0"):GetLocale(addon)
 mod.modName = L["URL Copy"]
+local Dialog = LibStub("LibDialog-1.0")
 
 local gsub = _G.string.gsub
 local ipairs = _G.ipairs
@@ -91,16 +94,44 @@ do
 		}
 	}
 	local events = {
-		"CHAT_MSG_BATTLEGROUND", "CHAT_MSG_BATTLEGROUND_LEADER",
-		"CHAT_MSG_CHANNEL", "CHAT_MSG_EMOTE",
-		"CHAT_MSG_GUILD", "CHAT_MSG_OFFICER",
-		"CHAT_MSG_PARTY", "CHAT_MSG_RAID",
-		"CHAT_MSG_RAID_LEADER", "CHAT_MSG_RAID_WARNING", "CHAT_MSG_PARTY_LEADER",
-		"CHAT_MSG_SAY", "CHAT_MSG_WHISPER","CHAT_MSG_BN_WHISPER",
-		"CHAT_MSG_WHISPER_INFORM", "CHAT_MSG_YELL", "CHAT_MSG_BN_WHISPER_INFORM","CHAT_MSG_BN_CONVERSATION"
+		"CHAT_MSG_CHANNEL",
+		"CHAT_MSG_EMOTE",
+		"CHAT_MSG_GUILD",
+		"CHAT_MSG_OFFICER",
+		"CHAT_MSG_PARTY",
+		"CHAT_MSG_RAID",
+		"CHAT_MSG_RAID_LEADER",
+		"CHAT_MSG_RAID_WARNING",
+		"CHAT_MSG_PARTY_LEADER",
+		"CHAT_MSG_SAY",
+		"CHAT_MSG_WHISPER","CHAT_MSG_BN_WHISPER",
+		"CHAT_MSG_WHISPER_INFORM",
+		"CHAT_MSG_YELL",
+		"CHAT_MSG_BN_WHISPER_INFORM",
+		"CHAT_MSG_BN_CONVERSATION",
+		"CHAT_MSG_BN_INLINE_TOAST_BROADCAST"
 	}
 	function mod:OnInitialize()
 		self.db = Chatter.db:RegisterNamespace("UrlCopy", defaults)
+		Dialog:Register("ChatterUrlCopyDialog", {
+			text = L["URL Copy"],
+			width = 500,
+			editboxes = {
+				{ width = 484,
+				  on_escape_pressed = function(self, data) self:GetParent():Hide() end,
+				},
+			},
+			on_show = function(self, data) 
+				self.editboxes[1]:SetText(data.url)
+				self.editboxes[1]:HighlightText()
+				self.editboxes[1]:SetFocus()
+			end,
+			buttons = {
+				{ text = CLOSE, },
+			},
+			show_while_dead = true,
+			hide_on_escape = true,
+		})
 	end	
 	function mod:OnEnable()
 		for _,event in ipairs(events) do
@@ -135,36 +166,6 @@ do
 		return token
 	end
 end
-
---[[		Popup Box		]]--
-local currentLink
-
-StaticPopupDialogs["ChatterUrlCopyDialog"] = {
-	text = "URL - Ctrl-C to copy",
-	button2 = CLOSE,
-	hasEditBox = 1,
-	editBoxWidth = 400,
-    preferredIndex = 3,
-	OnShow = function(frame)
-		local editBox = _G[frame:GetName().."EditBox"]
-		if editBox then
-			editBox:SetText(currentLink)
-			editBox:SetFocus()
-			editBox:HighlightText(0)
-		end
-		local button = _G[frame:GetName().."Button2"]
-		if button then
-			button:ClearAllPoints()
-			button:SetWidth(200)
-			button:SetPoint("CENTER", editBox, "CENTER", 0, -30)
-		end
-	end,
-	EditBoxOnEscapePressed = function(frame) frame:GetParent():Hide() end,
-	timeout = 0,
-	whileDead = 1,
-	hideOnEscape = 1,
-	maxLetters=1024, -- this otherwise gets cached from other dialogs which caps it at 10..20..30...
-}
 
 local mangleLinkForVoiceChat
 do
@@ -244,9 +245,12 @@ end
 
 function mod:SetItemRef(link, text, button,...)
 	if sub(link, 1, 3) == "url" then
-		currentLink = sub(link, 5)
+		local currentLink = sub(link, 5)
 		currentLink = mangleLinkForVoiceChat(currentLink)
-		StaticPopup_Show("ChatterUrlCopyDialog")
+		if Dialog:ActiveDialog("ChatterUrlCopyDialog") then
+			Dialog:Dismiss("ChatterUrlCopyDialog")
+		end
+		Dialog:Spawn("ChatterUrlCopyDialog", {url=currentLink})
 		return ...
 	end
 	return self.hooks.SetItemRef(link, text, button, ...)

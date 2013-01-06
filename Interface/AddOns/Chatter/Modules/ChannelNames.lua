@@ -1,5 +1,7 @@
+local addon, private = ...
+local Chatter = LibStub("AceAddon-3.0"):GetAddon(addon)
 local mod = Chatter:NewModule("Channel Names", "AceHook-3.0", "AceEvent-3.0")
-local L = LibStub("AceLocale-3.0"):GetLocale("Chatter")
+local L = LibStub("AceLocale-3.0"):GetLocale(addon)
 mod.modName = L["Channel Names"]
 
 local gsub = _G.string.gsub
@@ -15,19 +17,16 @@ local empty_tag = L["$$EMPTY$$"];
 local defaults = {
 	profile = {
 		channels = {
-			[L["Guild"]] = "[G]",
-			[L["Officer"]] = "[O]",
-			[L["Party"]] = "[P]",
-			[PARTY_LEADER] = "[PL]",
+			[CHAT_MSG_GUILD] = "[G]",
+			[CHAT_MSG_OFFICER] = "[O]",
+			[CHAT_MSG_PARTY] = "[P]",
+			[CHAT_MSG_PARTY_LEADER] = "[PL]",
 			[L["Dungeon Guide"]] = "[DG]",
-			[L["Raid"]] = "[R]",
-			[L["Raid Leader"]] = "[RL]",
-			[L["Raid Warning"]] = "[RW]",
-			[L["LookingForGroup"]] = "[LFG]",
-			[L["Battleground"]] = "[BG]",
-			[L["Battleground Leader"]] = "[BL]",
-			[L["Instance"]] = "[I]",
-			[L["Instance Leader"]] = "[IL]",
+			[CHAT_MSG_RAID] = "[R]",
+			[CHAT_MSG_RAID_LEADER] = "[RL]",
+			[CHAT_MSG_RAID_WARNING] = "[RW]",
+			[INSTANCE_CHAT] = "[I]",
+			[INSTANCE_CHAT_LEADER] = "[IL]",
 			-- Not localized here intentionally
 			["Whisper From"] = "[W:From]",
 			["Whisper To"] = "[W:To]",

@@ -256,12 +256,13 @@ function GridStatusRaidDebuff:ScanUnit(unitid, unitGuid)
 	local settings = self.db.profile["alert_RaidDebuff"]
 
 	if (settings.enable and debuff_list[realzone]) then
-		local d_name, di_prior, dc_prior, dt_prior, d_icon,d_color,d_startTime,d_durTime,d_count
+		local d_name, di_prior, dc_prior, d_icon,d_color,d_startTime,d_durTime,d_count
+		-- local dt_prior
 		local data
 
 		di_prior = 0
 		dc_prior = 0
-		dt_prior = 0
+		-- dt_prior = 0
 
 		local index = 0
 		while true do
@@ -283,7 +284,8 @@ function GridStatusRaidDebuff:ScanUnit(unitid, unitGuid)
 						di_prior = data.i_prior
 						d_name = name
 						d_icon = 	not data.noicon and icon
-						if data.timer and dt_prior < data.i_prior then
+						-- if data.timer and dt_prior < data.i_prior then
+						if data.timer then
 							d_startTime = expirationTime - duration
 							d_durTime = duration
 						end

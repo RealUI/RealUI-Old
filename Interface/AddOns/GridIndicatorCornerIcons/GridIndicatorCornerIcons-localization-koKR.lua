@@ -44,8 +44,10 @@ GridIndicatorCornerIcons_Locales:CreateLocaleTable(
 
 	["Icon Stack Text: Font Size"] = "아이콘 중첩 문자: 글꼴 크기",
 	["Adjust the font size for Icon Stack Text."] = "아이콘 중첩 문자의 글꼴 크기를 조정합니다.",
-	["Icon Stack Text: Offset XY-axis"] = "아이콘 중첩 문자: XY-축 간격",
-	["Adjust the offset for Icon Stack Text of the XY-axis."] = "XY-축의 아이콘 중첩 문자 간격을 조정합니다.",
+	["Icon Stack Text: Offset X-axis"] = "아이콘 중첩 문자: X-축 간격",
+	["Adjust the offset for Icon Stack Text of the X-axis."] = "X-축의 아이콘 중첩 문자 간격을 조정합니다.",
+	["Icon Stack Text: Offset Y-axis"] = "아이콘 중첩 문자: Y-축 간격",
+	["Adjust the offset for Icon Stack Text of the Y-axis."] = "Y-축의 아이콘 중첩 문자 간격을 조정합니다.",
 
 	["Same settings as Grid"] = "Grid와 같은 설정",
 	["If enabled, the settings for the Icon (Corners) indicators are adjustable with the standard Grid options. If deactivated, you can set individual settings for the Icon (Corners) indicators."] = "사용시, 아이콘 (모서리) 지시기를 위한 설정은 기본 Grid의 옵션으로 조정합니다. 사용을 하지 않을시, 당신은 아이콘 (모서리) 지시기를 위해 개인적인 크기를 설정할 수 있습니다.",

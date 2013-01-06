@@ -97,6 +97,7 @@ if not L then return end
 	L["STATUS_NAME_MOUNT"] = "Reittier"
 	L["STATUS_NAME_TOKEN"] = "Abzeichen"
 --	L["STATUS_NAME_TACKLE"] = ""
+--	L["STATUS_NAME_COOKING"] = ""
 	
 	
 --	main menu
@@ -347,6 +348,8 @@ if not L then return end
 	L["CONFIG_SETTINGS_ITEMS_FADE_TEXT"] = "bestimmt, ob nicht verf\195\188gbare Gegenst\195\164nde verblichen dargestellt werden sollen"
 	L["CONFIG_SETTINGS_ITEMS_TINT_USABLE"] = "Benutzbare einf\195\164rben"
 	L["CONFIG_SETTINGS_ITEMS_TINT_USABLE_TEXT"] = "Benutzbare Gegenst\195\164nde rot einf\195\164rben"
+--	L["CONFIG_SETTINGS_ITEMS_ITEMLEVEL_SHOW"] = ""
+--	L["CONFIG_SETTINGS_ITEMS_ITEMLEVEL_SHOW_TEXT"] = ""
 	L["CONFIG_SETTINGS_ITEMS_BORDER_SHOW_TEXT"] = "bestimmt, ob ein Rahmen um die Gegenst\195\164nde angezeigt wird"
 	L["CONFIG_SETTINGS_ITEMS_BORDER_STYLE_TEXT"] = "bestimmt die Rahmenart f\195\188r Gegenst\195\164nde"
 	L["CONFIG_SETTINGS_ITEMS_BORDER_RARITY"] = "Seltenheit bestimmt Rahmenfarbe"

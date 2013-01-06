@@ -10,7 +10,7 @@ local LSPELL = MOD.LocalSpellNames
 local media = LibStub("LibSharedMedia-3.0")
 local rc = { r = 1, g = 0, b = 0, a = 1 }
 local vc = { r = 1, g = 0, b = 0, a = 0 }
-local gc = { r = 0.5, g = 0.5, b = 0.5, a = 0 }
+local gc = { r = 0.5, g = 0.5, b = 0.5, a = 0.5 }
 local fishSpell = GetSpellInfo(7620)
 local hidden = false
 local detectedBar = { enableBar = true, sorder = 0 }
@@ -42,12 +42,12 @@ MOD.BarGroupTemplate = { -- default bar group settings
 	sor = "A", reverseSort = false, timeSort = true, playerSort = false,
 	configuration = 1, anchor = false, anchorX = 0, anchorY = 0, anchorLastBar = false, anchorRow = false, anchorColumn = true, anchorEmpty = false,
 	growDirection = true, fillBars = false, wrap = 0, wrapDirection = false, snapCenter = false, maxBars = 0,
-	pulseStart = false, pulseEnd = false, flashExpiring = false, flashTime = 5, hide = false, fade = false, delayTime = 5,
+	pulseStart = false, pulseEnd = false, flashExpiring = false, flashTime = 5, hide = false, fade = false, ghost = false, delayTime = 5,
 	bgNormalAlpha = 1, bgCombatAlpha = 1, mouseAlpha = 1, fadeAlpha = 1, testTimers = 10, testStatic = 0, testLoop = false,
 	soundSpellStart = false, soundSpellEnd = false, soundSpellExpire = false, soundAltStart = "None", soundAltEnd = "None", soundAltExpire = "None",
 	labelOffset = 0, labelInset = 0, labelWrap = false, labelCenter = false, labelAlign = "MIDDLE",
 	timeOffset = 0, timeInset = 0, timeAlign = "normal", timeIcon = false, iconOffset = 0, iconInset = 0, iconHide = false, iconAlign = "CENTER",
-	expireTime = 5, expireMinimum = 0, colorExpiring = false, expireMSBT = false, criticalMSBT = false, clockReverse = true, clockEdge = false,
+	expireTime = 5, expireMinimum = 0, colorExpiring = false, expireMSBT = false, criticalMSBT = false, clockReverse = true, -- clockEdge = false,
 	expireColor = false, expireLabelColor = false, expireTimeColor = false, desaturate = false,
 	timelineWidth = 225, timelineHeight = 25, timelineDuration = 300, timelineExp = 3, timelineHide = false, timelineAlternate = true,
 	timelineTexture = "Blizzard", timelineAlpha = 1, timelineColor = false, timelineLabels = false, timelineSplash = true,
@@ -58,7 +58,7 @@ MOD.BarGroupTemplate = { -- default bar group settings
 	detectNPCDebuffs = false, detectVehicleDebuffs = false, detectBoss = false,
 	noHeaders = false, noTargets = false, noLabels = false, targetFirst = false, targetAlpha = 1, replay = false, replayTime = 5,
 	detectCastable = false, detectStealable = false, detectMagicBuffs = false, detectEffectBuffs = false, detectWeaponBuffs = false,
-	detectNPCBuffs = false, detectVehicleBuffs = false, detectOtherBuffs = false, detectBossBuffs = false,
+	detectNPCBuffs = false, detectVehicleBuffs = false, detectOtherBuffs = false, detectBossBuffs = false, detectEnrageBuffs = false,
 	detectCooldowns = false, detectBuffsMonitor = "player", detectBuffsCastBy = "player", detectDebuffsMonitor = "player",
 	detectDebuffsCastBy = "player", detectCooldownsBy = "player", detectTracking = false, detectOnlyTracking = false,
 	detectSpellCooldowns = true, detectTrinketCooldowns = true, detectInternalCooldowns = true, detectSpellEffectCooldowns = true,
@@ -599,7 +599,7 @@ function MOD:UpdateBarGroup(bp)
 		Nest_SetBarGroupAttribute(bg, "isAuto", bp.auto) -- save for tooltip
 		Nest_SetBarGroupAttribute(bg, "attachment", bp.anchor) -- save for tooltip
 		Nest_SetBarGroupAttribute(bg, "clockReverse", bp.clockReverse) -- save for clock animations
-		Nest_SetBarGroupAttribute(bg, "clockEdge", bp.clockEdge) -- save for clock animations
+--		Nest_SetBarGroupAttribute(bg, "clockEdge", bp.clockEdge) -- save for clock animations, removed in 5.0.4 release
 		Nest_SetBarGroupTimeFormat(bg, bp.timeFormat, bp.timeSpaces, bp.timeCase)
 		local sf = "alpha"
 		if bp.sor == "T" then sf = "time" elseif bp.sor == "D" then sf = "duration" elseif bp.sor == "S" then sf = "start" elseif bp.sor == "C" then sf = "class" end
@@ -752,7 +752,7 @@ local function Bar_OnClick(frame, bgName, barName, button)
 		if GameTooltip:GetOwner() == frame then GameTooltip:Hide() end
 		ToggleDropDownMenu(1, nil, MiniMapTrackingDropDown, frame, 0, 0)
 	elseif (button == "RightButton") and (tt == "totem") then
-		DestroyTotem(id) -- destroy the selected totem
+--		DestroyTotem(id) -- destroy the selected totem (this call is now blocked in 5.1)
 	elseif (button == "RightButton") and (tt == "header") then
 		MOD:RemoveTrackers(unit)
 	end
@@ -815,7 +815,7 @@ local function UpdateBar(bp, vbp, bg, b, icon, timeLeft, duration, count, btype,
 		else
 			if bar then Nest_DeleteBar(bg, bar); bar = nil end
 			bar = Nest_CreateBar(bg, barname)
-			if bar then Nest_StartTimer(bar, timeLeft, duration, maxTime) end
+			if bar then Nest_StartTimer(bar, timeLeft, duration, maxTime); if b.ghost then Nest_SetAttribute(bar, "ghostDuration", b.delayTime or 5) end end
 		end
 	elseif bp.showNoDuration or (b.barType == "Notification") or b.enableReady then -- bars without duration
 		if bar and Nest_IsTimer(bar) then Nest_DeleteBar(bg, bar); bar = nil end
@@ -826,22 +826,31 @@ local function UpdateBar(bp, vbp, bg, b, icon, timeLeft, duration, count, btype,
 	end
 	if bar then
 		Nest_SetAttribute(bar, "updated", true) -- for mark/sweep bar deletion
+		Nest_SetAttribute(bar, "ghostTime", nil) -- delete in case was previously a ghost bar
 		Nest_SetLabel(bar, label)
-		Nest_SetIcon(bar, icon)
+		local tex = nil
+		if b.action and MOD.db.global.SpellIcons[b.action] then tex = MOD:GetIcon(b.action) end -- check for override of the icon
+		if tex then Nest_SetIcon(bar, tex) else Nest_SetIcon(bar, icon) end
 		local bc = (vbp.bgColors == "Custom") and vbp.bgColor or c
 		local ibr, ibg, ibb, iba = 1, 1, 1, 1
 		local ic = vbp.iconBorderColor
-		if vbp.iconColors == "Normal" then
+		if vbp.iconColors == "Normal" or (isMine and (vbp.iconColors == "Player")) then
 			ibr, ibg, ibb, iba = c.r, c.g, c.b, c.a
+		elseif not isMine and (vbp.iconColors == "Player") then
+			ibr, ibg, ibb, iba = bc.r, bc.g, bc.b, bc.a
 		elseif (vbp.iconColors == "Debuffs") and (b.barType == "Debuff") then
 			local dc = MOD:GetDebuffColorForBar(vbp, b, btype)
 			if dc then ibr, ibg, ibb, iba = dc.r, dc.g, dc.b, dc.a end
 		elseif (vbp.iconColors == "Custom") and ic then
 			ibr, ibg, ibb, iba = ic.r, ic.g, ic.b, ic.a
+		elseif (vbp.iconColors == "None") then -- default border color only applies when not using Masque
+			local dc = MOD.db.global.DefaultBorderColor
+			if dc then ibr, ibg, ibb = dc.r, dc.g, dc.b end
 		end
 		ibr, ibg, ibb = Nest_AdjustColor(ibr, ibg, ibb, vbp.borderSaturation or 0, vbp.borderBrightness or 0)
 		Nest_SetColors(bar, c.r, c.g, c.b, c.a, bc.r, bc.g, bc.b, bc.a, ibr, ibg, ibb, iba)
 		Nest_SetCount(bar, iconCount) -- set the icon text to this count or blank if nil
+		Nest_SetAttribute(bar, "iconColors", vbp.iconColors) -- required in order to do right thing with "None"
 		Nest_SetAttribute(bar, "class", classSort) -- optional sort string for class sorting
 		Nest_SetAttribute(bar, "isMine", isMine == true) -- optional indication that bar action was cast by player
 		Nest_SetAttribute(bar, "desaturate", vbp.desaturate and not isMine) -- optionally desaturate if not player bar
@@ -990,16 +999,17 @@ local function DetectNewBuffs(unit, n, aura, isBuff, bp, vbp, bg)
 	local isNPC = aura[18]
 	local isVehicle = aura[19]
 	local isBoss = (aura[15] ~= nil)
+	local isEnrage = (aura[4] == "")
 	local isMagic = (aura[4] == "Magic") and not isStealable
 	local isEffect = (tt == "effect")
 	local isWeapon = (tt == "weapon")
 	local isCastable = aura[17] and not isWeapon
-	local isOther = not isStealable and not isCastable and not isNPC and not isVehicle and not isMagic and not isEffect and not isWeapon and not isBoss
+	local isOther = not isStealable and not isCastable and not isNPC and not isVehicle and not isMagic and not isEffect and not isWeapon and not isBoss and not isEnrage
 	local isMine = (aura[6] == "player")
 	local id, gname = aura[20], aura[21] -- these fields are only valid if unit == "all
 	local checkAll = (unit == "all")
 	local checkTypes = not bp.filterBuffTypes or (bp.detectStealable and isStealable) or (bp.detectCastable and isCastable)
-		or (bp.detectNPCBuffs and isNPC) or (bp.detectVehicleBuffs and isVehicle) or (bp.detectBossBuffs and isBoss)
+		or (bp.detectNPCBuffs and isNPC) or (bp.detectVehicleBuffs and isVehicle) or (bp.detectBossBuffs and isBoss) or (bp.detectEnrageBuffs and isEnrage)
 		or (bp.detectMagicBuffs and isMagic) or (bp.detectEffectBuffs and isEffect) or (bp.detectWeaponBuffs and isWeapon) or (bp.detectOtherBuffs and isOther)
 	if ((checkAll and not (bp.noPlayerBuffs and (id == UnitGUID("player"))) and not (bp.noPetBuffs and (id == UnitGUID("pet")))
 			and not (bp.noTargetBuffs and (id == UnitGUID("target"))) and not (bp.noFocusBuffs and (id == UnitGUID("focus")))) or
@@ -1240,6 +1250,7 @@ local function UpdateBarGroupBars(bp, vbp, bg)
 			for _, bar in pairs(bp.bars) do -- iterate over each bar in the bar group
 				if bar.enableBar and (IsOff(bar.hideBar) or (bar.hideBar ~= MOD:CheckCondition(bar.hideCondition))) then
 					local t = bar.barType
+					local found = false
 					if (t == "Buff")  or (t == "Debuff") then
 						local aname, cb, saveLabel, count = bar.action, string.lower(bar.castBy), bar.barLabel, 0
 						local auraList = MOD:CheckAura(bar.monitor, aname, t == "Buff")
@@ -1252,10 +1263,12 @@ local function UpdateBarGroupBars(bp, vbp, bg)
 									if count > 1 then bar.barLabel = bar.barLabel .. " " end -- add space at end to make unique
 									bar.startReady = nil; bar.spellID = aura[14]
 									UpdateBar(bp, vbp, bg, bar, aura[8], aura[2], aura[5], aura[3], aura[4], aura[11], aura[12], bar.monitor, aura[16], isMine)
+									found = true
 								end
 							end
 							bar.barLabel = saveLabel -- restore in case of multiple bar copies
-						elseif bar.enableReady then -- see if need to create a ready bar for spell off cooldown
+						end
+						if not found and bar.enableReady then -- see if need to create a ready bar for spell off cooldown
 							if not bar.readyTime then bar.readyTime = 0 end
 							if bar.readyTime == 0 then bar.startReady = nil end
 							if not bar.startReady or ((GetTime() - bar.startReady) < bar.readyTime) then
@@ -1274,17 +1287,20 @@ local function UpdateBarGroupBars(bp, vbp, bg)
 							if CheckTimeAndDuration(bp, cd[1], cd[4]) then
 								bar.startReady = nil; bar.spellID = cd[8]
 								UpdateBar(bp, vbp, bg, bar, cd[2], cd[1], cd[4], cd[9], nil, cd[5], cd[6], nil, nil, true)
+								found = true
 							end
-						elseif bar.enableReady and (bar.readyNotUsable or IsUsableSpell(aname) or IsUsableItem(aname)) then -- see if need to create a ready bar
+						end
+						if not found and bar.enableReady and (bar.readyNotUsable or IsUsableSpell(aname) or IsUsableItem(aname)) then -- see if need to create a ready bar
 							if not bar.readyTime then bar.readyTime = 0 end
 							if bar.readyTime == 0 then bar.startReady = nil end
 							if not bar.startReady or ((GetTime() - bar.startReady) < bar.readyTime) then
 								if not bar.startReady then bar.startReady = GetTime() end
 								local iname, link, _, _, _, _, _, _, _, icon = GetItemInfo(aname)
+								local _, charges = GetSpellCharges(aname); if charges and charges <= 1 then charges = nil end -- show max charges on ready bar
 								local ttype = "item link"
 								if not iname then ttype = "spell link"; link = MOD:GetHyperlink(aname); icon = MOD:GetIcon(aname) end
 								if not link then ttype = "text"; link = aname end
-								UpdateBar(bp, vbp, bg, bar, icon, 0, 0, nil, nil, ttype, link, nil, nil, true)
+								UpdateBar(bp, vbp, bg, bar, icon, 0, 0, charges, nil, ttype, link, nil, nil, true)
 							end
 						end
 					elseif t == "Notification" then
@@ -1296,6 +1312,38 @@ local function UpdateBarGroupBars(bp, vbp, bg)
 						end
 					end
 				end
+			end
+		end
+	end
+end
+
+-- Look for expired timer bars and update them as ghost bars, if necessary
+local function UpdateGhostBars(bp, bg)
+	local now = GetTime()
+	if not bp.auto then -- if custom bar group then check for individual bar ghost option (overrides bar group option)
+		for _, bar in pairs(Nest_GetBars(bg)) do
+			local ghostDuration = Nest_GetAttribute(bar, "ghostDuration")
+			if ghostDuration and Nest_IsTimer(bar) and not Nest_GetAttribute(bar, "updated") then -- any non-updated timer bar is a candidate for becoming a ghost bar
+				local ghostTime = Nest_GetAttribute(bar, "ghostTime")
+				if not ghostTime then
+					Nest_SetCount(bar, nil) -- looks better if count is cleared
+					ghostTime = now + ghostDuration
+					Nest_SetAttribute(bar, "ghostTime", ghostTime)
+				end
+				if ghostTime and ghostTime >= now then Nest_SetAttribute(bar, "updated", true) end
+			end
+		end
+	end
+	if bp.ghost then
+		for _, bar in pairs(Nest_GetBars(bg)) do
+			if Nest_IsTimer(bar) and not Nest_GetAttribute(bar, "updated") then -- find non-updated timer bars
+				local ghostTime = Nest_GetAttribute(bar, "ghostTime")
+				if not ghostTime then
+					Nest_SetCount(bar, nil) -- looks better if count is cleared
+					ghostTime = now + (bp.delayTime or 5)
+					Nest_SetAttribute(bar, "ghostTime", ghostTime)
+				end
+				if ghostTime and ghostTime >= now then Nest_SetAttribute(bar, "updated", true) end
 			end
 		end
 	end
@@ -1323,6 +1371,7 @@ function MOD:UpdateBars()
 						end
 						Nest_SetBarGroupAlpha(bg, MOD.status.inCombat and bp.bgCombatAlpha or bp.bgNormalAlpha, bp.mouseAlpha)
 					end				
+					UpdateGhostBars(bp, bg) -- create and/or update ghost bars in this bar group
 					UpdateTestBars(bp, bg) -- update any unexpired test bars in this bar group
 					Nest_DeleteBarsWithAttribute(bg, "updated", false) -- then, remove any bars in the group that weren't updated
 				else -- if not then hide any bars that might be around

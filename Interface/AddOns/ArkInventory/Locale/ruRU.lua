@@ -97,6 +97,7 @@ if not L then return end
 --	L["STATUS_NAME_MOUNT"] = ""
 --	L["STATUS_NAME_TOKEN"] = ""
 --	L["STATUS_NAME_TACKLE"] = ""
+--	L["STATUS_NAME_COOKING"] = ""
 	
 	
 --	main menu
@@ -347,6 +348,8 @@ if not L then return end
 	L["CONFIG_SETTINGS_ITEMS_FADE_TEXT"] = "затемнять ли недоступные в данный момент ячейки"
 --	L["CONFIG_SETTINGS_ITEMS_TINT_USABLE"] = ""
 --	L["CONFIG_SETTINGS_ITEMS_TINT_USABLE_TEXT"] = ""
+--	L["CONFIG_SETTINGS_ITEMS_ITEMLEVEL_SHOW"] = ""
+--	L["CONFIG_SETTINGS_ITEMS_ITEMLEVEL_SHOW_TEXT"] = ""
 	L["CONFIG_SETTINGS_ITEMS_BORDER_SHOW_TEXT"] = "отображать ли кромку вокруг каждой ячейки"
 --	L["CONFIG_SETTINGS_ITEMS_BORDER_STYLE_TEXT"] = ""
 	L["CONFIG_SETTINGS_ITEMS_BORDER_RARITY"] = "Кромка в цвет качества"

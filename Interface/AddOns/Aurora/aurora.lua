@@ -39,7 +39,7 @@ C.media = {
 }
 
 C.defaults = {
-	["alpha"] = 0.65,
+	["alpha"] = 0.5,
 	["bags"] = true,
 	["chatBubbles"] = true,
 	["enableFont"] = true,
@@ -50,8 +50,6 @@ C.defaults = {
 	["qualityColour"] = true,
 	["tooltips"] = true,
 }
-
-local DefGradient = {"VERTICAL", 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3}
 
 C.frames = {}
 
@@ -108,7 +106,7 @@ F.CreateGradient = function(f)
 	tex:SetPoint("TOPLEFT")
 	tex:SetPoint("BOTTOMRIGHT")
 	tex:SetTexture(C.media.backdrop)
-	tex:SetGradientAlpha(unpack(DefGradient))
+	tex:SetGradientAlpha("VERTICAL", 0, 0, 0, .3, .35, .35, .35, .35)
 end
 
 F.CreatePulse = function(frame)
@@ -217,7 +215,7 @@ F.ReskinScroll = function(f)
 	tex:SetPoint("TOPLEFT", bu.bg)
 	tex:SetPoint("BOTTOMRIGHT", bu.bg)
 	tex:SetTexture(C.media.backdrop)
-	tex:SetGradientAlpha(unpack(DefGradient))
+	tex:SetGradientAlpha("VERTICAL", 0, 0, 0, .3, .35, .35, .35, .35)
 
 	local up = _G[frame.."ScrollUpButton"]
 	local down = _G[frame.."ScrollDownButton"]
@@ -396,7 +394,7 @@ F.ReskinCheck = function(f)
 	tex:SetPoint("TOPLEFT", 5, -5)
 	tex:SetPoint("BOTTOMRIGHT", -5, 5)
 	tex:SetTexture(C.media.backdrop)
-	tex:SetGradientAlpha(unpack(DefGradient))
+	tex:SetGradientAlpha("VERTICAL", 0, 0, 0, .3, .35, .35, .35, .35)
 
 	local ch = f:GetCheckedTexture()
 	ch:SetDesaturated(true)
@@ -428,7 +426,7 @@ F.ReskinRadio = function(f)
 	tex:SetPoint("TOPLEFT", 4, -4)
 	tex:SetPoint("BOTTOMRIGHT", -4, 4)
 	tex:SetTexture(C.media.backdrop)
-	tex:SetGradientAlpha(unpack(DefGradient))
+	tex:SetGradientAlpha("VERTICAL", 0, 0, 0, .3, .35, .35, .35, .35)
 end
 
 F.ReskinSlider = function(f)
@@ -1352,6 +1350,9 @@ Skin:SetScript("OnEvent", function(self, event, addon)
 		RaidFinderFrameBottomInsetBg:Hide()
 		RaidFinderFrameBtnCornerRight:Hide()
 		RaidFinderFrameButtonBottomBorder:Hide()
+		RaidFinderQueueFrameScrollFrameScrollBackground:Hide()
+		RaidFinderQueueFrameScrollFrameScrollBackgroundTopLeft:Hide()
+		RaidFinderQueueFrameScrollFrameScrollBackgroundBottomRight:Hide()
 
 		for i = 1, LFD_MAX_REWARDS do
 			local button = _G["RaidFinderQueueFrameScrollFrameChildFrameItem"..i]
@@ -1377,6 +1378,7 @@ Skin:SetScript("OnEvent", function(self, event, addon)
 			end
 		end
 
+		F.ReskinScroll(RaidFinderQueueFrameScrollFrameScrollBar)
 
 		-- Scenario finder
 
@@ -1384,6 +1386,9 @@ Skin:SetScript("OnEvent", function(self, event, addon)
 		ScenarioFinderFrame.TopTileStreaks:Hide()
 		ScenarioFinderFrameBtnCornerRight:Hide()
 		ScenarioFinderFrameButtonBottomBorder:Hide()
+		ScenarioQueueFrameRandomScrollFrameScrollBackground:Hide()
+		ScenarioQueueFrameRandomScrollFrameScrollBackgroundTopLeft:Hide()
+		ScenarioQueueFrameRandomScrollFrameScrollBackgroundBottomRight:Hide()
 		ScenarioQueueFrame.Bg:Hide()
 		ScenarioFinderFrameInset:GetRegions():Hide()
 
@@ -1419,6 +1424,7 @@ Skin:SetScript("OnEvent", function(self, event, addon)
 
 		F.Reskin(ScenarioQueueFrameFindGroupButton)
 		F.ReskinDropDown(ScenarioQueueFrameTypeDropDown)
+		F.ReskinScroll(ScenarioQueueFrameRandomScrollFrameScrollBar)
 
 		-- Raid frame (social frame)
 
@@ -2312,7 +2318,7 @@ Skin:SetScript("OnEvent", function(self, event, addon)
 					questLogTitle.tex = questLogTitle:CreateTexture(nil, "BACKGROUND")
 					questLogTitle.tex:SetAllPoints(questLogTitle.bg)
 					questLogTitle.tex:SetTexture(C.media.backdrop)
-					questLogTitle.tex:SetGradientAlpha(unpack(DefGradient))
+					questLogTitle.tex:SetGradientAlpha("VERTICAL", 0, 0, 0, .3, .35, .35, .35, .35)
 
 					questLogTitle.minus = questLogTitle:CreateTexture(nil, "OVERLAY")
 					questLogTitle.minus:SetSize(7, 1)
@@ -4032,7 +4038,7 @@ Skin:SetScript("OnEvent", function(self, event, addon)
 		AuctionProgressBarText:SetPoint("CENTER", 0, 1)
 
 		F.ReskinClose(AuctionProgressFrameCancelButton, "LEFT", AuctionProgressBar, "RIGHT", 4, 0)
-		select(15, AuctionProgressFrameCancelButton:GetRegions()):SetPoint("CENTER", 0, 2)
+		select(14, AuctionProgressFrameCancelButton:GetRegions()):SetPoint("CENTER", 0, 2)
 
 		AuctionFrame:DisableDrawLayer("ARTWORK")
 		AuctionPortraitTexture:Hide()
@@ -4376,7 +4382,7 @@ Skin:SetScript("OnEvent", function(self, event, addon)
 			tex:SetPoint("TOPLEFT", 4, -4)
 			tex:SetPoint("BOTTOMRIGHT", -4, 4)
 			tex:SetTexture(C.media.backdrop)
-			tex:SetGradientAlpha(unpack(DefGradient))
+			tex:SetGradientAlpha("VERTICAL", 0, 0, 0, .3, .35, .35, .35, .35)
 
 			local left = ch:CreateTexture(nil, "BACKGROUND")
 			left:SetWidth(1)
@@ -4721,6 +4727,12 @@ Skin:SetScript("OnEvent", function(self, event, addon)
 					hl:ClearAllPoints()
 					hl:SetPoint("TOPLEFT", 0, -1)
 					hl:SetPoint("BOTTOMRIGHT", -1, 6)
+
+					bu.Selection:ClearAllPoints()
+					bu.Selection:SetPoint("TOPLEFT", 0, -1)
+					bu.Selection:SetPoint("BOTTOMRIGHT", -1, 6)
+					bu.Selection:SetTexture(C.media.backdrop)
+					bu.Selection:SetVertexColor(r, g, b, .1)
 
 					bu.reskinned = true
 				end
@@ -5531,7 +5543,7 @@ Skin:SetScript("OnEvent", function(self, event, addon)
 						tex:SetPoint("TOPLEFT", 5, -5)
 						tex:SetPoint("BOTTOMRIGHT", -5, 5)
 						tex:SetTexture(C.media.backdrop)
-						tex:SetGradientAlpha(unpack(DefGradient))
+						tex:SetGradientAlpha("VERTICAL", 0, 0, 0, .3, .35, .35, .35, .35)
 
 						local left = ch:CreateTexture(nil, "BACKGROUND")
 						left:SetWidth(1)
@@ -6950,7 +6962,7 @@ Skin:SetScript("OnEvent", function(self, event, addon)
 		all.tex = all:CreateTexture(nil, "BACKGROUND")
 		all.tex:SetAllPoints(all.bg)
 		all.tex:SetTexture(C.media.backdrop)
-		all.tex:SetGradientAlpha(unpack(DefGradient))
+		all.tex:SetGradientAlpha("VERTICAL", 0, 0, 0, .3, .35, .35, .35, .35)
 
 		all.minus = all:CreateTexture(nil, "OVERLAY")
 		all.minus:SetSize(7, 1)
@@ -7005,7 +7017,7 @@ Skin:SetScript("OnEvent", function(self, event, addon)
 					skillButton.tex = skillButton:CreateTexture(nil, "BACKGROUND")
 					skillButton.tex:SetAllPoints(skillButton.bg)
 					skillButton.tex:SetTexture(C.media.backdrop)
-					skillButton.tex:SetGradientAlpha(unpack(DefGradient))
+					skillButton.tex:SetGradientAlpha("VERTICAL", 0, 0, 0, .3, .35, .35, .35, .35)
 
 					skillButton.minus = skillButton:CreateTexture(nil, "OVERLAY")
 					skillButton.minus:SetSize(7, 1)
@@ -7271,7 +7283,7 @@ Delay:RegisterEvent("PLAYER_ENTERING_WORLD")
 Delay:SetScript("OnEvent", function()
 	Delay:UnregisterEvent("PLAYER_ENTERING_WORLD")
 
-	if AuroraConfig.tooltips == true and not(IsAddOnLoaded("nibRealUI") or IsAddOnLoaded("CowTip") or IsAddOnLoaded("TipTac") or IsAddOnLoaded("FreebTip") or IsAddOnLoaded("lolTip") or IsAddOnLoaded("StarTip") or IsAddOnLoaded("TipTop")) then
+	if AuroraConfig.tooltips == true and not(IsAddOnLoaded("CowTip") or IsAddOnLoaded("TipTac") or IsAddOnLoaded("FreebTip") or IsAddOnLoaded("lolTip") or IsAddOnLoaded("StarTip") or IsAddOnLoaded("TipTop")) then
 		local tooltips = {
 			"GameTooltip",
 			"ItemRefTooltip",
@@ -7597,6 +7609,8 @@ Delay:SetScript("OnEvent", function()
 				local region = select(i, frame:GetRegions())
 				if region:GetObjectType() == "Texture" then
 					region:SetTexture(nil)
+				elseif region:GetObjectType() == "FontString" then
+					region:SetFont(C.media.font, 13)
 				end
 			end
 

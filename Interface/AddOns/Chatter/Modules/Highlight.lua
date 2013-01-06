@@ -1,5 +1,7 @@
+local addon, private = ...
+local Chatter = LibStub("AceAddon-3.0"):GetAddon(addon)
 local mod = Chatter:NewModule("Highlights", "AceHook-3.0", "AceEvent-3.0", "LibSink-2.0")
-local L = LibStub("AceLocale-3.0"):GetLocale("Chatter")
+local L = LibStub("AceLocale-3.0"):GetLocale(addon)
 mod.modName = L["Highlights"]
 
 local Media = LibStub("LibSharedMedia-3.0")
@@ -130,40 +132,38 @@ function mod:OnEnable()
 	words = self.db.profile.words
 	self:RegisterEvent("CHAT_MSG_SAY", "ParseChat")
 	self:RegisterEvent("CHAT_MSG_GUILD", "ParseChat")
-	self:RegisterEvent("CHAT_MSG_BATTLEGROUND", "ParseChat")
-	self:RegisterEvent("CHAT_MSG_BATTLEGROUND_LEADER", "ParseChat")
 	self:RegisterEvent("CHAT_MSG_OFFICER", "ParseChat")
+	self:RegisterEvent("CHAT_MSG_INSTANCE_CHAT", "ParseChat")
+	self:RegisterEvent("CHAT_MSG_INSTANCE_CHAT_LEADER", "ParseChat")
 	self:RegisterEvent("CHAT_MSG_PARTY", "ParseChat")
 	self:RegisterEvent("CHAT_MSG_PARTY_LEADER", "ParseChat")
-	self:RegisterEvent("CHAT_MSG_RAID_LEADER", "ParseChat")
 	self:RegisterEvent("CHAT_MSG_RAID", "ParseChat")
+	self:RegisterEvent("CHAT_MSG_RAID_LEADER", "ParseChat")
 	self:RegisterEvent("CHAT_MSG_RAID_WARNING", "ParseChat")
-	self:RegisterEvent("CHAT_MSG_SAY", "ParseChat")
 	self:RegisterEvent("CHAT_MSG_WHISPER", "ParseChat")
 	self:RegisterEvent("CHAT_MSG_BN_WHISPER", "ParseChat")
 	self:RegisterEvent("CHAT_MSG_BN_CONVERSATION", "ParseChat")
-	self:RegisterEvent("CHAT_MSG_CHANNEL", "ParseChat")
 	self:RegisterEvent("CHAT_MSG_YELL", "ParseChat")
+	self:RegisterEvent("CHAT_MSG_CHANNEL", "ParseChat")
 	self:RegisterEvent("CHAT_MSG_CHANNEL_NOTICE")
 	self:AddCustomChannels(GetChannelList())
 	self:AddCustomChannels(
-		"YELL", L["Yell"],
-		"GUILD", L["Guild"], 
-		"OFFICER", L["Officer"],
-		"RAID", L["Raid"],
-		"RAID_LEADER", L["Raid Leader"],
-		"PARTY", L["Party"],
-		"PARTY_LEADER", PARTY_LEADER,
-		"RAID_WARNING", L["Raid Warning"],
-		"SAY", L["Say"],
-		"BATTLEGROUND", L["Battleground"],
-		"BATTLEGROUND_LEADER", L["Battleground"],
-		"WHISPER", L["Whisper"],
-		"BN_WHISPER", L["RealID Whisper"],
-		"BN_CONVERSATION", L["RealID Conversation"],
-		"INSTANCE_CHAT", L["Instance"],
-		"INSTANCE_CHAT_LEADER", L["Instance Leader"]
+		"SAY", CHAT_MSG_SAY,
+		"GUILD", CHAT_MSG_GUILD,
+		"OFFICER", CHAT_MSG_OFFICER,
+		"INSTANCE_CHAT", INSTANCE_CHAT,
+		"INSTANCE_CHAT_LEADER", INSTANCE_CHAT_LEADER,
+		"PARTY", CHAT_MSG_PARTY,
+		"PARTY_LEADER", CHAT_MSG_PARTY_LEADER,
+		"RAID", CHAT_MSG_RAID,
+		"RAID_LEADER", CHAT_MSG_RAID_LEADER,
+		"RAID_WARNING", CHAT_MSG_RAID_WARNING,
+		"WHISPER", CHAT_MSG_WHISPER,
+		"BN_WHISPER", CHAT_MSG_BN_WHISPER,
+		"BN_CONVERSATION", CHAT_MSG_BN_CONVERSATION,
+		"YELL", CHAT_MSG_YELL
 	)
+	self.urlcopy = Chatter:GetModule("URL Copy")
 end
 
 function mod:CHAT_MSG_CHANNEL_NOTICE(evt, notice)
@@ -203,6 +203,11 @@ function mod:ParseChat(evt, msg, sender, ...)
 			end
 			msg = new_message or msg
 		end
+	end
+
+	if self.urlcopy and self.urlcopy:IsEnabled() then
+		local match = self.urlcopy.filterFunc(nil, nil, msg)
+		if not match then return end
 	end
 
 	local msg = msg:lower()

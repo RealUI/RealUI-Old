@@ -1,7 +1,8 @@
 -- This file is script-generated and should not be manually edited.
 -- Localizers may copy this file to edit as necessary.
+local addon, private = ...
 local AceLocale = LibStub:GetLibrary("AceLocale-3.0")
-local L = AceLocale:NewLocale("Chatter", "enUS", true)
+local L = AceLocale:NewLocale(addon, "enUS", true)
 if not L then return end
 
 -- ./Chatter.lua

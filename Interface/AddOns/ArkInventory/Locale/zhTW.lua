@@ -97,6 +97,7 @@ if not L then return end
 	L["STATUS_NAME_MOUNT"] = "坐騎"
 --	L["STATUS_NAME_TOKEN"] = ""
 --	L["STATUS_NAME_TACKLE"] = ""
+--	L["STATUS_NAME_COOKING"] = ""
 
 
 --	main menu
@@ -347,6 +348,8 @@ if not L then return end
 	L["CONFIG_SETTINGS_ITEMS_FADE_TEXT"] = "設定是否淡化顯示離線物品"
 	L["CONFIG_SETTINGS_ITEMS_TINT_USABLE"] = "標示可使用物品"
 	L["CONFIG_SETTINGS_ITEMS_TINT_USABLE_TEXT"] = "將可使用物品標示為紅色"
+--	L["CONFIG_SETTINGS_ITEMS_ITEMLEVEL_SHOW"] = ""
+--	L["CONFIG_SETTINGS_ITEMS_ITEMLEVEL_SHOW_TEXT"] = ""
 	L["CONFIG_SETTINGS_ITEMS_BORDER_SHOW_TEXT"] = "設定是否顯示物品邊框"
 	L["CONFIG_SETTINGS_ITEMS_BORDER_STYLE_TEXT"] = "設定物品的邊框樣式"
 	L["CONFIG_SETTINGS_ITEMS_BORDER_RARITY"] = "依品質著色邊框"

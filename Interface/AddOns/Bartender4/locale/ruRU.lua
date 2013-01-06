@@ -22,7 +22,7 @@ L["Bar Style & Layout"] = "Расположение и вид панелей"
 L["Bars unlocked. Move them now and click Lock when you are done."] = "Панели разблокированы. Перемещайте их, и нажмите «заблокировать» по завершении."
 L["Bartender4"] = "Bartender4"
 -- L["Bartender4 only converts the bindings of Bar1 to be directly usable, all other Bars will have to be re-bound to the Bartender4 keys. A direct indicator if your key-bindings are setup correctly is the hotkey display on the buttons. If the key-bindings shows correctly on your button, everything should work fine as well."] = "Bartender4 only converts the bindings of Bar1 to be directly usable, all other Bars will have to be re-bound to the Bartender4 keys. A direct indicator if your key-bindings are setup correctly is the hotkey display on the buttons. If the key-bindings shows correctly on your button, everything should work fine as well."
--- L["Bartender4 was written by Nevcairiel of EU-Antonidas. He will accept cookies as compensation for his hard work!"] = "Bartender4 was written by Nevcairiel of EU-Antonidas. He will accept cookies as compensation for his hard work!"
+L["Bartender4 was written by Nevcairiel of EU-Antonidas. He will accept cookies as compensation for his hard work!"] = "Bartender4 был написан Nevcairiel с сервера EU-Antonidas. Он с радостью принимает печеньки в качестве компенсации за столь трудную работу!" -- Needs review
 L["Blizzard Art"] = "Blizzard Арт"
 L["Blizzard Art Bar"] = "Панели Blizzard Арт"
 L["Blizzard interface"] = "Интерфейс Blizzard"
@@ -138,8 +138,8 @@ L["Horizontal Growth"] = "Рост по горизонтали"
 L["Horizontal growth direction for this bar."] = "Горизонтальное направление роста для данной панели."
 L["Hotkey Mode"] = "Режим горячих клавиш"
 -- L["How do I change the Bartender4 Keybindings then?"] = "How do I change the Bartender4 Keybindings then?"
--- L["I just installed Bartender4, but my keybindings do not show up on the buttons/do not work."] = "I just installed Bartender4, but my keybindings do not show up on the buttons/do not work."
--- L["I've found a bug! Where do I report it?"] = "I've found a bug! Where do I report it?"
+L["I just installed Bartender4, but my keybindings do not show up on the buttons/do not work."] = "Я только что установил аддон Bartender4, но Назначенные клавиши не подписаны на панелях, либо вообще не работают." -- Needs review
+L["I've found a bug! Where do I report it?"] = "Я нашёл баг/проблему. Как мне сообщить об этом разработчикам?" -- Needs review
 L["Key Bindings"] = "Назначение клавиш"
 L["Layout"] = "Размещение"
 L["Left"] = "Влево"
@@ -226,16 +226,19 @@ L["X Offset"] = "Сдвиг по Х"
 L["XP Bar"] = "Полоса опыта"
 L["Y Offset"] = "Сдвиг по Y"
 -- L["You can either click the KeyBound button in the options, or use the |cffffff78/kb|r chat command to open the keyBound control. Alternatively, you can also use the Blizzard Keybinding Interface."] = "You can either click the KeyBound button in the options, or use the |cffffff78/kb|r chat command to open the keyBound control. Alternatively, you can also use the Blizzard Keybinding Interface."
--- L["You can report bugs or give suggestions at the discussion forums at |cffffff78http://forums.wowace.com/showthread.php?t=12513|r or check the project page at |cffffff78http://www.wowace.com/addons/bartender4/|r"] = "You can report bugs or give suggestions at the discussion forums at |cffffff78http://forums.wowace.com/showthread.php?t=12513|r or check the project page at |cffffff78http://www.wowace.com/addons/bartender4/|r"
-L["You can set the bar to be always hidden, if you only wish to access it using key-bindings."] = "Вы можете установить так, чтобы панель былабы всегда скрыта, а доступ к ней получить можно былобы только через назначения клавиш."
+L["You can report bugs or give suggestions at the discussion forums at |cffffff78http://forums.wowace.com/showthread.php?t=12513|r or check the project page at |cffffff78http://www.wowace.com/addons/bartender4/|r"] = [=[Вы можете отправлять ошибки и предложения в ветку форума на:
+|cffffff78http://forums.wowace.com/showthread.php?t=12513|r
+или просмотреть страницу проекта на:
+|cffffff78http://www.wowace.com/addons/bartender4/|r]=] -- Needs review
+L["You can set the bar to be always hidden, if you only wish to access it using key-bindings."] = "Вы можете установить так, чтобы панель была всегда скрыта, а доступ к ней получить можно было бы только через назначения клавиш."
 L[ [=[You can use any macro conditionals in the custom string, using "show" and "hide" as values.
 
-Example: [combat]hide;show]=] ] = [=[Вы можете использовать любое условие в макросе, в строку скрипта, используя значение "show" и "hide".
+Example: [combat]hide;show]=] ] = [=[Вы можете использовать любое условие в макросе, в строке скрипта, используя значение "show" и "hide".
 
 Пример: [combat]hide;show]=]
 L[ [=[You can use any macro conditionals in the custom string, using the number of the bar as target value.
-Example: [form:1]9;0]=] ] = [=[Вы можете использовать любое условие в макросе, в строку скрипта, используя нумерацию панелей в качестве целевого значения.
-Пример: [form:1]9;0]=]
+Example: [form:1]9;0]=] ] = [=[Вы можете использовать любое условие в макросе, в строке скрипта, используя нумерацию панелей в качестве целевого значения.
+Пример: [form:1]9;0]=] -- Needs review
 L["You can use the preset defaults as a starting point for setting up your interface. Just choose your preferences here and click the button below to reset your profile to the preset default. Note that not all defaults show all bars."] = "Вы можете использовать настройки по-умолчанию в качестве отправной точки для настройки Вашего интерфейса. Сделайте здесь свой выбор, щёлкнув по соответствующей клавише, для перехода к состоянию по-умолчанию. Важно: не все панели отображаются при настройках по-умолчанию."
 L["You have to exit the vehicle in order to be able to change the Vehicle UI settings."] = "Вы должны выйти из транспортного средства, чтобы иметь возможность изменить настройки UI транспорта."
 L["Zoom"] = "Увеличение"
