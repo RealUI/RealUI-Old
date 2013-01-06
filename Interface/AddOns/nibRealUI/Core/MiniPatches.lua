@@ -112,7 +112,7 @@ function nibRealUI:MiniPatch(ver)
 				}
 			end
 			if IceCoreRealUIDB["profiles"]["RealUI-HR"]["modules"] then
-				IceCoreRealUIDB["profiles"]["RealUI"]["modules"]["zCT-Mon-RisingSunKick"] = {
+				IceCoreRealUIDB["profiles"]["RealUI-HR"]["modules"]["zCT-Mon-RisingSunKick"] = {
 					["shouldAnimate"] = false,
 					["class"] = "MONK",
 					["lockLowerTextAlpha"] = false,

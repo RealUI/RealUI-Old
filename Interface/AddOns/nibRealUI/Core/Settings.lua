@@ -12,8 +12,8 @@ local nibRealUICharacter_defaults = {
 -- Minipatch list. These get flagged on a PrimaryInstall as not being required.
 local table_MiniPatches = {
 	"73r1",
-	"73r5"
-	"73r6"
+	"73r5",
+	"73r6",
 }
 
 local table_Addons = {
