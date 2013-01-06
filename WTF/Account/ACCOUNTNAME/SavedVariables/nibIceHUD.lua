@@ -3664,7 +3664,7 @@ IceCoreRealUIDB = {
 					["class"] = "SHAMAN",
 				},
 				["BurningEmbersBar"] = {
-					["barVerticalOffset"] = 27,
+					["barVerticalOffset"] = 27.5,
 					["barHorizontalOffset"] = -3,
 					["scale"] = 0.775,
 					["myTagVersion"] = 3,
@@ -3672,7 +3672,7 @@ IceCoreRealUIDB = {
 					["widthModifier"] = -16,
 				},
 				["DemonicFuryBar"] = {
-					["barVerticalOffset"] = 27,
+					["barVerticalOffset"] = 27.5,
 					["widthModifier"] = -16,
 					["forceJustifyText"] = "LEFT",
 					["myTagVersion"] = 3,

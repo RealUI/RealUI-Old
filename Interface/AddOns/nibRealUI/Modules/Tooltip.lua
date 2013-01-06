@@ -2,11 +2,6 @@
 
 local nibRealUI = LibStub("AceAddon-3.0"):GetAddon("nibRealUI")
 local db, ndbc
-local mass
-
-if IsAddOnLoaded("Massive") then
-	mass = LibStub:GetLibrary("Massive")
-end
 
 local MODNAME = "Tooltip"
 local Tooltip = nibRealUI:NewModule(MODNAME, "AceEvent-3.0")
@@ -256,7 +251,7 @@ function Tooltip:SetupBackground()
 
 	for i = 1, #tooltips do
 		local t = _G[tooltips[i]]
-		t:SetBackdrop(nil)
+		t:SetBackdrop({})
 		local bg = CreateFrame("Frame", nil, t)
 		bg:SetPoint("TOPLEFT")
 		bg:SetPoint("BOTTOMRIGHT")

@@ -1,10 +1,5 @@
 local nibRealUI = LibStub("AceAddon-3.0"):GetAddon("nibRealUI")
 local db, ndbc
-local mass
-
-if IsAddOnLoaded("Massive") then
-	mass = LibStub:GetLibrary("Massive")
-end
 
 local _
 local MODNAME = "FrameMover"
@@ -928,20 +923,22 @@ function FrameMover:MoveUIFrames()
 end
 
 -- Hide Party/Raid Frames
+local compactRaid = "1"
 local function FrameMover_RaidFramesCheck()
-	-- if not InCombatLockdown() then 
-		if db.hide.raid.hide then
+	if not InCombatLockdown() then 
+		if db.hide.raid.hide and compactRaid ~= "0" then
 			CompactRaidFrameManager_SetSetting("IsShown","0")
 		else
 			CompactRaidFrameManager_SetSetting("IsShown","1")
 		end
-	-- end
+	end
 end
 
 function FrameMover:HidePartyRaid()
 	if db.hide.raid.hide then
 		if not IsAddOnLoaded("Blizzard_CompactRaidFrames") then
 			LoadAddOn("Blizzard_CompactRaidFrames")
+			compactRaid = CompactRaidFrameManager_GetSetting("IsShown")
 		end
 		FrameMover_RaidFramesCheck()
 	end
