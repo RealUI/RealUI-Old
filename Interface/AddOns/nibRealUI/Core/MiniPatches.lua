@@ -39,8 +39,8 @@ function nibRealUI:MiniPatch(ver)
 		end
 	elseif ver == "73r5" then
 		if IsAddOnLoaded("nibRealUI") and nibRealUIDB then
-			if nibRealUIDB["namespaces"]["FrameMover"]["uiframes"]["achievementalert"] then
-				nibRealUIDB["namespaces"]["FrameMover"]["uiframes"]["achievementalert"]["move"] = false
+			if nibRealUIDB["namespaces"]["FrameMover"]["profiles"]["RealUI"]["uiframes"]["achievementalert"] then
+				nibRealUIDB["namespaces"]["FrameMover"]["profiles"]["RealUI"]["uiframes"]["achievementalert"]["move"] = false
 			end
 		end
 	elseif ver == "73r6" then
