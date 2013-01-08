@@ -1,10 +1,5 @@
 local nibRealUI = LibStub("AceAddon-3.0"):GetAddon("nibRealUI")
 local db
-local mass
-
-if IsAddOnLoaded("Massive") then
-	mass = LibStub:GetLibrary("Massive")
-end
 
 local MODNAME = "GridLayout"
 local GridLayout = nibRealUI:NewModule(MODNAME, "AceEvent-3.0", "AceBucket-3.0")
@@ -55,7 +50,7 @@ local function GetOptions()
 			},
 			desc = {
 				type = "description",
-				name = "Automatic changing of Grid's Layout based on the group/battleground you are in.",
+				name = "Automatic changing of Grid's Layout based on your group's size and location.",
 				fontSize = "medium",
 				order = 20,
 			},
@@ -71,7 +66,7 @@ local function GetOptions()
 			},
 			dps = {
 				type = "group",
-				name = "DPS Layout",
+				name = "DPS/Tank Layout",
 				desc = "Grid Layout settings to apply to the RealUI DPS/Tank Layout.",
 				disabled = function() if nibRealUI:GetModuleEnabled(MODNAME) then return false else return true end end,
 				childGroups = "tab",
@@ -130,35 +125,143 @@ local function GetOptions()
 							},
 						},
 					},
-					bg = {
+					pve = {
 						type = "group",
-						name = "Battlegrounds",
+						name = "PvE",
 						order = 20,
 						args = {
-							note = {
-								type = "description",
-								name = "Automatically adjusts Grid's layout to match the Battleground's team size.",
-								fontSize = "medium",
-								order = 10,
-							},
-							enabled = {
-								type = "toggle",
-								name = "Enabled",
-								desc = "Enable/Disable the automatic adjustment of Grid's Battelground layout to match the Battleground's team size.",
-								get = function() return db.dps.bg.enabled end,
-								set = function(info, value) 
-									db.dps.bg.enabled = value
-									GridLayout:Update()
-								end,
-								order = 20,
-							},
-							settings = {
+							raid = {
 								type = "group",
-								name = "Settings",
+								name = "Raid",
+								inline = true,
+								disabled = function() if db.dps.raid.enabled then return false else return true end end,
+								order = 10,
+								args = {
+									note = {
+										type = "description",
+										name = "Automatically adjusts Grid's layout to match the Raid size.",
+										fontSize = "medium",
+										order = 10,
+									},
+									enabled = {
+										type = "toggle",
+										name = "Enabled",
+										desc = "Enable/Disable the automatic adjustment of Grid's Raid layout to match the Raid size.",
+										get = function() return db.dps.raid.enabled end,
+										set = function(info, value) 
+											db.dps.raid.enabled = value
+											GridLayout:Update()
+										end,
+										order = 20,
+									},
+									maxsize = {
+										type = "select",
+										name = "Max Size",
+										desc = "Largest group size to set Grid to.",
+										get = function(info) 
+											for k_ts,v_ts in pairs(table_GroupSizes) do
+												if v_ts == db.dps.raid.maxsize then return k_ts end
+											end
+										end,
+										set = function(info, value)
+											db.dps.raid.maxsize = table_GroupSizes[value]
+											GridLayout:Update()
+										end,
+										style = "dropdown",
+										width = nil,
+										values = table_GroupSizes,
+										order = 30,
+									},
+									--sep1 = {
+									--	type = "description",
+									--	name = " ",
+									--	order = 35,
+									--},
+									horizontalgroups = {
+										type = "toggle",
+										name = "Horizontal Groups",
+										desc = "Enabled: Use Horizontal Groups while in a Raid. Disabled: Use Vertical Groups while in a Raid.",
+										get = function() return db.dps.raid.horizontalgroups end,
+										set = function(info, value) 
+											db.dps.raid.horizontalgroups = value
+											GridLayout:Update()
+										end,
+										order = 40,
+									},
+									--sep2 = {
+									--	type = "description",
+									--	name = " ",
+									--	order = 45,
+									--},
+									super = {
+										type = "input",
+										name = "40-man Width",
+										desc = "Unit Width for 40-man raids.",
+										width = "half",
+										order = 50,
+										get = function(info) return tostring(db.dps.raid.superwidth) end,
+										set = function(info, value)
+											value = nibRealUI:ValidateOffset(value, 20, 200)
+											db.dps.raid.superwidth = value
+											GridLayout:Update()
+										end,
+									},
+								},
+							},
+							party = {
+								type = "group",
+								name = "Party",
+								order = 20,
+								args = {
+									note = {
+										type = "description",
+										name = "Automatically adjusts Grid's layout based on whether you or your party have pets.\n\n No pets = By Group 5.\n Pets = By Group 5 w/pets.",
+										fontSize = "medium",
+										order = 10,
+									},
+									enabled = {
+										type = "toggle",
+										name = "Enabled",
+										desc = "Enable/Disable the automatic adjustment to Grid's Party layout",
+										get = function() return db.dps.party.enabled end,
+										set = function(info, value) 
+											db.dps.party.enabled = value
+										end,
+										order = 20,
+									},
+								},
+							},
+						},
+					},
+					pvp = {
+						type = "group",
+						name = "Battlegrounds",
+						order = 30,
+						args = {
+							bg = {
+								type = "group",
+								name = "Battlegrounds",
 								inline = true,
 								disabled = function() if db.dps.bg.enabled then return false else return true end end,
-								order = 30,
+								order = 10,
 								args = {
+									note = {
+										type = "description",
+										name = "Automatically adjusts Grid's layout to match the Battleground's team size.",
+										fontSize = "medium",
+										order = 10,
+									},
+									enabled = {
+										type = "toggle",
+										name = "Enabled",
+										desc = "Enable/Disable the automatic adjustment of Grid's Battleground layout to match the Battleground's team size.",
+										get = function() return db.dps.bg.enabled end,
+										set = function(info, value) 
+											db.dps.bg.enabled = value
+											GridLayout:Update()
+										end,
+										order = 20,
+									},
 									maxsize = {
 										type = "select",
 										name = "Max Size",
@@ -175,13 +278,13 @@ local function GetOptions()
 										style = "dropdown",
 										width = nil,
 										values = table_GroupSizes,
-										order = 10,
+										order = 30,
 									},
-									sep1 = {
-										type = "description",
-										name = " ",
-										order = 20,
-									},
+									--sep1 = {
+									--	type = "description",
+									--	name = " ",
+									--	order = 35,
+									--},
 									horizontalgroups = {
 										type = "toggle",
 										name = "Horizontal Groups",
@@ -191,13 +294,13 @@ local function GetOptions()
 											db.dps.bg.horizontalgroups = value
 											GridLayout:Update()
 										end,
-										order = 30,
-									},
-									sep2 = {
-										type = "description",
-										name = " ",
 										order = 40,
 									},
+									--sep2 = {
+									--	type = "description",
+									--	name = " ",
+									--	order = 45,
+									--},
 									super = {
 										type = "input",
 										name = "40-man Width",
@@ -213,51 +316,28 @@ local function GetOptions()
 									},
 								},
 							},
-						},
-					},
-					party = {
-						type = "group",
-						name = "Party",
-						order = 30,
-						args = {
-							note = {
-								type = "description",
-								name = "Automatically adjusts Grid's layout based on whether you or your party have pets.\n\n No pets = By Group 5.\n Pets = By Group 5 w/pets.",
-								fontSize = "medium",
-								order = 10,
-							},
-							enabled = {
-								type = "toggle",
-								name = "Enabled",
-								desc = "Enable/Disable the automatic adjustment to Grid's Party layout",
-								get = function() return db.dps.party.enabled end,
-								set = function(info, value) 
-									db.dps.party.enabled = value
-								end,
+							arena = {
+								type = "group",
+								name = "Arena",
 								order = 20,
-							},
-						},
-					},
-					arena = {
-						type = "group",
-						name = "Arena",
-						order = 40,
-						args = {
-							note = {
-								type = "description",
-								name = "Automatically adjusts Grid's Arena layout based on whether you or your arena team has pets.\n\n No pets = By Group 5.\n Pets = By Group 5 w/pets.",
-								fontSize = "medium",
-								order = 10,
-							},
-							enabled = {
-								type = "toggle",
-								name = "Enabled",
-								desc = "Enable/Disable the automatic adjustment to Grid's Arena layout",
-								get = function() return db.dps.arena.enabled end,
-								set = function(info, value) 
-									db.dps.arena.enabled = value
-								end,
-								order = 20,
+								args = {
+									note = {
+										type = "description",
+										name = "Automatically adjusts Grid's Arena layout based on whether you or your arena team has pets.\n\n No pets = By Group 5.\n Pets = By Group 5 w/pets.",
+										fontSize = "medium",
+										order = 10,
+									},
+									enabled = {
+										type = "toggle",
+										name = "Enabled",
+										desc = "Enable/Disable the automatic adjustment to Grid's Arena layout",
+										get = function() return db.dps.arena.enabled end,
+										set = function(info, value) 
+											db.dps.arena.enabled = value
+										end,
+										order = 20,
+									},
+								},
 							},
 						},
 					},
@@ -324,29 +404,143 @@ local function GetOptions()
 							},
 						},
 					},
-					bg = {
+					pve = {
 						type = "group",
-						name = "Battlegrounds",
+						name = "PvE",
 						order = 20,
 						args = {
-							enabled = {
-								type = "toggle",
-								name = "Enabled",
-								desc = "Automatically adjust Grid Layout to match the Battleground's team size.",
-								get = function() return db.healing.bg.enabled end,
-								set = function(info, value) 
-									db.healing.bg.enabled = value
-									GridLayout:Update()
-								end,
-								order = 10,
-							},
-							settings = {
+							raid = {
 								type = "group",
-								name = "Settings",
+								name = "Raid",
 								inline = true,
-								disabled = function() if db.healing.bg.enabled then return false else return true end end,
+								disabled = function() if db.healing.raid.enabled then return false else return true end end,
+								order = 10,
+								args = {
+									note = {
+										type = "description",
+										name = "Automatically adjusts Grid's layout to match the Raid size.",
+										fontSize = "medium",
+										order = 10,
+									},
+									enabled = {
+										type = "toggle",
+										name = "Enabled",
+										desc = "Enable/Disable the automatic adjustment of Grid's Raid layout to match the Raid size.",
+										get = function() return db.healing.raid.enabled end,
+										set = function(info, value) 
+											db.healing.raid.enabled = value
+											GridLayout:Update()
+										end,
+										order = 20,
+									},
+									maxsize = {
+										type = "select",
+										name = "Max Size",
+										desc = "Largest group size to set Grid to.",
+										get = function(info) 
+											for k_ts,v_ts in pairs(table_GroupSizes) do
+												if v_ts == db.healing.raid.maxsize then return k_ts end
+											end
+										end,
+										set = function(info, value)
+											db.healing.raid.maxsize = table_GroupSizes[value]
+											GridLayout:Update()
+										end,
+										style = "dropdown",
+										width = nil,
+										values = table_GroupSizes,
+										order = 30,
+									},
+									--sep1 = {
+									--	type = "description",
+									--	name = " ",
+									--	order = 35,
+									--},
+									horizontalgroups = {
+										type = "toggle",
+										name = "Horizontal Groups",
+										desc = "Enabled: Use Horizontal Groups while in a Raid. Disabled: Use Vertical Groups while in a Raid.",
+										get = function() return db.healing.raid.horizontalgroups end,
+										set = function(info, value) 
+											db.healing.raid.horizontalgroups = value
+											GridLayout:Update()
+										end,
+										order = 40,
+									},
+									--sep2 = {
+									--	type = "description",
+									--	name = " ",
+									--	order = 45,
+									--},
+									super = {
+										type = "input",
+										name = "40-man Width",
+										desc = "Unit Width for 40-man raids.",
+										width = "half",
+										order = 50,
+										get = function(info) return tostring(db.healing.raid.superwidth) end,
+										set = function(info, value)
+											value = nibRealUI:ValidateOffset(value, 20, 200)
+											db.healing.raid.superwidth = value
+											GridLayout:Update()
+										end,
+									},
+								},
+							},
+							party = {
+								type = "group",
+								name = "Party",
 								order = 20,
 								args = {
+									note = {
+										type = "description",
+										name = "Automatically adjusts Grid's layout based on whether you or your party have pets.\n\n No pets = By Group 5.\n Pets = By Group 5 w/pets.",
+										fontSize = "medium",
+										order = 10,
+									},
+									enabled = {
+										type = "toggle",
+										name = "Enabled",
+										desc = "Enable/Disable the automatic adjustment to Grid's Party layout",
+										get = function() return db.healing.party.enabled end,
+										set = function(info, value) 
+											db.healing.party.enabled = value
+										end,
+										order = 20,
+									},
+								},
+							},
+						},
+					},
+					pvp = {
+						type = "group",
+						name = "Battlegrounds",
+						order = 30,
+						args = {
+							bg = {
+								type = "group",
+								name = "Battlegrounds",
+								inline = true,
+								disabled = function() if db.healing.bg.enabled then return false else return true end end,
+								order = 10,
+								args = {
+									note = {
+										type = "description",
+										name = "Automatically adjusts Grid's layout to match the Battleground's team size.",
+										fontSize = "medium",
+										order = 10,
+									},
+									enabled = {
+										type = "toggle",
+										name = "Enabled",
+										desc = "Enable/Disable the automatic adjustment of Grid's Battleground layout to match the Battleground's team size.",
+										get = function() return db.healing.bg.enabled end,
+										set = function(info, value) 
+											db.healing.bg.enabled = value
+											GridLayout:Update()
+										end,
+										order = 20,
+									},
 									maxsize = {
 										type = "select",
 										name = "Max Size",
@@ -363,13 +557,13 @@ local function GetOptions()
 										style = "dropdown",
 										width = nil,
 										values = table_GroupSizes,
-										order = 10,
+										order = 30,
 									},
-									sep1 = {
-										type = "description",
-										name = " ",
-										order = 20,
-									},
+									--sep1 = {
+									--	type = "description",
+									--	name = " ",
+									--	order = 35,
+									--},
 									horizontalgroups = {
 										type = "toggle",
 										name = "Horizontal Groups",
@@ -379,13 +573,13 @@ local function GetOptions()
 											db.healing.bg.horizontalgroups = value
 											GridLayout:Update()
 										end,
-										order = 30,
-									},
-									sep2 = {
-										type = "description",
-										name = " ",
 										order = 40,
 									},
+									--sep2 = {
+									--	type = "description",
+									--	name = " ",
+									--	order = 45,
+									--},
 									super = {
 										type = "input",
 										name = "40-man Width",
@@ -401,39 +595,28 @@ local function GetOptions()
 									},
 								},
 							},
-						},
-					},
-					party = {
-						type = "group",
-						name = "Party",
-						order = 30,
-						args = {
-							enabled = {
-								type = "toggle",
-								name = "Enabled",
-								desc = "Automatically adjust Grid Layout based on whether you or your party have pets.",
-								get = function() return db.healing.party.enabled end,
-								set = function(info, value) 
-									db.healing.party.enabled = value
-								end,
-								order = 10,
-							},
-						},
-					},
-					arena = {
-						type = "group",
-						name = "Arena",
-						order = 40,
-						args = {
-							enabled = {
-								type = "toggle",
-								name = "Enabled",
-								desc = "Automatically adjust Grid Layout based on whether you or your arena group have pets.",
-								get = function() return db.healing.arena.enabled end,
-								set = function(info, value) 
-									db.healing.arena.enabled = value
-								end,
-								order = 10,
+							arena = {
+								type = "group",
+								name = "Arena",
+								order = 20,
+								args = {
+									note = {
+										type = "description",
+										name = "Automatically adjusts Grid's Arena layout based on whether you or your arena team has pets.\n\n No pets = By Group 5.\n Pets = By Group 5 w/pets.",
+										fontSize = "medium",
+										order = 10,
+									},
+									enabled = {
+										type = "toggle",
+										name = "Enabled",
+										desc = "Enable/Disable the automatic adjustment to Grid's Arena layout",
+										get = function() return db.healing.arena.enabled end,
+										set = function(info, value) 
+											db.healing.arena.enabled = value
+										end,
+										order = 20,
+									},
+								},
 							},
 						},
 					},
@@ -533,7 +716,7 @@ function GridLayout:Update()
 	local NewLayout
 	
 	-- Get Instance type
-	local _, Type = IsInInstance()
+	local _, instanceType, difficultyIndex, _, maxPlayers = GetInstanceInfo()
 	
 	-- Get Map ID
 	if not WorldMapFrame:IsShown() then
@@ -558,8 +741,8 @@ function GridLayout:Update()
 	
 	-- Find new Grid Layout
 	-- Battleground
-	if ( ((Type == "pvp") or InTB or InWG) and LayoutDB.bg.enabled ) then
-		local RaidSize = SizeByMapID[CurMapID] or 40
+	if ( ((instanceType == "pvp") or InTB or InWG) and LayoutDB.bg.enabled ) then
+		local RaidSize = maxPlayers or 40
 		local NewSize = math.min(RaidSize, tonumber(LayoutDB.bg.maxsize))
 		
 		if NewSize == 10 then
@@ -590,7 +773,7 @@ function GridLayout:Update()
 		SetGridFrameWidth(NewWidth)
 		
 	-- 5 man group - Adjust w/pets
-	elseif ( (Type == "arena" and LayoutDB.arena.enabled) or (Type ~= "arena" and (not UnitInRaid("player")) and (GetNumSubgroupMembers() > 0) and LayoutDB.party.enabled) ) then
+	elseif ( (instanceType == "arena" and LayoutDB.arena.enabled) or ((instanceType == "party" or nil) and LayoutDB.party.enabled) ) then
 		local HasPet = UnitExists("pet") or UnitExists("partypet1") or UnitExists("partypet2") or UnitExists("partypet3") or UnitExists("partypet4")
 		if HasPet then 
 			NewLayout = Grid.L["By Group 5 w/Pets"]
@@ -600,11 +783,11 @@ function GridLayout:Update()
 		
 		-- Change Grid Layout
 		local NewHoriz = LayoutDB.standards.layout.horizontalgroups
-		if ( (Type == "arena") and ((NewLayout ~= GLM.db.profile.layouts.arena) or (NewHoriz ~= GLM.db.profile.horizontal)) ) then
+		if ( (instanceType == "arena") and ((NewLayout ~= GLM.db.profile.layouts.arena) or (NewHoriz ~= GLM.db.profile.horizontal)) ) then
 			GLM.db.profile.layouts.arena = NewLayout
 			GLM.db.profile.horizontal = NewHoriz
 			GLM:ReloadLayout()
-		elseif ( (Type ~= "arena") and ((NewLayout ~= GLM.db.profile.layouts.party) or (NewHoriz ~= GLM.db.profile.horizontal)) ) then
+		elseif ( (instanceType == "party" or nil) and ((NewLayout ~= GLM.db.profile.layouts.party) or (NewHoriz ~= GLM.db.profile.horizontal)) ) then
 			GLM.db.profile.layouts.party = NewLayout
 			GLM.db.profile.horizontal = NewHoriz
 			GLM:ReloadLayout()
@@ -612,18 +795,68 @@ function GridLayout:Update()
 		
 		-- Adjust Grid Frame Width
 		SetGridFrameWidth(LayoutDB.standards.width.normal)
-		
-	-- If not BG or not Party/Arena, then set normal values
-	else
-		-- Horizontal Groups
+
+	-- Raid
+	elseif (instanceType == "raid"  and LayoutDB.raid.enabled) then
+		if difficultyIndex == 3 or 5 then
+			NewLayout = Grid.L["By Group 10"]
+		elseif difficultyIndex == 4 or 5 or 7 then
+			NewLayout = Grid.L["By Group 25"]
+		end
+
+		-- Change Grid Layout
 		local NewHoriz = LayoutDB.standards.layout.horizontalgroups
-		if NewHoriz ~= GLM.db.profile.horizontal then
+		if ( (difficultyIndex == 3 or 5) and ((NewLayout ~= GLM.db.profile.layouts.raid_10) or (NewHoriz ~= GLM.db.profile.horizontal)) ) then
+			GLM.db.profile.layouts.raid_10 = NewLayout
+			GLM.db.profile.horizontal = NewHoriz
+			GLM:ReloadLayout()
+		elseif ( (difficultyIndex == 4 or 5 or 7) and ((NewLayout ~= GLM.db.profile.layouts.raid_25) or (NewHoriz ~= GLM.db.profile.horizontal)) ) then
+			GLM.db.profile.layouts.raid_25 = NewLayout
 			GLM.db.profile.horizontal = NewHoriz
 			GLM:ReloadLayout()
 		end
 		
-		-- Frame Width
+		-- Adjust Grid Frame Width
 		SetGridFrameWidth(LayoutDB.standards.width.normal)
+
+		-- If not BG, Arena, Raid or Dungeon, then set normal values
+	else
+		local difficulty = GetRaidDifficulty()
+		local raidSize = GetNumGroupMembers()
+		local newSize = math.min(raidSize, tonumber(LayoutDB.bg.maxsize))
+
+		if newSize > 25 then
+			NewLayout = Grid.L["By Group 40"]
+		elseif newSize > 15 then
+			NewLayout = Grid.L["By Group 25"]
+		elseif newSize > 10 then
+			NewLayout = Grid.L["By Group 15"]
+		elseif newSize > 5 then
+			NewLayout = Grid.L["By Group 10"]
+		else--if newSize <= 5 then
+			NewLayout = Grid.L["By Group 5"]
+		end
+
+		-- Change Grid Layout
+		local NewHoriz = LayoutDB.standards.layout.horizontalgroups
+		if ( (difficulty == 1 or 3) and ((NewLayout ~= GLM.db.profile.layouts.raid_10) or (NewHoriz ~= GLM.db.profile.horizontal)) ) then
+			GLM.db.profile.layouts.raid_10 = NewLayout
+			GLM.db.profile.horizontal = NewHoriz
+			GLM:ReloadLayout()
+		elseif ( (difficulty == 2 or 4) and ((NewLayout ~= GLM.db.profile.layouts.raid_25) or (NewHoriz ~= GLM.db.profile.horizontal)) ) then
+			GLM.db.profile.layouts.raid_25 = NewLayout
+			GLM.db.profile.horizontal = NewHoriz
+			GLM:ReloadLayout()
+		end
+
+		-- Adjust Grid Frame Width
+		local NewWidth
+		if NewLayout == Grid.L["By Group 40"] then
+			NewWidth = LayoutDB.raid.superwidth
+		else
+			NewWidth = LayoutDB.standards.width.normal
+		end
+		SetGridFrameWidth(NewWidth)
 	end
 	
 	-- FrameMover
@@ -646,7 +879,7 @@ function GridLayout:OnInitialize()
 						horizontalgroups = true,
 					},
 				},
-				bg = {
+				raid = {
 					enabled = true,
 					maxsize = "40",
 					horizontalgroups = false,
@@ -654,6 +887,12 @@ function GridLayout:OnInitialize()
 				},
 				party = {
 					enabled = true,
+				},
+				bg = {
+					enabled = true,
+					maxsize = "40",
+					horizontalgroups = false,
+					superwidth = 47,
 				},
 				arena = {
 					enabled = true,
@@ -668,7 +907,7 @@ function GridLayout:OnInitialize()
 						horizontalgroups = false,
 					},
 				},
-				bg = {
+				raid = {
 					enabled = true,
 					maxsize = "40",
 					horizontalgroups = false,
@@ -676,6 +915,12 @@ function GridLayout:OnInitialize()
 				},
 				party = {
 					enabled = true,
+				},
+				bg = {
+					enabled = true,
+					maxsize = "40",
+					horizontalgroups = false,
+					superwidth = 47,
 				},
 				arena = {
 					enabled = true,
