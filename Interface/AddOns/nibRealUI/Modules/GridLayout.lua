@@ -154,6 +154,11 @@ local function GetOptions()
 										end,
 										order = 20,
 									},
+									sep1 = {
+										type = "description",
+										name = " ",
+										order = 25,
+									},
 									maxsize = {
 										type = "select",
 										name = "Max Size",
@@ -172,11 +177,6 @@ local function GetOptions()
 										values = table_GroupSizes,
 										order = 30,
 									},
-									--sep1 = {
-									--	type = "description",
-									--	name = " ",
-									--	order = 35,
-									--},
 									horizontalgroups = {
 										type = "toggle",
 										name = "Horizontal Groups",
@@ -211,6 +211,7 @@ local function GetOptions()
 							party = {
 								type = "group",
 								name = "Party",
+								inline = true,
 								order = 20,
 								args = {
 									note = {
@@ -235,7 +236,7 @@ local function GetOptions()
 					},
 					pvp = {
 						type = "group",
-						name = "Battlegrounds",
+						name = "PvP",
 						order = 30,
 						args = {
 							bg = {
@@ -262,6 +263,11 @@ local function GetOptions()
 										end,
 										order = 20,
 									},
+									sep1 = {
+										type = "description",
+										name = " ",
+										order = 25,
+									},
 									maxsize = {
 										type = "select",
 										name = "Max Size",
@@ -280,11 +286,6 @@ local function GetOptions()
 										values = table_GroupSizes,
 										order = 30,
 									},
-									--sep1 = {
-									--	type = "description",
-									--	name = " ",
-									--	order = 35,
-									--},
 									horizontalgroups = {
 										type = "toggle",
 										name = "Horizontal Groups",
@@ -319,6 +320,7 @@ local function GetOptions()
 							arena = {
 								type = "group",
 								name = "Arena",
+								inline = true,
 								order = 20,
 								args = {
 									note = {
@@ -433,6 +435,11 @@ local function GetOptions()
 										end,
 										order = 20,
 									},
+									sep1 = {
+										type = "description",
+										name = " ",
+										order = 25,
+									},
 									maxsize = {
 										type = "select",
 										name = "Max Size",
@@ -451,11 +458,6 @@ local function GetOptions()
 										values = table_GroupSizes,
 										order = 30,
 									},
-									--sep1 = {
-									--	type = "description",
-									--	name = " ",
-									--	order = 35,
-									--},
 									horizontalgroups = {
 										type = "toggle",
 										name = "Horizontal Groups",
@@ -490,6 +492,7 @@ local function GetOptions()
 							party = {
 								type = "group",
 								name = "Party",
+								inline = true,
 								order = 20,
 								args = {
 									note = {
@@ -514,7 +517,7 @@ local function GetOptions()
 					},
 					pvp = {
 						type = "group",
-						name = "Battlegrounds",
+						name = "PvP",
 						order = 30,
 						args = {
 							bg = {
@@ -541,6 +544,11 @@ local function GetOptions()
 										end,
 										order = 20,
 									},
+									sep1 = {
+										type = "description",
+										name = " ",
+										order = 25,
+									},
 									maxsize = {
 										type = "select",
 										name = "Max Size",
@@ -559,11 +567,6 @@ local function GetOptions()
 										values = table_GroupSizes,
 										order = 30,
 									},
-									--sep1 = {
-									--	type = "description",
-									--	name = " ",
-									--	order = 35,
-									--},
 									horizontalgroups = {
 										type = "toggle",
 										name = "Horizontal Groups",
@@ -598,6 +601,7 @@ local function GetOptions()
 							arena = {
 								type = "group",
 								name = "Arena",
+								inline = true,
 								order = 20,
 								args = {
 									note = {
