@@ -24,6 +24,17 @@ local SizeByMapID = {
 	[736] = 10,		-- BoG
 }
 
+local raidGroupInUse = {
+	group1 = false,
+	group2 = false,
+	group3 = false,
+	group4 = false,
+	group5 = false,
+	group6 = false,
+	group7 = false,
+	group8 = false,
+}
+
 -- Options
 local table_GroupSizes = {
 	"10",
@@ -806,20 +817,22 @@ function GridLayout:Update()
 
 	-- Raid
 	elseif (instanceType == "raid"  and LayoutDB.raid.enabled) then
-		--print("You are in a Raid")
-		if (difficultyIndex == 3 or 5) then
+		--print("You are in a Raid, difficulty: "..difficultyIndex)
+		if difficultyIndex == (3 or 5) then
+			--print("You are in a 10 Man")
 			NewLayout = Grid.L["By Group 10"]
-		elseif (difficultyIndex == 4 or 5 or 7) then
+		elseif difficultyIndex == (4 or 6) or 7 then
+			--print("You are in a 25 Man")
 			NewLayout = Grid.L["By Group 25"]
 		end
 
 		-- Change Grid Layout
 		local NewHoriz = LayoutDB.standards.layout.horizontalgroups
-		if ( (difficultyIndex == 3 or 5) and ((NewLayout ~= GLM.db.profile.layouts.raid_10) or (NewHoriz ~= GLM.db.profile.horizontal)) ) then
+		if difficultyIndex == (3 or 5) and ((NewLayout ~= GLM.db.profile.layouts.raid_10) or (NewHoriz ~= GLM.db.profile.horizontal)) then
 			GLM.db.profile.layouts.raid_10 = NewLayout
 			GLM.db.profile.horizontal = NewHoriz
 			GLM:ReloadLayout()
-		elseif ( (difficultyIndex == 4 or 5 or 7) and ((NewLayout ~= GLM.db.profile.layouts.raid_25) or (NewHoriz ~= GLM.db.profile.horizontal)) ) then
+		elseif difficultyIndex == (4 or 6) or 7 and ((NewLayout ~= GLM.db.profile.layouts.raid_25) or (NewHoriz ~= GLM.db.profile.horizontal)) then
 			GLM.db.profile.layouts.raid_25 = NewLayout
 			GLM.db.profile.horizontal = NewHoriz
 			GLM:ReloadLayout()
@@ -834,17 +847,26 @@ function GridLayout:Update()
 		local difficulty = GetRaidDifficulty()
 		local raidSize = GetNumGroupMembers()
 		local newSize = math.min(raidSize, tonumber(LayoutDB.bg.maxsize))
+		
+		for i = 1, MAX_RAID_MEMBERS do
+			local name, _, subGroup = GetRaidRosterInfo(i)
+			print(tostring(name)..", "..tostring(subGroup))
+			if not UnitInRaid("player") then break end
+			if subGroup then
+				raidGroupInUse["group"..subGroup] = true
+			end
+		end
 
-		if newSize > 25 then
+		if raidGroupInUse[group8] or raidGroupInUse[group7] or raidGroupInUse[group6] then --newSize > 25 then
 			--print("You have more than 25 players in the raid")
 			NewLayout = Grid.L["By Group 40"]
-		elseif newSize > 15 then
+		elseif raidGroupInUse[group5] or raidGroupInUse[group4] then --newSize > 15 then
 			--print("You have more than 15 players in the raid")
 			NewLayout = Grid.L["By Group 25"]
-		elseif newSize > 10 then
+		elseif raidGroupInUse[group3] then --newSize > 10 then
 			--print("You have more than 10 players in the raid")
 			NewLayout = Grid.L["By Group 15"]
-		elseif newSize > 5 then
+		elseif raidGroupInUse[group2] then --newSize > 5 then
 			--print("You have more than 5 players in the raid")
 			NewLayout = Grid.L["By Group 10"]
 		else--if newSize <= 5 then
