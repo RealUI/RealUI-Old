@@ -134,7 +134,6 @@ local function GetOptions()
 								type = "group",
 								name = "Raid",
 								inline = true,
-								disabled = function() if db.dps.raid.enabled then return false else return true end end,
 								order = 10,
 								args = {
 									note = {
@@ -163,6 +162,7 @@ local function GetOptions()
 										type = "select",
 										name = "Max Size",
 										desc = "Largest group size to set Grid to.",
+										disabled = function() if db.dps.raid.enabled then return false else return true end end,
 										get = function(info) 
 											for k_ts,v_ts in pairs(table_GroupSizes) do
 												if v_ts == db.dps.raid.maxsize then return k_ts end
@@ -181,6 +181,7 @@ local function GetOptions()
 										type = "toggle",
 										name = "Horizontal Groups",
 										desc = "Enabled: Use Horizontal Groups while in a Raid. Disabled: Use Vertical Groups while in a Raid.",
+										--disabled = function() if db.dps.raid.enabled then return false else return true end end,
 										get = function() return db.dps.raid.horizontalgroups end,
 										set = function(info, value) 
 											db.dps.raid.horizontalgroups = value
@@ -196,7 +197,8 @@ local function GetOptions()
 									super = {
 										type = "input",
 										name = "40-man Width",
-										desc = "Unit Width for 40-man raids.",
+										desc = "Unit Width for 40-man raids if using vertical groups.",
+										disabled = function() if not db.dps.raid.horizontalgroups then return false else return true end end,
 										width = "half",
 										order = 50,
 										get = function(info) return tostring(db.dps.raid.superwidth) end,
@@ -243,7 +245,7 @@ local function GetOptions()
 								type = "group",
 								name = "Battlegrounds",
 								inline = true,
-								disabled = function() if db.dps.bg.enabled then return false else return true end end,
+								--disabled = function() if db.dps.bg.enabled then return false else return true end end,
 								order = 10,
 								args = {
 									note = {
@@ -415,7 +417,7 @@ local function GetOptions()
 								type = "group",
 								name = "Raid",
 								inline = true,
-								disabled = function() if db.healing.raid.enabled then return false else return true end end,
+								--disabled = function() if db.healing.raid.enabled then return false else return true end end,
 								order = 10,
 								args = {
 									note = {
@@ -524,7 +526,7 @@ local function GetOptions()
 								type = "group",
 								name = "Battlegrounds",
 								inline = true,
-								disabled = function() if db.healing.bg.enabled then return false else return true end end,
+								--disabled = function() if db.healing.bg.enabled then return false else return true end end,
 								order = 10,
 								args = {
 									note = {
@@ -746,6 +748,7 @@ function GridLayout:Update()
 	-- Find new Grid Layout
 	-- Battleground
 	if ( ((instanceType == "pvp") or InTB or InWG) and LayoutDB.bg.enabled ) then
+		print("You are in a Battleground")
 		local RaidSize = maxPlayers or 40
 		local NewSize = math.min(RaidSize, tonumber(LayoutDB.bg.maxsize))
 		
@@ -769,7 +772,7 @@ function GridLayout:Update()
 		
 		-- Adjust Grid Frame Width
 		local NewWidth
-		if NewLayout == Grid.L["By Group 40"] then
+		if NewLayout == Grid.L["By Group 40"] and not LayoutDB.bg.horizontalgroups then
 			NewWidth = LayoutDB.bg.superwidth
 		else
 			NewWidth = LayoutDB.standards.width.normal
@@ -778,6 +781,7 @@ function GridLayout:Update()
 		
 	-- 5 man group - Adjust w/pets
 	elseif ( (instanceType == "arena" and LayoutDB.arena.enabled) or ((instanceType == "party" or nil) and LayoutDB.party.enabled) ) then
+		--print("You are in a Dungeon, Scenario, or Arena")
 		local HasPet = UnitExists("pet") or UnitExists("partypet1") or UnitExists("partypet2") or UnitExists("partypet3") or UnitExists("partypet4")
 		if HasPet then 
 			NewLayout = Grid.L["By Group 5 w/Pets"]
@@ -802,9 +806,10 @@ function GridLayout:Update()
 
 	-- Raid
 	elseif (instanceType == "raid"  and LayoutDB.raid.enabled) then
-		if difficultyIndex == 3 or 5 then
+		--print("You are in a Raid")
+		if (difficultyIndex == 3 or 5) then
 			NewLayout = Grid.L["By Group 10"]
-		elseif difficultyIndex == 4 or 5 or 7 then
+		elseif (difficultyIndex == 4 or 5 or 7) then
 			NewLayout = Grid.L["By Group 25"]
 		end
 
@@ -825,19 +830,25 @@ function GridLayout:Update()
 
 		-- If not BG, Arena, Raid or Dungeon, then set normal values
 	else
+		--print("You are not in an instance")
 		local difficulty = GetRaidDifficulty()
 		local raidSize = GetNumGroupMembers()
 		local newSize = math.min(raidSize, tonumber(LayoutDB.bg.maxsize))
 
 		if newSize > 25 then
+			--print("You have more than 25 players in the raid")
 			NewLayout = Grid.L["By Group 40"]
 		elseif newSize > 15 then
+			--print("You have more than 15 players in the raid")
 			NewLayout = Grid.L["By Group 25"]
 		elseif newSize > 10 then
+			--print("You have more than 10 players in the raid")
 			NewLayout = Grid.L["By Group 15"]
 		elseif newSize > 5 then
+			--print("You have more than 5 players in the raid")
 			NewLayout = Grid.L["By Group 10"]
 		else--if newSize <= 5 then
+			--print("You have 5 or less players in the raid")
 			NewLayout = Grid.L["By Group 5"]
 		end
 
@@ -855,7 +866,7 @@ function GridLayout:Update()
 
 		-- Adjust Grid Frame Width
 		local NewWidth
-		if NewLayout == Grid.L["By Group 40"] then
+		if NewLayout == Grid.L["By Group 40"] and not LayoutDB.raid.horizontalgroups then
 			NewWidth = LayoutDB.raid.superwidth
 		else
 			NewWidth = LayoutDB.standards.width.normal
