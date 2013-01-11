@@ -791,7 +791,7 @@ function GridLayout:Update()
 		
 	-- 5 man group - Adjust w/pets
 	elseif ( (instanceType == "arena" and LayoutDB.arena.enabled) or ((instanceType == "party" or nil) and LayoutDB.party.enabled) ) then
-		print("You are in a Dungeon, Scenario, or Arena")
+		--print("You are in a Dungeon, Scenario, or Arena")
 		local HasPet = UnitExists("pet") or UnitExists("partypet1") or UnitExists("partypet2") or UnitExists("partypet3") or UnitExists("partypet4")
 		if HasPet then 
 			NewLayout = Grid.L["By Group 5 w/Pets"]
@@ -847,29 +847,36 @@ function GridLayout:Update()
 		local raidSize = GetNumGroupMembers()
 		local newSize = math.min(raidSize, tonumber(LayoutDB.bg.maxsize))
 		
+		-- reset the table
+		for k,v in pairs(raidGroupInUse) do
+			raidGroupInUse[k] = false
+		end
+		
+		-- find what groups are in use
 		for i = 1, MAX_RAID_MEMBERS do
 			local name, _, subGroup = GetRaidRosterInfo(i)
 			print(tostring(name)..", "..tostring(subGroup))
-			if not UnitInRaid("player") then break end
 			if name and subGroup then
 				raidGroupInUse["group"..subGroup] = true
+			else
+				break
 			end
 		end
 
-		if (raidGroupInUse[group8] or raidGroupInUse[group7]) or raidGroupInUse[group6] then --newSize > 25 then
-			print("You have more than 25 players in the raid")
+		if (raidGroupInUse.group8 or raidGroupInUse.group7) or raidGroupInUse.group6 then --newSize > 25 then
+			--print("You have more than 25 players in the raid")
 			NewLayout = Grid.L["By Group 40"]
-		elseif (raidGroupInUse[group5] or raidGroupInUse[group4]) then --newSize > 15 then
-			print("You have more than 15 players in the raid")
+		elseif (raidGroupInUse.group5 or raidGroupInUse.group4) then --newSize > 15 then
+			--print("You have more than 15 players in the raid")
 			NewLayout = Grid.L["By Group 25"]
-		elseif raidGroupInUse[group3] then --newSize > 10 then
-			print("You have more than 10 players in the raid")
+		elseif raidGroupInUse.group3 then --newSize > 10 then
+			--print("You have more than 10 players in the raid")
 			NewLayout = Grid.L["By Group 15"]
-		elseif raidGroupInUse[group2] then --newSize > 5 then
-			print("You have more than 5 players in the raid")
+		elseif raidGroupInUse.group2 then --newSize > 5 then
+			--print("You have more than 5 players in the raid")
 			NewLayout = Grid.L["By Group 10"]
 		else--if newSize <= 5 then
-			print("You have 5 or less players in the raid")
+			--print("You have 5 or less players in the raid")
 			NewLayout = Grid.L["By Group 5"]
 		end
 
