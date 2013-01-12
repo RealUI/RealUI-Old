@@ -1,7 +1,7 @@
 ## Interface: 50100
 ## Title: |cffaaaaaanib|rIceHUD |cff7fff7f-Options-|r
 ## Author: Parnic (modified by Nibelheim) (originally created by Iceroth)
-## Version: 7.3 r6
+## Version: 7.3 r7
 ## Notes: Configuration options for nibIceHUD
 ## OptionalDeps: AceGUI-3.0-SharedMediaWidgets
 ## Dependencies: nibIcehUD

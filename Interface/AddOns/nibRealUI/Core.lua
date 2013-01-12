@@ -6,7 +6,7 @@ local db, dbc, dbg
 local nibRealUI_Version = {
 	[1] = 7,
 	[2] = 3,
-	[3] = 6,
+	[3] = 7,
 }
 
 -- Default Options

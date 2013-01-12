@@ -1,6 +1,6 @@
 ## Interface: 50100
 ## Title: Masque: |cffffffffRealUI|r
-## Version: 7.3 r6
+## Version: 7.3 r7
 ## Author: Nibelheim
 ## Notes: RealUI skin for Masque.
 ## Dependencies: Masque
