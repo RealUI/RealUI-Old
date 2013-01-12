@@ -237,7 +237,19 @@
 
 	<Button virtual="true" name="ARKINV_TemplateButtonItem" inherits="ContainerFrameItemButtonTemplate" hidden="true">
 		
-		<NormalTexture name="$parentNormalTexture" urgency="5" file="" />
+		<NormalTexture name="$parentNormalTexture" file="Interface\Buttons\UI-PassiveHighlight" >
+			<Anchors>
+				<Anchor point="TOPLEFT" />
+				<Anchor point="BOTTOMRIGHT" />
+			</Anchors>
+		</NormalTexture>
+		
+		<PushedTexture file="Interface\Buttons\UI-PassiveOverlay" >
+			<Size x="64" y="64" />
+			<Anchors>
+				<Anchor point="CENTER" />
+			</Anchors>
+		</PushedTexture>
 		
 		<Frames>
 			
@@ -425,7 +437,19 @@
 
 	<Button virtual="true" name="ARKINV_TemplateButtonItemTainted" inherits="ContainerFrameItemButtonTemplate" hidden="true">
 		
-		<NormalTexture name="$parentNormalTexture" urgency="5" file="" />
+		<NormalTexture name="$parentNormalTexture" file="Interface\Buttons\UI-PassiveHighlight" >
+			<Anchors>
+				<Anchor point="TOPLEFT" />
+				<Anchor point="BOTTOMRIGHT" />
+			</Anchors>
+		</NormalTexture>
+		
+		<PushedTexture file="Interface\Buttons\UI-PassiveOverlay" >
+			<Size x="64" y="64" />
+			<Anchors>
+				<Anchor point="CENTER" />
+			</Anchors>
+		</PushedTexture>
 		
 		<Layers>
 			<Layer level="OVERLAY">
@@ -567,15 +591,27 @@
 	</Button>
 	
 	<Button virtual="true" name="ArkInventory_ChangerPlayerMainTemplate" inherits="PaperDollItemSlotButtonTemplate">
-	
-		<NormalTexture name="$parentNormalTexture" file="" />
+		
+		<NormalTexture name="$parentNormalTexture" file="Interface\Buttons\UI-PassiveHighlight" >
+			<Anchors>
+				<Anchor point="TOPLEFT" />
+				<Anchor point="BOTTOMRIGHT" />
+			</Anchors>
+		</NormalTexture>
+		
+		<PushedTexture file="Interface\Buttons\UI-PassiveOverlay" >
+			<Size x="64" y="64" />
+			<Anchors>
+				<Anchor point="CENTER" />
+			</Anchors>
+		</PushedTexture>
 		
 		<Frames>
 			<Frame name="$parentArkBorder" inherits="ARKINV_Border" />
 		</Frames>
-	
+		
 		<Scripts>
-
+			
 			<OnLoad>
 				ArkInventory.Frame_Changer_Primary_OnLoad( self )
 			</OnLoad>

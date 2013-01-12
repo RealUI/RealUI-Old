@@ -1,42 +1,45 @@
 
--- GLOBALS: print, tinsert, tremove, strsplit, SetCVar, GetTime, pairs, tonumber, UnitInParty, UnitInRaid, UnitIsInMyGuild, ReportPlayer, ComplainChat, CanComplainChat, BNGetNumFriends, BNGetNumFriendToons, BNGetFriendToonInfo, ChatFrame_OnHyperlinkShow
+-- GLOBALS: BADBOY_NOREPORT, BADBOY_POPUP, BadBoyLog, BNGetFriendInviteInfo, BNGetNumFriends, BNGetNumFriendToons, BNGetFriendToonInfo, BNReportFriendInvite
+-- GLOBALS: CanComplainChat, ChatFrame1, GetTime, print, REPORT_SPAM_CONFIRMATION, ReportPlayer, StaticPopup_Show, StaticPopup_Resize
+-- GLOBALS: strsplit, tonumber, type, UnitInParty, UnitInRaid, UnitIsInMyGuild, ChatHistory_GetAccessID, BNGetNumFriendInvites
 local myDebug = nil
 
-local reportMsg = "BadBoy: >>> |cfffe2ec8|Hbadboy:%s:%d|h[Spam blocked, click to report!]|h|r <<<"
-local throttleMsg = "|cFF33FF99BadBoy|r: Please wait ~4 seconds between reports to prevent being disconnected (Blizzard bug)"
+local reportMsg = "BadBoy: >>> |cfffe2ec8|Hbadboy:%s:%d:%d|h[Spam blocked, click to report!]|h|r <<<"
+local throttleMsg = "|cFF33FF99BadBoy|r: Please wait ~5 seconds between reports to prevent being disconnected (Blizzard bug)"
 local reportBnet = "BadBoy: >>> |cfffe2ec8Battle.net invite blocked from |cffffff00%s|r|r <<<"
 do
 	local L = GetLocale()
 	if L == "frFR" then
-		reportMsg = "BadBoy: >>> |cfffe2ec8|Hbadboy:%s:%d|h[Spam bloqué, cliquez pour signaler !]|h|r <<<"
-		throttleMsg = "|cFF33FF99BadBoy|r: Veuillez patienter ~4 secondes entre les signalements afin d'éviter d'être déconnecté (bug de Blizzard)"
+		reportMsg = "BadBoy: >>> |cfffe2ec8|Hbadboy:%s:%d:%d|h[Spam bloqué, cliquez pour signaler !]|h|r <<<"
+		throttleMsg = "|cFF33FF99BadBoy|r: Veuillez patienter ~5 secondes entre les signalements afin d'éviter d'être déconnecté (bug de Blizzard)"
 		reportBnet = "BadBoy: >>> |cfffe2ec8Battle.net inviter bloqué à partir de |cffffff00%s|r|r <<<"
 	elseif L == "deDE" then
-		reportMsg = "BadBoy: >>> |cfffe2ec8|Hbadboy:%s:%d|h[Spam geblockt, zum Melden klicken!]|h|r <<<"
-		throttleMsg = "|cFF33FF99BadBoy|r: Bitte warte ca. 4 Sekunden zwischen Meldungen um einen Disconnect zu verhindern (Blizzard Bug)"
+		reportMsg = "BadBoy: >>> |cfffe2ec8|Hbadboy:%s:%d:%d|h[Spam geblockt, zum Melden klicken!]|h|r <<<"
+		throttleMsg = "|cFF33FF99BadBoy|r: Bitte warte ca. ~5 Sekunden zwischen Meldungen um einen Disconnect zu verhindern (Blizzard Bug)"
 	elseif L == "zhTW" then
-		reportMsg = "BadBoy: >>> |cfffe2ec8|Hbadboy:%s:%d|h[發出的垃圾訊息已被阻擋, 點擊以舉報 !]|h|r <<<"
-		throttleMsg = "|cFF33FF99BadBoy|r: 請等候~4秒在回報時，為了防止斷線(暴雪的bug)"
+		reportMsg = "BadBoy: >>> |cfffe2ec8|Hbadboy:%s:%d:%d|h[發出的垃圾訊息已被阻擋, 點擊以舉報 !]|h|r <<<"
+		throttleMsg = "|cFF33FF99BadBoy|r: 請等候~5秒在回報時，為了防止斷線(暴雪的bug)"
 	elseif L == "zhCN" then
-		reportMsg = "BadBoy: >>> |cfffe2ec8|Hbadboy:%s:%d|h[垃圾信息已被阻挡，点击举报!]|h|r"
-		throttleMsg = "|cFF33FF99BadBoy|r: 请在举报时等待~4 秒以防断线（暴雪的bug）"
+		reportMsg = "BadBoy: >>> |cfffe2ec8|Hbadboy:%s:%d:%d|h[垃圾信息已被阻挡，点击举报!]|h|r"
+		throttleMsg = "|cFF33FF99BadBoy|r: 请在举报时等待~5 秒以防断线（暴雪的bug）"
 	elseif L == "esES" then
-		reportMsg = "BadBoy: >>> |cfffe2ec8|Hbadboy:%s:%d|h[Spam bloqueado. Clic para informar!]|h|r <<<"
-		throttleMsg = "|cFF33FF99BadBoy|r: Por favor espere ~4 segundos entre los informes para evitar que se desconecte (error de Blizzard)"
+		reportMsg = "BadBoy: >>> |cfffe2ec8|Hbadboy:%s:%d:%d|h[Spam bloqueado. Clic para informar!]|h|r <<<"
+		throttleMsg = "|cFF33FF99BadBoy|r: Por favor espere ~5 segundos entre los informes para evitar que se desconecte (error de Blizzard)"
 	elseif L == "esMX" then
-		reportMsg = "BadBoy: >>> |cfffe2ec8|Hbadboy:%s:%d|h[Spam bloqueado. Clic para informar!]|h|r <<<"
-		throttleMsg = "|cFF33FF99BadBoy|r: Por favor espere ~4 segundos entre los informes para evitar que se desconecte (error de Blizzard)"
+		reportMsg = "BadBoy: >>> |cfffe2ec8|Hbadboy:%s:%d:%d|h[Spam bloqueado. Clic para informar!]|h|r <<<"
+		throttleMsg = "|cFF33FF99BadBoy|r: Por favor espere ~5 segundos entre los informes para evitar que se desconecte (error de Blizzard)"
 	elseif L == "ruRU" then
-		reportMsg = "BadBoy: >>> |cfffe2ec8|Hbadboy:%s:%d|h[Спам заблокирован. Нажмите, чтобы сообщить!]|h|r <<<"
-		throttleMsg = "|cFF33FF99BadBoy|r: Пожалуйста, подождите ~4 секунды между отчетами, чтобы избежать попадания отключен (ошибка Blizzard)"
+		reportMsg = "BadBoy: >>> |cfffe2ec8|Hbadboy:%s:%d:%d|h[Спам заблокирован. Нажмите, чтобы сообщить!]|h|r <<<"
+		throttleMsg = "|cFF33FF99BadBoy|r: Пожалуйста, подождите ~5 секунды между донесениями, чтобы избежать отключения (ошибка Blizzard)"
+		reportBnet = "BadBoy: >>> |cfffe2ec8приглашение Battle.net от |cffffff00%s|r блокировано|r <<<"
 	elseif L == "koKR" then
 
 	elseif L == "ptBR" then
-		reportMsg = "BadBoy: >>> |cfffe2ec8|Hbadboy:%s:%d|h[Spam bloqueado, clique para denunciar!]|h|r <<<"
-		throttleMsg = "|cFF33FF99BadBoy|r: Por favor aguarde ~4 segundos entre denúncias para evitar ser desconectado (erro de Blizzard)"
+		reportMsg = "BadBoy: >>> |cfffe2ec8|Hbadboy:%s:%d:%d|h[Spam bloqueado, clique para denunciar!]|h|r <<<"
+		throttleMsg = "|cFF33FF99BadBoy|r: Por favor aguarde ~5 segundos entre denúncias para evitar ser desconectado (erro de Blizzard)"
 	elseif L == "itIT" then
-		reportMsg = "BadBoy: >>> |cfffe2ec8|Hbadboy:%s:%d|h[Spam bloccata, clic qui per riportare!]|h|r <<<"
-		throttleMsg = "|cFF33FF99BadBoy|r: Prego aspetta 4 secondi tra una segnalazione e l'altra per far si che tu non venga disconnesso (bug della Blizzard)"
+		reportMsg = "BadBoy: >>> |cfffe2ec8|Hbadboy:%s:%d:%d|h[Spam bloccata, clic qui per riportare!]|h|r <<<"
+		throttleMsg = "|cFF33FF99BadBoy|r: Prego aspetta ~5 secondi tra una segnalazione e l'altra per far si che tu non venga disconnesso (bug della Blizzard)"
 	end
 end
 
@@ -96,14 +99,13 @@ local commonList = {
 	"дocтaвкa", --delivery
 	"cкидкa", --discount [russian]
 	"oплaт", --payment [russian]
-	"прoдaжa", --sale [serbian]
+	"пpoдaжa", --sale [serbian]
 	"нaличии", --stock/presence
 	"цeнe", --price [serbian]
 	"пoкупкe", --buy/buying/purchase [russian]
 	"купи", --buy [serbian]
-	"быcтрo", --fast/quickly
+	"быcтpo", --fast/quickly
 	"ищemпocтaвщикoв", --ищем поставщиков --looking for suppliers
-	"[%.,]ru", --really can't risk any more TLDs for 2 points (Heavy Strict) until Blizz implements my requests to reduce FPs, which will probably be never
 }
 
 --These entries add +2 points
@@ -127,21 +129,21 @@ local heavyList = {
 	"%d+[%.,]?%d*usd[fp][oe]r%d+[%.,]?%d*[kg]",
 	"%d+[%.,]?%d*[kg][/\\=]%d+[%.,]?%d*usd",
 	"%d+[%.,]?[o%d]*[kg]%d+bonus[/\\=]%d+[%.,]?[o%d]+",
-	"%d+[%.,]?%d*[кр]+зa%d+[%.,]?%d*[рк]+", --14к за 21р / 17р за 1к
+	"%d+[%.,]?%d*[кp]+зa%d+[%.,]?%d*[pк]+", --14к за 21р / 17р за 1к
 }
 
 --These entries add +2 points, but only 1 entry will count
 local heavyRestrictedList = {
-	"www[%.,●]+",
-	"[%.,●]+c[%.,]*[o0@][%.,]*m",
-	"[%.,●]+net",
+	"www[%.,]",
+	"[%.,]c[%.,]*[o0@][%.,]*m",
+	"[%.,]net",
 	"dotc[o0@]m",
 }
 
 --These entries add +1 point, but only 1 entry will count
 local restrictedIcons = {
 	"{%l%l%d}",
-	"{цр%d}",
+	"{цp%d}",
 	"{star}",
 	"{circle}",
 	"{diamond}",
@@ -196,9 +198,18 @@ local whiteList = {
 	"raid",
 	"roleplay",
 	"apply",
-	"enjin",
-	"guildlaunch",
-	"wowstead",
+	"contender", --Contender's Silk
+	"enjin%.com",
+	"guildlaunch%.com",
+	"corplaunch%.com",
+	"wowstead%.com",
+	"guildportal%.com",
+	"guildomatic%.com",
+	"shivtr%.com",
+	"own3d%.tv",
+	"ustream%.tv",
+	"twitch%.tv",
+	"justin%.tv",
 	"social",
 	"fortunecard",
 	"house",
@@ -218,6 +229,11 @@ local whiteList = {
 	"kilta", --fi
 	"etsii", --fi
 	"sosyal", --tr
+	"дкп", --ru, dkp
+	"peкpут", --ru, recruit
+	"нoвoбpaн", --ru, recruits
+	"лфг", --ru, lfg
+	"peйд", --ru, raid
 }
 
 --Any entry here will instantly report/block
@@ -276,7 +292,8 @@ local instantReportList = {
 	"exchangingrsgold", --Exchanging RS gold for WoW gold. I have 400m PST
 	--WTS level 25 guild with 80k gold for runescape gold
 	"goldforrunescapegold", --Exchanging WoW gold for Runescape gold pst me better price for higher amount.
-	"buying?runescapeg", --buyin runescape g
+	--Buying runescape account! :D Add me on skype "*"
+	"buying?runescape[ag]", --buyin runescape g
 	"wt[bs]runescapeaccount", --WTB runescape accounts ( pure only ) or money! i pay with wow gold. GOT 170k gold atm.
 	"wt[bs]runescapepure", --WTB runescape pure ( STR PURE IS A $$ PAYING EXTRA FOR STR PURE )!
 	--WTB big amount of runescape money. 2mil = 1k gold. ONLY LEGIT PEOPLE.
@@ -286,13 +303,22 @@ local instantReportList = {
 	--WTS awesome rs account with 99's /w me
 	--WTS an awesome rs account /w me details
 	"^wt[bs]a?n?awesomersaccount", --wts awesome rs account /w me
+	"runescapegoldforwowgold", --Selling my runescape gold for wow gold
+
+	--[[  Dota 2 ]]--
+	"^sellingdota2", --Selling 2 Dota2 for wow gold! /W me
+	--wtt dota 2 keys w
+	--wts dota 2beta key 10k
+	"^wt[bst]dota2", --WTB Dota 2 hero/store items,/W me what you have
 
 	--[[  Steam  ]]--
 	"^wtssteamaccount", --WTS Steam account with 31 games (full valve pack+more) /w me with offers
 
 	--[[  League of Legends  ]]--
-	"^wt[bs]lolacco?u?n?t?$", --WTB LoL acc
+	"^wt[bs]lolacc$", --WTB LoL acc
 	"^wt[bs]%d?x?leagueoflegends?account", --WTS 2x League of Legend accounts for 1 price !
+	"^wt[bs]lolaccount", --WTS LOL ACCOUNT LEVEL 30 with 27 SKINS and 14k IP
+	"^sellingloleuw?acc.*info", --Selling LOL EUW acc pm for more info
 
 	--[[  Account Buy/Sell  ]]--
 	"wtsnonemergeacc.*lvl?%d+char", --!WTS none-merge acc(can get a lv80 char)./W me for more info!
@@ -307,8 +333,15 @@ local instantReportList = {
 	"^wttacc?ount.*gear.*char", --WTT Acount Resto/Enha shaman / Resto / Balance druid / Prot warr / Mage / Paladin for just one full cata geared pvp character /w me with info
 	--WTS wow account 85human Rogue with LEGENDARIES + JC BS.  u pay with gold./w me for more info
 	"^wt[st]wowaccount", --WTT Wow account /w me for more info
-	"^wtsaccount.*gametime", --WTS Account with free lvl 80 And GAME  TIME!! /w me
 	"^wt[bs]mopcode", --WTS MoP Code /w me for info
+	"^wttaccountfor.*youget.*tier", --WTT Account for a 90 tier 1 ROGUE, you get 90mage(tier1)90druid (tier1) 85 priest, 85 rogue, 85 warrior /wme
+	--WTS ACCOUNT with 90 rogue, and 90 priest for gold /wme
+	--WTS Account with free lvl 80 And GAME  TIME!! /w me
+	"^wt[st]accountwith", --WTT ACCOUNT with 90 mage(TIER1) 90 Feral (TIER1) 85 priest, 85 warrior, 85 rogue for 90 ROGUE with TIER 1/wme
+
+	--[[  Brazzers, yes, really...  ]]--
+	"sell.*brazzersaccount.*info", --Hey there! I'm here to sell you Brazzers account /w me for more info!
+	"^wtsbrazzersaccount", --WTS BRAZZERS ACCOUNT UNLIMITED TIME /W OFFER
 
 	--[[  Diablo 3  ]]--
 	"^wttrade%d+kgold.*diablo", --WT trade 6k gol;d for 300k in diablo 3. /w me
@@ -330,6 +363,19 @@ local instantReportList = {
 	--WTB Diablo 3 key cheap
 	--WTB Diablo3 Gold for WoW Gold! /w me D3Gold per WoWGold!
 	"^wt[bs]diablo3", --WTB Diablo 3 Gold!
+	--WTB WOW GOLDS WITH D3 GOLDS ASAP
+	"^wt[bst]wowgold.*d3gold", --WTT Wow Gold For D3 Gold! /w me with your price!
+	--{rt1}{rt1}{rt1}WTT my WoW gold for your D3 gold. EU softcore. MSG.
+	"wowgoldfory?o?u?r?d3gold", --T> My WoW gold for D3 gold
+	--T> My WoW gold for Diablo 3 gold
+	--Trading My WoW gold for Diablo 3 gold
+	"wowgold.*fordiablo3?gold", --T> My WoW gold (15,000g) for Diablo 3 gold
+	"tradediablo3?gold.*wowgold", --LF someone that wants to trade diablo 3 gold for my wow gold
+	"^wt[bs]diablogold", --wtb diablo gold for wow gold!
+	"trading.*fordiablo3?gold", --TRADING LVL 25 GUILD FOR DIABLO GOLD!!!!!!!!!!!!!
+	"diablogoldforwowgold", --WTT my diablo gold for wow gold
+	"d3golds?forwowgold", --WTB d3 golds for wow golds !
+	"^wtt.*mygold.*diablo3gold", --WTT all my gold, 8783g for about 30m Diablo 3 gold, any takers?
 
 	--[[  Illegal Items ]]--
 	"%[.*%].*%[.*%].*facebook.com/buyboe", --Win Free[Volcano][Spire of Scarlet Pain][Obsidium Cleaver]from a simple contest, go www.facebook.com/buyboe now!
@@ -339,7 +385,6 @@ local instantReportList = {
 	"pets.*mount.*gametimecard", --wts 6pets .mounts .rocket. gametimecard .Change camp. variable race. turn area. change a name. ^_^!
 	"wts.*gametime.*mount.*pet", --WTS Prepaid gametime code 8k per month. the mount [Winged Guardian]'[Celestial Steed] 15K each and the pets 6k each, if u are interested,PST
 	"wts.*monthgametime.*%d+k", --WTS 1 Month Gametime 10k. 3 Month Gameitme 25k. 6 Month Gametime 40k
-	"wts.*gamet?i?m?e?card.*gold", --wts 60days gamecard for gold /w for more info.
 	--[Winged Guardian] 25k  [Heart of the Aspects]25k  [Celestial Steed]20k and prepaid gametimecard
 	"%[.*%].*%[.*%].*gamet?i?m?e?card", --wts [Heart of the Aspects]25k [Winged Guardian]25k and prepaid gametimecard
 	--WTS [Heart of the Aspects]25K [Winged Guardian]25K [Celestial Steed]20K AND prepaid gametimecard
@@ -356,7 +401,8 @@ local instantReportList = {
 	--WTS [X-53 Touring Rocket], the only 2seats flying mount, PST
 	"wts.*touringrocket.*mount", --!!!!!! WTS*X-53 TOURING ROCKET Mount(2seats)for 10000G (RAF things), you also can get a free month game time,PST me !!!
 	"^wts.*x53touringrocket", --WTS[Celestial Steed],[X-53 Touring Rocket],Race,Xfer 15K,TimeCard 6K,[Cenarion Hatchling]*Rag*KT*XT*Moonk*Panda 5K
-	"wts.*g[o0][1l]d.*tcgmounts.*tabard", --WTS gO1d and TCG mounts and Tabard of the Lightbringer and maig rooster egg^^/w me:)
+	--{rt1}WTS TCG mount and g01d {rt6}. {Reins of the Swift Spectral Tiger} {Reins of the Spectral Tiger} Tabard of the Lightbringer {Magic Rooster Egg} {rt6}lvl80 char . if you wanna get a lv80 char in 30mins /w me for more info{rt6}
+	"wts.*g[o0][1l]d.*tabard.*rooster", --WTS gO1d and TCG mounts and Tabard of the Lightbringer and maig rooster egg^^/w me:)
 	"sell.*rocket.*pet.*gametimecard", --sell  [X-53 Touring Rocket] &2mounts,6pets,gametimecard,CATA/WLK CD-key
 	--WTS[Bladeshatter Treads][Splinterfoot Sandals][Rooftop Griptoes]&all 397 epic boot on <g2500 dot com>.
 	"wts.*%[.*%].*g2500.*com", --WTS[Foundations of Courage][Leggings of Nature's Champion]Search for more wow items on <g2500 dot com>. With discount code G2500OKYO5097 to order now.
@@ -378,40 +424,170 @@ local instantReportList = {
 	"wts.*%[.*%].*powerle?ve?l.*chea", --wts [Reins of the Swift Spectral Tiger] [Reins of the Spectral Tiger] [Wooly White Rhino],and g ,powerlvling ,chea
 	"selling%d+.*prepaidtimecard", --selling 60 day prepaid time card /w me for the price
 	"need.*gametime.*rocket.*info", --Does someone need WoW Gametime & X53 Rocket's Mount  /w me for more info
+	--WTS 60days game time card very checp
+	--wts  180days gametime card  {rt1} {rt2}\ cheaps\
+	--wts  90days gametime code  {rt2}{rt2}{rt2}
+	"^wts%d+days?gametime", --wts 60 days gametime cde. and more stuff from blizzstore
+	--wts 60days gamecard for gold /w for more info.
 	"^wts%d+days?gamecard", --wts 60 days game card /w me
 	"wts.*steed.*prepaidgame", --WTS [Winged Guardian]25K [Heart of the Aspects]25K [Celestial Steed]20K prepaid game
 	"gamecard.*gold.*money.*info", -- I am offer Game Card for gold or money, for more info /w me
-	"^wtsgametimesubsc", --WTS Gametime-Subscribtion /w me
 	--WTB Game Time CODE Buy gold
 	--WTS Game time/Diablo and Unmarged accounts for gold!
 	"wt[bs].*gametime.*gold", --WTB 1 Month Game Time CODE Buy gold
-	"^wt[bs]gametime.*/w", --WTS G A M E T I M E /W
 	"steed.*gc%d+day.*sale", --WTS [Winged Guardian] [Heart of the Aspects] [Celestial Steed]Each 15k gc90days=25KPet sales
-	"wts.*mount.*gametimecard", --WTS Mounts[Heart of the Aspects] and Pets/ GameTimecard
+	--WTS BLIZZ MOUNTS PETS GAMERTIME OR ANY CODES FOR GOLD
+	"wts.*mount.*gamer?time", --WTS Mounts[Heart of the Aspects] and Pets/ GameTimecard
 	"mount.*account.*sell.*discount", --Get every single rare mount on your own account now! (including incredibly rare & unobtainables) Also selling all PvP achievies: Gladiator, Hero of Ally, 2200/2400 arenas/RBGs and more! Great discounts for MoP preorders! Message me! Skype: Baddieisboss
 	"raiditems.*buy.*email.*price.*wowpve%.c", --{rt1}{rt1}T{rt1}{rt1}S raid items ，397/410/416 token ，achive dragon (ICC,ULD,CATA,FL),416 weapons and so on.If u want to buy,our team will carry u to the instance to get it. U can email me anytime,I will give u a price. [wowpve.com]
+	--WTS cheap gold /w me for more info ( no chineese website etc...)
+	"^wtscheapgold", --WTS cheap gold /w me for more info
+	"^wtscheapandfastgold", --WTS cheap and fast gold ( no chineese website) /w me for more info
+	"^wtbgold.*gametime", --WTB GOLD, OR TRADE GOLD FOR GAMETIME!!
+	"honorbuddy.*bot.*gold.*skype", --WTS 1 sessions and 3 sessions of HONORBUDDY (WoW bot) For golds....It rly good way to earn golds,if you are interested contact me on skype : Stimar12
+	--WTS G A M E T I M E /W
+	--WTS {rt1} GAMETIME {rt1}
+	--WTS gametime card 60days Very cheap
+	--WTS Gametime-Subscribtion /w me
+	"^wt[bs]gametime", --WTS {rt1} GAMETIME {rt1} {rt8} MoP Upgrade{rt8}
+	--Wts gamecard 60days very cheap
+	"^wt[bs]gamecard", --WTB GAME CARD
+	"^wt[bs]%d+month.*gametime", --WTS 2 Month(60Days) Gametime-Cards w/ me ! {rt1}
+	"month.*gametime.*cdkey", --WTS 1 MONTH RAF - 2 MONTHS GAME TIME - MOP CD KEY - CATA CD KEY. WISP ME FOR MORE INFO
+	"sell.*gameca?rd.*month.*whisp", --Selling GameC*rd - 2 months! Whisper for skype and Price
+	"sell.*gamecard.*day.*whisp", --Greetings! Currently im selling two different kinds of gamecards! {star} The one with 30 days! And the other one with 60 days! Don't be shy to /whisper me! {skull}
+	"^wts.*blizzstoremount.*%d+k", --WTS Any of the Blizz Store mounts 20k
+	"rafmount.*gametime.*char", --{rt1}{rt6}WTS RAF mount(Heart of the Nightwing) for 16k ^^ {rt1} Game time for 60k/60days {rt1}{rt6}WTS lvl80 char all class in 30mins!!{rt1} etc{rt1}{rt6}}Whisper skype :nan072487
+	"rafmount.*mopkey.*g[o0]ld.*char", --{rt1}WTS RAF mount(Heart of the Nightwing) and MOP KEY{rt6}lvl80 char for g0ld,if you wanna get a  lv80 char in 30mins /w me for more info{rt6}
+	"looking.*ebay.*sale.*skype", --Looking for someone that has LOADS of EBAY Experienced! )Come and earn 20% of your Sale Products! )Skype = Donz.Gold (dot between the donz.gold) ADD SKYPE
+	--WTS: MoP cd keys (cheap) ! and faction change, tranfer, [GC.!] / skype : atmetheskill
+	--{rt8} WTB MoP Cd key {rt8}
+	"^wt[bs]mopc?d?key", --{rt1} WTS MoP Key 1x /w me {rt1}
+	"wtsrafmount.*nightwing", --wts  raf mount   [Heart of the Nightwing] w/m
+	"^selling%d+.*gamecard", --Selling 60time gamecard!
+	"%d+day.*gametimecard.*cheap", --{diamond} {diamond} {diamond} {diamond} WTS TWO last 180 days game time card, cheaper! {diamond} {diamond} {diamond} {diamond}
+	"^wts.*website.*paypal.*deliver", --WTS Custom Guild Website + 12 months of maintenance + hosting + seo ($100 paypal of 100kg in game) (1-3 days to deliver custom guild website)
+	"^wts.*prepaid.*wowingamecurrency", --WTS Rchange/Transfer/Prepaid for WoW ingame currency! {rt4}
+	"^wts.*tiger.*rooster.*timecard", --WTS  [Reins of the Swift Spectral Tiger]240k[Magic Rooster Egg]120k and Prepaid Timecard,Panda [MOP.Faction] change and Race change Pst.
+
+	--[[  RBG  ]]--
+	"boost.*rating.*wowbooster666", --{rt8}WTS RBG Boost! We boosts any rating 2.2, 2.4, 2.7(HERO), 3k and more! Cap games also! Quickly, efficiently, safely! Test game included.{rt8} Details on skype {rt1}wowbooster666{rt1}
+	--{rt8} Get your RBG rating fast and safe! 2200|2400|HERO. No account sharing. 3850+ conquest points per week. Mount, 16+ achievements and 14 titles. Access to elite gear & T2 weap. We have website and business PayPal! Skype - Deni1189 {rt8}
+	--{rt8} Get your RBG rating fast and safe! 2200|2400|HERO. No account sharing. 3850+ conquest points per week. Mount, 16+ achievements and 14 titles. Access to elite gear & T2 weap. We have website and business PayPal! Skype - Chris.Jenkins60 {rt8}
+	--{rt8} Get your RBG rating fast and safe! 2200|2400|HERO. No account sharing. 3300 conquest points per week. Mount, 16+ achivements and 14 titles. Access to elite gear. We have website and business paypal! Skype - mark.addington23 {rt8}
+	--{rt8} Get your RBG rating fast and safe! 2200|2400|HERO. No account sharing. 3850 conquest points per week. Mount, 16+ achievements and 14 titles. Access to elite gear and t2 weapon. Get your rating today! Skype - john.saunder {rt8}
+	"rbgrating.*hero.*account.*gear.*skype", --{rt8} Get your RBG rating fast and safe! 2200|2400|HERO. No account sharing. 3300 conquest points per week. Mount, 16+ achivements and 14 titles. Access to elite gear. We have website and business paypal! Skype - john.saunder {rt8}
+	--{rt1} Get your Rated BG rating today! We can boost you really fast rating to 2.2k/2.4k/2.6k(depends on your wish).No account sharing,you play your character,so its 100% legally. You will get for sure best Elite PVP Gear+extended CP cap!1 game free. /w
+	--{rt1}Get your Rated BG rating boosted up to 2.2k|2.4k|2.6k fast and for near to nothing. No account sharing, you play your character, so its 100% legit.  You get extended Conquest Points cap, best PvP gear, and other benefits.trial games!Pm me
+	"rating.*fast.*account.*playyour", --{rt2} Get your RBG rating fast and safe! 2200/2400/Hero/CP Cap! No account sharing, you play your character, so its 100% legit. We have website and business paypal! /w me for information to join your rbg boost today. Autumn discount!!! {rt2}
+	"account.*playyour.*legit.*paypal", --{rt2} RBG BOOST! 2200/2400/Hero/CP CAP! No account sharing, you play your character, so its 100% legit. We have website and business paypal! /w me for information to join your rbg boost today. Autumn discount!!! {rt2}
+	"sale.*mount.*wowpvpcarry", --Gladiator, 2200/2400/2700 Arena & RBG, Hero of the Horde, Malevolent Gladiator (rank 1!), and much more for sale! Also selling rare & unobtainable mounts/titles (including scarab lord)! Skype: wowpvpcarry
+	"rating.*mount.*baddieisboss", --Are you interested in becoming a Gladiator or achieving 2400 rating in RBGs/Arenas? How about being one of the first to get full elite gear this season? What about getting rare & unobtainable mounts? Message me for more info! Skype: Baddieisboss
+	"boost.*account.*nucleear1986", --RBG BOOST (1 day) in MoP started!Get 2.2/2.4/HERO!NO share acc! We're 1 in world do not take account!Cap 3200+ every week.Access to Elite gear!All legally! 1 Test game!Website - 100% guarantees!Cheapest & Fastest service!Skype: nucleear1986_26
+	"boost.*rating.*legal.*price", --{rt8} WTS RBG [BOOST.Any]rating:2200,2400,Hero. Absolutely legal - you play yourself, no account sharing. Best prices in Europe. Boost's provided in a very short space of [time.Be]the first to obtain great titles and elite gear!
+	--{rt1}RBG help! Get 2.2/2.4/HERO/CAP only in few hours!NO share acc! We're 1 in world do not take account!Cap 3800+ every week.21 rbg achievs. Access to Elite gear!All legally! 1 Test game!Website - 100% guarantees! For more info /w me
+	"rbg.*share.*account.*legal", --{rt1}RBG BOOST help! Get 2.2/2.4/HERO/CAP only in few hours!NO share acc! We're 1 in world do not take account!Cap 3800+ every week.21 rbg achievs. Access to Elite gear!All legally! 1 Test game!Website - 100% guarantees!Cheapest & Fastest service! /w
+	"boost.*cheap.*rbgmarko", --{rt1} Best RBG boosting service!{rt1} 2200|2400|HERO. 2950-3300 conquest point per week + access to elite gear, 16+ achievments | 14 titles. Fast and secure boost,no account sharing with cheapest prices! {rt1} Skype: RBGmarko {rt1}
+	"boost.*discount.*unkwn", --{rt8}WTS RBG Boost! Easily 0-2.2, 2.4, 2.65. Be the best with T2 weapon+ elite gear. Fast, SAFE. You play urself. PRIVATE games only. Pm for info. Test game included.{rt8}Autumn Discounts!{rt1}We have Proofs!{rt1}Skype: Unkwn-
+	"rating.*gear.*rgboost", --Get the RBG rating you need! 2200|2400|HERO. 2950-3300 conquest point per week, access to elite gear,16+ achievments and 14 titles. Do easy and safe and fair, no account sharing. Hurry to catch Test and discount! Skype: RGBoost
+	"guild.*rbg.*gear.*fast.*playyour", --{rt1}Pvp guild will help you with rbg achivements and t2 gear. All is fast and confidence. You play [yourself.For]more info pm me{rt1}
+	"rbg.*account.*playyour.*legit", --{rt1}New pvp Guild will help you with RBG. No account sharing, you play your character, so its 100% legit. 2.2\2.4\2.6k{rt1}
+	"rbg.*playyour.*account.*legit", --{star} new pvp guild <all stars>. we are helping with rbg. you play yourself, without account sharing. 100% legit, you can see it yourself. 3800+ cp per week. helping with 2200/2400/hero. access to t2 weapons and more. wisp me for more information. /w
+	"cheap.*arenaboost.*rating.*discount.*service", --{rt1} *now providing the cheapest Arena boosting*, Boosting all from 0-2,700 rating, example: 1,5-2k rating, EVERYTHING, NOW 20% DISCOUNT FOR ALL HEALERS, The Boosting Service is atm Available for all classes! {rt1}
+	--{star} new pvp guild {star}get your rbg{star} will help you with 2200||2400||hero. 3850 cp a week, access to elite gear and t2 weapon. get your rating today! {star} /w me for more information! {star}
+	"rbg.*help.*%d%d%d%d.*elitegear.*rating", --{skull} new guild <get your rbg rate>.we are helping with 2200||2400||hero.you play yourself in our group!3850 cp a week,mount,16+achievements and 14 titles. access to elite gear and t2 weapon.get your rating today!wisp me for more information! {skull}
+	--RBG Help. {rt6} 2200 - 2400 - 2650, CAP {rt6}. Fast and safe. The best prices in Europe. No sharing account. 17 Titles, 3850+ conquest points per week. Access Elite Gear & T2 weap. Bussines PayPal. Skype: Skelet8888
+	"rbghelp.*account.*paypal", --RGB Help. {square} 2200 - 2400 - 2600, CAP {square}. Fast and safe. The lowest prices in Europe. No sharing Account. You play yourself. Bussines PayPal. 100% legally. Skype: Romaboost
+	"boost.*legit.*lemonlee9", --WTS:{rt3}{rt3}{rt3}RBG/ Arena Master BOOST!2200/2400/Hero/CP CAP!Get your RBG/Arena boost today with extended CP cap! Most legit RBG boosting! Fast and safe! We have a website {rt3}{rt3} skype me:lemonlee9 or QQ:249202110 {rt1} for m
+	--{star}rbg assist{star} our guild will help to get 2200||2400||hero. 3850+ cp per week, access to elite gear, t2 weapon, all achievements and titles, everything you wished. {star}for more info /w to me {star}
+	"rbgassist.*2200.*gear.*achiev.*info", --{rt1}RBG Assist{rt1} help in gaining 2200|2400|HERO. 3850+ CP per week, access to elite gear, t2 weapon, 16+ achievements and 14 titles, everything you've ever dreamed. Fast, secure, and without account sharing. {rt1}For more info /w to me {rt1}
+	"^wts%dv%dboost.*weapon.*gear.*rbg", --WTS 3v3 BOOST to 2200 to ALL CLASSES, GET your tier 2 weapons + elite gear, also selling RBG BOOSTS to SHAMANS
+	--{rt1}{rt1}{rt1}WTS: WOW & D3 Gold {rt1}{rt1}2200/2400/2700 RBG {rt1}{rt1}Achievement/Level Powerlvling{rt1}{rt1}Challenge Mode--Gold{rt1}{rt1}{rt1}paragon lvling on diablo3 {rt1} {rt1} {rt1}
+	"rbg.*powerle?ve?l.*gold.*diablo", --{rt1}{rt1}{rt1}WTS 2200/2400/2700 RBG Rating, finish in 8 hours{rt1}{rt1}Achievement Powerlvling{rt1}{rt1}Challenge Mode--Gold{rt1}{rt1}{rt1}paragon lvling on diablo3  {rt1} {rt1} {rt1}
+	"interest.*conquest.*gear.*mount.*detail", --{rt8} Are you interesting in becoming *?Do you want to have big conquest cap and access to elite gear? How about being one of the first to get full elite gear this season?What about getting rare mounts? Message me for details! {rt8}
+	"rating.*account.*character.*paypal", --Get ur rbg rating boosted up to  2200 2400 2600+  , no account sharing.u play ur character,so its 100% safe. we have website and business paypal!
+	"rbg.*mount.*discount.*skype", --WTS:{rt5}{rt1}{rt5}RBG2650/2400/2200---75/150/300wins Achievement+mounts!{rt5}{rt1}{rt5}Gold Challenge Conqueror{rt1}{rt5}{rt1}DISCOUNT on skype: Jasminelingling1{rt5}{rt1}{rt5}QQ:1046224892
+	"sellingboost.*account.*elitegear.*cheap", --SELLING BOOST TO 2.2, 2.4k & HERO! NO ACCOUNT SHARING - GET YOUR ELITE GEAR TODAY!-  - VERY FAST GAMES & CHEAP!! CAN BOOST WHENEVER YOU GOT TIME!
+	"rbgboost.*account.*legit.*website", --{rt1}Selling Rbg Boost {rt1} , No account Sharing ,100% legit , Get your Rating in few Hours , 2200,2400, hero , 3850+ Conquest Cap , We accept Gold offers , We have website {rt1}
+	"rbg.*title.*account.*safe.*boost", --provide RBG1800+ 2000+ 2200+ 2400+ 2600+ boost (High warlord  title)No account sharing!100%safety and fast . wishpe me for more infor^^ to join our RBG BOOST TODAY!!
+	"^wtsrbgrating.*cheapfastg.*skype", --WTS RBG Ratings 0-2400 & Cheap Fast G pst or add skype jessguo328:)
+	"rbgrating.*safe.*account.*skype", --{rt6} Get your RBG rating today!!! Fast and safe. 100% guarantee. 2200 | 2400 | HERO. Highest conquest cap! Access to T2 and Elite Gear! Everything without account sharing. For more info whisp me! Skype - Chris.Jenkins60 {rt6}
+	"rbghelp.*achie?v.*gear.*safe", --{rt1}Rbg help any rbg achivements and t2 gear. You play yourself and all is safe and fast. all info in pm {rt1}
+	--{rt1} Rated Battleground help, experienced team will help to get 2200, 2400 and Hero. {rt1} All achievements and titles, any amount of conquest points per week, t2 weapon, access to elite gear. For more info whisp (/w) to me {rt1}
+	--{star} assisting in rated battleground, our guild will help in gaining 2200, 2400 and hero.{star} 3000+ conquest points per week, access to elite gear, t2 weapon, all achievements and titles, everything you wanted. for more info whisp (/w) to me {star}
+	--{star} rbg assisting, our guild will help to gain 2200, 2400 and hero. {star}also 3000+ conquest points per week, access to elite gear, t2 weapon, all achievements and titles, everything you ever dreamed. for more info pls whisp (/w) to me {star}
+	"2200.*hero.*conquest.*elitegear.*wh?isp", --{rt1} Help in rated battleground, our team will help in gaining 2200, 2400 and Hero. Weekly Conquest points (3000+), t2 weapon, access to elite gear, all titles and achievements, everything you wanted. {rt1} For more info whisp (/w) to me {rt1}
+	"areyoutoo?weak.*enemies.*l[ao]ughing.*loo?sing.*info", --{rt1}Are you to weak to kill all your enemies? Do all loughing on you in durator or elven forest when you loosing the pvp? We will help you!!! all info in pm {rt1}
+	"pvpguild.*help.*rbg.*2200.*skype.*icq", -- ---------PVP guild will help you with RBG 2200/2400/hero....... all questions on Skype alexooo46 icq 477788799---------
+	"helpyou.*rbg.*character.*fast.*safe", --{rt1}We will help you to get 2.2 - 2.6k on RBG. You playing your character. All is very fast,safe and confidence.{rt1}
+	"superoffer.*rated.*bonus.*account.*skype", --SUPER OFFER in RATED BATTLEGROUND /2200/2400/VIP-HERO2650 bonus FREE CAP/farm win/no sharing account/up 1-90  / skype [help.exclusiwe.rbg]
+	"fast.*rbgboost.*account.*test.*info", --{rt1}Fastest RBG boost in the world. 2.2k, 2.4k, 2.6k for some hours. You play your character, no account sharing. Test game. For more info pm{rt1}
+	"rbgboost.*2200.*test.*safe.*price", --RBG boost GET U'R T2,obtain rare titles, weapons and unique equip at 2 hrs! 2200/2400/2700, weekly CAP, TEST GAMES included! SAFE ,You play yourself!Best prices in Europe.[ skype - nikolya_90 ]
+	--Guild "RBG BOOST" Wir helfen Sie mit der Rating von 2200 - 2400 - 2650, fur alle Fraktionen. Schnell  und risikofrei. Ohne Sharing des Accounts. Deutsch/Englisch Support. Weinachts Discounts. Unser Webseite: [RBGBOOSTING.COM]
+	"rbgboost.*2200.*account.*discount", --Guild "RBG BOOST" will help with the ratings of 2200 - 2400 - 2650, all fractions. Fast and safe. No sharing account. All legally. Deutsch/English Support. Christmas discounts. Our site: [RBGBOOSTING.COM]
+	"rbg.*2200.*discount.*skype", --WTS:RBG2560/2400/2200/Caps per weekGold Challenge ConquerorNever scam, trustworthy website!!DISCOUNT on skype: Jasminelingling1QQ:1046224892
+	"pvpguild.*helpyou.*rbg.*fast.*whisp.*info", --{skull} pvp guild will help you with rbg rating! we do everything fast and smooth. whisper me for additional information {skull}
+	"sell.*boost.*2200.*gold.*cheap.*price", --{rt1}Selling boost to 2200{rt1} rbg tier 2 3600 cap /w me not accepting gold! GUARANTEED TIER 2 FOR CHEAPEST PRICES 
+	"rbgboost.*purchase.*rating.*gear.*sharing", --{rt2}{rt2} RBG Boosting is Back!! Be ready to purchase rating, titles, conquest cap of 3k and of course new PVP GEAR and Weapons! You play yourself, no acc sharing. skype RBGcarryBoost
+	"rbg.*2200.*bonus.*mount.*fast", --Hi everyone! We can help you RBG with your ratings! 2200/2400/2700/bonus free 1-3 weekly cap/Mount for 75/cap 4-10 win/fast game 1-3 hour(2200)/ pm
 
 	--[[  Russian  ]]--
 	--[skull]Ovoschevik.rf[skull] continues to harm the enemy, to please you with fresh [circle]vegetables! BC 450. Operators of girls waiting for you!
-	"oвoщeвик%.рф.*cвeжиmи", --[skull]Овощевик.рф[skull] продолжает, на зло врагaм, радовaть вас свежими [circle]oвoщaми! Бл 450. oператoры девyшки ждyт вaс!
+	"oвoщeвик%.pф.*cвeжиmи", --[skull]Овощевик.рф[skull] продолжает, на зло врагaм, радовaть вас свежими [circle]oвoщaми! Бл 450. oператoры девyшки ждyт вaс!
 	-- [[MMOSHOP.RU]] [circle] ot23r] real price [WM BL:270] [ICQ:192625006 Skype:MMOSHOP.RU, chat on the site] [Webmoney,Yandex,other]
 	"mmoshop%.ru.*цeнa.*skype", -- [ [MMOSHOP.RU]] [circle] от23р] реальная цена [WM BL:270] [ICQ:192625006 Skype:MMOSHOP.RU, Чат на сайте] [Вебмани,Яндекс,другие]
 	--[square] [RPGdealer.ru] [square] gives you quick access to wealth. Always on top!
 	"rpgdealer%.ru.*бoгaтcтву", --[square] [RPGdealer.ru] [square] предоставит Вам быстрый доступ к богатству. Всегда на высоте!
 	--GOLD WOW + SATELLITE PRESENT EACH! Lotteries 2 times a month of valuable prizes [circle] Site : [RPGdealer.ru] [circle] ICQ: 485552474. BL 360 Info on the site.
 	"з[o0]л[o0]т[ao0].*rpgdealer%.ru", --ЗОЛОТО WOW + СПУТНИК В ПОДАРОК КАЖДОМУ! Розыгрыши 2 раза в мес ценных призов [circle] Сайт: [RPGdealer.ru] [circle] ICQ: 485552474. BL 360 Инфа на сайте.
+	--Buy "funny coins" from [star]FUNY-MONY.RF[star]. Delivery 10 minutes. Always in stock. All the details on the FUNY-MONY.RF
+		--Покупайте "Весёлые монетки" от [star]ФАНИ-МАНИ.РФ[star]. Доставка 10 минут. Всегда в наличии. Все подробности на ФАНИ-МАНИ.РФ
 	--Buy MERRY COINS on the funny-money.rf Funny price:)
-	--Купи ВЕСЕЛЫЕ МОНЕТКИ на фани-мани.рф Смешные цены:)
+		--Купи ВЕСЕЛЫЕ МОНЕТКИ на фани-мани.рф Смешные цены:)
 	--Buy GOLD at [circle]funny-money.rf[circle] Price Calculator on the site.
-	"купи.*фaни-maни%.рф", --Купи ЗОЛОТО на [circle]фани-мани.рф[circle] Калькулятор цен на сайте.
+	"куп.*фaни-maни%.pф", --Купи ЗОЛОТО на [circle]фани-мани.рф[circle] Калькулятор цен на сайте.
 	--[COINS] of 23 per 1OOO | website | INGMONEY. RU | | SALE + Super Award - Spectral Tiger! ICQ 77-21-87 | | Skype INGMONEY. RU
 	"ingmoney%.ru.*skype", --[МОНЕТЫ]  от 23 за 1OOO | сайт | INGMONEY. RU ||АКЦИЯ + Супер Приз - Спектральный Тигр! ICQ 77-21-87 || Skype INGMONEY. RU
 	--Sell 55kg of potatoes at a low price quickly! Skype v_techno_delo [circle] 8 = 1kg
-	"прoдam.*кaртoшки.*cрoчнo.*cкaйп", --Продам 55кг картошки по дешевке  срочно! скайп v_techno_delo  [circle] 8 = 1кг
+	"пpoдam.*кapтoшки.*cpoчнo.*cкaйп", --Продам 55кг картошки по дешевке  срочно! скайп v_techno_delo  [circle] 8 = 1кг
 	--Gold Exchange Invitation to participate suppliers and shops. With our more than 800 suppliers and 100 stores. GexDex.ru
 	"з[o0]л[o0]т[ao0].*gexdex%.ru", --[skull][skull][skull] Биржа золота приглaшaет к учaстию постaвщиков и магазины. С нами болee 800 постaвщиков и 100 магaзинов. GеxDеx.ru
 	--Cheapest price only here! Price 1000 gold-20R, from 40k-18r on, from-60k to 17p! Website [playwowtime.vipshop.ru]! ICQ 196-353-353, skype nickname playwowtime2011!
 	"vipshop%.ru.*skype", --Самые дешевые цены только у нас! Цены 1000 золотых- 20р , от 40к -по 18р , от 60к-по 17р ! Сайт [playwowtime.vipshop.ru] ! ICQ 196-353-353 , skype ник playwowtime2011!
+	--we are help with RAITING BATTLE GROUND -2200-2400-2650 /admission of cap/PVP set for honor points/mount/leveling 1-90/ skype - [RPGBOX.RU] icq  819-207 site [rpgbox.ru]
+	"cкaйп.*rpgbox%.ru", --поможем РЕЙТИНГ ПОЛЕ БОЯ -2200-2400-2650 /набор капа/ПВП сет за очки чести/маунт/прокачка 1-90/ скайп - [RPGBOX.RU] ася  819-207 сайт [rpgbox.ru]
+	--Sell! [gold] 16r-1000g. Looking for suppliers. Quality levelling of character's, honor point's and profession's. ICQ: 406-887-855 Skуре: WoW-Crabbs  Webmoney BL [360]
+		--Продаю! [золото] 16р-1000г. Ищу поставщиков. Качественно прокачаю персонажей, очки чести и профессии. ICQ: 406-887-855 Skуре: WoW-Crabbs  Webmoney BL [360]
+	--Selling [GOLD]! 16r-1k Instant delivery any quantatys. Levelling characters, prof, honor. Attestat WM BL 350 ICQ 406-8878-55 Skype wow-crabbs
+		--Продам [GOLD]! 16р-1к Моментальная доставка любых количеств. Прокачка персонажей, проф, хонора. Аттестат WM BL 350 ICQ 406-8878-55 Скайп wow-crabbs
+	--Buying gold!looking for suppliers.Leveling characters, proffesions, honor TimeCards60days-80k gold Game payment 1month-45k gold. Attestat [BL 350] ICQ 406-8878-55 Skype wow-crabbs
+	"icq.*wowcrabbs", --Скупаю голд!ищу поставщиков.Прокачка персонажей, профессий, хонора ТК60дн-80к Проплата 1мес-45к. Аттестат [BL 350] ICQ 406-8878-55 Скайп wow-crabbs
+	--[MMOah.ru]  [circle] Gold at competitive prices [circle] BL85+ IСQ  49-48-48 , online chat on the site, we are accepted any kind of payments WM/YM/Visa/qiwi/Robokassa/SMS, we are produce recruitment of suppl
+	"mmoah%.ru.*зoлoтo.*icq", --[MMOah.ru]  [circle] Золото по выгодным ценам [circle] BL85+ IСQ  49-48-48 , на сайте онлайн чат, принимаем все виды оплат WM/ЯД/Visa/qiwi/Robokassa/SMS, производим набор пост
+	--Seling [G[circle]LD], Fast, reliably, any kind of payments. Attestat of seller's. Looking for supplier's details to pm.
+	"g{.*}ld.*быcтpo.*oплaты.*пocтaвщикoв", --Продам [G[circle]LD], Быстро, надежно, различные способы оплаты. Аттестат продовца. Ищем поставщиков подробности в пм.
+	--selling [circle] 1k at 13 rub
+	"^пpoдam.*{.*}.*%d+кзa%d+pуб", --продам [circle] 1к за 13 руб
+	--Help with RPBБ. [blue square] 2200 - 2400 - 2600. CAP [blue square]. Fast and safe. Best service. Without share of your account. You are play yourself. Site, BL 320+. Skype: R
+	"быcтpo.*бeзoпacнo.*cepвиc.*aккaунтa.*cкaйп", --Помощь с РПБ. [blue square] 2200 - 2400 - 2600. КАП [blue square]. Быстро и безопасно. Лучший сервис. Без передачи аккаунта. Вы играете сами. Сайт, БЛ 320+. Скайп: R
+	--Help with RBG raiting  2200.2400.2600. Cap. Detail in skype Axelretreem
+	"пomoжem.*pбгpeйтингom.*%d%d%d%d.*cкaйп", --Поможем с РБГ рейтингом  2200.2400.2600. Кап. Подробнее в скайп Axelretreem
+	--[PLAY-START_RU] G[circle]l0d0 from 14,8r, any kind of payment, delivery 5-15min. Reiiably. Attestat of seller's. We are looking for suppliers details in pm.
+	"playstart[%.,]?ru.*oплaты.*дocтaвкa", --[PLAY-START_RU] З[circle]л0т0 от 14,8р, различные способы оплаты, доставка 5-15мин. Надежно. Аттестат продовца. Ищем поставщиков подробности в пм.
+	--Sell shiny little coins guarantees [circle]
+	--Продам блестяшки гарантии [circle]
+	--sell shiny little coins [circle]
+	"^пpoдamблecтяшки", --продам блестяшки [circle]
+	--We are help with Arena and RBG 2200\2400\2700. Hero of Alliance\Horde [Dving.ru]
+		--Поможем с Ареной и РБГ 2200\2400\2700. Герой Альянс\Орды [Dving.ru]
+	--Honor points , Conquest, Valor on site [Dving.ru]
+		--Очки чести , Завоеваний, Доблести на [Dving.ru]
+	--We are help with GCR, GDSR, GFR on site [Dving.ru].
+		--Поможем с СРК , СРДД, СРОП на [Dving.ru].
+	--We are sell Glory of the Hero of Pandaria [Dving.ru]
+		--Продадим Славу Героя Пандарии [Dving.ru]
+	--Personal service and individual orders for [Dving.ru]
+	"д.*dving%.ru$", --Персональное обслуживание и индивидуальные заказы на [Dving.ru]
 
 	--[[  Chinese  ]]--
 	--嗨 大家好  团购金币送代练 炼金龙 还有各职业账号 详情请咨询 谢谢$18=10k;$90=50k+1000G free;$180=100k+2000g+月卡，也可用G 换月卡
@@ -432,6 +608,7 @@ local instantReportList = {
 	"wts.*%[.*%].*cheapgold.*%d+k", --WTS大卖 [Pattern: Bladeshadow Wristguards] [Pattern: World Mender's Pants] and cheap gold 10k for 15,100k for 140 pst
 	--WOW龙魂8H效率团低价出售橙匕+WOW各版本橙武。 397/403/410/416装备。带刷成就龙(ICC,ULD,CATA,FL)。帅气坐骑.死翼坐骑/火鹰/等。带刷RBG荣誉.1-85手工代练美金消费欢迎咨询QQ: 1416781477
 	"出售.*成就.*欢迎.*qq", --WOW龙魂8H美金消费团出售橙匕+WOW各版本橙武。 397/403/410/416装备。带刷成就龙(ICC,ULD,CATA,FL)。低价出售帅气坐骑.死翼坐骑/火鹰/等。带刷RBG荣誉.1-85手工代练欢迎咨询QQ: 1416781477
+	"wts.*nightwing.*order.*gametime", --WTS[Heart of the Nightwing]order 50k will get a free one plus 30days game time{star}买金送招募坐骑,炼金龙和DK马,大小幽灵虎特价出售,另有各种代练和账号{diamond}QQ：1933089703
 
 	--[[  Advanced URL's/Misc  ]]--
 	"%d+eu.*deliver.*credible.*kcq[%.,]", --12.66EUR/10000G 10 minutes delivery.absolutely credible. K C Q .< 0 M
@@ -500,6 +677,11 @@ local instantReportList = {
 	--{star}www.OurGameCenter.com{star} 10000=4.69 WTS Smoldering Egg of Millagazor and all 410/416 items droped from DS {star} including achieve,mount,legendary dagger,etc.( 8/8H DS &7/7H FL)
 	"ourgamecenter.*wts.*legendary", --www.OurGameCenter.com10K=4.69 we have 8/8H DS 25m raid team ,WTS 410/416lvl BOP items,achiev,mount,legendary dagger,etc. {star} Smoldering Egg of Millagazor
 	"billiggull.*koster.*skype", --{star} Interessert i billig GULL? 100k koster 700 NOK (7 NOK pr 1k) – Bet: Pay Pal og nettbank. Bare nor,swe,dk kunder! Lei av kineserene? Jeg er mye sikrere, instant gull etter bet, online ofte og billig! Add meg på SKYPE for mer info: Nolixz1 {star}
+	"order.*nightwing.*%d+k.*stock", --WTS{star}50K Order can get <heart of the nightwing> for free,100k Order can get it for free,500k in stock,pst{square}
+	"kb8g[0o][1l]d.*deliver", --1OK // 7.9 E { www,Kb8G01d,Com } <5Mins Delivery>
+	"mmomarket.*gold.*boost", --{rt1}{rt1} We are [MMO-market.com]!!! WE are all you ever going to NEED: GOLD / CHARACTERS(from 150$ char to 5000$ char)/ BOOSTs in PvE or ARENA BOOSTs in PvP! FULLY PROFESSIONAL. Come and check us! [MMO-MARKET.COM]{rt1}{rt1}
+	"complete.*gold.*challenge.*$%d+.*hurry", --complete all the Gold dungeon challenge (\n?) achievements now only $200 (\n?) paladin(tank) (\n?) shaman), Hurry contact me, you will complete all the Gold dungeon challenge quickly.
+	"cheap.*fast.*gold.*item.*skype", --{rt3}{rt3}To get cheap,fast gold and hot items in a great deal, please add my skype {rt3} linda871230 {rt3}for more information!{rt3}{rt3}
 }
 
 --This is the replacement table. It serves to deobfuscate words by replacing letters with their English "equivalents".
@@ -510,6 +692,7 @@ local repTbl = {
 	["ì"]="i", ["í"]="i", ["ï"]="i", ["î"]="i", --Convert > \105
 	["Μ"]="m", ["м"]="m",--First letter is capital Greek μ "\206\156". Convert > \109
 	["о"]="o", ["ò"]="o", ["ó"]="o", ["ö"]="o", ["ō"]="o", ["ô"]="o", ["õ"]="o", --First letter is Russian "\208\190". Convert > \111
+	["р"]="p", --First letter is Russian "\209\128". Convert > \112
 	["ù"]="u", ["ú"]="u", ["ü"]="u", ["û"]="u", --Convert > \117
 }
 
@@ -562,8 +745,8 @@ local IsSpam = function(msg, num)
 end
 
 --[[ Chat Scanning ]]--
-local gsub, prevLineId, result, chatLines, chatPlayers, prevWarn = gsub, 0, nil, {}, {}, 0
-local filter = function(_, event, msg, player, _, _, _, flag, channelId, _, _, _, lineId)
+local gsub, pairs, tremove, prevLineId, result, chatLines, chatPlayers, prevWarn = gsub, pairs, tremove, 0, nil, {}, {}, 0
+local filter = function(_, event, msg, player, _, _, _, flag, channelId, channelNum, _, _, lineId, guid, arg13)
 	if lineId == prevLineId then
 		return result --Incase a message is sent more than once (registered to more than 1 chatframe)
 	else
@@ -582,7 +765,8 @@ local filter = function(_, event, msg, player, _, _, _, flag, channelId, _, _, _
 			if flag == "GM" or flag == "DEV" then return end --GM's can't get past the CanComplainChat call but "apparently" someone had a GM reported by the phishing filter which I don't believe, no harm in having this check I guess
 			--RealID support, don't scan people that whisper us via their character instead of RealID
 			--that aren't on our friends list, but are on our RealID list. CanComplainChat should really support this...
-			for i=1, select(2, BNGetNumFriends()) do
+			local _, num = BNGetNumFriends()
+			for i=1, num do
 				local toon = BNGetNumFriendToons(i)
 				for j=1, toon do
 					local _, rName, rGame = BNGetFriendToonInfo(i, j)
@@ -611,10 +795,16 @@ local filter = function(_, event, msg, player, _, _, _, flag, channelId, _, _, _
 		if myDebug and icon == 1 then print("Removing icons, adding 1 point.") end
 	end
 	--End icon removal
-	msg = gsub(msg, "[“”%*%-%(%)\"`'_%+#%%%^&;:~{} ]+", "") --Remove spaces, symbols, etc
+
+	--Symbol & space removal
+	msg = gsub(msg, "[%*%-%(%)\"`'_%+#%%%^&;:~{} ]", "")
+	msg = gsub(msg, "¨", "")
+	msg = gsub(msg, "”", "")
+	msg = gsub(msg, "“", "")
+	--End symbol & space removal
 
 	--They like to replace English letters with UTF-8 "equivalents" to avoid detection
-	if strfind(msg, "[аàáäâãåсçеèéëёêìíïîΜмоòóöōôõùúüû]+") then --Only run the string replacement if the chat line has letters that need replaced
+	if strfind(msg, "[аàáäâãåсçеèéëёêìíïîΜмоòóöōôõрùúüû]+") then --Only run the string replacement if the chat line has letters that need replaced
 		--This is no where near as resource intensive as I originally thought, it barely uses any CPU
 		for k,v in pairs(repTbl) do --Parse over the 'repTbl' table and replace strings
 			msg = gsub(msg, k, v)
@@ -630,7 +820,8 @@ local filter = function(_, event, msg, player, _, _, _, flag, channelId, _, _, _
 		end
 		if i == 20 then tremove(chatLines, 1) tremove(chatPlayers, 1) end --Don't let the DB grow larger than 20
 	end
-	tinsert(chatLines, msg) tinsert(chatPlayers, player)
+	chatLines[#chatLines+1] = msg
+	chatPlayers[#chatPlayers+1] = player
 	--End text buffer
 
 	if IsSpam(msg, icon) then
@@ -641,14 +832,27 @@ local filter = function(_, event, msg, player, _, _, _, flag, channelId, _, _, _
 			print("|cFF33FF99BadBoy_REPORT|r: ", debug, "-", event, "-", player)
 		else
 			if BADBOY_POPUP then --Manual reporting via popup
-				--Add original spam line to Blizzard popup message
-				StaticPopupDialogs["CONFIRM_REPORT_SPAM_CHAT"].text = "BadBoy: ".. REPORT_SPAM_CONFIRMATION .."\n\n".. gsub(debug, "%%", "%%%%")
-				local dialog = StaticPopup_Show("CONFIRM_REPORT_SPAM_CHAT", player)
-				dialog.data = lineId
+				local dialog = StaticPopup_Show("CONFIRM_REPORT_SPAM_CHAT", player, nil, lineId)
+				dialog.text:SetFormattedText("BadBoy: %s \n\n %s", REPORT_SPAM_CONFIRMATION:format(player), debug) --Add original spam line to Blizzard popup message
+				StaticPopup_Resize(dialog, "CONFIRM_REPORT_SPAM_CHAT")
 			else
 				--Show block message
 				if not BADBOY_NOREPORT then
-					ChatFrame1:AddMessage(reportMsg:format(player, lineId), 0.2, 1, 0.6)
+					-- This code is replicated from Blizzard's ChatFrame.lua code.
+					-- The intention here is to add the "extraData" flag to our AddMessage,
+					-- the same way Blizz adds that data to normal messages. Then we can use the
+					-- RemoveMessagesByExtraData functionality later.
+					local eventType = event:sub(10) -- Trim down to CHANNEL, WHISPER, etc.
+					local chatTarget
+					if eventType == "CHANNEL" then
+						eventType = eventType .. channelNum -- Set to CHANNEL1, CHANNEL2, etc, to separate General from Trade, etc.
+						chatTarget = channelNum
+					elseif eventType == "WHISPER" or eventType == "AFK" or eventType == "DND" then
+						chatTarget = player:upper() -- Set to PLAYERNAME
+					end
+					local extraData = ChatHistory_GetAccessID(eventType, chatTarget, guid == "" and arg13 or guid)
+					-- Finally, add the message
+					ChatFrame1:AddMessage(reportMsg:format(player, lineId, extraData), 0.2, 1, 0.6, nil, nil, nil, extraData)
 				end
 			end
 		end
@@ -659,57 +863,26 @@ end
 
 --[[ Configure report links ]]--
 do
-	local SetHyperlink, addMsg, prevReport = ItemRefTooltip.SetHyperlink, ChatFrame1.AddMessage, 0
+	local SetHyperlink, prevReport = ItemRefTooltip.SetHyperlink, 0
 	function ItemRefTooltip:SetHyperlink(link, ...)
-		local badboy, player, lineId = strsplit(":", link)
+		local badboy, player, lineId, extraData = strsplit(":", link)
 		if badboy and badboy == "badboy" then
 			lineId = tonumber(lineId)
+			extraData = tonumber(extraData)
 			if CanComplainChat(lineId) then
 				local t = GetTime()
-				if (t-prevReport) > 4 then --Throttle reports to try and prevent disconnects, please fix it Blizz.
+				if (t-prevReport) > 5 then --Throttle reports to try and prevent disconnects, please fix it Blizz.
 					prevReport = t
 					ReportPlayer("spam", lineId)
-
-					--Let's remove the chat line(s) asking to report that player
-					local f, tbl, msg = ChatFrame1, {}, COMPLAINT_ADDED
-					--Save all chat
-					local _, size = f:GetFont()
-					FCF_SetChatWindowFontSize(f, f, 0.01)
-					for i = select("#", f:GetRegions()), 1, -1 do
-						local region = select(i, f:GetRegions())
-						if region:GetObjectType() == "FontString" then
-							local text = region:GetText()
-							--Skip the complaint registered message and the BadBoy report player message
-							if text ~= msg and not strfind(text, msg, nil, true) and not strfind(text, "badboy:"..player..":", nil, true) and not strfind(text, "BadBoy|", nil, true) then
-								tinsert(tbl, {text, region:GetTextColor()})
-							end
-						end
-					end
-					FCF_SetChatWindowFontSize(f, f, size)
-
-					--Clear the chat window of all text
-					f:Clear()
-
-					--Restore all chat
-					for _,w in pairs(tbl) do
-						addMsg(f, unpack(w))
-						wipe(w)
-					end
-					wipe(tbl)
-					tbl=nil
+					ChatFrame1:RemoveMessagesByExtraData(extraData)
 				else
-					print(throttleMsg)
+					ChatFrame1:AddMessage(throttleMsg, 1, 1, 1, nil, nil, nil, extraData)
 				end
 			end
 		else
 			SetHyperlink(self, link, ...)
 		end
 	end
-end
-
---[[ Configure popup reporting ]]--
-StaticPopupDialogs["CONFIRM_REPORT_SPAM_CHAT"].OnHide = function()
-	StaticPopupDialogs["CONFIRM_REPORT_SPAM_CHAT"].text = REPORT_SPAM_CONFIRMATION --Reset popup message to default for manual reporting
 end
 
 --[[ Add Filters ]]--
@@ -733,12 +906,18 @@ do
 				frame:RegisterEvent("CHAT_MSG_BN_INLINE_TOAST_ALERT")
 				frame:UnregisterEvent("PLAYER_LOGIN")
 			end
-			for i=1, BNGetNumFriendInvites() do
+			for i=BNGetNumFriendInvites(), 1, -1 do
 				local id, player, _, msg = BNGetFriendInviteInfo(i)
 				if type(msg) == "string" then
 					local debug = msg
 					msg = msg:lower() --Lower all text, remove capitals
-					msg = gsub(msg, "[“”%*%-%(%)\"`'_%+#%%%^&;:~{} ]+", "") --Remove spaces, symbols, etc
+
+					--Symbol & space removal
+					msg = gsub(msg, "[%*%-%(%)\"`'_%+#%%%^&;:~{} ]", "")
+					msg = gsub(msg, "¨", "")
+					msg = gsub(msg, "”", "")
+					msg = gsub(msg, "“", "")
+					--End symbol & space removal
 
 					--They like to replace English letters with UTF-8 "equivalents" to avoid detection
 					if strfind(msg, "[аàáäâãåсçеèéëёêìíïîΜмоòóöōôõùúüû]+") then --Only run the string replacement if the chat line has letters that need replaced
@@ -756,7 +935,7 @@ do
 						else
 							ChatFrame1:AddMessage(reportBnet:format(player), 0.2, 1, 0.6)
 							if BadBoyLog then
-								BadBoyLog("BadBoy", "CHAT_MSG_BNET_INVITE", player, debug)
+								BadBoyLog("BadBoy", "CHAT_MSG_BNET_INVITE", "", debug)
 							end
 							BNReportFriendInvite(id, "SPAM", "")
 						end

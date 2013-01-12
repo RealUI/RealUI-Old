@@ -2,12 +2,11 @@ local nibRealUI = LibStub("AceAddon-3.0"):NewAddon("nibRealUI", "AceConsole-3.0"
 local L = LibStub("AceLocale-3.0"):GetLocale("nibRealUI")
 local LSM = LibStub("LibSharedMedia-3.0")
 local db, dbc, dbg
-local mass
 
 local nibRealUI_Version = {
 	[1] = 7,
 	[2] = 3,
-	[3] = 2,
+	[3] = 6,
 }
 
 -- Default Options

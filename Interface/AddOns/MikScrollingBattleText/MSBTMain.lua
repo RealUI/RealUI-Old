@@ -1326,7 +1326,7 @@ function eventFrame:UNIT_POWER(unitID, powerToken)
  local lastPowerAmount = lastPowerAmounts[powerType]
 
  -- Handle chi uniquely.
- if (powerToken == "LIGHT_FORCE" and playerClass == "MONK") then
+ if (powerToken == "CHI" and playerClass == "MONK") then
   if (powerAmount ~= lastPowerAmount) then HandleChi(powerAmount, powerType) end
   doFullDetect = false
 
@@ -1454,11 +1454,10 @@ eventHandlers["extraattacks"] = ExtraAttacksHandler
 for powerToken, powerType in pairs(powerTypes) do
  powerTokens[powerType] = powerToken
 end
-powerTokens[SPELL_POWER_DARK_FORCE] = POWER_TYPE_DARK_POWER
 
 -- Create map of power types that are handled uniquely.
 uniquePowerTypes[powerTypes["HOLY_POWER"]] = true
-uniquePowerTypes[powerTypes["LIGHT_FORCE"]] = true
+uniquePowerTypes[powerTypes["CHI"]] = true
 uniquePowerTypes[powerTypes["SHADOW_ORBS"]] = true
 
 -- Create damage type and damage color profile maps.

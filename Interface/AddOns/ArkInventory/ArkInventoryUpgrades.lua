@@ -793,6 +793,8 @@ function ArkInventory.ConvertOldOptions( )
 	
 	
 	
+	
+	
 	ArkInventory.db.profile.option.category["0:0"] = nil
 	
 	if ArkInventory.db.global.vendor then

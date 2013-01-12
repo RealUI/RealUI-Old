@@ -44,8 +44,10 @@ GridIndicatorCornerIcons_Locales:CreateLocaleTable(
 
 	["Icon Stack Text: Font Size"] = "Symbol Stack-Text: Schriftgröße",
 	["Adjust the font size for Icon Stack Text."] = "Die Schriftgröße des Symbol Stack-Textes anpassen.",
-	["Icon Stack Text: Offset XY-axis"] = "Symbol Stack-Text: Versatz XY-Achse",
-	["Adjust the offset for Icon Stack Text of the XY-axis."] = "Den XY-Achsenversatz des Symbol Stack-Textes anpassen.",
+	["Icon Stack Text: Offset X-axis"] = "Symbol Stack-Text: Versatz X-Achse",
+	["Adjust the offset for Icon Stack Text of the X-axis."] = "Den X-Achsenversatz des Symbol Stack-Textes anpassen.",
+	["Icon Stack Text: Offset Y-axis"] = "Symbol Stack-Text: Versatz Y-Achse",
+	["Adjust the offset for Icon Stack Text of the Y-axis."] = "Den Y-Achsenversatz des Symbol Stack-Textes anpassen.",
 
 	["Same settings as Grid"] = "Gleiche Einstellungen wie Grid",
 	["If enabled, the settings for the Icon (Corners) indicators are adjustable with the standard Grid options. If deactivated, you can set individual settings for the Icon (Corners) indicators."] = "Wenn aktiviert, sind die Einstellungen der Symbol (Ecken) Indikatoren mit den Standard Grid Optionen zu ändern. Wenn deaktiviert, kannst Du die Einstellungen der Symbol (Ecken) Indikatoren individuell anpassen.",

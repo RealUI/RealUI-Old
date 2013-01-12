@@ -23,7 +23,7 @@ local function log_heal(set, heal, is_absorb)
 		if is_absorb then
 			player.shielding = player.shielding + amount
 		end
-		
+
 		-- Also add to set total damage.
 		set.healing = set.healing + amount
 		set.overhealing = set.overhealing + heal.overhealing
@@ -31,7 +31,7 @@ local function log_heal(set, heal, is_absorb)
 		if is_absorb then
 			set.shielding = set.shielding + amount
 		end
-		
+
 		-- Add to recipient healing.
 		do
 			local healed = player.healed[heal.dstName]
@@ -41,13 +41,13 @@ local function log_heal(set, heal, is_absorb)
 				healed = {class = select(2, UnitClass(heal.dstName)), amount = 0, shielding = 0}
 				player.healed[heal.dstName] = healed
 			end
-		
+
 			healed.amount = healed.amount + amount
 			if is_absorb then
 				healed.shielding = healed.shielding + amount
 			end
 		end
-		
+
 		-- Add to spell healing
 		do
 			local spell = player.healingspells[heal.spellname]
@@ -57,7 +57,7 @@ local function log_heal(set, heal, is_absorb)
 				spell = {id = heal.spellid, name = heal.spellname, hits = 0, healing = 0, overhealing = 0, absorbed = 0, shielding = 0, critical = 0, min = 0, max = 0}
 				player.healingspells[heal.spellname] = spell
 			end
-			
+
 			spell.healing = spell.healing + amount
 			if heal.critical then
 				spell.critical = spell.critical + 1
@@ -67,9 +67,9 @@ local function log_heal(set, heal, is_absorb)
 			if is_absorb then
 				spell.shielding = spell.shielding + amount
 			end
-			
+
 			spell.hits = (spell.hits or 0) + 1
-			
+
 			if not spell.min or amount < spell.min then
 				spell.min = amount
 			end
@@ -85,7 +85,7 @@ local heal = {}
 local function SpellHeal(timestamp, eventtype, srcGUID, srcName, srcFlags, dstGUID, dstName, dstFlags, ...)
 	-- Healing
 	local spellId, spellName, spellSchool, samount, soverhealing, absorbed, scritical = ...
-	
+
 	heal.dstName = dstName
 	heal.playerid = srcGUID
 	heal.playername = srcName
@@ -95,7 +95,7 @@ local function SpellHeal(timestamp, eventtype, srcGUID, srcName, srcFlags, dstGU
 	heal.overhealing = soverhealing
 	heal.critical = scritical
 	heal.absorbed = absorbed
-	
+
 	Skada:FixPets(heal)
 	log_heal(Skada.current, heal)
 	log_heal(Skada.total, heal)
@@ -134,12 +134,12 @@ end
 local function AuraRefresh(timestamp, eventtype, srcGUID, srcName, srcFlags, dstGUID, dstName, dstFlags, ...)
 	-- Auras
 	local spellId, spellName, spellSchool, auraType, amount = ...
-	
+
 	if amount ~= nil then
 		if shields[dstName] and shields[dstName][spellId] and shields[dstName][spellId][srcName] then
 			local prev = shields[dstName][spellId][srcName]
 			if prev and prev > amount then
-			
+
 				heal.dstName = dstName
 				heal.playerid = srcGUID
 				heal.playername = srcName
@@ -149,7 +149,7 @@ local function AuraRefresh(timestamp, eventtype, srcGUID, srcName, srcFlags, dst
 				heal.overhealing = 0
 				heal.critical = nil
 				heal.absorbed = 0
-				
+
 				Skada:FixPets(heal)
 				log_heal(Skada.current, heal, true)
 				log_heal(Skada.total, heal, true)
@@ -162,12 +162,12 @@ end
 local function AuraRemoved(timestamp, eventtype, srcGUID, srcName, srcFlags, dstGUID, dstName, dstFlags, ...)
 	-- Auras
 	local spellId, spellName, spellSchool, auraType, amount = ...
-	
+
 	if amount ~= nil then
 		if shields[dstName] and shields[dstName][spellId] and shields[dstName][spellId][srcName] then
 			local prev = shields[dstName][spellId][srcName]
 			if prev and prev > amount then
-			
+
 				heal.dstName = dstName
 				heal.playerid = srcGUID
 				heal.playername = srcName
@@ -177,7 +177,7 @@ local function AuraRemoved(timestamp, eventtype, srcGUID, srcName, srcFlags, dst
 				heal.overhealing = amount
 				heal.critical = nil
 				heal.absorbed = 0
-				
+
 				Skada:FixPets(heal)
 				log_heal(Skada.current, heal, true)
 				log_heal(Skada.total, heal, true)
@@ -191,25 +191,25 @@ end
 
 local function getHPS(set, player)
 	local totaltime = Skada:PlayerActiveTime(set, player)
-	
+
 	return player.healing / math.max(1,totaltime)
 end
 
 local function getHPSByValue(set, player, healing)
 	local totaltime = Skada:PlayerActiveTime(set, player)
-	
+
 	return healing / math.max(1,totaltime)
 end
 
 function healingtaken:Update(win, set)
 	local nr = 1
 	local max = 0
-	
+
 	for i, player in ipairs(set.players) do
 		-- Iterate over all players and add to this player's healing taken.
 		local totalhealing = 0
 		for j, p in ipairs(set.players) do
-			
+
 			-- Iterate over each healed player this player did.
 			-- Bit expensive doing this once for each player in raid; can be done differently.
 			for name, heal in pairs(p.healed) do
@@ -217,33 +217,34 @@ function healingtaken:Update(win, set)
 					totalhealing = totalhealing + heal.amount
 				end
 			end
-			
+
 		end
-		
+
 		-- Now we have a total healing value for this player.
 		if totalhealing > 0 then
 			local d = win.dataset[nr] or {}
 			win.dataset[nr] = d
-			
+
 			d.id = player.id
 			d.label = player.name
 			d.value = totalhealing
-			
+
 			d.valuetext = Skada:FormatValueText(
 											Skada:FormatNumber(totalhealing), self.metadata.columns.Healing,
 											string.format("%02.1f", getHPSByValue(set, player, totalhealing)), self.metadata.columns.HPS,
 											string.format("%02.1f%%", totalhealing / set.healing * 100), self.metadata.columns.Percent
 										)
 			d.class = player.class
-			
+
 			if totalhealing > max then
 				max = totalhealing
 			end
-			
+
 			nr = nr + 1
 		end
-			
+
 	end
+
 	win.metadata.maxvalue = max
 end
 
@@ -253,29 +254,29 @@ function mod:Update(win, set)
 
 	for i, player in ipairs(set.players) do
 		if player.healing > 0 then
-			
+
 			local d = win.dataset[nr] or {}
 			win.dataset[nr] = d
-			
+
 			d.id = player.id
 			d.label = player.name
 			d.value = player.healing
-			
+
 			d.valuetext = Skada:FormatValueText(
 											Skada:FormatNumber(player.healing), self.metadata.columns.Healing,
 											string.format("%02.1f", getHPS(set, player)), self.metadata.columns.HPS,
 											string.format("%02.1f%%", player.healing / set.healing * 100), self.metadata.columns.Percent
 										)
 			d.class = player.class
-			
+
 			if player.healing > max then
 				max = player.healing
 			end
-			
+
 			nr = nr + 1
 		end
 	end
-	
+
 	win.metadata.maxvalue = max
 end
 
@@ -311,18 +312,18 @@ end
 -- Spell view of a player.
 function spellsmod:Update(win, set)
 	-- View spells for this player.
-		
+
 	local player = Skada:find_player(set, self.playerid)
 	local nr = 1
 	local max = 0
-	
+
 	if player then
-		
+
 		for spellname, spell in pairs(player.healingspells) do
-		
+
 			local d = win.dataset[nr] or {}
 			win.dataset[nr] = d
-			
+
 			d.id = spell.id
 			d.label = spell.name
 			d.value = spell.healing
@@ -332,15 +333,16 @@ function spellsmod:Update(win, set)
 										)
 			d.icon = select(3, GetSpellInfo(spell.id))
 			d.spellid = spell.id
-			
+
 			if spell.healing > max then
 				max = spell.healing
 			end
-			
+
 			nr = nr + 1
 		end
 	end
-	
+
+	win.metadata.hasicon = true
 	win.metadata.maxvalue = max
 end
 
@@ -354,14 +356,14 @@ function healedmod:Update(win, set)
 	local player = Skada:find_player(set, healedmod.playerid)
 	local nr = 1
 	local max = 0
-	
+
 	if player then
 		for name, heal in pairs(player.healed) do
 			if heal.amount > 0 then
-		
+
 				local d = win.dataset[nr] or {}
 				win.dataset[nr] = d
-				
+
 				d.id = name
 				d.label = name
 				d.value = heal.amount
@@ -373,12 +375,13 @@ function healedmod:Update(win, set)
 				if heal.amount > max then
 					max = heal.amount
 				end
-				
+
 				nr = nr + 1
 			end
 		end
 	end
-	
+
+	win.metadata.hasicon = true
 	win.metadata.maxvalue = max
 end
 
@@ -396,7 +399,7 @@ function mod:OnEnable()
 	Skada:RegisterForCL(AuraApplied, 'SPELL_AURA_APPLIED', {src_is_interesting_nopets = true})
 	Skada:RegisterForCL(AuraRefresh, 'SPELL_AURA_REFRESH', {src_is_interesting_nopets = true})
 	Skada:RegisterForCL(AuraRemoved, 'SPELL_AURA_REMOVED', {src_is_interesting_nopets = true})
-	
+
 	Skada:AddMode(self)
 	Skada:AddMode(healingtaken)
 end
@@ -429,6 +432,7 @@ function mod:AddPlayerAttributes(player)
 	player.healingabsorbed = player.healingabsorbed or 0	-- Absorbed total
 
 	-- update any pre-existing healingspells for new properties
+	local _, heal, healed
 	for _, heal in pairs(player.healingspells) do
 		heal.absorbed = heal.absorbed or 0 		-- Amount of healing that was absorbed
 		heal.shielding = heal.shielding or 0	-- Amount of healing that was due to shields

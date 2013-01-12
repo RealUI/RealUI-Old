@@ -1,6 +1,9 @@
+local addon, private = ...
+local Chatter = LibStub("AceAddon-3.0"):GetAddon(addon)
 local mod = Chatter:NewModule("Server Positioning", "AceHook-3.0")
-local L = LibStub("AceLocale-3.0"):GetLocale("Chatter")
+local L = LibStub("AceLocale-3.0"):GetLocale(addon)
 mod.modName = L["Server Positioning"]
+mod.toggleLabel = L["Disable Server Positioning"]
 
 local defaults = {
 	profile = {

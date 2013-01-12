@@ -1,6 +1,6 @@
 --[[
 Name: LibBabble-Zone-3.0
-Revision: $Rev: 360 $
+Revision: $Rev: 364 $
 Maintainers: ckknight, nevcairiel, Ackis
 Website: http://www.wowace.com/projects/libbabble-zone-3-0/
 Dependencies: None
@@ -8,7 +8,7 @@ License: MIT
 ]]
 
 local MAJOR_VERSION = "LibBabble-Zone-3.0"
-local MINOR_VERSION = 90000 + tonumber(("$Rev: 360 $"):match("%d+"))
+local MINOR_VERSION = 90000 + tonumber(("$Rev: 364 $"):match("%d+"))
 
 if not LibStub then error(MAJOR_VERSION .. " requires LibStub.") end
 local lib = LibStub("LibBabble-3.0"):New(MAJOR_VERSION, MINOR_VERSION)
@@ -413,7 +413,7 @@ elseif GAME_LOCALE == "deDE" then
 	Dragonblight = "Drachenöde",
 	["Dragon Soul"] = "Drachenseele",
 	["Drak'Tharon Keep"] = "Feste Drak'Tharon",
-	-- ["Dread Wastes"] = "",
+	["Dread Wastes"] = "Schreckensöde",
 	["Dun Morogh"] = "Dun Morogh",
 	Durotar = "Durotar",
 	Duskwood = "Dämmerwald",
@@ -433,7 +433,7 @@ elseif GAME_LOCALE == "deDE" then
 	["Frostwyrm Lair"] = "Frostwyrmbau",
 	["Furywing's Perch"] = "Isidions Hort",
 	Gadgetzan = "Gadgetzan",
-	["Gate of the Setting Sun"] = "Tor der Untergehenden Sonne",
+	["Gate of the Setting Sun"] = "Das Tor der Untergehenden Sonne",
 	["Gates of Ahn'Qiraj"] = "Tore von Ahn'Qiraj",
 	Ghostlands = "Geisterlande",
 	Gilneas = "Gilneas",
@@ -452,7 +452,7 @@ elseif GAME_LOCALE == "deDE" then
 	["Halls of Origination"] = "Hallen des Ursprungs",
 	["Halls of Reflection"] = "Hallen der Reflexion",
 	["Halls of Stone"] = "Die Hallen des Steins",
-	["Heart of Fear"] = "Herz der Angst",
+	["Heart of Fear"] = "Das Herz der Angst",
 	["Hellfire Citadel"] = "Höllenfeuerzitadelle",
 	["Hellfire Peninsula"] = "Höllenfeuerhalbinsel",
 	["Hellfire Ramparts"] = "Höllenfeuerbollwerk",
@@ -473,9 +473,9 @@ elseif GAME_LOCALE == "deDE" then
 	Karazhan = "Karazhan",
 	["Kelp'thar Forest"] = "Tang'tharwald",
 	Kezan = "Kezan",
-	-- ["Krasarang Wilds"] = "",
+	["Krasarang Wilds"] = "Krasarangwildnis",
 	["Krasus' Landing"] = "Krasus' Landeplatz",
-	-- ["Kun-Lai Summit"] = "",
+	["Kun-Lai Summit"] = "Kun-Lai-Gipfel",
 	Library = "Bibliothek",
 	["Loch Modan"] = "Loch Modan",
 	["Lost City of the Tol'vir"] = "Die Verlorene Stadt der Tol'vir",
@@ -487,7 +487,7 @@ elseif GAME_LOCALE == "deDE" then
 	["Marshlight Lake"] = "Sumpflichtsee",
 	["Menethil Harbor"] = "Hafen von Menethil",
 	["Mogu'Shan Palace"] = "Mogu'shanpalast",
-	["Mogu'shan Vaults"] = "Wächter von Mogu'shan",
+	["Mogu'shan Vaults"] = "Mogu'shangewölbe",
 	["Molten Core"] = "Geschmolzener Kern",
 	["Molten Front"] = "Geschmolzene Front",
 	Moonglade = "Mondlichtung",
@@ -509,7 +509,7 @@ elseif GAME_LOCALE == "deDE" then
 	["Opening of the Dark Portal"] = "Öffnung des Dunklen Portals",
 	Orgrimmar = "Orgrimmar",
 	Outland = "Scherbenwelt",
-	-- Pandaria = "",
+	Pandaria = "Pandaria",
 	["Pit of Saron"] = "Grube von Saron",
 	["Plaguelands: The Scarlet Enclave"] = "Pestländer: Die Scharlachrote Enklave",
 	Plaguewood = "Seuchenwald",
@@ -526,14 +526,14 @@ elseif GAME_LOCALE == "deDE" then
 	["Ruins of Gilneas City"] = "Ruinen von Gilneas",
 	["Ruins of Lordaeron"] = "Ruinen von Lordaeron",
 	["Scalebeard's Cave"] = "Schuppenbarts Höhle",
-	-- ["Scarlet Halls"] = "",
+	["Scarlet Halls"] = "Die Scharlachroten Hallen",
 	["Scarlet Monastery"] = "Das Scharlachrote Kloster",
 	Scholomance = "Scholomance",
 	["Searing Gorge"] = "Sengende Schlucht",
 	["Serpent Lake"] = "Schlangensee",
 	["Serpentshrine Cavern"] = "Höhle des Schlangenschreins",
 	["Sethekk Halls"] = "Sethekkhallen",
-	["Shado-pan Monastery"] = "Shado-Pan-Kloster",
+	["Shado-pan Monastery"] = "Das Shado-Pan-Kloster",
 	["Shadowfang Keep"] = "Burg Schattenfang",
 	["Shadow Labyrinth"] = "Schattenlabyrinth",
 	["Shadowmoon Valley"] = "Schattenmondtal",
@@ -552,10 +552,10 @@ elseif GAME_LOCALE == "deDE" then
 	["Sporewind Lake"] = "Sporenwindsee",
 	Stonard = "Steinard",
 	["Stonetalon Mountains"] = "Steinkrallengebirge",
-	["Stormstout Brewery"] = "Die Brauerei Sturmbräu",
+	["Stormstout Brewery"] = "Brauerei Sturmbräu",
 	Stormwind = "Sturmwind",
 	["Stormwind City"] = "Sturmwind",
-	-- ["Stormwind Stockade"] = "",
+	["Stormwind Stockade"] = "Verlies von Sturmwind",
 	["Strand of the Ancients"] = "Strand der Uralten",
 	["Stranglethorn Vale"] = "Schlingendorntal",
 	Stratholme = "Stratholme",
@@ -570,7 +570,7 @@ elseif GAME_LOCALE == "deDE" then
 	["Terokkar Forest"] = "Wälder von Terokkar",
 	["Terokk's Rest"] = "Terokks Ruh",
 	["Terrace of Endless Spring"] = "Terrasse des Endlosen Frühlings",
-	-- ["Terrace of the Endless Spring"] = "",
+	["Terrace of the Endless Spring"] = "Terrasse des Endlosen Frühlings",
 	["The Arachnid Quarter"] = "Das Arachnidenviertel",
 	["The Arcatraz"] = "Die Arkatraz",
 	["The Argent Coliseum"] = "Das Kolosseum der Kreuzfahrer",
@@ -599,7 +599,7 @@ elseif GAME_LOCALE == "deDE" then
 	["The Great Sea"] = "Das große Meer",
 	["The Halls of Winter"] = "Die Hallen des Winters",
 	["The Hinterlands"] = "Hinterland",
-	-- ["The Jade Forest"] = "",
+	["The Jade Forest"] = "Der Jadewald",
 	["The Lost Isles"] = "Die Verlorenen Inseln",
 	["The Maelstrom"] = "Der Mahlstrom",
 	["The Mechanar"] = "Die Mechanar",
@@ -625,10 +625,10 @@ elseif GAME_LOCALE == "deDE" then
 	["The Temple of Atal'Hakkar"] = "Der Tempel von Atal'Hakkar",
 	["The Underbog"] = "Der Tiefensumpf",
 	["The Veiled Sea"] = "Das verhüllte Meer",
-	-- ["The Veiled Stair"] = "",
+	["The Veiled Stair"] = "Die Verhüllte Treppe",
 	["The Violet Hold"] = "Die Violette Festung",
 	["The Vortex Pinnacle"] = "Der Vortexgipfel",
-	-- ["The Wandering Isle"] = "",
+	["The Wandering Isle"] = "Die Wandernde Insel",
 	["Thousand Needles"] = "Tausend Nadeln",
 	["Throne of the Four Winds"] = "Thron der Vier Winde",
 	["Throne of the Tides"] = "Thron der Gezeiten",
@@ -637,7 +637,7 @@ elseif GAME_LOCALE == "deDE" then
 	["Tirisfal Glades"] = "Tirisfal",
 	["Tol Barad"] = "Tol Barad",
 	["Tol Barad Peninsula"] = "Halbinsel von Tol Barad",
-	-- ["Townlong Steppes"] = "",
+	["Townlong Steppes"] = "Tonlongsteppe",
 	["Trial of the Champion"] = "Prüfung des Champions",
 	["Trial of the Crusader"] = "Prüfung des Kreuzfahrers",
 	["Twilight Highlands"] = "Schattenhochland",
@@ -651,8 +651,8 @@ elseif GAME_LOCALE == "deDE" then
 	["Upper Blackrock Spire"] = "Obere Schwarzfelsspitze",
 	["Utgarde Keep"] = "Burg Utgarde",
 	["Utgarde Pinnacle"] = "Turm Utgarde",
-	-- ["Vale of Eternal Blossoms"] = "",
-	-- ["Valley of the Four Winds"] = "",
+	["Vale of Eternal Blossoms"] = "Tal der Ewigen Blüten",
+	["Valley of the Four Winds"] = "Tal der Vier Winde",
 	["Vashj'ir"] = "Vashj'ir",
 	["Vault of Archavon"] = "Archavons Kammer",
 	["Vortex Pinnacle"] = "Vortexgipfel",
@@ -778,7 +778,7 @@ elseif GAME_LOCALE == "frFR" then
 	["Halls of Origination"] = "Salles de l'Origine",
 	["Halls of Reflection"] = "Les salles des Reflets",
 	["Halls of Stone"] = "Les salles de Pierre",
-	["Heart of Fear"] = "Cœur de la peur", -- Needs review
+	["Heart of Fear"] = "Cœur de la Peur", -- Needs review
 	["Hellfire Citadel"] = "Citadelle des Flammes infernales",
 	["Hellfire Peninsula"] = "Péninsule des Flammes infernales",
 	["Hellfire Ramparts"] = "Remparts des Flammes infernales",
@@ -813,7 +813,7 @@ elseif GAME_LOCALE == "frFR" then
 	["Marshlight Lake"] = "Lac des furoles",
 	["Menethil Harbor"] = "Port de Menethil",
 	["Mogu'Shan Palace"] = "Palais de Mogu'shan", -- Needs review
-	["Mogu'shan Vaults"] = "Caveaux de Mogu'shan", -- Needs review
+	["Mogu'shan Vaults"] = "Caveaux Mogu’shan", -- Needs review
 	["Molten Core"] = "Cœur du Magma",
 	["Molten Front"] = "Front du Magma",
 	Moonglade = "Reflet-de-Lune",
@@ -835,7 +835,7 @@ elseif GAME_LOCALE == "frFR" then
 	["Opening of the Dark Portal"] = "Ouverture de la Porte des ténèbres",
 	Orgrimmar = "Orgrimmar",
 	Outland = "Outreterre",
-	-- Pandaria = "",
+	Pandaria = "Pandarie", -- Needs review
 	["Pit of Saron"] = "Fosse de Saron",
 	["Plaguelands: The Scarlet Enclave"] = "Maleterres : l'enclave Écarlate",
 	Plaguewood = "Pestebois",
@@ -852,7 +852,7 @@ elseif GAME_LOCALE == "frFR" then
 	["Ruins of Gilneas City"] = "Ruines de Gilnéas (ville)",
 	["Ruins of Lordaeron"] = "Ruines de Lordaeron",
 	["Scalebeard's Cave"] = "Caverne de Barbe-d'écailles",
-	-- ["Scarlet Halls"] = "",
+	["Scarlet Halls"] = "Salles Écarlates", -- Needs review
 	["Scarlet Monastery"] = "Monastère écarlate",
 	Scholomance = "Scholomance",
 	["Searing Gorge"] = "Gorge des Vents brûlants",
@@ -925,7 +925,7 @@ elseif GAME_LOCALE == "frFR" then
 	["The Great Sea"] = "La Grande mer",
 	["The Halls of Winter"] = "Les salles de l'Hiver",
 	["The Hinterlands"] = "Les Hinterlands",
-	["The Jade Forest"] = "La forêt de Jade", -- Needs review
+	["The Jade Forest"] = "La Forêt de Jade", -- Needs review
 	["The Lost Isles"] = "Les îles Perdues",
 	["The Maelstrom"] = "Le Maelström",
 	["The Mechanar"] = "Le Méchanar",
@@ -1065,7 +1065,7 @@ elseif GAME_LOCALE == "koKR" then
 	Dragonblight = "용의 안식처",
 	["Dragon Soul"] = "용의 영혼",
 	["Drak'Tharon Keep"] = "드락타론 성채",
-	-- ["Dread Wastes"] = "",
+	["Dread Wastes"] = "공포의 황무지", -- Needs review
 	["Dun Morogh"] = "던 모로",
 	Durotar = "듀로타",
 	Duskwood = "그늘숲",
@@ -1125,9 +1125,9 @@ elseif GAME_LOCALE == "koKR" then
 	Karazhan = "카라잔",
 	["Kelp'thar Forest"] = "켈프타르 숲",
 	Kezan = "케잔",
-	-- ["Krasarang Wilds"] = "",
+	["Krasarang Wilds"] = "크라사랑 밀림", -- Needs review
 	["Krasus' Landing"] = "크라서스 착륙장",
-	-- ["Kun-Lai Summit"] = "",
+	["Kun-Lai Summit"] = "쿤라이 봉우리", -- Needs review
 	Library = "도서관",
 	["Loch Modan"] = "모단 호수",
 	["Lost City of the Tol'vir"] = "톨비르의 잃어버린 도시",
@@ -1161,7 +1161,7 @@ elseif GAME_LOCALE == "koKR" then
 	["Opening of the Dark Portal"] = "어둠의 문 열기",
 	Orgrimmar = "오그리마",
 	Outland = "아웃랜드",
-	-- Pandaria = "",
+	Pandaria = "판다리아", -- Needs review
 	["Pit of Saron"] = "사론의 구덩이",
 	["Plaguelands: The Scarlet Enclave"] = "동부 역병지대: 붉은십자군 초소",
 	Plaguewood = "역병의 숲",
@@ -1178,7 +1178,7 @@ elseif GAME_LOCALE == "koKR" then
 	["Ruins of Gilneas City"] = "길니아스 시 폐허",
 	["Ruins of Lordaeron"] = "로데론의 폐허",
 	["Scalebeard's Cave"] = "비늘수염 동굴",
-	-- ["Scarlet Halls"] = "",
+	["Scarlet Halls"] = "붉은십자군 전당", -- Needs review
 	["Scarlet Monastery"] = "붉은십자군 수도원",
 	Scholomance = "스칼로맨스",
 	["Searing Gorge"] = "이글거리는 협곡",
@@ -1207,7 +1207,7 @@ elseif GAME_LOCALE == "koKR" then
 	["Stormstout Brewery"] = "스톰스타우트 양조장", -- Needs review
 	Stormwind = "스톰윈드",
 	["Stormwind City"] = "스톰윈드",
-	-- ["Stormwind Stockade"] = "",
+	["Stormwind Stockade"] = "스톰윈드 지하감옥", -- Needs review
 	["Strand of the Ancients"] = "고대의 해안",
 	["Stranglethorn Vale"] = "가시덤불 골짜기",
 	Stratholme = "스트라솔름",
@@ -1222,7 +1222,7 @@ elseif GAME_LOCALE == "koKR" then
 	["Terokkar Forest"] = "테로카르 숲",
 	["Terokk's Rest"] = "테로크의 안식처",
 	["Terrace of Endless Spring"] = "끝없는 봄의 테라스", -- Needs review
-	-- ["Terrace of the Endless Spring"] = "",
+	["Terrace of the Endless Spring"] = "영원한 봄의 정원", -- Needs review
 	["The Arachnid Quarter"] = "거미 지구",
 	["The Arcatraz"] = "알카트라즈",
 	["The Argent Coliseum"] = "십자군 원형경기장",
@@ -1251,7 +1251,7 @@ elseif GAME_LOCALE == "koKR" then
 	["The Great Sea"] = "대해",
 	["The Halls of Winter"] = "겨울의 전당",
 	["The Hinterlands"] = "동부 내륙지",
-	-- ["The Jade Forest"] = "",
+	["The Jade Forest"] = "비취 숲", -- Needs review
 	["The Lost Isles"] = "잃어버린 섬",
 	["The Maelstrom"] = "혼돈의 소용돌이",
 	["The Mechanar"] = "메카나르",
@@ -1277,10 +1277,10 @@ elseif GAME_LOCALE == "koKR" then
 	["The Temple of Atal'Hakkar"] = "아탈학카르 신전",
 	["The Underbog"] = "지하수렁",
 	["The Veiled Sea"] = "장막의 바다",
-	-- ["The Veiled Stair"] = "",
+	["The Veiled Stair"] = "장막의 계단", -- Needs review
 	["The Violet Hold"] = "보랏빛 요새",
 	["The Vortex Pinnacle"] = "소용돌이 누각",
-	-- ["The Wandering Isle"] = "",
+	["The Wandering Isle"] = "유랑도", -- Needs review
 	["Thousand Needles"] = "버섯구름 봉우리",
 	["Throne of the Four Winds"] = "네 바람의 왕좌",
 	["Throne of the Tides"] = "파도의 왕좌",
@@ -1289,7 +1289,7 @@ elseif GAME_LOCALE == "koKR" then
 	["Tirisfal Glades"] = "티리스팔 숲",
 	["Tol Barad"] = "톨 바라드",
 	["Tol Barad Peninsula"] = "톨 바라드 반도",
-	-- ["Townlong Steppes"] = "",
+	["Townlong Steppes"] = "탕랑 평원", -- Needs review
 	["Trial of the Champion"] = "용사의 시험장",
 	["Trial of the Crusader"] = "십자군의 시험장",
 	["Twilight Highlands"] = "황혼의 고원",
@@ -1303,8 +1303,8 @@ elseif GAME_LOCALE == "koKR" then
 	["Upper Blackrock Spire"] = "검은바위 첨탑 상층",
 	["Utgarde Keep"] = "우트가드 성채",
 	["Utgarde Pinnacle"] = "우트가드 첨탑",
-	-- ["Vale of Eternal Blossoms"] = "",
-	-- ["Valley of the Four Winds"] = "",
+	["Vale of Eternal Blossoms"] = "영원꽃 골짜기", -- Needs review
+	["Valley of the Four Winds"] = "네 바람의 계곡", -- Needs review
 	["Vashj'ir"] = "바쉬르",
 	["Vault of Archavon"] = "아카본 석실",
 	["Vortex Pinnacle"] = "소용돌이 누각 ",
@@ -2043,7 +2043,7 @@ elseif GAME_LOCALE == "ptBR" then
 	Dragonblight = "Ermo das Serpes",
 	["Dragon Soul"] = "Alma Dragônica",
 	["Drak'Tharon Keep"] = "Bastilha Drak'Tharon",
-	-- ["Dread Wastes"] = "",
+	["Dread Wastes"] = "Ermo do Medo", -- Needs review
 	["Dun Morogh"] = "Dun Morogh",
 	Durotar = "Durotar",
 	Duskwood = "Floresta do Crepúsculo",
@@ -2063,7 +2063,7 @@ elseif GAME_LOCALE == "ptBR" then
 	["Frostwyrm Lair"] = "Covil da Serpe Gélida",
 	["Furywing's Perch"] = "Ninho do Furialada",
 	Gadgetzan = "Geringontzan",
-	-- ["Gate of the Setting Sun"] = "",
+	["Gate of the Setting Sun"] = "Portal do Sol Poente", -- Needs review
 	["Gates of Ahn'Qiraj"] = "Portões de Ahn'Qiraj",
 	Ghostlands = "Terra Fantasma",
 	Gilneas = "Guilnéas",
@@ -2082,7 +2082,7 @@ elseif GAME_LOCALE == "ptBR" then
 	["Halls of Origination"] = "Salões Primordiais",
 	["Halls of Reflection"] = "Salões da Reflexão",
 	["Halls of Stone"] = "Salões Rochosos",
-	-- ["Heart of Fear"] = "",
+	["Heart of Fear"] = "Coração do Medo", -- Needs review
 	["Hellfire Citadel"] = "Cidadela Fogo do Inferno",
 	["Hellfire Peninsula"] = "Península Fogo do Inferno",
 	["Hellfire Ramparts"] = "Muralha Fogo do Inferno",
@@ -2103,9 +2103,9 @@ elseif GAME_LOCALE == "ptBR" then
 	Karazhan = "Karazhan",
 	["Kelp'thar Forest"] = "Floresta Kelp'thar",
 	Kezan = "Kezan",
-	-- ["Krasarang Wilds"] = "",
+	["Krasarang Wilds"] = "Selva de Krasarang", -- Needs review
 	["Krasus' Landing"] = "Plataforma de Krasus",
-	-- ["Kun-Lai Summit"] = "",
+	["Kun-Lai Summit"] = "Monte Kun-Lai", -- Needs review
 	Library = "Biblioteca",
 	["Loch Modan"] = "Loch Modan",
 	["Lost City of the Tol'vir"] = "Cidade Perdida dos Tol'vir",
@@ -2116,8 +2116,8 @@ elseif GAME_LOCALE == "ptBR" then
 	Maraudon = "Maraudon",
 	["Marshlight Lake"] = "Lago Pantanoso",
 	["Menethil Harbor"] = "Porto de Menethil",
-	-- ["Mogu'Shan Palace"] = "",
-	-- ["Mogu'shan Vaults"] = "",
+	["Mogu'Shan Palace"] = "Palácio Mogu'shan", -- Needs review
+	["Mogu'shan Vaults"] = "Galerias Mogu'shan", -- Needs review
 	["Molten Core"] = "Núcleo Derretido",
 	["Molten Front"] = "Front Ígneo",
 	Moonglade = "Clareira da Lua",
@@ -2139,7 +2139,7 @@ elseif GAME_LOCALE == "ptBR" then
 	["Opening of the Dark Portal"] = "Abertura do Portal Negro",
 	Orgrimmar = "Orgrimmar",
 	Outland = "Terralém",
-	-- Pandaria = "",
+	Pandaria = "Pandaria", -- Needs review
 	["Pit of Saron"] = "Fosso de Saron",
 	["Plaguelands: The Scarlet Enclave"] = "Terras Pestilentas: Enclave Escarlate",
 	Plaguewood = "Bosque Pestilento",
@@ -2156,14 +2156,14 @@ elseif GAME_LOCALE == "ptBR" then
 	["Ruins of Gilneas City"] = "Ruínas de Guilnéas",
 	["Ruins of Lordaeron"] = "Ruínas de Lordaeron",
 	["Scalebeard's Cave"] = "Caverna do Barbescama",
-	-- ["Scarlet Halls"] = "",
+	["Scarlet Halls"] = "Salões Escarlates", -- Needs review
 	["Scarlet Monastery"] = "Monastério Escarlate",
 	Scholomance = "Scolomântia",
 	["Searing Gorge"] = "Garganta Abrasadora",
 	["Serpent Lake"] = "Lago Serpente",
 	["Serpentshrine Cavern"] = "Caverna do Serpentário",
 	["Sethekk Halls"] = "Salões dos Sethekk",
-	-- ["Shado-pan Monastery"] = "",
+	["Shado-pan Monastery"] = "Monastério Shado-pan", -- Needs review
 	["Shadowfang Keep"] = "Bastilha da Presa Negra",
 	["Shadow Labyrinth"] = "Labirinto Soturno",
 	["Shadowmoon Valley"] = "Vale da Lua Negra",
@@ -2172,7 +2172,7 @@ elseif GAME_LOCALE == "ptBR" then
 	["Shattrath City"] = "Shattrath",
 	["Shimmering Expanse"] = "Vastidão Cintilante",
 	["Sholazar Basin"] = "Bacia Sholazar",
-	-- ["Siege of Niuzao Temple"] = "",
+	["Siege of Niuzao Temple"] = "Cerco ao Templo Niuzao", -- Needs review
 	Silithus = "Silithus",
 	["Silvermoon City"] = "Luaprata",
 	["Silverpine Forest"] = "Floresta de Pinhaprata",
@@ -2182,10 +2182,10 @@ elseif GAME_LOCALE == "ptBR" then
 	["Sporewind Lake"] = "Lago dos Esporos",
 	Stonard = "Pedregal",
 	["Stonetalon Mountains"] = "Cordilheira das Torres de Pedra",
-	-- ["Stormstout Brewery"] = "",
+	["Stormstout Brewery"] = "Cervejaria Malte do Trovão", -- Needs review
 	Stormwind = "Ventobravo",
 	["Stormwind City"] = "Ventobravo",
-	-- ["Stormwind Stockade"] = "",
+	["Stormwind Stockade"] = "Cárcere de Ventobravo", -- Needs review
 	["Strand of the Ancients"] = "Baía dos Ancestrais",
 	["Stranglethorn Vale"] = "Selva do Espinhaço",
 	Stratholme = "Stratholme",
@@ -2196,11 +2196,11 @@ elseif GAME_LOCALE == "ptBR" then
 	Teldrassil = "Teldrassil",
 	["Tempest Keep"] = "Bastilha da Tormenta",
 	["Temple of Ahn'Qiraj"] = "Templo de Ahn'Qiraj",
-	-- ["Temple of the Jade Serpent"] = "",
+	["Temple of the Jade Serpent"] = "Templo da Serpente de Jade", -- Needs review
 	["Terokkar Forest"] = "Mata Terokkar",
 	["Terokk's Rest"] = "Repouso de Terokk",
-	-- ["Terrace of Endless Spring"] = "",
-	-- ["Terrace of the Endless Spring"] = "",
+	["Terrace of Endless Spring"] = "Terraço da Primavera Eterna", -- Needs review
+	["Terrace of the Endless Spring"] = "Terraço da Primavera Eterna", -- Needs review
 	["The Arachnid Quarter"] = "O Distrito dos Aracnídeos",
 	["The Arcatraz"] = "Arcatraz",
 	["The Argent Coliseum"] = "Archivum",
@@ -2229,12 +2229,12 @@ elseif GAME_LOCALE == "ptBR" then
 	["The Great Sea"] = "Grande Oceano",
 	["The Halls of Winter"] = "Os Salões do Inverno",
 	["The Hinterlands"] = "Terras Agrestes",
-	-- ["The Jade Forest"] = "",
+	["The Jade Forest"] = "Floresta de Jade", -- Needs review
 	["The Lost Isles"] = "Ilhas Perdidas",
 	["The Maelstrom"] = "Voragem",
 	["The Mechanar"] = "Mecanar",
 	["The Military Quarter"] = "O Distrito Militar",
-	-- ["The Molten Core"] = "",
+	["The Molten Core"] = "Núcleo Derretido", -- Needs review
 	["The Nexus"] = "Nexus - Missão Lendária",
 	["The North Sea"] = "Mar do Norte",
 	["The Obsidian Sanctum"] = "Santuário Obsidiano",
@@ -2255,10 +2255,10 @@ elseif GAME_LOCALE == "ptBR" then
 	["The Temple of Atal'Hakkar"] = "Templo de Atal'Hakkar",
 	["The Underbog"] = "Brejo Oculto",
 	["The Veiled Sea"] = "Mar Velado",
-	-- ["The Veiled Stair"] = "",
+	["The Veiled Stair"] = "Escadaria Oculta", -- Needs review
 	["The Violet Hold"] = "Castelo Violeta",
 	["The Vortex Pinnacle"] = "Pináculo do Vórtice",
-	-- ["The Wandering Isle"] = "",
+	["The Wandering Isle"] = "Ilha Errante", -- Needs review
 	["Thousand Needles"] = "Mil Agulhas",
 	["Throne of the Four Winds"] = "Trono dos Quatro Ventos",
 	["Throne of the Tides"] = "Trono das Marés",
@@ -2267,7 +2267,7 @@ elseif GAME_LOCALE == "ptBR" then
 	["Tirisfal Glades"] = "Clareiras de Tirisfal",
 	["Tol Barad"] = "Tol Barad",
 	["Tol Barad Peninsula"] = "Península de Tol Barad",
-	-- ["Townlong Steppes"] = "",
+	["Townlong Steppes"] = "Estepes de Taolong", -- Needs review
 	["Trial of the Champion"] = "Prova do Campeão",
 	["Trial of the Crusader"] = "Prova do Cruzado",
 	["Twilight Highlands"] = "Planalto do Crepúsculo",
@@ -2281,8 +2281,8 @@ elseif GAME_LOCALE == "ptBR" then
 	["Upper Blackrock Spire"] = "Pico da Rocha Negra Superior",
 	["Utgarde Keep"] = "Bastilha Utgarde",
 	["Utgarde Pinnacle"] = "Pináculo Utgarde",
-	-- ["Vale of Eternal Blossoms"] = "",
-	-- ["Valley of the Four Winds"] = "",
+	["Vale of Eternal Blossoms"] = "Vale das Flores Eternas", -- Needs review
+	["Valley of the Four Winds"] = "Vale dos Quatro Ventos", -- Needs review
 	["Vashj'ir"] = "Vashj'ir",
 	["Vault of Archavon"] = "Abóbada de Arcavon",
 	["Vortex Pinnacle"] = "Pináculo do Vórtice",
@@ -2465,7 +2465,7 @@ elseif GAME_LOCALE == "itIT" then
 	["Opening of the Dark Portal"] = "Palude Nera",
 	Orgrimmar = "Orgrimmar",
 	Outland = "Terre Esterne",
-	-- Pandaria = "",
+	Pandaria = "Pandaria",
 	["Pit of Saron"] = "Fossa di Saron",
 	["Plaguelands: The Scarlet Enclave"] = "Terre della Peste: L'Enclave Scarlatto",
 	Plaguewood = "Pestebosco",
@@ -2482,7 +2482,7 @@ elseif GAME_LOCALE == "itIT" then
 	["Ruins of Gilneas City"] = "Rovine della Città di Gilneas",
 	["Ruins of Lordaeron"] = "Rovine di Lordaeron",
 	["Scalebeard's Cave"] = "Caverna di Scalebeard",
-	-- ["Scarlet Halls"] = "",
+	["Scarlet Halls"] = "Sale Scarlatte",
 	["Scarlet Monastery"] = "Monastero Scarlatto",
 	Scholomance = "Scholomance",
 	["Searing Gorge"] = "Gorgia Rovente",
@@ -3134,7 +3134,7 @@ elseif GAME_LOCALE == "zhCN" then
 	["Ruins of Gilneas City"] = "吉尔尼斯城废墟",
 	["Ruins of Lordaeron"] = "洛丹伦废墟",
 	["Scalebeard's Cave"] = "鳞须海龟洞穴",
-	-- ["Scarlet Halls"] = "",
+	["Scarlet Halls"] = "血色大厅",
 	["Scarlet Monastery"] = "血色修道院",
 	Scholomance = "通灵学院",
 	["Searing Gorge"] = "灼热峡谷",
@@ -3460,7 +3460,7 @@ elseif GAME_LOCALE == "zhTW" then
 	["Ruins of Gilneas City"] = "吉爾尼斯城廢墟",
 	["Ruins of Lordaeron"] = "羅德隆廢墟",
 	["Scalebeard's Cave"] = "鱗鬚洞穴",
-	-- ["Scarlet Halls"] = "",
+	["Scarlet Halls"] = "血色大廳",
 	["Scarlet Monastery"] = "血色修道院",
 	Scholomance = "通靈學院",
 	["Searing Gorge"] = "灼熱峽谷",

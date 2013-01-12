@@ -70,7 +70,7 @@
         </Layers>
         <Scripts>
           <OnLoad>
-            EasyMail_OptionsPanelListLenText:SetText(format(EASYMAIL_CONFIG_MAXLEN, EASYMAIL_MINLISTLEN, EASYMAIL_MAXLISTLEN));
+            EasyMail_OptionsPanelListLenText:SetText(format(EASYMAIL_CONFIG_MAXLEN, EasyMail.MinListLen, EasyMail.MaxListLen));
           </OnLoad>
           <OnEnter>
             GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
@@ -109,7 +109,7 @@
         <Scripts>
           <OnClick>
             PlaySound("igMainMenuOptionCheckBoxOn");
-            EasyMail_ClearAll = true;
+            EasyMail.ClearAll = true;
           </OnClick>
           <OnEnter>
             GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
@@ -394,9 +394,9 @@
     <Scripts>
       <OnLoad>
         self.name = EASYMAIL_ADDONNAME;
-        self.default = EasyMail_OptionsDefault;
-        self.refresh = EasyMail_OptionsRefresh;
-        self.okay = EasyMail_OptionsOkay;
+        self.default = EasyMail.OptionsDefault;
+        self.refresh = EasyMail.OptionsRefresh;
+        self.okay = EasyMail.OptionsOkay;
       </OnLoad>
     </Scripts>
   </Frame>

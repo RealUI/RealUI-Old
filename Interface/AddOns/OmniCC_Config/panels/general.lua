@@ -2,12 +2,10 @@
 	General configuration settings for OmniCC
 --]]
 
-local OmniCCOptions = OmniCCOptions
-local OmniCC = OmniCC
 local Timer = OmniCC.Timer
+local Sets = OmniCC.sets
 local L = OMNICC_LOCALS
 
---fun constants!
 local BUTTON_SPACING = 8
 local SLIDER_SPACING = 24
 
@@ -154,25 +152,23 @@ function GeneralOptions:CreateShowCooldownModelsCheckbox()
 	return b
 end
 
---use classic updater
+--use ani updater
 function GeneralOptions:CreateUseAniUpdaterCheckbox()
     local b = self:NewCheckbox(L.UseAniUpdater)
 
     b.OnEnableSetting = function(self, enable)
-        if OmniCC:GetUpdateEngineName() == 'ClassicUpdater' then
-            OmniCC:SetUpdateEngine(nil)
+        if Sets.engine == 'ScriptUpdater' then
+            Sets.engine = 'AniUpdater'
         else
-            OmniCC:SetUpdateEngine('ClassicUpdater')
+            Sets.engine = 'ScriptUpdater'
         end
     end
 
     b.IsSettingEnabled = function(self)
-        return OmniCC:GetUpdateEngineName() ~= 'ClassicUpdater'
+        return Sets.engine == 'AniUpdater'
     end
 
     b.tooltip = L.UseAniUpdaterTip
-    b.smallTip = L.UseAniUpdaterSmallTip
-
     return b
 end
 
@@ -317,10 +313,19 @@ end
 function GeneralOptions:CreateFinishEffectPicker()
 	local parent = self
 	local dd = OmniCCOptions.Dropdown:New(L.FinishEffect, parent, 120)
+	local effects = {}
 
-	local effects = OmniCC:ForEachEffect(function(effect) return {name = effect.name, value = effect.id, tooltip = effect.desc} end)
-	table.sort(effects, function(e1, e2) return e1.name < e2.name end)
-	table.insert(effects, 1, {name = NONE, value = 'none'})
+	for id, effect in pairs(OmniCC.effects) do
+		tinsert(effects, {
+			name = effect.name,
+			tooltip = effect.desc,
+			value = id
+		})
+	end
+
+	table.sort(effects, function(a, b)
+		return a.name < b.name
+	end)
 
 	dd.SetSavedValue = function(self, value)
 		parent:GetGroupSets().effect = value

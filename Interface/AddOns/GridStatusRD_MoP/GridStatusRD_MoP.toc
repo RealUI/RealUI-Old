@@ -1,11 +1,11 @@
-## Interface: 50001
+## Interface: 50100
 ## Title: GridStatusRaidDebuff(MoP)
 ## Notes: Debuff List for MoP
 ## Author: Evilsithgirl (Reckoning-Mannoroth-US)
-## Version: 1.1
+## Version: 1.2
 ## Grid Author: Pastamancer & Maia
 ## Dependencies: GridStatusRaidDebuff
-## X-Curse-Packaged-Version: r8
+## X-Curse-Packaged-Version: r15
 ## X-Curse-Project-Name: GridStatusRD_MoP
 ## X-Curse-Project-ID: gridstatusrd_mop
 ## X-Curse-Repository-ID: wow/gridstatusrd_mop/mainline

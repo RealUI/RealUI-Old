@@ -2,11 +2,6 @@ local nibRealUI = LibStub("AceAddon-3.0"):GetAddon("nibRealUI")
 local L = LibStub("AceLocale-3.0"):GetLocale("nibRealUI")
 local LSM = LibStub("LibSharedMedia-3.0")
 local db, dbc, dbg
-local mass
-
-if IsAddOnLoaded("Massive") then
-	mass = LibStub:GetLibrary("Massive")
-end
 
 local nibRealUICharacter_defaults = {
 	initialized = false,
@@ -17,6 +12,8 @@ local nibRealUICharacter_defaults = {
 -- Minipatch list. These get flagged on a PrimaryInstall as not being required.
 local table_MiniPatches = {
 	"73r1",
+	"73r5",
+	"73r6",
 }
 
 local table_Addons = {
@@ -67,7 +64,7 @@ end
 -- CVars
 local function SetDefaultCVars()
 	-- Screenshots
-	SetCVar("screenshotFormat", "png")				-- PNG format
+	SetCVar("screenshotFormat", "jpg")				-- JPG format
 	SetCVar("screenshotQuality", "10")				-- Highest quality
 	-- Help
 	SetCVar("showGameTips", 0)						-- Turn off Loading Screen Tips
@@ -488,10 +485,14 @@ local function MiniPatchInstallation()
 		-- Find out which Mini Patches are needed
 		local NP = {
 			[2] = true,
+			[5] = true,
+			[6] = true,
 		}
 		if dbg.minipatches ~= nil then
 			for k,v in pairs(dbg.minipatches) do
 				if v == "73r1" then NP[2] = false end
+				if v == "73r5" then NP[5] = false end
+				if v == "73r6" then NP[6] = false end
 			end
 		end
 		
@@ -500,6 +501,16 @@ local function MiniPatchInstallation()
 		if NP[2] then
 			nibRealUI:MiniPatch("73r1")
 			tinsert(dbg.minipatches, "73r1")
+			HasMPatched = true
+		end
+		if NP[5] then
+			nibRealUI:MiniPatch("73r5")
+			tinsert(dbg.minipatches, "73r5")
+			HasMPatched = true
+		end
+		if NP[6] then
+			nibRealUI:MiniPatch("73r6")
+			tinsert(dbg.minipatches, "73r6")
 			HasMPatched = true
 		end
 		

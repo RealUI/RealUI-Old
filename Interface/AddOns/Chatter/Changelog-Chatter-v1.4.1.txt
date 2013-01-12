@@ -1,0 +1,19 @@
+tag v1.4.1
+22380b425095170ad724ea1f86f4b425244472e9
+durcyn <durcyn@gmail.com>
+2013-01-05 19:20:18 -0600
+
+v1.4.1
+
+
+--------------------
+
+durcyn:
+	- leave color as-is instead of rewriting to grey when we can't find a class
+	- Version: @project-version@
+Benjamin Staneck:
+	- preferredIndex = 3 => STATICPOPUP_NUMDIALOGS
+durcyn:
+	- It's INSTANCE_CHAT, not INSTANCE, asshole. (me)
+	- re-fix for empty battle.net class names
+	- restore battle.net class color functionality, now with less derp

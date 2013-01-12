@@ -25,6 +25,7 @@ Raven.classSpells.ROGUE = {
 	{ "Expose Armor", DEBUFF, p.Purple2, id = 8647 },
 	{ "Fan of Knives", nil, p.Purple1, id = 51723 },
 	{ "Feint", BUFF, p.Purple1, id = 1966 },
+	{ "Find Weakness", BUFF, p.Green2, id = 91023 },
 	{ "Garrote", DEBUFF, p.Red2, id = 703 },
 	{ "Garrote - Silence", DEBUFF, p.Red2, id = 1330 },
 	{ "Gouge", DEBUFF, p.Red1, cooldown = true, id = 1776 },
@@ -40,7 +41,7 @@ Raven.classSpells.ROGUE = {
 	{ "Prey on the Weak", DEBUFF, p.Red1, id = 131511 },
 	{ "Recuperate", BUFF, p.Green2, id = 73651 },
 	{ "Redirect", nil, p.Orange2, cooldown = true, id = 73981 }, -- Cataclysm level 83
-	{ "Revealing Strike", BUFF, p.Brown3, id = 84617 },
+	{ "Revealing Strike", DEBUFF, p.Brown3, id = 84617 },
 	{ "Rupture", DEBUFF, p.Red1, id = 1943 },
 	{ "Sap", DEBUFF, p.Orange3,  id = 6770 },
 	{ "Shadow Blades", BUFF, p.Blue3, cooldown = true, id = 121471 },

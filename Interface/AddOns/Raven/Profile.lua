@@ -200,7 +200,7 @@ function MOD:SetInternalCooldownDefaults()
 	local ict = MOD.DefaultProfile.global.InternalCooldowns
 	for _, cd in pairs(MOD.internalCooldowns) do
 		local name, _, icon = GetSpellInfo(cd.id)
-		if name then
+		if name and (not ict[name] or not cd.item or IsUsableItem(cd.item)) then 
 			local t = { id = cd.id, duration = cd.duration, icon = icon, item = cd.item, class = cd.class }
 			if cd.cancel then
 				t.cancel = {}
@@ -389,22 +389,29 @@ end
 
 -- Add a texture to the icons cache
 function MOD:SetIcon(name, texture)
-	if name and texture and (iconCache[name] ~= name) then iconCache[name] = texture end
+	if name and texture then iconCache[name] = texture end -- add to the in-memory icon cache
 end
 
 -- Get a texture from the icons cache, if not there try to get by spell name and cache if found.
 -- If not found then look up spell identifier and use it to locate a texture.
 function MOD:GetIcon(name, spellID)
-	if not name or (name == "none") or (name == "") then return nil end
-	if string.find(name, "^#%d+") then local id = tonumber(string.sub(name, 2)); if id then name = GetSpellInfo(id) end if not name then return nil end end
-	local tex = iconCache[name] -- this is initialized from the player's spell book
-	if not tex then
-		local n, _
+	if not name or (name == "none") or (name == "") then return nil end -- make sure valid name string
+	
+	local override = MOD.db.global.SpellIcons[name] -- check the spell icon override cache for an overriding spell name or numeric id
+	if override and (override ~= "none") and (override ~= "") then name = override end -- make sure it is valid too
+	
+	local n, _, tex
+	local id = nil -- next check if the name is a numeric spell id (with or without preceding # sign)
+	if string.find(name, "^#%d+") then id = tonumber(string.sub(name, 2)) else id = tonumber(name) end
+	if id then n, _, tex = GetSpellInfo(id); if n then return tex else return nil end end -- return icon looked up by spell id (note: no valid name so return nil if not found)
+	
+	tex = iconCache[name] -- check the in-memory icon cache which is initialized from player's spell book
+	if not tex then -- if not found then try to look it up through spell API
 		n, _, tex = GetSpellInfo(name) -- first try to find it based on the name
 		if n and tex then
 			iconCache[name] = tex -- only cache textures found by looking up the name
 		else
-			local id = spellID or MOD:GetSpellID(name)
+			id = spellID or MOD:GetSpellID(name)
 			if id then _, _, tex = GetSpellInfo(id) end -- then try based on id
 		end
 	end
@@ -459,9 +466,10 @@ function MOD:GetLabel(name, spellID)
 end
 
 -- Reset all labels to default values
-function MOD:ResetLabelDefaults()
-	for name in pairs(MOD.db.global.Labels) do MOD.db.global.Labels[name] = nil end
-end
+function MOD:ResetLabelDefaults() table.wipe(MOD.db.global.Labels) end
+
+-- Reset all icons to default values
+function MOD:ResetIconDefaults() table.wipe(MOD.db.global.SpellIcons) end
 
 -- Add a sound to the cache
 function MOD:SetSound(name, sound) if name then MOD.db.global.Sounds[name] = sound end end
@@ -475,7 +483,7 @@ function MOD:GetSound(name, spellID)
 end
 
 -- Reset all sounds to default values
-function MOD:ResetSoundDefaults() for name in pairs(MOD.db.global.Sounds) do MOD.db.global.Sounds[name] = nil end end
+function MOD:ResetSoundDefaults() table.wipe(MOD.db.global.Sounds) end
 
 -- Add a spell duration to the per-profile cache, always save latest value since changes with equipped haste
 function MOD:SetDuration(name, duration)
@@ -676,6 +684,7 @@ MOD.DefaultProfile = {
 		Labels = {},					-- cache of labels for actions and spells
 		Sounds = {},					-- cache of sounds for actions and spells
 		SpellColors = {},				-- cache of colors for actions and spells
+		SpellIcons = {},				-- cache of spell icons that override default icons
 		SpellIDs = {},					-- cache of spell ids that had to be looked up
 		Settings = {},					-- settings table indexed by bar group names
 		Defaults = {},					-- default settings for bar group layout, fonts and textures
@@ -725,6 +734,12 @@ MOD.DefaultProfile = {
 		SoundChannel = "Master",		-- by default, use the Master sound channel
 		HideOmniCC = false,				-- hide OmniCC counts on all bar group icons
 		HideBorder = false,				-- hide custom border in all bar groups
+		TukuiSkin = true,				-- skin with Tukui borders
+		TukuiFont = true,				-- skin with Tukui fonts
+		TukuiScale = true,				-- skin Tukui with pixel perfect size and position
+		PixelPerfect = false,			-- enable pixel perfect size and position
+		RectIcons = false,				-- enable rectangular icons
+		DefaultBorderColor = Raven_HexColor("ffffff"), -- icon border color when "None" is selected
 		Minimap = { hide = false, minimapPos = 180, radius = 80, }, -- saved DBIcon minimap settings
 		InCombatBar = {},				-- shared settings for the in-combat bar
 	},

@@ -1,0 +1,15 @@
+
+GridStatusRaidDebuff:Debuff(en_zone, first, second, icon_priority, color_priority, timer, stackable, color, default_disable, noicon)
+zone - name of zone
+First - SpellId
+Second - Order (the order they show up when listed)
+icon_priority - Icon Priority (larger is higher priority)
+color_priority - Color Priority (larger is higher priority)
+timer - Show remaining timer
+stackable - show debuff stacks
+color - color if no icon
+default_disable - If true, don't show debuff by default
+noicon - show color but no icon
+
+Note: Debuffs are detected by name by Grid, not by spellid. So there is no need to add multiple debuffs of the same name if there are different spell ids by difficulty and such.
+

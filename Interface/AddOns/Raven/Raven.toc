@@ -1,11 +1,11 @@
-## Interface: 50001
+## Interface: 50100
 ## Title: Raven
 ## Notes: Monitors spells, provides timers, cooldowns, action bar highlights, helpful notifications
 ## Author: Tomber
 ## DefaultState: enabled
 ## OptionalDependencies: Masque
 ## SavedVariables: RavenDB
-## X-Curse-Packaged-Version: r267
+## X-Curse-Packaged-Version: r282
 ## X-Curse-Project-Name: Raven
 ## X-Curse-Project-ID: raven
 ## X-Curse-Repository-ID: wow/raven/mainline

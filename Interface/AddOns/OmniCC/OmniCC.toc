@@ -1,19 +1,18 @@
-## Interface: 50001
+## Interface: 50100
 ## Title: OmniCC
 ## Notes: Cooldown count for everything
 ## Notes-koKR: 모든 것을 위한 쿨다운 카운트
 ## Author: Tuller
-## Version: 5.0.3
+## Version: 5.1.2
 ## SavedVariables: OmniCC4Config
 
-embeds.xml
-localization.xml
-OmniCC.lua
-timer.lua
-aniUpdater.lua
-classicUpdater.lua
+libs\libs.xml
+localization\localization.xml
 
-effects\alert.lua
-effects\activate.lua
-effects\pulse.lua
-effects\shine.lua
+main.lua
+extras.lua
+
+core\core.xml
+settings\settings.xml
+engines\engines.xml
+effects\effects.xml

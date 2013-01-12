@@ -1,11 +1,6 @@
 local nibRealUI = LibStub("AceAddon-3.0"):GetAddon("nibRealUI")
 local L = LibStub("AceLocale-3.0"):GetLocale("nibRealUI")
 local LSM = LibStub("LibSharedMedia-3.0")
-local mass
-
-if IsAddOnLoaded("Massive") then
-	mass = LibStub:GetLibrary("Massive")
-end
 
 local _
 local Tablet20 = LibStub("Tablet-2.0")
@@ -1371,24 +1366,26 @@ local function Currency_ResetWeeklyValues()
 end
 
 local function Currency_GetWeeklyValues()
-	local currencyName, currencyQuantity, currencyIsDiscovered
-	local valorWeek, conquestWeek = 0, 0
+	local Name, earnedTotal, earnedThisWeek, weeklyMax, IsDiscovered
+	local valorTotal, valorThisWeek, valorWeeklyMax, conquestTotal, conquestThisWeek, conquestWeeklyMax = 0,0,0,0,0,0
 	
 	-- Valor
-	local _, _, _, _, _, _, ppQuantity = GetLFGDungeonRewardCapBarInfo(301)
-	currencyName, _, _, _, _, _, currencyIsDiscovered = GetCurrencyInfo(396)
-	if currencyName and currencyIsDiscovered then
-		valorWeek = ppQuantity or 0
+	Name, earnedTotal, _, earnedThisWeek, weeklyMax, _, IsDiscovered = GetCurrencyInfo(396)
+	if Name and IsDiscovered then
+		valorTotal = earnedTotal or 0
+		valorThisWeek = earnedThisWeek or 0
+		valorWeeklyMax = weeklyMax/100 or 0
 	end
 	
 	-- Conquest
-	currencyName, _, _, _, _, _, currencyIsDiscovered = GetCurrencyInfo(390)
-	if currencyName and currencyIsDiscovered then
-		local pointsThisWeek = GetPVPRewards()
-		conquestWeek = pointsThisWeek or 0
+	Name, earnedTotal, _, earnedThisWeek, weeklyMax, _, IsDiscovered = GetCurrencyInfo(390)
+	if Name and IsDiscovered then
+		conquestTotal = earnedTotal or 0
+		conquestThisWeek = earnedThisWeek or 0
+		conquestWeeklyMax = weeklyMax or 0
 	end
 	
-	return valorWeek, conquestWeek
+	return valorTotal, valorThisWeek, valorWeeklyMax, conquestTotal, conquestThisWeek, conquestWeeklyMax
 end
 
 local function Currency_GetVals()
@@ -1414,7 +1411,7 @@ local function Currency_Update(self)
 	
 	local money = GetMoney()
 	local currVals = Currency_GetVals()
-	local valorWeek, conquestWeek = Currency_GetWeeklyValues()
+	local valorTotal, valorThisWeek, valorWeeklyMax, conquestTotal, conquestThisWeek, conquestWeeklyMax = Currency_GetWeeklyValues()
 	
 	local curDate = date("%d/%m")
 	if strsub(curDate, 1, 1) == "0" then
@@ -1431,10 +1428,10 @@ local function Currency_Update(self)
 	if self.hasshown or self.initialized then
 		local oldVPW = dbg.currency[nibRealUI.realm][nibRealUI.faction][nibRealUI.name].vpw
 		local oldCPW = dbg.currency[nibRealUI.realm][nibRealUI.faction][nibRealUI.name].cpw
-		dbg.currency[nibRealUI.realm][nibRealUI.faction][nibRealUI.name].vpw = valorWeek
-		dbg.currency[nibRealUI.realm][nibRealUI.faction][nibRealUI.name].cpw = conquestWeek
+		dbg.currency[nibRealUI.realm][nibRealUI.faction][nibRealUI.name].vpw = valorThisWeek
+		dbg.currency[nibRealUI.realm][nibRealUI.faction][nibRealUI.name].cpw = conquestThisWeek
 	
-		if (valorWeek < oldVPW) or (conquestWeek < oldCPW) then
+		if (valorThisWeek < oldVPW) or (conquestThisWeek < oldCPW) then
 			-- Weekly reset
 			Currency_ResetWeeklyValues()
 		end
@@ -1482,8 +1479,8 @@ local function Currency_Update(self)
 							local vpStr = tostring(dbg.currency[kr][kf][kn].vp)
 							local cpStr = tostring(dbg.currency[kr][kf][kn].cp)
 							if dbg.currency[kr][kf][kn].level == MAX_PLAYER_LEVEL then
-								vpStr = vpStr.." ("..tostring(dbg.currency[kr][kf][kn].vpw or 0).."/1000)"
-								cpStr = cpStr.." ("..tostring(dbg.currency[kr][kf][kn].cpw or 0).."/1650)"
+								vpStr = vpStr.." ("..tostring(dbg.currency[kr][kf][kn].vpw or 0).."/"..valorWeeklyMax..")"
+								cpStr = cpStr.." ("..tostring(dbg.currency[kr][kf][kn].cpw or 0).."/"..conquestWeeklyMax..")"
 							end
 							
 							local classColor = nibRealUI:GetClassColor(dbg.currency[kr][kf][kn].class, true)
@@ -1625,7 +1622,14 @@ function InfoLine_Bag_Update(self)
 end
 
 function InfoLine_Bag_OnMouseDown(self)
-	ToggleBackpack()
+	if ContainerFrame1:IsShown() then
+		ToggleBackpack()
+	else
+		ToggleBackpack()
+		for i = 1, NUM_BAG_SLOTS do
+			ToggleBag(i)
+		end
+	end
 end
 
 ---- Durability
@@ -2156,7 +2160,7 @@ local function Guild_Update(self)
 		end
 		
 		-- Mobile
-		if mobile then
+		if mobile and (not online) then
 			cname = ChatFrame_GetMobileEmbeddedTexture(73/255, 177/255, 73/255)..cname
 			zone = REMOTE_CHAT
 		end
@@ -2169,7 +2173,7 @@ local function Guild_Update(self)
 		end
 		
 		-- Add to list
-		if online then
+		if (online or mobile) then
 			tinsert(GuildTabletData, gPrelist)
 			guildonline = guildonline + 1
 		end

@@ -9,7 +9,7 @@ local function log_dispell(set, dispell)
 	if player then
 		-- Add to player dispels.
 		player.dispells = player.dispells + 1
-		
+
 		-- Also add to set total dispels.
 		set.dispells = set.dispells + 1
 	end
@@ -20,7 +20,7 @@ local function log_interrupt(set, interrupt)
 	if player then
 		-- Add to player interrupts.
 		player.interrupts = player.interrupts + 1
-		
+
 		-- Also add to set total interrupts.
 		set.interrupts = set.interrupts + 1
 	end
@@ -31,14 +31,14 @@ local dispell = {}
 local function SpellDispel(timestamp, eventtype, srcGUID, srcName, srcFlags, dstGUID, dstName, dstFlags, ...)
 	-- Dispells
 	local spellId, spellName, spellSchool, sextraSpellId, sextraSpellName, sextraSchool, auraType = ...
-	
+
 	dispell.playerid = srcGUID
 	dispell.playername = srcName
 	dispell.spellid = spellId
 	dispell.spellname = spellName
 	dispell.extraspellid = sextraSpellId
-	dispell.extraspellname = sextraSpellName		
-	
+	dispell.extraspellname = sextraSpellName
+
 	log_dispell(Skada.current, dispell)
 	log_dispell(Skada.total, dispell)
 end
@@ -46,16 +46,16 @@ end
 local function SpellInterrupt(timestamp, eventtype, srcGUID, srcName, srcFlags, dstGUID, dstName, dstFlags, ...)
 	-- Interrupts
 	local spellId, spellName, spellSchool, sextraSpellId, sextraSpellName, sextraSchool = ...
-	
+
 	dispell.playerid = srcGUID
 	dispell.playername = srcName
 	dispell.spellid = spellId
 	dispell.spellname = spellName
 	dispell.extraspellid = sextraSpellId
 	dispell.extraspellname = sextraSpellName
-	
+
 	Skada:FixPets(dispell)
-		
+
 	log_interrupt(Skada.current, dispell)
 	log_interrupt(Skada.total, dispell)
 end
@@ -63,10 +63,10 @@ end
 function mod:Update(win, set)
 	local max = 0
 	local nr = 1
-	
+
 	for i, player in ipairs(set.players) do
 		if player.dispells > 0 then
-		
+
 			local d = win.dataset[nr] or {}
 			win.dataset[nr] = d
 			d.value = player.dispells
@@ -80,17 +80,17 @@ function mod:Update(win, set)
 			nr = nr + 1
 		end
 	end
-	
+
 	win.metadata.maxvalue = max
 end
 
 function mod:OnEnable()
 	mod.metadata = {showspots = true}
-	
+
 	Skada:RegisterForCL(SpellDispel, 'SPELL_STOLEN', {src_is_interesting = true})
 	Skada:RegisterForCL(SpellDispel, 'SPELL_DISPEL', {src_is_interesting = true})
 	Skada:RegisterForCL(SpellInterrupt, 'SPELL_INTERRUPT', {src_is_interesting = true})
-	
+
 	Skada:AddMode(self)
 end
 

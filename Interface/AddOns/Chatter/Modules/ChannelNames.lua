@@ -1,5 +1,7 @@
+local addon, private = ...
+local Chatter = LibStub("AceAddon-3.0"):GetAddon(addon)
 local mod = Chatter:NewModule("Channel Names", "AceHook-3.0", "AceEvent-3.0")
-local L = LibStub("AceLocale-3.0"):GetLocale("Chatter")
+local L = LibStub("AceLocale-3.0"):GetLocale(addon)
 mod.modName = L["Channel Names"]
 
 local gsub = _G.string.gsub
@@ -15,17 +17,16 @@ local empty_tag = L["$$EMPTY$$"];
 local defaults = {
 	profile = {
 		channels = {
-			[L["Guild"]] = "[G]",
-			[L["Officer"]] = "[O]",
-			[L["Party"]] = "[P]",
-			[PARTY_LEADER] = "[PL]",
+			[CHAT_MSG_GUILD] = "[G]",
+			[CHAT_MSG_OFFICER] = "[O]",
+			[CHAT_MSG_PARTY] = "[P]",
+			[CHAT_MSG_PARTY_LEADER] = "[PL]",
 			[L["Dungeon Guide"]] = "[DG]",
-			[L["Raid"]] = "[R]",
-			[L["Raid Leader"]] = "[RL]",
-			[L["Raid Warning"]] = "[RW]",
-			[L["LookingForGroup"]] = "[LFG]",
-			[L["Battleground"]] = "[BG]",
-			[L["Battleground Leader"]] = "[BL]",
+			[CHAT_MSG_RAID] = "[R]",
+			[CHAT_MSG_RAID_LEADER] = "[RL]",
+			[CHAT_MSG_RAID_WARNING] = "[RW]",
+			[INSTANCE_CHAT] = "[I]",
+			[INSTANCE_CHAT_LEADER] = "[IL]",
 			-- Not localized here intentionally
 			["Whisper From"] = "[W:From]",
 			["Whisper To"] = "[W:To]",
@@ -179,12 +180,14 @@ function mod:AddMessage(frame, text, ...)
 		text = gsub(text, "^|Hchannel:(%S-)|h(%[([%d. ]*)([^%]]+)%])|h ", replaceChannel)
 		text = gsub(text, "^(%[(" .. L["Raid Warning"] .. ")%]) ", replaceChannelRW)
 	end
-	text = gsub(text, L["To (|Hplayer.-|h):"], mod.db.profile.channels["Whisper To"] .. (mod.db.profile.addSpace and " %1:" or "%1:"))
-	text = gsub(text, L["(|Hplayer.-|h) whispers:"], mod.db.profile.channels["Whisper From"] .. (mod.db.profile.addSpace and " %1:" or "%1:"))
-	text = gsub(text, L["To (|HBNplayer.-|h):"], mod.db.profile.channels["BN Whisper To"] .. (mod.db.profile.addSpace and " %1:" or "%1:"))
-	text = gsub(text, L["To <Away>(|HBNplayer.-|h):"], mod.db.profile.channels["away BN Whisper To"] .. (mod.db.profile.addSpace and " %1:" or "%1:"))
-	text = gsub(text, L["To <Busy>(|HBNplayer.-|h):"], mod.db.profile.channels["busy BN Whisper To"] .. (mod.db.profile.addSpace and " %1:" or "%1:"))
-	text = gsub(text, L["(|HBNplayer.-|h): whispers:"], mod.db.profile.channels["BN Whisper From"] .. (mod.db.profile.addSpace and " %1:" or "%1:"))
+	if mod.db.profile.channels then
+		text = gsub(text, L["To (|Hplayer.-|h):"], (mod.db.profile.channels["Whisper To"] or "[W:From]") .. (mod.db.profile.addSpace and " %1:" or "%1:"))
+		text = gsub(text, L["(|Hplayer.-|h) whispers:"], (mod.db.profile.channels["Whisper From"] or "[W:To]") .. (mod.db.profile.addSpace and " %1:" or "%1:"))
+		text = gsub(text, L["To (|HBNplayer.-|h):"], (mod.db.profile.channels["BN Whisper To"] or "[BN:From]") .. (mod.db.profile.addSpace and " %1:" or "%1:"))
+		text = gsub(text, L["To <Away>(|HBNplayer.-|h):"], (mod.db.profile.channels["away BN Whisper To"] or "[BN:To]") .. (mod.db.profile.addSpace and " %1:" or "%1:"))
+		text = gsub(text, L["To <Busy>(|HBNplayer.-|h):"], (mod.db.profile.channels["busy BN Whisper To"] or "<Away>[BN:To]") .. (mod.db.profile.addSpace and " %1:" or "%1:"))
+		text = gsub(text, L["(|HBNplayer.-|h): whispers:"], (mod.db.profile.channels["BN Whisper From"] or "<Busy>[BN:To") .. (mod.db.profile.addSpace and " %1:" or "%1:"))
+	end
 	return self.hooks[frame].AddMessage(frame, text, ...)
 end
 

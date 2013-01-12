@@ -196,12 +196,12 @@ local function UpdateFrame(self)
 end
 
 local function FixCastbar(self)
-	self.border:Hide()
-
-	--self:SetHeight(3)--db.barsize.normal.height + db.resolution[ndbc.resolution].height)
-	-- self:SetWidth(80)
-	--self:ClearAllPoints()
-	--self:SetPoint("TOP", frame.barFrame.healthBar, "BOTTOM", 0, -2)
+	--self.border:Hide()
+	if not self.barFrame then return end
+	
+	self.barFrame.castBar:SetHeight(3)--db.barsize.normal.height + db.resolution[ndbc.resolution].height)
+	self.barFrame.castBar:ClearAllPoints()
+	self.barFrame.castBar:SetPoint("TOP", self.barFrame.healthBar, "BOTTOM", 0, -2)
 	--print("CastBar Fixed!!")
 end
 
@@ -306,8 +306,8 @@ local CreateFrame = function(frame)
 	frame.barFrame.raid:SetWidth(14)
 	
 	frame.barFrame.castBar:HookScript("OnShow", OnShow)
-	frame.barFrame.castBar:HookScript("OnSizeChanged", OnSizeChanged)
-	frame.barFrame.castBar:HookScript("OnValueChanged", OnValueChanged)
+	frame.barFrame.castBar:HookScript("OnSizeChanged", function() OnSizeChanged(frame) end)
+	frame.barFrame.castBar:HookScript("OnValueChanged", function() OnValueChanged(frame) end)
 	frame.barFrame.castBar:HookScript("OnEvent", OnEvent)
 	frame.barFrame.castBar:RegisterEvent("UNIT_SPELLCAST_INTERRUPTIBLE")
 	frame.barFrame.castBar:RegisterEvent("UNIT_SPELLCAST_NOT_INTERRUPTIBLE")

@@ -32,7 +32,7 @@ end
 
 local function log_auraapply(set, aura)
 	if set then
-		
+
 		-- Get the player.
 		local player = Skada:get_player(set, aura.playerid, aura.playername)
 		if player then
@@ -45,13 +45,13 @@ local function log_auraapply(set, aura)
 				player.auras[aura.spellname].active = player.auras[aura.spellname].active + 1
 			end
 		end
-		
+
 	end
 end
 
 local function log_auraremove(set, aura)
 	if set then
-		
+
 		-- Get the player.
 		local player = Skada:get_player(set, aura.playerid, aura.playername)
 		if player then
@@ -65,7 +65,7 @@ local function log_auraremove(set, aura)
 				end
 			end
 		end
-		
+
 	end
 end
 
@@ -78,7 +78,7 @@ local function AuraApplied(timestamp, eventtype, srcGUID, srcName, srcFlags, dst
 	aura.spellid = spellId
 	aura.spellname = spellName
 	aura.auratype = auraType
-	
+
 	Skada:FixPets(aura)
 	log_auraapply(Skada.current, aura)
 	log_auraapply(Skada.total, aura)
@@ -119,17 +119,17 @@ local function updatefunc(auratype, win, set)
 				aurauptime = aurauptime + spell.uptime
 			end
 		end
-		
+
 		if auracount > 0 then
 			-- Calculate player max possible uptime.
 			local maxtime = Skada:PlayerActiveTime(set, player)
-			
+
 			-- Now divide by the number of spells to get the average uptime.
 			local uptime = min(maxtime, aurauptime / auracount)
-			
+
 			local d = win.dataset[nr] or {}
 			win.dataset[nr] = d
-			
+
 			d.id = player.id
 			d.value = uptime
 			d.label = player.name
@@ -139,11 +139,11 @@ local function updatefunc(auratype, win, set)
 			if uptime > max then
 				max = uptime
 			end
-			
+
 			nr = nr + 1
 		end
 	end
-	
+
 	win.metadata.maxvalue = max
 end
 
@@ -153,11 +153,11 @@ local function detailupdatefunc(auratype, win, set, playerid)
 	local nr = 1
 	local max = 0
 	local player = Skada:find_player(set, playerid)
-	
+
 	if player then
 		-- Calculate player max possible uptime.
 		local maxtime = Skada:PlayerActiveTime(set, player)
-		
+
 		win.metadata.maxvalue = maxtime
 		for spellname, spell in pairs(player.auras) do
 			if spell.auratype == auratype then
@@ -165,19 +165,19 @@ local function detailupdatefunc(auratype, win, set, playerid)
 
 				local d = win.dataset[nr] or {}
 				win.dataset[nr] = d
-				
+
 				d.id = spell.name
 				d.value = uptime
 				d.label = spell.name
 				d.icon = select(3, GetSpellInfo(spell.id))
 				d.spellid = spell.id
 				d.valuetext = ("%02.1f%%"):format(uptime / maxtime * 100)
-				
+
 				nr = nr + 1
 			end
 		end
 	end
-	
+
 end
 
 function mod:Update(win, set)
@@ -215,7 +215,7 @@ function mod:OnEnable()
 
 	Skada:RegisterForCL(AuraApplied, 'SPELL_AURA_APPLIED', {src_is_interesting = true})
 	Skada:RegisterForCL(AuraRemoved, 'SPELL_AURA_REMOVED', {src_is_interesting = true})
-	
+
 	self:ScheduleRepeatingTimer("Tick", 1)
 
 	Skada:AddMode(self)

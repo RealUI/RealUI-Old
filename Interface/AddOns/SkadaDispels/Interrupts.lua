@@ -39,10 +39,10 @@ function mod:Update(win, set)
 	local nr = 1
 	for i, player in ipairs(set.players) do
 		if player.interrupts > 0 then
-		
+
 			local d = win.dataset[nr] or {}
 			win.dataset[nr] = d
-			
+
 			d.value = player.interrupts
 			d.label = player.name
 			d.valuetext = tostring(player.interrupts)
@@ -51,10 +51,10 @@ function mod:Update(win, set)
 			if player.interrupts > max then
 				max = player.interrupts
 			end
-			
+
 			nr = nr + 1
 		end
 	end
-	
+
 	win.metadata.maxvalue = max
 end

@@ -97,7 +97,7 @@ function ArkInventory.TooltipSetBattlepet( tooltip, h, i )
 	
 	tooltip:ClearLines( )
 	
-	if i and i.cn and i.cn ~= "" then
+	if i and i.cn and ( i.cn ~= "" ) then
 		name = string.format( "%s (%s)", name, i.cn )
 	end
 	
@@ -201,9 +201,11 @@ function ArkInventory.TooltipSetBattlepet( tooltip, h, i )
 		tooltip:AddLine( description, nil, nil, nil, true )
 	end
 	
+--	tooltip:AddLine( " " )
+--	tooltip:AddLine( BATTLE_PET_TOOLTIP_CLICK )
+	
 	tooltip:Show( )
 	
-	--ArkInventory.TooltipHook( tooltip, h )
 	ArkInventory.TooltipAddBattlepetDetail( tooltip, speciesID, i )
 	
 end
@@ -447,7 +449,7 @@ end
 
 function ArkInventory.TooltipHookSetUnit( ... )
 	
-	if ArkInventory.db.global.option.tooltip.battlepet.mouseover.enable then
+	if ( ArkInventory:IsEnabled( ) ) and ( ArkInventory.db.global.option.tooltip.battlepet.mouseover.enable ) then
 		
 		local tooltip = ...
 		
@@ -524,7 +526,7 @@ function ArkInventory.TooltipAddBattlepetDetail( tooltip, speciesID, i )
 			info = string.format( "%s:  ", ArkInventory.Localise["BATTLEPET_OPPONENT_KNOWN"] )
 			
 			local level = select( 3, C_PetJournal.GetPetInfoByPetID( petID ) )
-			local isWild, canBattle = select( 13, C_PetJournal.GetPetInfoByPetID( petID ) )
+			local isWild, canBattle = select( 14, C_PetJournal.GetPetInfoByPetID( petID ) )
 			
 			local rarity = select( 5, C_PetJournal.GetPetStats( petID ) )
 			if isWild and canBattle then
@@ -798,7 +800,7 @@ function ArkInventory.TooltipShowCompare( ... )
 	if not self or not self.ARK_Data then return end
 	
 	local objectlink = self.ARK_Data[1]
-	if not objectlink or type( objectlink ) ~= "string" then return end
+	if ( not objectlink ) or ( type( objectlink ) ~= "string" ) then return end
 	
 	--ArkInventory.Output( self.ARK_Data[1], " / ", self.ARK_Data[2], " / ", self.ARK_Data[3], " / ", self.ARK_Data[4] )
 	

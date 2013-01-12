@@ -4,13 +4,13 @@
 	<Frame name="EasyMail_MainFrame" hidden="false" parent="UIParent">
 		<Scripts>
 			<OnLoad>
-				EasyMail_OnLoad(self);
+				EasyMail.OnLoad(self);
 			</OnLoad>
 			<OnEvent>
-				EasyMail_OnEvent(self, event, ...);
+				EasyMail.OnEvent(self, event, ...);
 			</OnEvent>
       <OnUpdate>
-        EasyMail_OnUpdate(self, elapsed);
+        EasyMail.OnUpdate(self, elapsed);
       </OnUpdate>
 		</Scripts>
 	</Frame>
@@ -28,7 +28,7 @@
     </Anchors>
     <Scripts>
       <OnClick>
-        EasyMail_Forward();
+        EasyMail.Forward();
       </OnClick>
     </Scripts>
   </Button>
@@ -42,47 +42,65 @@
     </HitRectInsets>
     <Scripts>
       <OnMouseUp>
-        EasyMail_CheckButtonOnMouseUp(self);
+        EasyMail.CheckButtonOnMouseUp(self);
       </OnMouseUp>
     </Scripts>
   </CheckButton>
 
   <Button name="EasyMail_CheckAllButton" inherits="UIPanelButtonTemplate" parent="InboxFrame" Text="EASYMAIL_CHECKALLTEXT">
     <Size>
-      <AbsDimension x="100" y="22"/>
+      <AbsDimension x="86" y="22"/>
     </Size>
     <Anchors>
       <Anchor point="TOPLEFT">
         <Offset>
-          <AbsDimension x="76" y="-30"/>
+          <AbsDimension x="56" y="-32"/>
         </Offset>
       </Anchor>
     </Anchors>
     <Scripts>
       <OnClick>
-        EasyMail_CheckAll();
+        EasyMail.CheckAll();
       </OnClick>
     </Scripts>
   </Button>
 
-  <Button name="EasyMail_GetAllButton" inherits="UIPanelButtonTemplate" parent="InboxFrame" Text="EASYMAIL_GETALLTEXT">
+  <Button name="EasyMail_CheckPageButton" inherits="UIPanelButtonTemplate" parent="EasyMail_CheckAllButton" Text="EASYMAIL_CHECKPAGETEXT">
     <Size>
-      <AbsDimension x="140" y="22"/>
+      <AbsDimension x="90" y="22"/>
     </Size>
     <Anchors>
-      <Anchor point="TOPLEFT">
+      <Anchor point="TOPLEFT" relativePoint="TOPRIGHT">
         <Offset>
-          <AbsDimension x="185" y="-30"/>
+          <AbsDimension x="1" y="0"/>
         </Offset>
       </Anchor>
     </Anchors>
     <Scripts>
       <OnClick>
-        EasyMail_GetAll();
+        EasyMail.CheckPage();
       </OnClick>
     </Scripts>
   </Button>
 
+  <Button name="EasyMail_GetAllButton" inherits="UIPanelButtonTemplate" parent="EasyMail_CheckPageButton" Text="EASYMAIL_GETALLTEXT">
+    <Size>
+      <AbsDimension x="99" y="22"/>
+    </Size>
+    <Anchors>
+      <Anchor point="TOPLEFT" relativePoint="TOPRIGHT">
+        <Offset>
+          <AbsDimension x="1" y="0"/>
+        </Offset>
+      </Anchor>
+    </Anchors>
+    <Scripts>
+      <OnClick>
+        EasyMail.GetAll();
+      </OnClick>
+    </Scripts>
+  </Button>
+  
   <Button name="EasyMail_AttButton" inherits="UIPanelButtonTemplate" text="EASYMAIL_ATTBUTTONTEXT">
     <Size>
       <AbsDimension x="85" y="22"/>
@@ -90,7 +108,7 @@
     <Scripts>
       <OnClick>
         PlaySound("igMainMenuOptionCheckBoxOn");
-        EasyMail_MailAtt(InboxFrame.openMailID);
+        EasyMail.MailAtt(InboxFrame.openMailID);
       </OnClick>
     </Scripts>
   </Button>
@@ -102,7 +120,7 @@
     <Anchors>
       <Anchor point="TOPLEFT" relativePoint="TOPRIGHT">
         <Offset>
-          <AbsDimension x="0" y="2"/>
+          <AbsDimension x="-4" y="2"/>
         </Offset>
       </Anchor>
     </Anchors>
@@ -140,7 +158,7 @@
     </HighlightTexture>
     <Scripts>
       <OnClick>
-        EasyMail_OnClick();
+        EasyMail.OnClick();
       </OnClick>
     </Scripts>
   </Button>
@@ -148,10 +166,10 @@
   <Button name="EasyMailInvisibleButtonTemplate" virtual="true">
     <Scripts>
       <OnEnter>
-        EasyMail_StopCounting();
+        EasyMail.StopCounting();
       </OnEnter>
       <OnLeave>
-        EasyMail_StartCounting();
+        EasyMail.StartCounting();
       </OnLeave>
     </Scripts>
   </Button>
@@ -181,14 +199,14 @@
         self:RegisterForClicks("LeftButtonUp", "RightButtonUp");
       </OnLoad>
       <OnClick>
-        EasyMail_DropdownButtonOnClick(self, button);
+        EasyMail.DropdownButtonOnClick(self, button);
       </OnClick>
       <OnEnter>
-        EasyMail_StopCounting();
+        EasyMail.StopCounting();
         getglobal(self:GetName().."Highlight"):Show();
       </OnEnter>
       <OnLeave>
-        EasyMail_StartCounting();
+        EasyMail.StartCounting();
         getglobal(self:GetName().."Highlight"):Hide();
       </OnLeave>
     </Scripts>
@@ -297,7 +315,7 @@
     </Frames>
     <Scripts>
       <OnShow>
-        EasyMail_DropdownOnShow(self);
+        EasyMail.DropdownOnShow(self);
       </OnShow>
     </Scripts>
   </Button>
@@ -308,7 +326,7 @@
     </Size>
     <Scripts>
       <OnVerticalScroll>
-        FauxScrollFrame_OnVerticalScroll(self, offset, EASYMAIL_BUTTONHEIGHT, EasyMail_DropdownUpdate)
+        FauxScrollFrame_OnVerticalScroll(self, offset, EasyMail.ButtonHeight, EasyMail.DropdownUpdate)
       </OnVerticalScroll>
     </Scripts>
   </ScrollFrame>

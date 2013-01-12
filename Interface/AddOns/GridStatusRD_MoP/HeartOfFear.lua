@@ -7,6 +7,13 @@ local zone = "Heart of Fear"
 -- Imperial Vizier Zor'lok trash
 -- Sra'thik Shield Master
 GridStatusRaidDebuff:Debuff(zone, 123417, 1, 1, 1, true, true) --Dismantled Armor (armor)
+-- Kor'thik Slicer
+GridStatusRaidDebuff:Debuff(zone, 123422, 1, 1, 1) -- Arterial Bleeding (dot)
+GridStatusRaidDebuff:Debuff(zone, 123434, 1, 2, 2) -- Gouge Throat (silence)
+-- Set'thik Swiftblade
+GridStatusRaidDebuff:Debuff(zone, 123436, 1, 1, 1) -- Riposte (disarm)
+-- Set'thik Fanatic
+GridStatusRaidDebuff:Debuff(zone, 123497, 1, 1, 1) -- Gale Force Winds (slows casting)
 
 -- Blade Lord Ta'yak trash
 -- Instructor Kli'thak
@@ -29,7 +36,7 @@ GridStatusRaidDebuff:Debuff(zone, 125907, 6, 1, 1) --Cry Havoc
 
 --Imperial Vizier Zor'lok
 GridStatusRaidDebuff:BossName(zone, 10, "Imperial Vizier Zor'lok")
---GridStatusRaidDebuff:Debuff(zone, 122760, 11, 3, 3) --Exhale
+GridStatusRaidDebuff:Debuff(zone, 122761, 11, 4, 4) --Exhale
 GridStatusRaidDebuff:Debuff(zone, 123812, 12, 1, 1) --Pheromones of Zeal
 GridStatusRaidDebuff:Debuff(zone, 122740, 13, 6, 6) --Convert (MC)
 GridStatusRaidDebuff:Debuff(zone, 122706, 14, 3, 3) --Noise Cancelling (AMZ)
@@ -38,7 +45,8 @@ GridStatusRaidDebuff:Debuff(zone, 122706, 14, 3, 3) --Noise Cancelling (AMZ)
 GridStatusRaidDebuff:BossName(zone, 20, "Blade Lord Ta'yak")
 GridStatusRaidDebuff:Debuff(zone, 123474, 21, 1, 1, true, true) --Overwhelming Assault (tank stacks)
 GridStatusRaidDebuff:Debuff(zone, 122949, 22, 6, 6) --Unseen Strike (group up on target)
-GridStatusRaidDebuff:Debuff(zone, 124783, 23, 5, 5) --Storm Unleashed
+GridStatusRaidDebuff:Debuff(zone, 124783, 23, 4, 4) --Storm Unleashed
+GridStatusRaidDebuff:Debuff(zone, 123180, 24, 5, 5) --Windstep
 --GridStatusRaidDebuff:Debuff(zone, 123600, 24, 5, 5) --Storm Unleashed?
 
 --Garalon
@@ -64,14 +72,14 @@ GridStatusRaidDebuff:Debuff(zone, 122784, 52, 3, 3) --Reshape Life
 --Grand Empress Shek'zeer
 GridStatusRaidDebuff:BossName(zone, 60, "Grand Empress Shek'zeer")
 GridStatusRaidDebuff:Debuff(zone, 123707, 61, 5, 5, true, true) --Eyes of the Empress (tank stacks)
-GridStatusRaidDebuff:Debuff(zone, 125390, 62, 3, 3) --Fixate
+GridStatusRaidDebuff:Debuff(zone, 125390, 62, 6, 6) --Fixate
 GridStatusRaidDebuff:Debuff(zone, 123788, 63, 5, 5) --Cry of Terror (debuff that causes AoE)
 GridStatusRaidDebuff:Debuff(zone, 124097, 64, 4, 4) --Sticky Resin
 GridStatusRaidDebuff:Debuff(zone, 123184, 65, 7, 7) --Dissonance Field (unhealable)
 --GridStatusRaidDebuff:Debuff(zone, 125824, 65, 3, 3) --Trapped!
 GridStatusRaidDebuff:Debuff(zone, 124777, 66, 4, 4) --Poison Bomb
 GridStatusRaidDebuff:Debuff(zone, 124821, 67, 3, 3) --Poison-Drenched Armor
-GridStatusRaidDebuff:Debuff(zone, 124827, 68, 1, 1) --Poison Fumes
+--GridStatusRaidDebuff:Debuff(zone, 124827, 68, 1, 1) --Poison Fumes Is actually a buff
 GridStatusRaidDebuff:Debuff(zone, 124849, 69, 6, 6) --Consuming Terror (fear, dispellable)
 GridStatusRaidDebuff:Debuff(zone, 124863, 70, 6, 6) --Visions of Demise (fear/AoE, dispellable)
 GridStatusRaidDebuff:Debuff(zone, 124862, 71, 5, 5) --Visions of Demise: Target

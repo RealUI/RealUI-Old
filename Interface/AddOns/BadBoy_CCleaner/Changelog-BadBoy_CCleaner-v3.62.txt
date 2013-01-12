@@ -1,0 +1,15 @@
+------------------------------------------------------------------------
+r73 | funkydude | 2012-11-27 18:35:09 +0000 (Tue, 27 Nov 2012) | 1 line
+Changed paths:
+   A /tags/v3.62 (from /trunk:72)
+
+Tagging as v3.62
+------------------------------------------------------------------------
+r72 | funkydude | 2012-11-27 17:16:01 +0000 (Tue, 27 Nov 2012) | 1 line
+Changed paths:
+   M /trunk/BadBoy_CCleaner.lua
+   M /trunk/BadBoy_CCleaner.toc
+   M /trunk/SimpleOptions.lua
+
+remove some pointless widget names, toc 50100
+------------------------------------------------------------------------

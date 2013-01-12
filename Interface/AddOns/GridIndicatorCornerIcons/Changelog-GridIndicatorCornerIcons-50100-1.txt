@@ -1,0 +1,21 @@
+------------------------------------------------------------------------
+r74 | kunda | 2012-11-29 00:18:29 +0000 (Thu, 29 Nov 2012) | 1 line
+Changed paths:
+   A /tags/50100-1 (from /trunk:73)
+
+Tagging as 50100-1
+------------------------------------------------------------------------
+r73 | kunda | 2012-11-25 11:51:33 +0000 (Sun, 25 Nov 2012) | 2 lines
+Changed paths:
+   M /trunk/GridIndicatorCornerIcons-localization-deDE.lua
+   M /trunk/GridIndicatorCornerIcons-localization-enUS.lua
+   M /trunk/GridIndicatorCornerIcons-localization-koKR.lua
+   M /trunk/GridIndicatorCornerIcons-localization-ruRU.lua
+   M /trunk/GridIndicatorCornerIcons-localization-zhCN.lua
+   M /trunk/GridIndicatorCornerIcons-localization-zhTW.lua
+   M /trunk/GridIndicatorCornerIcons.lua
+   M /trunk/GridIndicatorCornerIcons.toc
+
+- added texCoords argument to SetIndicator()
+- added separate X-axis option for icon stack text offset 
+------------------------------------------------------------------------

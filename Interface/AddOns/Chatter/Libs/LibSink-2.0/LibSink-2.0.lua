@@ -1,6 +1,6 @@
 ﻿--[[
 Name: Sink-2.0
-Revision: $Rev: 81 $
+Revision: $Rev: 85 $
 Author(s): Rabbit (rabbit.magtheridon@gmail.com), Antiarc (cheal@gmail.com)
 Website: http://rabbit.nihilum.eu
 Documentation: http://wiki.wowace.com/index.php/Sink-2.0
@@ -21,7 +21,7 @@ If you derive from the library or change it in any way, you are required to cont
 -- Sink-2.0
 
 local SINK20 = "LibSink-2.0"
-local SINK20_MINOR = 90000 + tonumber(("$Revision: 81 $"):match("(%d+)"))
+local SINK20_MINOR = 90000 + tonumber(("$Revision: 85 $"):match("(%d+)"))
 
 local sink = LibStub:NewLibrary(SINK20, SINK20_MINOR)
 if not sink then return end
@@ -282,7 +282,7 @@ end
 sink.channelMapping = sink.channelMapping or {
 	[SAY] = "SAY",
 	[PARTY] = "PARTY",
-	[BATTLEGROUND] = "BATTLEGROUND",
+	[INSTANCE_CHAT] = "INSTANCE_CHAT",
 	[GUILD_CHAT] = "GUILD",
 	[OFFICER_CHAT] = "OFFICER",
 	[YELL] = "YELL",
@@ -328,7 +328,7 @@ local function channel(addon, text)
 	local loc = sink.storageForAddon[addon] and sink.storageForAddon[addon].sink20ScrollArea or "SAY"
 	local chan = sink.channelMapping[loc]
 	if chan == "GROUP" then
-		chan = select(2, IsInInstance()) == "pvp" and "BATTLEGROUND" or (UnitInRaid("player") and "RAID" or "PARTY")
+		chan = select(2, IsInInstance()) == "pvp" and "INSTANCE_CHAT" or (UnitInRaid("player") and "RAID" or "PARTY")
 		if chan == "PARTY" and GetNumSubgroupMembers() == 0 then chan = "SAY" end
 	elseif chan == "CHANNEL" then
 		local id, name = GetChannelName(loc)

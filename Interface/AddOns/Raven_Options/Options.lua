@@ -2585,7 +2585,7 @@ MOD.OptionsTable = {
 				},
 				OmniCCGroup = {
 					type = "group", order = 40, name = L["OmniCC"], inline = true,
-					hidden = function(info) return not IsAddOnLoaded("OmniCC") end,
+					hidden = function(info) return not OmniCC end,
 					args = {
 						Enable = {
 							type = "toggle", order = 10, name = L["Hide OmniCC"],
@@ -2595,43 +2595,104 @@ MOD.OptionsTable = {
 						},
 					},
 				},
-				CustomBorderGroup = {
-					type = "group", order = 40, name = L["Custom Border"], inline = true,
+				TukuiGroup = {
+					type = "group", order = 50, name = L["Tukui"], inline = true,
+					hidden = function(info) return not Raven.frame.SetTemplate end, -- check if Tukui frame API installed
 					args = {
 						Enable = {
-							type = "toggle", order = 10, name = L["Hide Custom Border"],
-							desc = L["By default, icons are displayed with a custom border and can be informatively colored using settings in the bar group Appearance tab. If this option is checked then custom borders are hidden."],
-							get = function(info) return MOD.db.global.HideBorder end,
-							set = function(info, value) MOD.db.global.HideBorder = value; MOD:UpdateAllBarGroups() end,
+							type = "toggle", order = 10, name = L["Enable"],
+							desc = L["If checked, icons and bars are skinned with Tukui borders (requires /reload)."],
+							get = function(info) return MOD.db.global.TukuiSkin end,
+							set = function(info, value) MOD.db.global.TukuiSkin = value; MOD:UpdateAllBarGroups() end,
+						},
+						Font = {
+							type = "toggle", order = 20, name = L["Font"],
+							disabled = function(info) return not MOD.db.global.TukuiSkin end,
+							desc = L["If checked, fonts are replaced with Tukui's normal font (requires /reload)."],
+							get = function(info) return MOD.db.global.TukuiFont end,
+							set = function(info, value) MOD.db.global.TukuiFont = value; MOD:UpdateAllBarGroups() end,
+						},
+						Scale = {
+							type = "toggle", order = 20, name = L["Pixel Perfect"],
+							disabled = function(info) return not MOD.db.global.TukuiSkin end,
+							desc = L["If checked, icons and bars will be adjusted for pixel perfect size and position (requires /reload)."],
+							get = function(info) return MOD.db.global.TukuiScale end,
+							set = function(info, value) MOD.db.global.TukuiScale = value; MOD:UpdateAllBarGroups() end,
 						},
 					},
 				},
 				ButtonFacadeGroup = {
-					type = "group", order = 40, name = L["Masque"], inline = true,
+					type = "group", order = 60, name = L["Masque"], inline = true,
 					hidden = function(info) return not MOD.MSQ end,
 					args = {
 						Enable = {
 							type = "toggle", order = 1, name = L["Enable"], width = "half",
-							desc = L["If checked, custom borders are automatically hidden and icons are skinned with Masque (may require /reload)."],
+							desc = L["If checked, custom borders are automatically hidden and icons are skinned with Masque (requires /reload)."],
 							get = function(info) return MOD.db.global.ButtonFacadeIcons end,
 							set = function(info, value) MOD.db.global.ButtonFacadeIcons = value; MOD:UpdateAllBarGroups() end,
 						},
 						NormalTexture = {
 							type = "toggle", order = 10, name = L["Color Normal Texture"],
+							disabled = function(info) return not MOD.db.global.ButtonFacadeIcons end,
 							desc = L["If checked, icon border color is applied to the normal texture."],
 							get = function(info) return MOD.db.global.ButtonFacadeNormal end,
 							set = function(info, value) MOD.db.global.ButtonFacadeNormal = value; MOD:UpdateAllBarGroups() end,
 						},
 						BorderTexture = {
 							type = "toggle", order = 20, name = L["Color Border Texture"],
+							disabled = function(info) return not MOD.db.global.ButtonFacadeIcons end,
 							desc = L["If checked, icon border color is applied to the border texture."],
 							get = function(info) return MOD.db.global.ButtonFacadeBorder end,
 							set = function(info, value) MOD.db.global.ButtonFacadeBorder = value; MOD:UpdateAllBarGroups() end,
 						},
 					},
 				},
+				CustomBorderGroup = {
+					type = "group", order = 70, name = L["Skin Options"], inline = true,
+					args = {
+						Border = {
+							type = "toggle", order = 10, name = L["Hide Custom Border"],
+							disabled = function(info) return (MOD.MSQ and MOD.db.global.ButtonFacadeIcons) or (Raven.frame.SetTemplate and MOD.db.global.TukuiSkin) end,
+							desc = L["By default, icons are displayed with a custom border and can be informatively colored using settings in the bar group Appearance tab. If this option is checked then custom borders are hidden."],
+							get = function(info) return MOD.db.global.HideBorder end,
+							set = function(info, value) MOD.db.global.HideBorder = value; MOD:UpdateAllBarGroups() end,
+						},
+						Trim = {
+							type = "toggle", order = 20, name = L["Trim Icon Texture"],
+							disabled = function(info) return (MOD.MSQ and MOD.db.global.ButtonFacadeIcons) or (Raven.frame.SetTemplate and MOD.db.global.TukuiSkin)
+								or not MOD.db.global.HideBorder end,
+							desc = L["When hiding custom borders, the full icon texture is displayed by default but when this option is enabled the texture is trimmed to remove the outer edge."],
+							get = function(info) return MOD.db.global.TrimIcon end,
+							set = function(info, value) MOD.db.global.TrimIcon = value; MOD:UpdateAllBarGroups() end,
+						},
+						Scale = {
+							type = "toggle", order = 30, name = L["Pixel Perfect"],
+							disabled = function(info) return (Raven.frame.SetTemplate and MOD.db.global.TukuiSkin) end,
+							desc = L["If checked, icons and bars will be adjusted for pixel perfect size and position (requires /reload)."],
+							get = function(info) return MOD.db.global.PixelPerfect end,
+							set = function(info, value) MOD.db.global.PixelPerfect = value; MOD:UpdateAllBarGroups() end,
+						},
+						Rect = {
+							type = "toggle", order = 40, name = L["Rectangular Icons"],
+							desc = L["If checked, allow rectangular icons in icon-oriented configurations, using bar width to set icon's width (requires /reload)."],
+							get = function(info) return MOD.db.global.RectIcons end,
+							set = function(info, value) MOD.db.global.RectIcons = value; MOD:UpdateAllBarGroups() end,
+						},
+						DefaultBorderColor = {
+							type = "color", order = 50, name = L["Default Border Color"], hasAlpha = false,
+							disabled = function(info) return (Raven.frame.SetTemplate and MOD.db.global.TukuiSkin) end,
+							desc = L["Set default color for icon borders."],
+							get = function(info) local t = MOD.db.global.DefaultBorderColor; return t.r, t.g, t.b, t.a end,
+							set = function(info, r, g, b, a)
+								local t = MOD.db.global.DefaultBorderColor
+								t.r = r; t.g = g; t.b = b; t.a = a
+								MOD:UpdateAllBarGroups()
+							end,
+						},
+					},
+				},
 				SoundGroup = {
-					type = "group", order = 50, name = L["Sound Channel"], inline = true,
+					type = "group", order = 80, name = L["Sound Channel"], inline = true,
 					args = {
 						Master = {
 							type = "toggle", order = 10, name = L["Master"], width = "half",
@@ -2711,11 +2772,24 @@ MOD.OptionsTable = {
 								end
 							end,
 						},
+						SpellIcon = {
+							type = "description", order = 51, name = "", width = "half", 
+							disabled = function(info) return not conditions.name or (conditions.name == "") end,
+							image = function(info) return MOD:GetIcon(conditions.name) end,
+							imageWidth = 24, imageHeight = 24,
+						},
+						Space1 = { type = "description", name = "", order = 52 },
 						SpellLabel = {
 							type = "input", order = 55, name = L["Spell Label"],
 							desc = L["Enter a label to be used by default with this spell."],
 							get = function(info) return MOD:GetLabel(conditions.name) end,
 							set = function(info, value) MOD:SetLabel(conditions.name, value) end,
+						},
+						SpellIconName = {
+							type = "input", order = 56, name = L["Spell Icon"],
+							desc = L["Enter a spell name (or numeric identifier, optionally preceded by # for a specific spell id) for an icon to be used by default with this spell."],
+							get = function(info) return conditions.name and MOD.db.global.SpellIcons[conditions.name] or nil end,
+							set = function(info, n) n = ValidateSpellName(n); MOD.db.global.SpellIcons[conditions.name] = n end,
 						},
 						SpellSound = {
 							type = "select", order = 57, name = L["Spell Sound"], 
@@ -2725,27 +2799,27 @@ MOD.OptionsTable = {
 							get = function(info) return MOD:GetSound(conditions.name) end,
 							set = function(info, value) MOD:SetSound(conditions.name, value) end,
 						},
-						SpellIcon = {
-							type = "description", order = 60, name = "", width = "half", 
-							disabled = function(info) return not conditions.name or (conditions.name == "") end,
-							image = function(info) return MOD:GetIcon(conditions.name) end,
-							imageWidth = 24, imageHeight = 24,
-						},
 						Space2 = { type = "description", name = "", order = 80 },
 						ResetSpellColors = {
-							type = "execute", order = 85, name = L["Reset Spell Colors"],
+							type = "execute", order = 85, name = L["Reset Colors"],
 							desc = L["Reset spell colors back to defaults."],
 							confirm = function(info) return L["RESET SPELL COLORS\nAre you sure you want to reset all spell colors back to defaults?"] end,
 							func = function(info) MOD:ResetColorDefaults(); MOD:UpdateAllBarGroups() end,
 						},
 						ResetSpellLabels = {
-							type = "execute", order = 87, name = L["Reset Spell Labels"],
+							type = "execute", order = 87, name = L["Reset Labels"],
 							desc = L["Reset spell labels back to defaults."],
 							confirm = function(info) return L["RESET SPELL LABELS\nAre you sure you want to reset all spell labels back to defaults?"] end,
 							func = function(info) MOD:ResetLabelDefaults(); MOD:UpdateAllBarGroups() end,
 						},
+						ResetSpellIcons = {
+							type = "execute", order = 88, name = L["Reset Icons"],
+							desc = L["Reset spell icons back to defaults."],
+							confirm = function(info) return L["RESET SPELL ICONS\nAre you sure you want to reset all spell icons back to defaults?"] end,
+							func = function(info) MOD:ResetIconDefaults(); MOD:UpdateAllBarGroups() end,
+						},
 						ResetSpellSounds = {
-							type = "execute", order = 89, name = L["Reset Spell Sounds"],
+							type = "execute", order = 89, name = L["Reset Sounds"],
 							desc = L["Reset spell sounds back to defaults."],
 							confirm = function(info) return L["RESET SPELL SOUNDS\nAre you sure you want to reset all spell sounds back to defaults?"] end,
 							func = function(info) MOD:ResetSoundDefaults(); MOD:UpdateAllBarGroups() end,
@@ -3646,10 +3720,17 @@ MOD.OptionsTable = {
 									get = function(info) return GetBarGroupField("fade") end,
 									set = function(info, value) SetBarGroupField("fade", value) end,
 								},
+								GhostEnable = {
+									type = "toggle", order = 41, name = L["Ghost When Expiring"],
+									desc = L["Enable ghost bar/icon (i.e., continue to show for delay period after would normally disappear)."],
+									disabled = function(info) return GetBarGroupField("hide") end,
+									get = function(info) return GetBarGroupField("ghost") end,
+									set = function(info, value) SetBarGroupField("ghost", value) end,
+								},
 								FadeDelay = {
 									type = "range", order = 45, name = L["Delay"], min = 0, max = 300, step = 1,
-									desc = L["Set number of seconds before bar will hide or fade."],
-									disabled = function(info) return not GetBarGroupField("fade") and not GetBarGroupField("hide") end,
+									desc = L["Set number of seconds before bar (or ghost) will hide or fade."],
+									disabled = function(info) return not GetBarGroupField("fade") and not GetBarGroupField("hide") and not GetBarGroupField("ghost") end,
 									get = function(info) return GetBarGroupField("delayTime") or 5 end,
 									set = function(info, value) SetBarGroupField("delayTime", value) end,
 								},
@@ -3711,7 +3792,7 @@ MOD.OptionsTable = {
 									set = function(info, value) SetBarGroupField("soundAltExpire", value) end,
 								},
 								ExpireTime = {
-									type = "range", order = 95, name = L["Expire Time"], min = 1, max = 300, step = 1,
+									type = "range", order = 95, name = L["Expire Time"], min = 0, max = 300, step = 1,
 									desc = L["Set number of seconds before expiration that bar should change color and/or play expire sound."],
 									disabled = function(info) return not GetBarGroupField("colorExpiring")
 										and not GetBarGroupField("expireMSBT") and not GetBarGroupField("soundSpellExpire")
@@ -3886,12 +3967,12 @@ MOD.OptionsTable = {
 									get = function(info) return GetBarGroupField("clockReverse") end,
 									set = function(info, value) SetBarGroupField("clockReverse", value) end,
 								},
-								DrawEdge = {
+								--[[ DrawEdge = { -- removed in 5.0.4 and apparently not coming back
 									type = "toggle", order = 85, name = L["Clock Edge"],
 									desc = L["If checked, show a bright line on the moving edge of clock animations."],
 									get = function(info) return GetBarGroupField("clockEdge") end,
 									set = function(info, value) SetBarGroupField("clockEdge", value) end,
-								},
+								}, ]]--
 							},
 						},
 					},
@@ -4151,6 +4232,13 @@ MOD.OptionsTable = {
 									desc = L['Include buffs cast by boss.'],
 									get = function(info) return GetBarGroupField("detectBossBuffs") end,
 									set = function(info, value) SetBarGroupField("detectBossBuffs", value) end,
+								},
+								Enrage = {
+									type = "toggle", order = 43, name = L["Enrage"],
+									disabled = function(info) return not GetBarGroupField("filterBuffTypes") end,
+									desc = L['Include enrage buffs.'],
+									get = function(info) return GetBarGroupField("detectEnrageBuffs") end,
+									set = function(info, value) SetBarGroupField("detectEnrageBuffs", value) end,
 								},
 								Effects = {
 									type = "toggle", order = 45, name = L["Effect Timers"],
@@ -4999,7 +5087,7 @@ MOD.OptionsTable = {
 											type = "color", order = 27, name = L["Timeline Color"], hasAlpha = true,
 											desc = L["Set color for timeline background."],
 											get = function(info)
-												local t = GetBarGroupField("timelineColor"); if t then return t.r, t.g, t.b, t.a else return 0.5, 0.5, 0.5, 1 end
+												local t = GetBarGroupField("timelineColor"); if t then return t.r, t.g, t.b, t.a else return 0.5, 0.5, 0.5, 0.5 end
 											end,
 											set = function(info, r, g, b, a)
 												local t = GetBarGroupField("timelineColor"); if t then t.r = r; t.g = g; t.b = b; t.a = a else
@@ -6103,6 +6191,12 @@ MOD.OptionsTable = {
 									desc = L["Color the icon border string"],
 									get = function(info) return GetBarGroupField("iconColors") == "Debuffs" end,
 									set = function(info, value) SetBarGroupField("iconColors", "Debuffs") end,
+								},
+								PlayerIcon = {
+									type = "toggle", order = 91, name = L["Player"], width = "half",
+									desc = L["Color icon border same as bar foreground for spells cast by players, color same as bar background for non-player spells."],
+									get = function(info) return GetBarGroupField("iconColors") == "Player" end,
+									set = function(info, value) SetBarGroupField("iconColors", "Player") end,
 								},
 								NoneIcon = {
 									type = "toggle", order = 95, name = L["None"], width = "half",
@@ -9646,7 +9740,7 @@ MOD.OptionsTable = {
 							set = function(info, value) MOD.db.profile.InCombatBar.flashExpiring = value end,
 						},
 						FlashTime = {
-							type = "range", order = 25, name = L["Flash Time"], min = 1, max = 300, step = 1,
+							type = "range", order = 25, name = L["Flash Time"], min = 0, max = 300, step = 1,
 							desc = L["Set number of seconds before expiration that bar should start flashing."],
 							disabled = function(info) return not MOD.db.profile.InCombatBar.flashExpiring or not MOD.db.profile.InCombatBar.enable end,
 							get = function(info) return MOD.db.profile.InCombatBar.flashTime end,
@@ -10152,14 +10246,22 @@ MOD.barOptions = {
 				get = function(info) return GetBarField(info, "fade") end,
 				set = function(info, value) SetBarField(info, "fade", value) end,
 			},
+			GhostEnable = {
+				type = "toggle", order = 41, name = L["Ghost When Expiring"],
+				desc = L["Enable ghost bar/icon (i.e., continue to show for delay period after would normally disappear)."],
+				disabled = function(info) return GetBarGroupField("hide") end,
+				get = function(info) return GetBarField(info, "ghost") end,
+				set = function(info, value) SetBarField(info, "ghost", value) end,
+			},
+			spacer2a = { type = "description", name = "", order = 44 },
 			FadeDelay = {
 				type = "range", order = 45, name = L["Delay"], min = 0, max = 300, step = 1,
-				desc = L["Set number of seconds before bar will hide or fade."],
-				disabled = function(info) return not GetBarField(info, "fade") and not GetBarField(info, "hide") end,
+				desc = L["Set number of seconds before bar (or ghost) will hide or fade."],
+				disabled = function(info) return not GetBarField(info, "fade") and not GetBarField(info, "hide") and not GetBarField(info, "ghost") end,
 				get = function(info) return GetBarField(info, "delayTime") or 5 end,
 				set = function(info, value) SetBarField(info, "delayTime", value) end,
 			},
-			spacer6 = { type = "description", name = "", order = 50 },
+			spacer2b = { type = "description", name = "", order = 50 },
 			NormalAlpha = {
 				type = "range", order = 55, name = L["Normal Opacity"], min = 0, max = 1, step = 0.05,
 				desc = L["Set normal opacity for this bar."],
@@ -10240,7 +10342,7 @@ MOD.barOptions = {
 			},
 			space3d = { type = "description", name = "", order = 74 },
 			ExpireTime = {
-				type = "range", order = 75, name = L["Expire Time"], min = 1, max = 300, step = 1,
+				type = "range", order = 75, name = L["Expire Time"], min = 0, max = 300, step = 1,
 				desc = L["Set number of seconds before expiration that bar should change color and/or play expire sound."],
 				disabled = function(info) return not GetBarField(info, "colorExpiring") and not GetBarField(info, "expireMSBT")
 					and not GetBarField(info, "soundSpellExpire") and not (GetBarField(info, "soundAltExpire")

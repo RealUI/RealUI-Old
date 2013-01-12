@@ -136,7 +136,7 @@ function Vengeance.prototype:UpdateMax(event, unit)
 	else
 		BaseHealth = MaxHealth - ((Stam - 19) * 10) - 6
 	end
-	local MaxVeng = floor(Stam + (BaseHealth / 10))
+	local MaxVeng = MaxHealth --floor(Stam + (BaseHealth / 10))
 	
 	self.max = MaxVeng
 	self:Update()

@@ -1004,7 +1004,7 @@ local masterProfile = {
   NOTIFICATION_CHI_CHANGE = {
    colorG		= 0.5,
    colorB		= 0,
-   message		= "%a " .. LIGHT_FORCE,
+   message		= "%a " .. CHI,
   },
   NOTIFICATION_CHI_FULL = {
    colorG		= 0.5,

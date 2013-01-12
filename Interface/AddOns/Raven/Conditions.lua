@@ -420,6 +420,8 @@ end
 local function CheckSpec(spec)
 	if not spec then spec = "none" end
 	local currentSpec = GetSpecialization()
+	local id = tonumber(spec)
+	if id then return currentSpec == id end 
 	local currentSpecName = currentSpec and select(2, GetSpecializationInfo(currentSpec)) or "none"
 	return spec == currentSpecName
 end
@@ -683,7 +685,7 @@ function MOD:UpdateConditions()
 	if MOD.myClass == "PALADIN" then stat.holyPower = UnitPower("player", SPELL_POWER_HOLY_POWER) else stat.holyPower = 0 end
 	if MOD.myClass == "WARLOCK" then stat.shards = UnitPower("player", SPELL_POWER_SOUL_SHARDS) else stat.shards = 0 end
 	if MOD.myClass == "PRIEST" then stat.shadowOrbs = UnitPower("player", SPELL_POWER_SHADOW_ORBS) else stat.shadowOrbs = 0 end
-	if MOD.myClass == "MONK" then stat.chi = UnitPower("player", SPELL_POWER_LIGHT_FORCE) else stat.chi = 0 end
+	if MOD.myClass == "MONK" then stat.chi = UnitPower("player", SPELL_POWER_CHI) else stat.chi = 0 end
 	if MOD.myClass == "WARLOCK" then
 		stat.shards = UnitPower("player", SPELL_POWER_SOUL_SHARDS)
 		stat.fury = UnitPower("player", SPELL_POWER_DEMONIC_FURY)

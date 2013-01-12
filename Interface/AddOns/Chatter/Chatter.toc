@@ -1,14 +1,14 @@
-## Interface: 50001
+## Interface: 50100
 ## Title: Chatter
 ## Notes: Lightweight Chat Improvements
 ## Notes-zhTW: 一個輕量級的聊天增強插件
 ## Notes-zhCN: 一个轻量级的聊天增强插件
 ## Author: Antiarc
-## OptionalDeps: Ace3, LibSharedMedia-3.0, LibSink-2.0, LibAlts-1.0
+## OptionalDeps: Ace3, LibSharedMedia-3.0, LibSink-2.0, LibAlts-1.0, LibDialog-1.0
 ## X-Category: Chat/Communication
-## Version: 1.0
+## Version: v1.4.1
 ## SavedVariables: ChatterDB
-## X-Curse-Packaged-Version: v.1.3.5
+## X-Curse-Packaged-Version: v1.4.1
 ## X-Curse-Project-Name: Chatter
 ## X-Curse-Project-ID: chatter
 ## X-Curse-Repository-ID: wow/chatter/mainline
@@ -26,10 +26,12 @@ Libs\AceGUI-3.0\AceGUI-3.0.xml
 Libs\AceLocale-3.0\AceLocale-3.0.xml
 Libs\AceConfig-3.0\AceConfig-3.0.xml
 Libs\AceTab-3.0\AceTab-3.0.xml
+Libs\AceTimer-3.0\AceTimer-3.0.xml
 Libs\LibSharedMedia-3.0\lib.xml
 Libs\LibSink-2.0\lib.xml
 Libs\AceGUI-3.0-SharedMediaWidgets\widget.xml
 Libs\LibAlts-1.0\lib.xml
+Libs\LibDialog-1.0\lib.xml
 #@end-no-lib-strip@
 
 

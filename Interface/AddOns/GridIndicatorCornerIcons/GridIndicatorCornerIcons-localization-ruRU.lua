@@ -44,8 +44,10 @@ GridIndicatorCornerIcons_Locales:CreateLocaleTable(
 
 	--["Icon Stack Text: Font Size"] = true,
 	--["Adjust the font size for Icon Stack Text."] = true,
-	--["Icon Stack Text: Offset XY-axis"] = true,
-	--["Adjust the offset for Icon Stack Text of the XY-axis."] = true,
+	--["Icon Stack Text: Offset X-axis"] = true,
+	--["Adjust the offset for Icon Stack Text of the X-axis."] = true,
+	--["Icon Stack Text: Offset Y-axis"] = true,
+	--["Adjust the offset for Icon Stack Text of the Y-axis."] = true,
 
 	--["Same settings as Grid"] = true,
 	--["If enabled, the settings for the Icon (Corners) indicators are adjustable with the standard Grid options. If deactivated, you can set individual settings for the Icon (Corners) indicators."] = true,

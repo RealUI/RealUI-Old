@@ -1,6 +1,6 @@
 --[[
 Name: DBIcon-1.0
-Revision: $Rev: 29 $
+Revision: $Rev: 30 $
 Author(s): Rabbit (rabbit.magtheridon@gmail.com)
 Description: Allows addons to register to recieve a lightweight minimap icon as an alternative to more heavy LDB displays.
 Dependencies: LibStub
@@ -33,7 +33,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 --
 
 local DBICON10 = "LibDBIcon-1.0"
-local DBICON10_MINOR = tonumber(("$Rev: 29 $"):match("(%d+)"))
+local DBICON10_MINOR = tonumber(("$Rev: 30 $"):match("(%d+)"))
 if not LibStub then error(DBICON10 .. " requires LibStub.") end
 local ldb = LibStub("LibDataBroker-1.1", true)
 if not ldb then error(DBICON10 .. " requires LibDataBroker-1.1.") end
@@ -202,7 +202,7 @@ local function createButton(name, object, db)
 	overlay:SetTexture("Interface\\Minimap\\MiniMap-TrackingBorder")
 	overlay:SetPoint("TOPLEFT")
 	local background = button:CreateTexture(nil, "BACKGROUND")
-	background:SetWidth(20); background:SetHeight(20)
+	background:SetSize(20, 20)
 	background:SetTexture("Interface\\Minimap\\UI-Minimap-Background")
 	background:SetPoint("TOPLEFT", 7, -5)
 	local icon = button:CreateTexture(nil, "ARTWORK")

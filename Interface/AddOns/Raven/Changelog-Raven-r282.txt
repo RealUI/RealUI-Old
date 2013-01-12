@@ -1,0 +1,123 @@
+------------------------------------------------------------------------
+r282 | tomber | 2012-12-30 17:15:56 +0000 (Sun, 30 Dec 2012) | 1 line
+Changed paths:
+   M /trunk/Nest.lua
+
+Hide bar group anchors and timeline background when in pet battle.
+------------------------------------------------------------------------
+r281 | tomber | 2012-12-29 20:32:58 +0000 (Sat, 29 Dec 2012) | 5 lines
+Changed paths:
+   M /trunk/Main.lua
+   M /trunk/Presets/General.lua
+   M /trunk/Presets/Rogue.lua
+   M /trunk/Presets/Shaman.lua
+   M /trunk/Profile.lua
+
+Fix issue with update of Blizzard's consolidated buffs.
+Add internal cooldowns for MoP Darkmoon Faire trinkets and Zen Alchemist Stone.
+Fix Revealing Strike in rogue presets to show as debuff (not buff).
+Add Find Weakness to rogue presets.
+Change Stormlash Totem to be a buff in shaman presets.
+------------------------------------------------------------------------
+r280 | tomber | 2012-12-29 06:51:40 +0000 (Sat, 29 Dec 2012) | 1 line
+Changed paths:
+   M /trunk/.pkgmeta
+
+Build with updated packager library settings to address issues with shared media dialogs.
+------------------------------------------------------------------------
+r279 | tomber | 2012-12-28 04:50:37 +0000 (Fri, 28 Dec 2012) | 1 line
+Changed paths:
+   M /trunk/Localizations/enUS.lua
+   M /trunk/Nest.lua
+   M /trunk/Profile.lua
+   M /trunk/Raven.toc
+   M /trunk/Raven_Options/Options.lua
+   M /trunk/Raven_Options/Raven_Options.toc
+
+Add support for rectangular icons in icon-oriented configurations. This is enabled with a setting on the defaults tab in the section containing skin options.
+------------------------------------------------------------------------
+r278 | tomber | 2012-12-11 06:05:03 +0000 (Tue, 11 Dec 2012) | 3 lines
+Changed paths:
+   M /trunk/Bars.lua
+   M /trunk/Highlights.lua
+   M /trunk/Nest.lua
+   M /trunk/Raven_Options/Options.lua
+
+Tweak to Tukui skinning so that selecting "None" for the icon border color scheme will use the original color set by Tukui's frame API (this means that the different default colors used by Tukui and ElvUI are each applied correctly).
+
+Cleaned up setting options a bit more to disable unavailable skinning options in cases where Tukui or Masque are enabled.
+------------------------------------------------------------------------
+r277 | tomber | 2012-12-10 16:34:02 +0000 (Mon, 10 Dec 2012) | 3 lines
+Changed paths:
+   M /trunk/Profile.lua
+   M /trunk/Raven_Options/Options.lua
+
+Default icon border color set to white for backward compatibility.
+Modified Defaults tab skin-related options so that settings that are not enabled (due to other settings) are correctly disabled.
+Note: I have tried to ensure backward compatibility for the new skinning options and welcome feedback about differences found during alpha/beta testing.
+------------------------------------------------------------------------
+r276 | tomber | 2012-12-10 05:59:50 +0000 (Mon, 10 Dec 2012) | 1 line
+Changed paths:
+   M /trunk/Bars.lua
+   M /trunk/Localizations/enUS.lua
+   M /trunk/Nest.lua
+   M /trunk/Profile.lua
+   M /trunk/Raven_Options/Options.lua
+
+Add setting for default icon border color in the new Skin Options section of the Defaults tab. This allows you to set the color for icon borders when the Icon Border color scheme is set to "None". This may require Masque users who previously set the default icon border using the Masque interface to use this setting instead (although that is not clear given variation in Masque skins and how Masque itself works as well).
+------------------------------------------------------------------------
+r275 | tomber | 2012-12-08 16:45:03 +0000 (Sat, 08 Dec 2012) | 1 line
+Changed paths:
+   M /trunk/Localizations/enUS.lua
+   M /trunk/Nest.lua
+   M /trunk/Profile.lua
+   M /trunk/Raven_Options/Options.lua
+
+Added pixel perfect sizing and positioning option for bars and icons. This option is enabled by default with the Tukui skin. However, while it improves appearance significantly and most people will probably want to enable it, the option is not enabled by default for other users because it may affect relative positioning with other UI elements.
+------------------------------------------------------------------------
+r274 | tomber | 2012-12-07 19:39:17 +0000 (Fri, 07 Dec 2012) | 2 lines
+Changed paths:
+   M /trunk/Bars.lua
+   M /trunk/Localizations/enUS.lua
+   M /trunk/Nest.lua
+   M /trunk/Profile.lua
+   M /trunk/Raven_Options/Options.lua
+
+Add support for skinning Tukui. Detects if Tukui frame API has been installed and, by default, auto enables the special case skinning code (this should allow it to work for other addons that are related to Tukui). Optionally uses Tukui chat frame font for labels, time, icon count. Tukui support can be enabled/disabled on the Defaults tab (options are only displayed when Tukui is detected).
+Fix timeline backdrop bug with incorrect initialization of color.
+------------------------------------------------------------------------
+r273 | tomber | 2012-12-04 16:20:57 +0000 (Tue, 04 Dec 2012) | 5 lines
+Changed paths:
+   M /trunk/Bars.lua
+   M /trunk/Localizations/enUS.lua
+   M /trunk/Nest.lua
+   M /trunk/Raven_Options/Options.lua
+
+Add Trim Icon Texture option when Hide Custom Border is enabled on the Defaults tab. This new option supports improved skinning when using Tukui and other addons that use similar skinning methods.
+
+Changed OmniCC detection to work for other addons that simply set the global OmniCC (previously required OmniCC addon itself to be loaded).
+
+Remove obsolete option to set draw edge for clock animation (underlying support was removed by Blizzard).
+------------------------------------------------------------------------
+r272 | tomber | 2012-12-01 16:36:31 +0000 (Sat, 01 Dec 2012) | 2 lines
+Changed paths:
+   M /trunk/Bars.lua
+
+Show max number of charges on cooldown ready custom bars.
+Fix issue with buff/debuff ready bars not showing when other players buffs/debuffs are present, even if they don't meet criteria for display.
+------------------------------------------------------------------------
+r271 | tomber | 2012-11-28 16:45:59 +0000 (Wed, 28 Nov 2012) | 5 lines
+Changed paths:
+   M /trunk/Bars.lua
+   M /trunk/Conditions.lua
+   M /trunk/Main.lua
+   M /trunk/Nest.lua
+   M /trunk/Raven.toc
+   M /trunk/Raven_Options/Raven_Options.toc
+
+Fix monk chi detection.
+Hide border around icons when there is no icon texture.
+Disable right-click on totems because underlying API, DestroyTotem, is now blocked to addons.
+Slightly improve response time for totem changes.
+Change version number for 5.1 compatibility.
+------------------------------------------------------------------------

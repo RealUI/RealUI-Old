@@ -23,17 +23,17 @@ GridIndicatorCornerIcons.defaultDB = {
 	enableIconStackText = false,
 	enableIconCooldown = false,
 	IconStackTextSize = 8,
-	IconStackTextXYaxis = 0,
+	IconStackTextXaxis = 1,
+	IconStackTextYaxis = -1,
 	OriginalSize = false,
 }
 
-local options = {--GridIndicatorCornerIcons.options = {
+local options = {
 	type = "group",
-	--inline = true,
 	icon = "Interface\\AddOns\\GridIndicatorCornerIcons\\GridIndicatorCornerIcons-icon-TRTLBLBR",
 	name = L["Icon (Corners)"],
 	desc = L["Options for Icon (Corners) indicators."],
-	order = -0.571,--451,
+	order = -0.571,
 	args = {
 		["configuration"] = {
 			type = "toggle",
@@ -195,21 +195,39 @@ local options = {--GridIndicatorCornerIcons.options = {
 				GridFrame:WithAllFrames(function(f) GridIndicatorCornerIcons.SetIconSize(f, v) end)
 			end,
 		},
-		["iconstacktextxyoffset"] = {
+		["iconstacktextxoffset"] = {
 			type = "range",
-			name = L["Icon Stack Text: Offset XY-axis"],
-			desc = L["Adjust the offset for Icon Stack Text of the XY-axis."],
+			name = L["Icon Stack Text: Offset X-axis"],
+			desc = L["Adjust the offset for Icon Stack Text of the X-axis."],
 			order = 90,
 			width = "double",
 			disabled = function() return not GridIndicatorCornerIcons.db.profile.enableIconStackText or GridIndicatorCornerIcons.db.profile.OriginalSize end,
-			min = -4,
-			max = 4,
+			min = -20,
+			max = 20,
 			step = 1,
 			get = function()
-				return GridIndicatorCornerIcons.db.profile.IconStackTextXYaxis
+				return GridIndicatorCornerIcons.db.profile.IconStackTextXaxis
 			end,
 			set = function(_, v)
-				GridIndicatorCornerIcons.db.profile.IconStackTextXYaxis = v
+				GridIndicatorCornerIcons.db.profile.IconStackTextXaxis = v
+				GridFrame:WithAllFrames(function(f) GridIndicatorCornerIcons.SetIconSize(f, v) end)
+			end,
+		},
+		["iconstacktextyoffset"] = {
+			type = "range",
+			name = L["Icon Stack Text: Offset Y-axis"],
+			desc = L["Adjust the offset for Icon Stack Text of the Y-axis."],
+			order = 91,
+			width = "double",
+			disabled = function() return not GridIndicatorCornerIcons.db.profile.enableIconStackText or GridIndicatorCornerIcons.db.profile.OriginalSize end,
+			min = -20,
+			max = 20,
+			step = 1,
+			get = function()
+				return GridIndicatorCornerIcons.db.profile.IconStackTextYaxis
+			end,
+			set = function(_, v)
+				GridIndicatorCornerIcons.db.profile.IconStackTextYaxis = v
 				GridFrame:WithAllFrames(function(f) GridIndicatorCornerIcons.SetIconSize(f, v) end)
 			end,
 		},
@@ -327,7 +345,6 @@ function GridIndicatorCornerIcons:OnInitialize()
 	hooksecurefunc(GridFrame, "UpdateOptionsMenu", self.CleanOptionsMenu)
 	self:CleanOptionsMenu()
 
-	--hook the functions we need.
 	hooksecurefunc(GridFrame.prototype, "CreateIndicator", self.CreateIndicator)
 	hooksecurefunc(GridFrame.prototype, "SetIndicator", self.SetIndicator)
 	hooksecurefunc(GridFrame.prototype, "ClearIndicator", self.ClearIndicator)
@@ -423,11 +440,13 @@ function GridIndicatorCornerIcons.CreateIndicator(f, indicator)
 	local yoffset = GridIndicatorCornerIcons.db.profile.yoffset
 	local borderSize = GridIndicatorCornerIcons.db.profile.iconBorderSize
 	local iconStackTextSize = GridIndicatorCornerIcons.db.profile.IconStackTextSize
-	local iconStackTextXYaxis = GridIndicatorCornerIcons.db.profile.IconStackTextXYaxis
+	local iconStackTextXaxis = GridIndicatorCornerIcons.db.profile.IconStackTextXaxis
+	local iconStackTextYaxis = GridIndicatorCornerIcons.db.profile.IconStackTextYaxis
 	if GridIndicatorCornerIcons.db.profile.OriginalSize then
 		borderSize = GridFrame.db.profile.iconBorderSize
 		iconStackTextSize = GridFrame.db.profile.fontSize
-		iconStackTextXYaxis = 2
+		iconStackTextXaxis = 1
+		iconStackTextYaxis = -1
 	end
 
 	if indicator == "iconTLcornerleft" then
@@ -436,7 +455,6 @@ function GridIndicatorCornerIcons.CreateIndicator(f, indicator)
 			wh = GridFrame.db.profile.iconSize
 		end
 
-		-- create icon background/border
 		f.iconTLcornerleftBG = CreateFrame("Frame", nil, f)
 		f.iconTLcornerleftBG:SetWidth(wh + (2*borderSize))
 		f.iconTLcornerleftBG:SetHeight(wh + (2*borderSize))
@@ -450,33 +468,27 @@ function GridIndicatorCornerIcons.CreateIndicator(f, indicator)
 		f.iconTLcornerleftBG:SetFrameLevel(5)
 		f.iconTLcornerleftBG:Hide()
 
-		-- create icon
 		f.iconTLcornerleft = f.iconTLcornerleftBG:CreateTexture(nil, "OVERLAY")
 		f.iconTLcornerleft:SetWidth(wh)
 		f.iconTLcornerleft:SetHeight(wh)
 		f.iconTLcornerleft:SetPoint("CENTER", f.iconTLcornerleftBG, "CENTER")
-		f.iconTLcornerleft:SetTexCoord(0.05, 0.95, 0.05, 0.95)
-		f.iconTLcornerleft:SetTexture(1, 1, 1, 0)
 
-		-- create icon text
 		f.iconTLcornerleftText = f.iconTLcornerleftBG:CreateFontString(nil, "OVERLAY")
 		f.iconTLcornerleftText:SetAllPoints(f.iconTLcornerleftBG)
 		f.iconTLcornerleftText:SetFontObject(GameFontHighlightSmall)
 		f.iconTLcornerleftText:SetFont(font, GridFrame.db.profile.fontSize)
 		f.iconTLcornerleftText:SetJustifyH("CENTER")
-		f.iconTLcornerleftText:SetJustifyV("CENTER")
+		f.iconTLcornerleftText:SetJustifyV("MIDDLE")
 
-		-- create icon cooldown
 		f.iconTLcornerleftCD = CreateFrame("Cooldown", nil, f.iconTLcornerleftBG, "CooldownFrameTemplate")
 		f.iconTLcornerleftCD:SetAllPoints(f.iconTLcornerleft)
 		f.iconTLcornerleftCD:SetScript("OnHide", function()
 			f.iconTLcornerleftStackText:SetParent(f.iconTLcornerleftBG)
-			f.iconTLcornerleftStackText:SetPoint("BOTTOMRIGHT", f.iconTLcornerleftBG, iconStackTextXYaxis, -iconStackTextXYaxis)
+			f.iconTLcornerleftStackText:SetPoint("BOTTOMRIGHT", f.iconTLcornerleftBG, iconStackTextXaxis, -iconStackTextYaxis)
 		end)
 
-		-- create icon stack text
 		f.iconTLcornerleftStackText = f.iconTLcornerleftBG:CreateFontString(nil, "OVERLAY")
-		f.iconTLcornerleftStackText:SetPoint("BOTTOMRIGHT", f.iconTLcornerleftBG, iconStackTextXYaxis, -iconStackTextXYaxis)
+		f.iconTLcornerleftStackText:SetPoint("BOTTOMRIGHT", f.iconTLcornerleftBG, iconStackTextXaxis, -iconStackTextYaxis)
 		f.iconTLcornerleftStackText:SetFontObject(GameFontHighlightSmall)
 		f.iconTLcornerleftStackText:SetFont(font, iconStackTextSize, "OUTLINE")
 		f.iconTLcornerleftStackText:SetJustifyH("RIGHT")
@@ -487,7 +499,6 @@ function GridIndicatorCornerIcons.CreateIndicator(f, indicator)
 			wh = GridFrame.db.profile.iconSize
 		end
 
-		-- create icon background/border
 		f.iconTLcornerrightBG = CreateFrame("Frame", nil, f)
 		f.iconTLcornerrightBG:SetWidth(wh + (2*borderSize))
 		f.iconTLcornerrightBG:SetHeight(wh + (2*borderSize))
@@ -501,33 +512,27 @@ function GridIndicatorCornerIcons.CreateIndicator(f, indicator)
 		f.iconTLcornerrightBG:SetFrameLevel(5)
 		f.iconTLcornerrightBG:Hide()
 
-		-- create icon
 		f.iconTLcornerright = f.iconTLcornerrightBG:CreateTexture(nil, "OVERLAY")
 		f.iconTLcornerright:SetWidth(wh)
 		f.iconTLcornerright:SetHeight(wh)
 		f.iconTLcornerright:SetPoint("CENTER", f.iconTLcornerrightBG, "CENTER")
-		f.iconTLcornerright:SetTexCoord(0.05, 0.95, 0.05, 0.95)
-		f.iconTLcornerright:SetTexture(1, 1, 1, 0)
 
-		-- create icon text
 		f.iconTLcornerrightText = f.iconTLcornerrightBG:CreateFontString(nil, "OVERLAY")
 		f.iconTLcornerrightText:SetAllPoints(f.iconTLcornerrightBG)
 		f.iconTLcornerrightText:SetFontObject(GameFontHighlightSmall)
 		f.iconTLcornerrightText:SetFont(font, GridFrame.db.profile.fontSize)
 		f.iconTLcornerrightText:SetJustifyH("CENTER")
-		f.iconTLcornerrightText:SetJustifyV("CENTER")
+		f.iconTLcornerrightText:SetJustifyV("MIDDLE")
 
-		-- create icon cooldown
 		f.iconTLcornerrightCD = CreateFrame("Cooldown", nil, f.iconTLcornerrightBG, "CooldownFrameTemplate")
 		f.iconTLcornerrightCD:SetAllPoints(f.iconTLcornerright)
 		f.iconTLcornerrightCD:SetScript("OnHide", function()
 			f.iconTLcornerrightStackText:SetParent(f.iconTLcornerrightBG)
-			f.iconTLcornerrightStackText:SetPoint("BOTTOMRIGHT", f.iconTLcornerrightBG, iconStackTextXYaxis, -iconStackTextXYaxis)
+			f.iconTLcornerrightStackText:SetPoint("BOTTOMRIGHT", f.iconTLcornerrightBG, iconStackTextXaxis, -iconStackTextYaxis)
 		end)
 
-		-- create icon stack text
 		f.iconTLcornerrightStackText = f.iconTLcornerrightBG:CreateFontString(nil, "OVERLAY")
-		f.iconTLcornerrightStackText:SetPoint("BOTTOMRIGHT", f.iconTLcornerrightBG, iconStackTextXYaxis, -iconStackTextXYaxis)
+		f.iconTLcornerrightStackText:SetPoint("BOTTOMRIGHT", f.iconTLcornerrightBG, iconStackTextXaxis, -iconStackTextYaxis)
 		f.iconTLcornerrightStackText:SetFontObject(GameFontHighlightSmall)
 		f.iconTLcornerrightStackText:SetFont(font, iconStackTextSize, "OUTLINE")
 		f.iconTLcornerrightStackText:SetJustifyH("RIGHT")
@@ -538,7 +543,6 @@ function GridIndicatorCornerIcons.CreateIndicator(f, indicator)
 			wh = GridFrame.db.profile.iconSize
 		end
 
-		-- create icon background/border
 		f.iconTRcornerleftBG = CreateFrame("Frame", nil, f)
 		f.iconTRcornerleftBG:SetWidth(wh + (2*borderSize))
 		f.iconTRcornerleftBG:SetHeight(wh + (2*borderSize))
@@ -552,33 +556,27 @@ function GridIndicatorCornerIcons.CreateIndicator(f, indicator)
 		f.iconTRcornerleftBG:SetFrameLevel(5)
 		f.iconTRcornerleftBG:Hide()
 
-		-- create icon
 		f.iconTRcornerleft = f.iconTRcornerleftBG:CreateTexture(nil, "OVERLAY")
 		f.iconTRcornerleft:SetWidth(wh)
 		f.iconTRcornerleft:SetHeight(wh)
 		f.iconTRcornerleft:SetPoint("CENTER", f.iconTRcornerleftBG, "CENTER")
-		f.iconTRcornerleft:SetTexCoord(0.05, 0.95, 0.05, 0.95)
-		f.iconTRcornerleft:SetTexture(1, 1, 1, 0)
 
-		-- create icon text
 		f.iconTRcornerleftText = f.iconTRcornerleftBG:CreateFontString(nil, "OVERLAY")
 		f.iconTRcornerleftText:SetAllPoints(f.iconTRcornerleftBG)
 		f.iconTRcornerleftText:SetFontObject(GameFontHighlightSmall)
 		f.iconTRcornerleftText:SetFont(font, GridFrame.db.profile.fontSize)
 		f.iconTRcornerleftText:SetJustifyH("CENTER")
-		f.iconTRcornerleftText:SetJustifyV("CENTER")
+		f.iconTRcornerleftText:SetJustifyV("MIDDLE")
 
-		-- create icon cooldown
 		f.iconTRcornerleftCD = CreateFrame("Cooldown", nil, f.iconTRcornerleftBG, "CooldownFrameTemplate")
 		f.iconTRcornerleftCD:SetAllPoints(f.iconTRcornerleft)
 		f.iconTRcornerleftCD:SetScript("OnHide", function()
 			f.iconTRcornerleftStackText:SetParent(f.iconTRcornerleftBG)
-			f.iconTRcornerleftStackText:SetPoint("BOTTOMRIGHT", f.iconTRcornerleftBG, iconStackTextXYaxis, -iconStackTextXYaxis)
+			f.iconTRcornerleftStackText:SetPoint("BOTTOMRIGHT", f.iconTRcornerleftBG, iconStackTextXaxis, -iconStackTextYaxis)
 		end)
 
-		-- create icon stack text
 		f.iconTRcornerleftStackText = f.iconTRcornerleftBG:CreateFontString(nil, "OVERLAY")
-		f.iconTRcornerleftStackText:SetPoint("BOTTOMRIGHT", f.iconTRcornerleftBG, iconStackTextXYaxis, -iconStackTextXYaxis)
+		f.iconTRcornerleftStackText:SetPoint("BOTTOMRIGHT", f.iconTRcornerleftBG, iconStackTextXaxis, -iconStackTextYaxis)
 		f.iconTRcornerleftStackText:SetFontObject(GameFontHighlightSmall)
 		f.iconTRcornerleftStackText:SetFont(font, iconStackTextSize, "OUTLINE")
 		f.iconTRcornerleftStackText:SetJustifyH("RIGHT")
@@ -589,7 +587,6 @@ function GridIndicatorCornerIcons.CreateIndicator(f, indicator)
 			wh = GridFrame.db.profile.iconSize
 		end
 
-		-- create icon background/border
 		f.iconTRcornerrightBG = CreateFrame("Frame", nil, f)
 		f.iconTRcornerrightBG:SetWidth(wh + (2*borderSize))
 		f.iconTRcornerrightBG:SetHeight(wh + (2*borderSize))
@@ -603,33 +600,27 @@ function GridIndicatorCornerIcons.CreateIndicator(f, indicator)
 		f.iconTRcornerrightBG:SetFrameLevel(5)
 		f.iconTRcornerrightBG:Hide()
 
-		-- create icon
 		f.iconTRcornerright = f.iconTRcornerrightBG:CreateTexture(nil, "OVERLAY")
 		f.iconTRcornerright:SetWidth(wh)
 		f.iconTRcornerright:SetHeight(wh)
 		f.iconTRcornerright:SetPoint("CENTER", f.iconTRcornerrightBG, "CENTER")
-		f.iconTRcornerright:SetTexCoord(0.05, 0.95, 0.05, 0.95)
-		f.iconTRcornerright:SetTexture(1, 1, 1, 0)
 
-		-- create icon text
 		f.iconTRcornerrightText = f.iconTRcornerrightBG:CreateFontString(nil, "OVERLAY")
 		f.iconTRcornerrightText:SetAllPoints(f.iconTRcornerrightBG)
 		f.iconTRcornerrightText:SetFontObject(GameFontHighlightSmall)
 		f.iconTRcornerrightText:SetFont(font, GridFrame.db.profile.fontSize)
 		f.iconTRcornerrightText:SetJustifyH("CENTER")
-		f.iconTRcornerrightText:SetJustifyV("CENTER")
+		f.iconTRcornerrightText:SetJustifyV("MIDDLE")
 
-		-- create icon cooldown
 		f.iconTRcornerrightCD = CreateFrame("Cooldown", nil, f.iconTRcornerrightBG, "CooldownFrameTemplate")
 		f.iconTRcornerrightCD:SetAllPoints(f.iconTRcornerright)
 		f.iconTRcornerrightCD:SetScript("OnHide", function()
 			f.iconTRcornerrightStackText:SetParent(f.iconTRcornerrightBG)
-			f.iconTRcornerrightStackText:SetPoint("BOTTOMRIGHT", f.iconTRcornerrightBG, iconStackTextXYaxis, -iconStackTextXYaxis)
+			f.iconTRcornerrightStackText:SetPoint("BOTTOMRIGHT", f.iconTRcornerrightBG, iconStackTextXaxis, -iconStackTextYaxis)
 		end)
 
-		-- create icon stack text
 		f.iconTRcornerrightStackText = f.iconTRcornerrightBG:CreateFontString(nil, "OVERLAY")
-		f.iconTRcornerrightStackText:SetPoint("BOTTOMRIGHT", f.iconTRcornerrightBG, iconStackTextXYaxis, -iconStackTextXYaxis)
+		f.iconTRcornerrightStackText:SetPoint("BOTTOMRIGHT", f.iconTRcornerrightBG, iconStackTextXaxis, -iconStackTextYaxis)
 		f.iconTRcornerrightStackText:SetFontObject(GameFontHighlightSmall)
 		f.iconTRcornerrightStackText:SetFont(font, iconStackTextSize, "OUTLINE")
 		f.iconTRcornerrightStackText:SetJustifyH("RIGHT")
@@ -640,7 +631,6 @@ function GridIndicatorCornerIcons.CreateIndicator(f, indicator)
 			wh = GridFrame.db.profile.iconSize
 		end
 
-		-- create icon background/border
 		f.iconBLcornerleftBG = CreateFrame("Frame", nil, f)
 		f.iconBLcornerleftBG:SetWidth(wh + (2*borderSize))
 		f.iconBLcornerleftBG:SetHeight(wh + (2*borderSize))
@@ -654,33 +644,27 @@ function GridIndicatorCornerIcons.CreateIndicator(f, indicator)
 		f.iconBLcornerleftBG:SetFrameLevel(5)
 		f.iconBLcornerleftBG:Hide()
 
-		-- create icon
 		f.iconBLcornerleft = f.iconBLcornerleftBG:CreateTexture(nil, "OVERLAY")
 		f.iconBLcornerleft:SetWidth(wh)
 		f.iconBLcornerleft:SetHeight(wh)
 		f.iconBLcornerleft:SetPoint("CENTER", f.iconBLcornerleftBG, "CENTER")
-		f.iconBLcornerleft:SetTexCoord(0.05, 0.95, 0.05, 0.95)
-		f.iconBLcornerleft:SetTexture(1, 1, 1, 0)
 
-		-- create icon text
 		f.iconBLcornerleftText = f.iconBLcornerleftBG:CreateFontString(nil, "OVERLAY")
 		f.iconBLcornerleftText:SetAllPoints(f.iconBLcornerleftBG)
 		f.iconBLcornerleftText:SetFontObject(GameFontHighlightSmall)
 		f.iconBLcornerleftText:SetFont(font, GridFrame.db.profile.fontSize)
 		f.iconBLcornerleftText:SetJustifyH("CENTER")
-		f.iconBLcornerleftText:SetJustifyV("CENTER")
+		f.iconBLcornerleftText:SetJustifyV("MIDDLE")
 
-		-- create icon cooldown
 		f.iconBLcornerleftCD = CreateFrame("Cooldown", nil, f.iconBLcornerleftBG, "CooldownFrameTemplate")
 		f.iconBLcornerleftCD:SetAllPoints(f.iconBLcornerleft)
 		f.iconBLcornerleftCD:SetScript("OnHide", function()
 			f.iconBLcornerleftStackText:SetParent(f.iconBLcornerleftBG)
-			f.iconBLcornerleftStackText:SetPoint("BOTTOMRIGHT", f.iconBLcornerleftBG, iconStackTextXYaxis, -iconStackTextXYaxis)
+			f.iconBLcornerleftStackText:SetPoint("BOTTOMRIGHT", f.iconBLcornerleftBG, iconStackTextXaxis, -iconStackTextYaxis)
 		end)
 
-		-- create icon stack text
 		f.iconBLcornerleftStackText = f.iconBLcornerleftBG:CreateFontString(nil, "OVERLAY")
-		f.iconBLcornerleftStackText:SetPoint("BOTTOMRIGHT", f.iconBLcornerleftBG, iconStackTextXYaxis, -iconStackTextXYaxis)
+		f.iconBLcornerleftStackText:SetPoint("BOTTOMRIGHT", f.iconBLcornerleftBG, iconStackTextXaxis, -iconStackTextYaxis)
 		f.iconBLcornerleftStackText:SetFontObject(GameFontHighlightSmall)
 		f.iconBLcornerleftStackText:SetFont(font, iconStackTextSize, "OUTLINE")
 		f.iconBLcornerleftStackText:SetJustifyH("RIGHT")
@@ -691,7 +675,6 @@ function GridIndicatorCornerIcons.CreateIndicator(f, indicator)
 			wh = GridFrame.db.profile.iconSize
 		end
 
-		-- create icon background/border
 		f.iconBLcornerrightBG = CreateFrame("Frame", nil, f)
 		f.iconBLcornerrightBG:SetWidth(wh + (2*borderSize))
 		f.iconBLcornerrightBG:SetHeight(wh + (2*borderSize))
@@ -705,33 +688,27 @@ function GridIndicatorCornerIcons.CreateIndicator(f, indicator)
 		f.iconBLcornerrightBG:SetFrameLevel(5)
 		f.iconBLcornerrightBG:Hide()
 
-		-- create icon
 		f.iconBLcornerright = f.iconBLcornerrightBG:CreateTexture(nil, "OVERLAY")
 		f.iconBLcornerright:SetWidth(wh)
 		f.iconBLcornerright:SetHeight(wh)
 		f.iconBLcornerright:SetPoint("CENTER", f.iconBLcornerrightBG, "CENTER")
-		f.iconBLcornerright:SetTexCoord(0.05, 0.95, 0.05, 0.95)
-		f.iconBLcornerright:SetTexture(1, 1, 1, 0)
 
-		-- create icon text
 		f.iconBLcornerrightText = f.iconBLcornerrightBG:CreateFontString(nil, "OVERLAY")
 		f.iconBLcornerrightText:SetAllPoints(f.iconBLcornerrightBG)
 		f.iconBLcornerrightText:SetFontObject(GameFontHighlightSmall)
 		f.iconBLcornerrightText:SetFont(font, GridFrame.db.profile.fontSize)
 		f.iconBLcornerrightText:SetJustifyH("CENTER")
-		f.iconBLcornerrightText:SetJustifyV("CENTER")
+		f.iconBLcornerrightText:SetJustifyV("MIDDLE")
 
-		-- create icon cooldown
 		f.iconBLcornerrightCD = CreateFrame("Cooldown", nil, f.iconBLcornerrightBG, "CooldownFrameTemplate")
 		f.iconBLcornerrightCD:SetAllPoints(f.iconBLcornerright)
 		f.iconBLcornerrightCD:SetScript("OnHide", function()
 			f.iconBLcornerrightStackText:SetParent(f.iconBLcornerrightBG)
-			f.iconBLcornerrightStackText:SetPoint("BOTTOMRIGHT", f.iconBLcornerrightBG, iconStackTextXYaxis, -iconStackTextXYaxis)
+			f.iconBLcornerrightStackText:SetPoint("BOTTOMRIGHT", f.iconBLcornerrightBG, iconStackTextXaxis, -iconStackTextYaxis)
 		end)
 
-		-- create icon stack text
 		f.iconBLcornerrightStackText = f.iconBLcornerrightBG:CreateFontString(nil, "OVERLAY")
-		f.iconBLcornerrightStackText:SetPoint("BOTTOMRIGHT", f.iconBLcornerrightBG, iconStackTextXYaxis, -iconStackTextXYaxis)
+		f.iconBLcornerrightStackText:SetPoint("BOTTOMRIGHT", f.iconBLcornerrightBG, iconStackTextXaxis, -iconStackTextYaxis)
 		f.iconBLcornerrightStackText:SetFontObject(GameFontHighlightSmall)
 		f.iconBLcornerrightStackText:SetFont(font, iconStackTextSize, "OUTLINE")
 		f.iconBLcornerrightStackText:SetJustifyH("RIGHT")
@@ -742,7 +719,6 @@ function GridIndicatorCornerIcons.CreateIndicator(f, indicator)
 			wh = GridFrame.db.profile.iconSize
 		end
 
-		-- create icon background/border
 		f.iconBRcornerleftBG = CreateFrame("Frame", nil, f)
 		f.iconBRcornerleftBG:SetWidth(wh + (2*borderSize))
 		f.iconBRcornerleftBG:SetHeight(wh + (2*borderSize))
@@ -756,33 +732,27 @@ function GridIndicatorCornerIcons.CreateIndicator(f, indicator)
 		f.iconBRcornerleftBG:SetFrameLevel(5)
 		f.iconBRcornerleftBG:Hide()
 
-		-- create icon
 		f.iconBRcornerleft = f.iconBRcornerleftBG:CreateTexture(nil, "OVERLAY")
 		f.iconBRcornerleft:SetWidth(wh)
 		f.iconBRcornerleft:SetHeight(wh)
 		f.iconBRcornerleft:SetPoint("CENTER", f.iconBRcornerleftBG, "CENTER")
-		f.iconBRcornerleft:SetTexCoord(0.05, 0.95, 0.05, 0.95)
-		f.iconBRcornerleft:SetTexture(1, 1, 1, 0)
 
-		-- create icon text
 		f.iconBRcornerleftText = f.iconBRcornerleftBG:CreateFontString(nil, "OVERLAY")
 		f.iconBRcornerleftText:SetAllPoints(f.iconBRcornerleftBG)
 		f.iconBRcornerleftText:SetFontObject(GameFontHighlightSmall)
 		f.iconBRcornerleftText:SetFont(font, GridFrame.db.profile.fontSize)
 		f.iconBRcornerleftText:SetJustifyH("CENTER")
-		f.iconBRcornerleftText:SetJustifyV("CENTER")
+		f.iconBRcornerleftText:SetJustifyV("MIDDLE")
 
-		-- create icon cooldown
 		f.iconBRcornerleftCD = CreateFrame("Cooldown", nil, f.iconBRcornerleftBG, "CooldownFrameTemplate")
 		f.iconBRcornerleftCD:SetAllPoints(f.iconBRcornerleft)
 		f.iconBRcornerleftCD:SetScript("OnHide", function()
 			f.iconBRcornerleftStackText:SetParent(f.iconBRcornerleftBG)
-			f.iconBRcornerleftStackText:SetPoint("BOTTOMRIGHT", f.iconBRcornerleftBG, iconStackTextXYaxis, -iconStackTextXYaxis)
+			f.iconBRcornerleftStackText:SetPoint("BOTTOMRIGHT", f.iconBRcornerleftBG, iconStackTextXaxis, -iconStackTextYaxis)
 		end)
 
-		-- create icon stack text
 		f.iconBRcornerleftStackText = f.iconBRcornerleftBG:CreateFontString(nil, "OVERLAY")
-		f.iconBRcornerleftStackText:SetPoint("BOTTOMRIGHT", f.iconBRcornerleftBG, iconStackTextXYaxis, -iconStackTextXYaxis)
+		f.iconBRcornerleftStackText:SetPoint("BOTTOMRIGHT", f.iconBRcornerleftBG, iconStackTextXaxis, -iconStackTextYaxis)
 		f.iconBRcornerleftStackText:SetFontObject(GameFontHighlightSmall)
 		f.iconBRcornerleftStackText:SetFont(font, iconStackTextSize, "OUTLINE")
 		f.iconBRcornerleftStackText:SetJustifyH("RIGHT")
@@ -793,7 +763,6 @@ function GridIndicatorCornerIcons.CreateIndicator(f, indicator)
 			wh = GridFrame.db.profile.iconSize
 		end
 
-		-- create icon background/border
 		f.iconBRcornerrightBG = CreateFrame("Frame", nil, f)
 		f.iconBRcornerrightBG:SetWidth(wh + (2*borderSize))
 		f.iconBRcornerrightBG:SetHeight(wh + (2*borderSize))
@@ -807,33 +776,27 @@ function GridIndicatorCornerIcons.CreateIndicator(f, indicator)
 		f.iconBRcornerrightBG:SetFrameLevel(5)
 		f.iconBRcornerrightBG:Hide()
 
-		-- create icon
 		f.iconBRcornerright = f.iconBRcornerrightBG:CreateTexture(nil, "OVERLAY")
 		f.iconBRcornerright:SetWidth(wh)
 		f.iconBRcornerright:SetHeight(wh)
 		f.iconBRcornerright:SetPoint("CENTER", f.iconBRcornerrightBG, "CENTER")
-		f.iconBRcornerright:SetTexCoord(0.05, 0.95, 0.05, 0.95)
-		f.iconBRcornerright:SetTexture(1, 1, 1, 0)
 
-		-- create icon text
 		f.iconBRcornerrightText = f.iconBRcornerrightBG:CreateFontString(nil, "OVERLAY")
 		f.iconBRcornerrightText:SetAllPoints(f.iconBRcornerrightBG)
 		f.iconBRcornerrightText:SetFontObject(GameFontHighlightSmall)
 		f.iconBRcornerrightText:SetFont(font, GridFrame.db.profile.fontSize)
 		f.iconBRcornerrightText:SetJustifyH("CENTER")
-		f.iconBRcornerrightText:SetJustifyV("CENTER")
+		f.iconBRcornerrightText:SetJustifyV("MIDDLE")
 
-		-- create icon cooldown
 		f.iconBRcornerrightCD = CreateFrame("Cooldown", nil, f.iconBRcornerrightBG, "CooldownFrameTemplate")
 		f.iconBRcornerrightCD:SetAllPoints(f.iconBRcornerright)
 		f.iconBRcornerrightCD:SetScript("OnHide", function()
 			f.iconBRcornerrightStackText:SetParent(f.iconBRcornerrightBG)
-			f.iconBRcornerrightStackText:SetPoint("BOTTOMRIGHT", f.iconBRcornerrightBG, iconStackTextXYaxis, -iconStackTextXYaxis)
+			f.iconBRcornerrightStackText:SetPoint("BOTTOMRIGHT", f.iconBRcornerrightBG, iconStackTextXaxis, -iconStackTextYaxis)
 		end)
 
-		-- create icon stack text
 		f.iconBRcornerrightStackText = f.iconBRcornerrightBG:CreateFontString(nil, "OVERLAY")
-		f.iconBRcornerrightStackText:SetPoint("BOTTOMRIGHT", f.iconBRcornerrightBG, iconStackTextXYaxis, -iconStackTextXYaxis)
+		f.iconBRcornerrightStackText:SetPoint("BOTTOMRIGHT", f.iconBRcornerrightBG, iconStackTextXaxis, -iconStackTextYaxis)
 		f.iconBRcornerrightStackText:SetFontObject(GameFontHighlightSmall)
 		f.iconBRcornerrightStackText:SetFont(font, iconStackTextSize, "OUTLINE")
 		f.iconBRcornerrightStackText:SetJustifyH("RIGHT")
@@ -841,7 +804,7 @@ function GridIndicatorCornerIcons.CreateIndicator(f, indicator)
 	end
 end
 
-function GridIndicatorCornerIcons.SetIndicator(frame, indicator, color, text, value, maxValue, texture, start, duration, stack)
+function GridIndicatorCornerIcons.SetIndicator(frame, indicator, color, text, value, maxValue, texture, start, duration, stack, texCoords)
 	if indicator == "iconTLcornerleft"
 	or indicator == "iconTLcornerright"
 	or indicator == "iconTRcornerleft"
@@ -857,12 +820,14 @@ function GridIndicatorCornerIcons.SetIndicator(frame, indicator, color, text, va
 		if texture then
 			local borderSize = GridIndicatorCornerIcons.db.profile.iconBorderSize
 			local enabledCD = GridIndicatorCornerIcons.db.profile.enableIconCooldown
-			local XYaxis = GridIndicatorCornerIcons.db.profile.IconStackTextXYaxis
+			local IconStackTextXaxis = GridIndicatorCornerIcons.db.profile.IconStackTextXaxis
+			local IconStackTextYaxis = GridIndicatorCornerIcons.db.profile.IconStackTextYaxis
 			local enabledStackTxt = GridIndicatorCornerIcons.db.profile.enableIconStackText
 			if GridIndicatorCornerIcons.db.profile.OriginalSize then
 				borderSize = GridFrame.db.profile.iconBorderSize
 				enabledCD = GridFrame.db.profile.enableIconCooldown
-				XYaxis = 2
+				IconStackTextXaxis = 2
+				IconStackTextYaxis = 2
 				enabledStackTxt = GridFrame.db.profile.enableIconStackText
 			end
 
@@ -870,6 +835,11 @@ function GridIndicatorCornerIcons.SetIndicator(frame, indicator, color, text, va
 				frame[indicator]:SetTexture(texture.r, texture.g, texture.b, texture.a or 1)
 			else
 				frame[indicator]:SetTexture(texture)
+			end
+			if type(texCoords) == "table" then
+				frame[indicator]:SetTexCoord(texCoords.left, texCoords.right, texCoords.top, texCoords.bottom)
+			else
+				frame[indicator]:SetTexCoord(0, 1, 0, 1)
 			end
 
 			if type(color) == "table" then
@@ -890,7 +860,7 @@ function GridIndicatorCornerIcons.SetIndicator(frame, indicator, color, text, va
 				frame[indicator.."CD"]:SetCooldown(start, duration)
 				frame[indicator.."CD"]:Show()
 				frame[indicator.."StackText"]:SetParent(frame[indicator.."CD"])
-				frame[indicator.."StackText"]:SetPoint("BOTTOMRIGHT", frame[indicator.."BG"], XYaxis, -XYaxis)
+				frame[indicator.."StackText"]:SetPoint("BOTTOMRIGHT", frame[indicator.."BG"], IconStackTextXaxis, -IconStackTextYaxis)
 			else
 				frame[indicator.."CD"]:Hide()
 			end
@@ -933,12 +903,14 @@ function GridIndicatorCornerIcons.SetIconSize(f, size, borderSize)
 	local yoffset = GridIndicatorCornerIcons.db.profile.yoffset
 	local borderSize = GridIndicatorCornerIcons.db.profile.iconBorderSize
 	local iconStackTextSize = GridIndicatorCornerIcons.db.profile.IconStackTextSize
-	local iconStackTextXYaxis = GridIndicatorCornerIcons.db.profile.IconStackTextXYaxis
+	local iconStackTextXaxis = GridIndicatorCornerIcons.db.profile.IconStackTextXaxis
+	local iconStackTextYaxis = GridIndicatorCornerIcons.db.profile.IconStackTextYaxis
 	local font = media and media:Fetch("font", GridFrame.db.profile.font) or STANDARD_TEXT_FONT
 	if GridIndicatorCornerIcons.db.profile.OriginalSize then
 		borderSize = GridFrame.db.profile.iconBorderSize
 		iconStackTextSize = GridFrame.db.profile.fontSize
-		iconStackTextXYaxis = 2
+		iconStackTextXaxis = 1
+		iconStackTextYaxis = -1
 	end
 
 	if f.iconTLcornerleft then
@@ -972,7 +944,7 @@ function GridIndicatorCornerIcons.SetIconSize(f, size, borderSize)
 		f.iconTLcornerleft:SetHeight(size)
 
 		f.iconTLcornerleftStackText:SetFont(font, iconStackTextSize, "OUTLINE")
-		f.iconTLcornerleftStackText:SetPoint("BOTTOMRIGHT", f.iconTLcornerleftBG, iconStackTextXYaxis, -iconStackTextXYaxis)
+		f.iconTLcornerleftStackText:SetPoint("BOTTOMRIGHT", f.iconTLcornerleftBG, iconStackTextXaxis, -iconStackTextYaxis)
 	end
 	if f.iconTLcornerright then
 		local size = GridIndicatorCornerIcons.db.profile.iconSizeTopLeftCorner
@@ -1005,7 +977,7 @@ function GridIndicatorCornerIcons.SetIconSize(f, size, borderSize)
 		f.iconTLcornerright:SetHeight(size)
 
 		f.iconTLcornerrightStackText:SetFont(font, iconStackTextSize, "OUTLINE")
-		f.iconTLcornerrightStackText:SetPoint("BOTTOMRIGHT", f.iconTLcornerrightBG, iconStackTextXYaxis, -iconStackTextXYaxis)
+		f.iconTLcornerrightStackText:SetPoint("BOTTOMRIGHT", f.iconTLcornerrightBG, iconStackTextXaxis, -iconStackTextYaxis)
 	end
 	if f.iconTRcornerleft then
 		local size = GridIndicatorCornerIcons.db.profile.iconSizeTopRightCorner
@@ -1038,7 +1010,7 @@ function GridIndicatorCornerIcons.SetIconSize(f, size, borderSize)
 		f.iconTRcornerleft:SetHeight(size)
 
 		f.iconTRcornerleftStackText:SetFont(font, iconStackTextSize, "OUTLINE")
-		f.iconTRcornerleftStackText:SetPoint("BOTTOMRIGHT", f.iconTRcornerleftBG, iconStackTextXYaxis, -iconStackTextXYaxis)
+		f.iconTRcornerleftStackText:SetPoint("BOTTOMRIGHT", f.iconTRcornerleftBG, iconStackTextXaxis, -iconStackTextYaxis)
 	end
 	if f.iconTRcornerright then
 		local size = GridIndicatorCornerIcons.db.profile.iconSizeTopRightCorner
@@ -1071,7 +1043,7 @@ function GridIndicatorCornerIcons.SetIconSize(f, size, borderSize)
 		f.iconTRcornerright:SetHeight(size)
 
 		f.iconTRcornerrightStackText:SetFont(font, iconStackTextSize, "OUTLINE")
-		f.iconTRcornerrightStackText:SetPoint("BOTTOMRIGHT", f.iconTRcornerrightBG, iconStackTextXYaxis, -iconStackTextXYaxis)
+		f.iconTRcornerrightStackText:SetPoint("BOTTOMRIGHT", f.iconTRcornerrightBG, iconStackTextXaxis, -iconStackTextYaxis)
 	end
 	if f.iconBLcornerleft then
 		local size = GridIndicatorCornerIcons.db.profile.iconSizeBottomLeftCorner
@@ -1104,7 +1076,7 @@ function GridIndicatorCornerIcons.SetIconSize(f, size, borderSize)
 		f.iconBLcornerleft:SetHeight(size)
 
 		f.iconBLcornerleftStackText:SetFont(font, iconStackTextSize, "OUTLINE")
-		f.iconBLcornerleftStackText:SetPoint("BOTTOMRIGHT", f.iconBLcornerleftBG, iconStackTextXYaxis, -iconStackTextXYaxis)
+		f.iconBLcornerleftStackText:SetPoint("BOTTOMRIGHT", f.iconBLcornerleftBG, iconStackTextXaxis, -iconStackTextYaxis)
 	end
 	if f.iconBLcornerright then
 		local size = GridIndicatorCornerIcons.db.profile.iconSizeBottomLeftCorner
@@ -1137,7 +1109,7 @@ function GridIndicatorCornerIcons.SetIconSize(f, size, borderSize)
 		f.iconBLcornerright:SetHeight(size)
 
 		f.iconBLcornerrightStackText:SetFont(font, iconStackTextSize, "OUTLINE")
-		f.iconBLcornerrightStackText:SetPoint("BOTTOMRIGHT", f.iconBLcornerrightBG, iconStackTextXYaxis, -iconStackTextXYaxis)
+		f.iconBLcornerrightStackText:SetPoint("BOTTOMRIGHT", f.iconBLcornerrightBG, iconStackTextXaxis, -iconStackTextYaxis)
 	end
 	if f.iconBRcornerleft then
 		local size = GridIndicatorCornerIcons.db.profile.iconSizeBottomRightCorner
@@ -1170,7 +1142,7 @@ function GridIndicatorCornerIcons.SetIconSize(f, size, borderSize)
 		f.iconBRcornerleft:SetHeight(size)
 
 		f.iconBRcornerleftStackText:SetFont(font, iconStackTextSize, "OUTLINE")
-		f.iconBRcornerleftStackText:SetPoint("BOTTOMRIGHT", f.iconBRcornerleftBG, iconStackTextXYaxis, -iconStackTextXYaxis)
+		f.iconBRcornerleftStackText:SetPoint("BOTTOMRIGHT", f.iconBRcornerleftBG, iconStackTextXaxis, -iconStackTextYaxis)
 	end
 	if f.iconBRcornerright then
 		local size = GridIndicatorCornerIcons.db.profile.iconSizeBottomRightCorner
@@ -1203,6 +1175,6 @@ function GridIndicatorCornerIcons.SetIconSize(f, size, borderSize)
 		f.iconBRcornerright:SetHeight(size)
 
 		f.iconBRcornerrightStackText:SetFont(font, iconStackTextSize, "OUTLINE")
-		f.iconBRcornerrightStackText:SetPoint("BOTTOMRIGHT", f.iconBRcornerrightBG, iconStackTextXYaxis, -iconStackTextXYaxis)
+		f.iconBRcornerrightStackText:SetPoint("BOTTOMRIGHT", f.iconBRcornerrightBG, iconStackTextXaxis, -iconStackTextYaxis)
 	end
 end

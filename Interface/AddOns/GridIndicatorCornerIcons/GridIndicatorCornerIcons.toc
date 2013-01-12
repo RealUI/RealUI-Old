@@ -1,15 +1,15 @@
-## Interface: 50001
+## Interface: 50100
 ## Title: GridIndicatorCornerIcons
-## Author: kunda
-## Notes: Adds two icon indicators to each corner in each Grid frame (total: 8 icon indicators).
-## Notes-deDE: Fügt zwei Symbolindikatoren zu jeder Ecke in jedes Grid-Fenster hinzu (Gesamt: 8 Symbolindikatoren).
+## Notes: Adds two icon indicators to each corner (total: 8 icon indicators).
+## Notes-deDE: Erweitert jede Ecke um zwei Symbolindikatoren (Gesamt: 8 Symbolindikatoren).
 ## Notes-koKR: 각 Grid 창의 모서리에 2개의 아이콘 지시기를 추가합니다. (합계: 8 아이콘 지시기).
 ## Notes-ruRU: Добавляет 2иконки индикатора на каждый угол фреймов  Грид (всего: 8 индикаторов иконок).
 ## Notes-zhCN: [Grid] 在每个 Grid 框体角落添加2个图标提示（总共：8个图标提示）。
 ## Notes-zhTW: [Grid] 在每個 Grid 框架角落添加2個圖標提示（總共：8個圖標提示）。
-## Version: 50001-3
+## Author: kunda
+## Version: 50100-1
 ## Dependencies: Grid
-## X-Curse-Packaged-Version: 50001-3
+## X-Curse-Packaged-Version: 50100-1
 ## X-Curse-Project-Name: GridIndicatorCornerIcons
 ## X-Curse-Project-ID: grid-indicator-corner-icons
 ## X-Curse-Repository-ID: wow/grid-indicator-corner-icons/mainline

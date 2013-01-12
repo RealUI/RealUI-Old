@@ -1,5 +1,7 @@
+local addon, private = ...
+local Chatter = LibStub("AceAddon-3.0"):GetAddon(addon)
 local mod = Chatter:NewModule("Channel Colors", "AceEvent-3.0")
-local L = LibStub("AceLocale-3.0"):GetLocale("Chatter")
+local L = LibStub("AceLocale-3.0"):GetLocale(addon)
 mod.modName = L["Channel Colors"]
 local GetChannelList = _G.GetChannelList
 local GetChannelName = _G.GetChannelName
@@ -33,20 +35,20 @@ function mod:OnEnable()
 	self:RegisterEvent("CHAT_MSG_CHANNEL_NOTICE")
 	self:AddChannels(GetChannelList())
 	self:AddChannels(
-		"SAY", L["Say"],
-		"YELL", L["Yell"],
-		"GUILD", L["Guild"], 
-		"OFFICER", L["Officer"], 
-		"PARTY", L["Party"], 
-		"PARTY_LEADER", PARTY_LEADER,
-		"RAID", L["Raid"], 
-		"RAID_LEADER", L["Raid Leader"],
-		"RAID_WARNING", L["Raid Warning"],
-		"BATTLEGROUND", L["Battleground"],
-		"BATTLEGROUND_LEADER", L["Battleground Leader"],
-		"WHISPER", L["Whisper"],
-		"BN_WHISPER", L["RealID Whisper"],
-		"BN_CONVERSATION", L["RealID Conversation"]
+		"SAY", CHAT_MSG_SAY,
+		"YELL", CHAT_MSG_YELL,
+		"GUILD", CHAT_MSG_GUILD,
+		"OFFICER", CHAT_MSG_OFFICER,
+		"PARTY", CHAT_MSG_PARTY,
+		"PARTY_LEADER", CHAT_MSG_PARTY_LEADER,
+		"RAID", CHAT_MSG_RAID,
+		"RAID_LEADER", CHAT_MSG_RAID_LEADER,
+		"RAID_WARNING", CHAT_MSG_RAID_WARNING,
+		"INSTANCE_CHAT", INSTANCE_CHAT,
+		"INSTANCE_CHAT_LEADER", INSTANCE_CHAT_LEADER,
+		"WHISPER", CHAT_MSG_WHISPER_INFORM,
+		"BN_WHISPER", CHAT_MSG_BN_WHISPER,
+		"BN_CONVERSATION", CHAT_MSG_BN_CONVERSATION
 	)
 end
 

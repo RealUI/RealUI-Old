@@ -29,7 +29,7 @@ end
 
 -- Set highlight-related defaults in the profile
 function MOD:SetHighlightDefaults()
-	if IsAddOnLoaded("OmniCC") then -- disable counters by default if using OmniCC
+	if OmniCC then -- disable counters by default if using OmniCC
 		MOD.DefaultProfile.global.CooldownText = false
 	end
 end

@@ -1,10 +1,10 @@
-## Interface: 50001
+## Interface: 50100
 ## Title: GridStatusRaidIcons
 ## Notes: Adds Raid Target Icon status to Grid (Player or Player Target).
 ## Author: kunda
-## Version: 50001-1
+## Version: 50100-1
 ## Dependencies: Grid
-## X-Curse-Packaged-Version: 50001-1
+## X-Curse-Packaged-Version: 50100-1
 ## X-Curse-Project-Name: GridStatusRaidIcons
 ## X-Curse-Project-ID: grid-status-raid-icons
 ## X-Curse-Repository-ID: wow/grid-status-raid-icons/mainline

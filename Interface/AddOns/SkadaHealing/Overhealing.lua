@@ -6,7 +6,7 @@ local mod = Skada:NewModule(L["Overhealing"])
 
 function mod:OnEnable()
 	mod.metadata = {showspots = true, columns = {Overheal = true, Percent = true}}
-	
+
 	Skada:AddMode(self)
 end
 
@@ -38,10 +38,10 @@ function mod:Update(win, set)
 
 	for i, player in ipairs(set.players) do
 		if player.overhealing > 0 then
-		
+
 			local d = win.dataset[nr] or {}
 			win.dataset[nr] = d
-	
+
 			d.id = player.id
 			d.value = player.overhealing
 			d.label = player.name
@@ -51,14 +51,14 @@ function mod:Update(win, set)
 											string.format("%02.1f%%", player.overhealing / math.max(1, player.healing) * 100), self.metadata.columns.Percent
 										)
 			d.class = player.class
-			
+
 			if player.overhealing > max then
 				max = player.overhealing
 			end
 			nr = nr + 1
 		end
 	end
-	
+
 	win.metadata.maxvalue = max
 end
 

@@ -1,10 +1,5 @@
 local L = LibStub("AceLocale-3.0"):GetLocale("nibIceHUD", false)
 local SliceAndDice = IceCore_CreateClass(IceUnitBar)
-local mass
-
-if IsAddOnLoaded("Massive") then
-	mass = LibStub:GetLibrary("Massive")
-end
 
 local nibIceHUD = _G.nibIceHUD
 
@@ -52,7 +47,7 @@ function SliceAndDice.prototype:Enable(core)
 end
 
 function SliceAndDice.prototype:Toggle(vis)
-	if ( vis and (UnitLevel("player") > 22) ) then
+	if ( vis and (UnitLevel("player") > 14) ) then
 		self:Show(true)
 	else
 		self:Show(false)

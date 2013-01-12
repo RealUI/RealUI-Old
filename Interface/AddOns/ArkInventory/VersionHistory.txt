@@ -8,7 +8,6 @@
 *known issues*
  * moving an item from one guild bank tab to another will leave a ghost item behind until you view that tab again (it also increases the tooltip count for that ghost item).
  * windows may end up off screen, if they do then open the config, click on controls, select the tab for the location, click on reposition
- * vault amounts in ldb object keep showing a single amount for all vaults every now and then
 
 *wiki pages*
  * main wiki page - http://code.google.com/p/arkinventory/w/list
@@ -17,8 +16,31 @@
 
 
 
+*3.03.24 (16-DEC-2012)*
+ * fixed - issue with disabling arkinventory and mouseover tooltips
+ * fixed - issue with scanning pets (for max pet level)
+ * changed - the equipable items category now only picks up items that have an actual equip location set
+ * added - display item levels on equippable items (disabled by default) via config > settings > location > items > item level
+ * added - tint unuseable will apply to battlepets in your bag when their level is above your maximum current pet level
+ * fixed - issue with ldb random mount code not checking users custom changes
+
+*3.03.23 (30-NOV-2012)*
+ * added - cooking slot / container support
+ * fixed - issue with normaltexture showing default item border
+
+*3.03.22 (29-NOV-2012)*
+ * fixed - updated for pet api changes (petid is now a guid string, not a number)
+ * fixed - issue where pets and mounts submenus were showing up under the action menu
+
+*3.03.21 (28-NOV-2012)*
+ * changed - toc updated to 50100
+ * fixed - issue with item tracking object not updating
+ * fixed - issue with battlepet opponent detail output not linking all your pets
+ * fixed - issue with normaltexture going green
+ * added - new sort key - internal id (class:itemid:soulbound)
+ 
 *3.03.20 (16-NOV-2012)*
- * fixed - code error
+ * fixed - tooltip code error
  
 *3.03.19 (15-NOV-2012)*
  * changed - the equipment category name is now sourced from blizzard text

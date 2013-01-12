@@ -1,8 +1,8 @@
 
 do
-	BadBoyGuildedConfigTitle:SetText("BadBoy_Guilded v2.82") --wowace magic, replaced with tag version
+	BadBoyGuildedConfigTitle:SetText("BadBoy_Guilded v2.88") --wowace magic, replaced with tag version
 
-	local guildedWhispers = CreateFrame("CheckButton", "BadBoyGuildedWhispersButton", BadBoyConfig, "OptionsBaseCheckButtonTemplate")
+	local guildedWhispers = CreateFrame("CheckButton", nil, BadBoyConfig, "OptionsBaseCheckButtonTemplate")
 	guildedWhispers:SetPoint("TOPLEFT", BadBoyConfigPopupButton, "BOTTOMLEFT", 0, -67)
 	guildedWhispers:SetScript("OnClick", function(frame)
 		local tick = frame:GetChecked()
@@ -14,8 +14,11 @@ do
 			BADBOY_GWHISPER = nil
 		end
 	end)
+	guildedWhispers:SetScript("OnShow", function(frame)
+		frame:SetChecked(BADBOY_GWHISPER)
+	end)
 
-	local guildedWhispersText = guildedWhispers:CreateFontString("BadBoyGuildedWhispersButtonTitle", "ARTWORK", "GameFontHighlight")
+	local guildedWhispersText = guildedWhispers:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
 	guildedWhispersText:SetPoint("LEFT", guildedWhispers, "RIGHT", 0, 1)
 
 	guildedWhispersText:SetText("Remove guild invite whispers")
@@ -42,20 +45,18 @@ do
 		guildedWhispersText:SetText("Remove guild invite whispers")
 	end
 
-	local guildedInvites = CreateFrame("CheckButton", "BadBoyguildedInvitesButton", BadBoyConfig, "OptionsBaseCheckButtonTemplate")
+	local guildedInvites = CreateFrame("CheckButton", nil, BadBoyConfig, "OptionsBaseCheckButtonTemplate")
 	guildedInvites:SetPoint("TOPLEFT", BadBoyConfigPopupButton, "BOTTOMLEFT", 0, -87)
 	guildedInvites:SetScript("OnClick", function(frame)
 		local tick = frame:GetChecked()
 		InterfaceOptionsControlsPanelBlockGuildInvites:SetValue(tick)
 	end)
+	guildedInvites:SetScript("OnShow", function(frame)
+		frame:SetChecked(InterfaceOptionsControlsPanelBlockGuildInvites:GetValue())
+	end)
 
-	local guildedInvitesText = guildedInvites:CreateFontString("BadBoyGuildedWhispersButtonTitle", "ARTWORK", "GameFontHighlight")
+	local guildedInvitesText = guildedInvites:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
 	guildedInvitesText:SetPoint("LEFT", guildedInvites, "RIGHT", 0, 1)
 	guildedInvitesText:SetText(BLOCK_GUILD_INVITES)
-
-	BadBoyConfig:HookScript("OnShow", function()
-		BadBoyGuildedWhispersButton:SetChecked(BADBOY_GWHISPER)
-		BadBoyguildedInvitesButton:SetChecked(InterfaceOptionsControlsPanelBlockGuildInvites:GetValue())
-	end)
 end
 
