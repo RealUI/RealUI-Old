@@ -855,7 +855,7 @@ function GridLayout:Update()
 		-- find what groups are in use
 		for i = 1, MAX_RAID_MEMBERS do
 			local name, _, subGroup = GetRaidRosterInfo(i)
-			print(tostring(name)..", "..tostring(subGroup))
+			--print(tostring(name)..", "..tostring(subGroup))
 			if name and subGroup then
 				raidGroupInUse["group"..subGroup] = true
 			else
