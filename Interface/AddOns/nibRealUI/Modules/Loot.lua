@@ -653,18 +653,20 @@ function Loot:InitializeLoot()
 	function GroupLootDropDown_GiveLoot(self)
 		--print("GroupLootDropDown_GiveLoot: ")
 		if ( LootFrame.selectedQuality >= MASTER_LOOT_THREHOLD ) then
-			local dialog = StaticPopup_Show("CONFIRM_LOOT_DISTRIBUTION", ITEM_QUALITY_COLORS[LootFrame.selectedQuality].hex..LootFrame.selectedItemName..FONT_COLOR_CODE_CLOSE, self:GetText())
+			local dialog = StaticPopup_Show("CONFIRM_LOOT_DISTRIBUTION", ITEM_QUALITY_COLORS[LootFrame.selectedQuality].hex..LootFrame.selectedItemName..FONT_COLOR_CODE_CLOSE, self.Name:GetText(), "LootWindow")
 			if (dialog) then
 				dialog.data = self.value
 			end
 		else
-			GiveMasterLoot(LootFrame.selectedSlot, self.value)
+			Loot:GiveMasterLoot()
 		end
 		CloseDropDownMenus()
 	end
 
-	StaticPopupDialogs["CONFIRM_LOOT_DISTRIBUTION"].OnAccept = function(self, data)
-		GiveMasterLoot(LootFrame.selectedSlot, data)
+	function Loot:GiveMasterLoot() --StaticPopupDialogs["CONFIRM_LOOT_DISTRIBUTION"].OnAccept = function(self, data)
+		--print("GroupLootDropDown_GiveLoot: self.id"..tostring(MasterLooterFrame.candidateId))
+		GiveMasterLoot(MasterLooterFrame.slot, MasterLooterFrame.candidateId)
+		MasterLooterFrame:Hide();
 	end
 	
 	self:RegisterEvent("LOOT_OPENED")
