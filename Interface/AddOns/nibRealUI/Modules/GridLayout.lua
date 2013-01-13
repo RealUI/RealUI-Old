@@ -758,7 +758,7 @@ function GridLayout:Update()
 	-- Find new Grid Layout
 	-- Battleground
 	if ( ((instanceType == "pvp") or InTB or InWG) and LayoutDB.bg.enabled ) then
-		print("You are in a Battleground")
+		--print("You are in a Battleground")
 		local RaidSize = SizeByMapID[CurMapID] or 40
 		local NewSize = math.min(RaidSize, tonumber(LayoutDB.bg.maxsize))
 		
