@@ -21,6 +21,8 @@ local SizeByMapID = {
 	[626] = 10,		-- TP
 	[708] = 40,		-- Tol Barad
 	[736] = 10,		-- BoG
+	[856] = 10,		-- ToK
+	[860] = 10,		-- Silvershard
 }
 
 local raidGroupInUse = {

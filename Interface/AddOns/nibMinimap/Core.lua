@@ -250,6 +250,7 @@ function nibMinimap:UpdateInfoPosition()
 	local iHeight = (db.information.font.size + db.information.font.gap) / scale
 	
 	local font = RetrieveFont(db.information.font.name)
+	local numText = 0
 	
 	if Minimap:IsVisible() and (ExpandedState == 0) then
 		-- Set Offsets, Positions, Gaps
@@ -266,6 +267,7 @@ function nibMinimap:UpdateInfoPosition()
 		end
 		yofs = (db.information.position.y + 11) * ymulti - (5 * scale * ymulti)
 		yadj = iHeight * ymulti
+		--print("yadj: "..yadj)
 		
 		-- Location
 		MMFrames.info.location:ClearAllPoints()
@@ -281,6 +283,7 @@ function nibMinimap:UpdateInfoPosition()
 			MMFrames.info.coords.text:SetFont(font, db.information.font.size / scale, db.information.font.outline)
 			MMFrames.info.coords:Show()
 			yofs = yofs + yadj
+			numText = numText + 1
 		else
 			MMFrames.info.coords:Hide()
 		end
@@ -292,6 +295,7 @@ function nibMinimap:UpdateInfoPosition()
 			MMFrames.info.dungeondifficulty.text:SetFont(font, db.information.font.size / scale, db.information.font.outline)
 			MMFrames.info.dungeondifficulty:Show()
 			yofs = yofs + yadj
+			numText = numText + 1
 		else
 			MMFrames.info.dungeondifficulty:Hide()
 		end
@@ -303,11 +307,11 @@ function nibMinimap:UpdateInfoPosition()
 			MMFrames.info.mail.text:SetFont(font, db.information.font.size / scale, db.information.font.outline)
 			MMFrames.info.mail:Show()
 			yofs = yofs + yadj
+			numText = numText + 1
 		else
 			MMFrames.info.mail:Hide()
 		end
 		
-		-- 
 		-- Dungeon Finder Queue
 		if InfoShown.queue then
 			MMFrames.info.queue:ClearAllPoints()
@@ -315,30 +319,48 @@ function nibMinimap:UpdateInfoPosition()
 			MMFrames.info.queue.text:SetFont(font, db.information.font.size / scale, db.information.font.outline)
 			MMFrames.info.queue:Show()
 			yofs = yofs + yadj
+			numText = numText + 1
 		else
 			MMFrames.info.queue:Hide()
 		end
 		
-			-- Raid Finder Queue
+		-- Raid Finder Queue
 		if InfoShown.RFqueue then
 			MMFrames.info.RFqueue:ClearAllPoints()
 			MMFrames.info.RFqueue:SetPoint(point, "Minimap", rpoint, xofs, yofs)
 			MMFrames.info.RFqueue.text:SetFont(font, db.information.font.size / scale, db.information.font.outline)
 			MMFrames.info.RFqueue:Show()
 			yofs = yofs + yadj
+			numText = numText + 1
 		else
 			MMFrames.info.RFqueue:Hide()
 		end
 		
-			-- Scenarios Queue
+		-- Scenarios Queue
 		if InfoShown.Squeue then
 			MMFrames.info.Squeue:ClearAllPoints()
 			MMFrames.info.Squeue:SetPoint(point, "Minimap", rpoint, xofs, yofs)
 			MMFrames.info.Squeue.text:SetFont(font, db.information.font.size / scale, db.information.font.outline)
 			MMFrames.info.Squeue:Show()
 			yofs = yofs + yadj
+			numText = numText + 1
 		else
 			MMFrames.info.Squeue:Hide()
+		end
+		
+		if (IsAddOnLoaded("Blizzard_CompactRaidFrames")) and (mm_point == "TOPLEFT") then
+			hooksecurefunc("CompactRaidFrameManager_Toggle", function(self)
+				local ofsy = yofs * (14 / abs((db.information.position.y + 11) * ymulti - (5 * scale * ymulti)))
+				nibMinimap:AdjustCRFManager(self, yofs, mm_point)
+			end)
+			local CRFM = _G["CompactRaidFrameManager"]--:HookScript("OnEvent", function(self)
+				print("yofs: "..yofs)
+				print("scale: "..scale)
+				numText = numText + 1
+				local ofsy = ( (yofs * abs(yadj)) / scale) --* numText --yofs * (14 / abs((db.information.position.y + 11) * ymulti - (5 * scale * ymulti)))
+				nibMinimap:AdjustCRFManager(CRFM, yofs, mm_point)
+				print("ofsy: "..ofsy)
+			--end)
 		end
 	else
 		MMFrames.info.location:Hide()
@@ -348,8 +370,23 @@ function nibMinimap:UpdateInfoPosition()
 		MMFrames.info.queue:Hide()
 		MMFrames.info.RFqueue:Hide()
 		MMFrames.info.Squeue:Hide()
+		numText = 1
 	end
 end
+
+
+function nibMinimap:AdjustCRFManager(self, ofsy, mm_point)
+	-- ofsy = 5 @ 75% (default yofs)
+	-- ofsy = -34 @ 100%
+	-- ofsy = -180 @ 200%
+	--local ofsy = -145 + ofsy -- -180
+	if ( self.collapsed ) and (mm_point == "TOPLEFT")then
+		CompactRaidFrameManager:SetPoint("TOPLEFT", "Minimap", "BOTTOMLEFT", -190, ofsy)
+	else
+		CompactRaidFrameManager:SetPoint("TOPLEFT", "Minimap", "BOTTOMLEFT", -15, ofsy)
+	end
+end
+
 
 -- Set Button positions
 function nibMinimap:UpdateButtonsPosition()

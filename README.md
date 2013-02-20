@@ -9,6 +9,7 @@ The following addons have been modified to suit RealUI and should not be updated
   - GridManaBars
   - SharedMedia + SharedMedia_MyMedia
 
+
 Installation Procedure
 ----------------------
 ### Note: WoW Installation location ###
@@ -37,7 +38,7 @@ When your World of Warcraft folder is located in Program Files or a User directo
 
   1. Go to your "World of Warcraft\WTF\Account\" folder
   2. If you have more than 1 account, copy and Paste the "ACCOUNTNAME" folder to make as many copies as you have Accounts
-  3. Rename the "ACCOUNTNAME" folder/s to your WoW Account name/s.
+  3. Rename the "ACCOUNTNAME" folder to your WoW Account name.
 
 Note: If you are unsure of your Account Name, go to the "UIBackup\WTF\Account\" folder and see what the folder/s in there are named.
 
@@ -58,5 +59,5 @@ To access the RealUI options window, click the small icon at the bottom left of 
 
 Troubleshooting/comments/questions?
 -----------------------------------
-Find a bug? Please use my Github Issue tracker. 
-https://github.com/Gethe/RealUI/issues?state=open
+Find a bug? Please use my [Github Issue tracker](https://github.com/Gethe/RealUI/issues?state=open).
+

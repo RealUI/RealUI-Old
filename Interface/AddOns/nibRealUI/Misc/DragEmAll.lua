@@ -3,11 +3,6 @@
 
 local nibRealUI = LibStub("AceAddon-3.0"):GetAddon("nibRealUI")
 local LSM = LibStub("LibSharedMedia-3.0")
-local mass
-
-if IsAddOnLoaded("Massive") then
-	mass = LibStub:GetLibrary("Massive")
-end
 
 local MODNAME = "DragEmAll"
 local DragEmAll = nibRealUI:NewModule(MODNAME, "AceEvent-3.0")
@@ -66,7 +61,7 @@ local lodFrames = {
 	Blizzard_AuctionUI = { ["AuctionFrame"] = false },
 	Blizzard_BarbershopUI = { ["BarberShopFrame"] = false },
 	Blizzard_BindingUI = { ["KeyBindingFrame"] = false },
-	Blizzard_BlackMarketUI = { ["CraftFrame"] = false },
+	Blizzard_BlackMarketUI = { ["BlackMarketFrame"] = false },
 	Blizzard_Calendar = { ["CalendarFrame"] = false, ["CalendarCreateEventFrame"] = true },
 	Blizzard_EncounterJournal = { ["EncounterJournal"] = false },
 	Blizzard_GMSurveyUI = { ["GMSurveyFrame"] = false },
@@ -76,7 +71,7 @@ local lodFrames = {
 	Blizzard_ItemSocketingUI = { ["ItemSocketingFrame"] = false },
 	Blizzard_LookingForGuildUI = { ["LookingForGuildFrame"] = false },
 	Blizzard_MacroUI = { ["MacroFrame"] = false },
-	Blizzard_PetJournal = { ["PetJournalParent"] = false },
+	Blizzard_PetJournal = { ["PetJournalParent"] = false, ["MountJournal"] = true, ["PetJournal"] = true },
 	Blizzard_ReforgingUI = { ["ReforgingFrame"] = false },
 	Blizzard_TalentUI = { ["PlayerTalentFrame"] = false },
 	Blizzard_TimeManager = { ["TimeManagerFrame"] = false },
@@ -121,6 +116,7 @@ function DragEmAll:HookFrame(name, moveParent)
 				parent = frame:GetParent()
 			end
 			if not parent then
+				print("Parent frame not found: " .. name)
 				return
 			end
 			parentFrame[frame] = parent
