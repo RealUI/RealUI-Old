@@ -12,7 +12,7 @@ nibPointDisplay_RealUI.Types = {
 		name = "Death Knight",
 		points = {
 			[1] = {name = "Shadow Infusion", id = "si", barcount = 5},
-			[2] = {name = "Bone Shield", id = "bs", barcount = 4},
+			[2] = {name = "Bone Shield", id = "bs", barcount = 6},
 		},
 	},
 	["DRUID"] = {
@@ -556,7 +556,7 @@ function nibPointDisplay_RealUI:GetPoints(CurClass, CurType)
 	elseif CurClass == "ROGUE" then
 		-- Deadly Poison
 		if CurType == "dp" then
-			NewPoints = GetDebuffCount(SpellInfo[CurType])
+			NewPoints = GetBuffCount(SpellInfo[CurType])
 		end
 	-- Shaman
 	elseif CurClass == "SHAMAN" then
@@ -565,7 +565,7 @@ function nibPointDisplay_RealUI:GetPoints(CurClass, CurType)
 			NewPoints = GetBuffCount(SpellInfo[CurType])
 		-- Lightning Shield (Fulmination)
 		elseif CurType == "ls" then
-			NewPoints = max(GetBuffCount(SpellInfo[CurType]) - 3, 0)
+			NewPoints = max(GetBuffCount(SpellInfo[CurType]) - 1, 0)
 		-- Tidal Waves
 		elseif CurType == "tw" then
 			NewPoints = GetBuffCount(SpellInfo[CurType])
@@ -976,7 +976,7 @@ function nibPointDisplay_RealUI:PLAYER_LOGIN()
 	SpellInfo["deva"] = GetSpellInfo(87118)		-- Dark Evangelism
 	SpellInfo["ms"] = GetSpellInfo(33371)		-- Mind Spike
 	-- Rogue	
-	SpellInfo["dp"] = GetSpellInfo(2818)		-- Deadly Poison
+	SpellInfo["dp"] = GetSpellInfo(114015)		-- Deadly Poison
 	-- Shaman
 	SpellInfo["mw"] = GetSpellInfo(65986)		-- Maelstrom Weapon
 	SpellInfo["ls"] = GetSpellInfo(324)			-- Lightning Shield
