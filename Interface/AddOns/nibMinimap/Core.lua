@@ -349,18 +349,19 @@ function nibMinimap:UpdateInfoPosition()
 		end
 		
 		if (IsAddOnLoaded("Blizzard_CompactRaidFrames")) and (mm_point == "TOPLEFT") then
-			hooksecurefunc("CompactRaidFrameManager_Toggle", function(self)
-				local ofsy = yofs * (14 / abs((db.information.position.y + 11) * ymulti - (5 * scale * ymulti)))
-				nibMinimap:AdjustCRFManager(self, yofs, mm_point)
-			end)
+			numText = numText + 1
+			ofsy = yofs + yadj
 			local CRFM = _G["CompactRaidFrameManager"]--:HookScript("OnEvent", function(self)
-				print("yofs: "..yofs)
-				print("scale: "..scale)
-				numText = numText + 1
-				local ofsy = ( (yofs * abs(yadj)) / scale) --* numText --yofs * (14 / abs((db.information.position.y + 11) * ymulti - (5 * scale * ymulti)))
-				nibMinimap:AdjustCRFManager(CRFM, yofs, mm_point)
-				print("ofsy: "..ofsy)
+				--print("yofs: "..yofs)
+				--print("scale: "..scale)
+				--print("numText: "..numText)
+				--local ofsy = -41.5 - 149.4 * scale
+				nibMinimap:AdjustCRFManager(CRFM, scale, mm_point, numText)
 			--end)
+			hooksecurefunc("CompactRaidFrameManager_Toggle", function(self)
+				--local ofsy = yofs * (14 / abs((db.information.position.y + 11) * ymulti - (5 * scale * ymulti)))
+				nibMinimap:AdjustCRFManager(self, scale, mm_point, numText)
+			end)
 		end
 	else
 		MMFrames.info.location:Hide()
@@ -375,15 +376,21 @@ function nibMinimap:UpdateInfoPosition()
 end
 
 
-function nibMinimap:AdjustCRFManager(self, ofsy, mm_point)
-	-- ofsy = 5 @ 75% (default yofs)
-	-- ofsy = -34 @ 100%
-	-- ofsy = -180 @ 200%
-	--local ofsy = -145 + ofsy -- -180
+function nibMinimap:AdjustCRFManager(self, scale, mm_point, numText)
+	-- yofs with 0 info lines:
+	-- -77 @ 50%
+	-- -140 (default yofs)
+	-- -154 @ 100%
+	-- -229 @ 150%
+	-- -301 @ 200%
+	local yofs = (-3.5 - 149.4 * scale) + (-numText * 13)
+	if (InCombatLockdown()) then
+		return;
+	end
 	if ( self.collapsed ) and (mm_point == "TOPLEFT")then
-		CompactRaidFrameManager:SetPoint("TOPLEFT", "Minimap", "BOTTOMLEFT", -190, ofsy)
+		CompactRaidFrameManager:SetPoint("TOPLEFT", UIParent, "TOPLEFT", -182, yofs)
 	else
-		CompactRaidFrameManager:SetPoint("TOPLEFT", "Minimap", "BOTTOMLEFT", -15, ofsy)
+		CompactRaidFrameManager:SetPoint("TOPLEFT", UIParent, "TOPLEFT", -7, yofs)
 	end
 end
 
