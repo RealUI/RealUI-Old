@@ -85,7 +85,7 @@ function JunkSeller:AtMerchant()
 		for slot = 0, GetContainerNumSlots(bag) do
 			local link = GetContainerItemLink(bag, slot)
 			if link then
-				local sellprice = select(11, GetItemInfo(link))*select(2, GetContainerItemInfo(bag, slot))
+				local sellprice = select(11, GetItemInfo(link)) * select(2, GetContainerItemInfo(bag, slot))
 				if select(3, GetItemInfo(link)) == 0 then
 					ShowMerchantSellCursor(1);
 					UseContainerItem(bag, slot);

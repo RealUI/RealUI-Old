@@ -39,7 +39,7 @@ C.media = {
 }
 
 C.defaults = {
-	["alpha"] = 0.5,
+	["alpha"] = 0.65,
 	["bags"] = true,
 	["chatBubbles"] = true,
 	["enableFont"] = true,
@@ -50,6 +50,8 @@ C.defaults = {
 	["qualityColour"] = true,
 	["tooltips"] = true,
 }
+
+local DefGradient = {"VERTICAL", 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3}
 
 C.frames = {}
 
@@ -106,7 +108,7 @@ F.CreateGradient = function(f)
 	tex:SetPoint("TOPLEFT")
 	tex:SetPoint("BOTTOMRIGHT")
 	tex:SetTexture(C.media.backdrop)
-	tex:SetGradientAlpha("VERTICAL", 0, 0, 0, .3, .35, .35, .35, .35)
+	tex:SetGradientAlpha(unpack(DefGradient))
 end
 
 F.CreatePulse = function(frame)
@@ -215,7 +217,7 @@ F.ReskinScroll = function(f)
 	tex:SetPoint("TOPLEFT", bu.bg)
 	tex:SetPoint("BOTTOMRIGHT", bu.bg)
 	tex:SetTexture(C.media.backdrop)
-	tex:SetGradientAlpha("VERTICAL", 0, 0, 0, .3, .35, .35, .35, .35)
+	tex:SetGradientAlpha(unpack(DefGradient))
 
 	local up = _G[frame.."ScrollUpButton"]
 	local down = _G[frame.."ScrollDownButton"]
@@ -394,7 +396,7 @@ F.ReskinCheck = function(f)
 	tex:SetPoint("TOPLEFT", 5, -5)
 	tex:SetPoint("BOTTOMRIGHT", -5, 5)
 	tex:SetTexture(C.media.backdrop)
-	tex:SetGradientAlpha("VERTICAL", 0, 0, 0, .3, .35, .35, .35, .35)
+	tex:SetGradientAlpha(unpack(DefGradient))
 
 	local ch = f:GetCheckedTexture()
 	ch:SetDesaturated(true)
@@ -426,7 +428,7 @@ F.ReskinRadio = function(f)
 	tex:SetPoint("TOPLEFT", 4, -4)
 	tex:SetPoint("BOTTOMRIGHT", -4, 4)
 	tex:SetTexture(C.media.backdrop)
-	tex:SetGradientAlpha("VERTICAL", 0, 0, 0, .3, .35, .35, .35, .35)
+	tex:SetGradientAlpha(unpack(DefGradient))
 end
 
 F.ReskinSlider = function(f)
@@ -2318,7 +2320,7 @@ Skin:SetScript("OnEvent", function(self, event, addon)
 					questLogTitle.tex = questLogTitle:CreateTexture(nil, "BACKGROUND")
 					questLogTitle.tex:SetAllPoints(questLogTitle.bg)
 					questLogTitle.tex:SetTexture(C.media.backdrop)
-					questLogTitle.tex:SetGradientAlpha("VERTICAL", 0, 0, 0, .3, .35, .35, .35, .35)
+					questLogTitle.tex:SetGradientAlpha(unpack(DefGradient))
 
 					questLogTitle.minus = questLogTitle:CreateTexture(nil, "OVERLAY")
 					questLogTitle.minus:SetSize(7, 1)
@@ -4382,7 +4384,7 @@ Skin:SetScript("OnEvent", function(self, event, addon)
 			tex:SetPoint("TOPLEFT", 4, -4)
 			tex:SetPoint("BOTTOMRIGHT", -4, 4)
 			tex:SetTexture(C.media.backdrop)
-			tex:SetGradientAlpha("VERTICAL", 0, 0, 0, .3, .35, .35, .35, .35)
+			tex:SetGradientAlpha(unpack(DefGradient))
 
 			local left = ch:CreateTexture(nil, "BACKGROUND")
 			left:SetWidth(1)
@@ -5543,7 +5545,7 @@ Skin:SetScript("OnEvent", function(self, event, addon)
 						tex:SetPoint("TOPLEFT", 5, -5)
 						tex:SetPoint("BOTTOMRIGHT", -5, 5)
 						tex:SetTexture(C.media.backdrop)
-						tex:SetGradientAlpha("VERTICAL", 0, 0, 0, .3, .35, .35, .35, .35)
+						tex:SetGradientAlpha(unpack(DefGradient))
 
 						local left = ch:CreateTexture(nil, "BACKGROUND")
 						left:SetWidth(1)
@@ -6962,7 +6964,7 @@ Skin:SetScript("OnEvent", function(self, event, addon)
 		all.tex = all:CreateTexture(nil, "BACKGROUND")
 		all.tex:SetAllPoints(all.bg)
 		all.tex:SetTexture(C.media.backdrop)
-		all.tex:SetGradientAlpha("VERTICAL", 0, 0, 0, .3, .35, .35, .35, .35)
+		all.tex:SetGradientAlpha(unpack(DefGradient))
 
 		all.minus = all:CreateTexture(nil, "OVERLAY")
 		all.minus:SetSize(7, 1)
@@ -7017,7 +7019,7 @@ Skin:SetScript("OnEvent", function(self, event, addon)
 					skillButton.tex = skillButton:CreateTexture(nil, "BACKGROUND")
 					skillButton.tex:SetAllPoints(skillButton.bg)
 					skillButton.tex:SetTexture(C.media.backdrop)
-					skillButton.tex:SetGradientAlpha("VERTICAL", 0, 0, 0, .3, .35, .35, .35, .35)
+					skillButton.tex:SetGradientAlpha(unpack(DefGradient))
 
 					skillButton.minus = skillButton:CreateTexture(nil, "OVERLAY")
 					skillButton.minus:SetSize(7, 1)
