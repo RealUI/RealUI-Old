@@ -914,7 +914,7 @@ function nibMinimap:MailUpdate()
 		MMFrames.info.mail:SetScript("OnLeave", function()
 			if GameTooltip:IsShown() then GameTooltip:Hide() end
 		end)
-		MMFrames.info.mail.text:SetText("New Mail")
+		MMFrames.info.mail.text:SetText(NEW .. " " .. MAIL_LABEL)
 		MMFrames.info.mail:SetWidth(MMFrames.info.mail.text:GetStringWidth() + 12)
 	else
 		InfoShown.mail = false

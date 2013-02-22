@@ -1,24 +1,6 @@
 local nibRealUI = LibStub("AceAddon-3.0"):GetAddon("nibRealUI")
 
 function nibRealUI:MiniPatch(ver)
-	-- 3 action bars
-	if ver == "71s3ab" then
-		if IsAddOnLoaded("Bartender4") and Bartender4DB then
-			if Bartender4DB["namespaces"]["ActionBars"]["profiles"]["RealUI-HR"]["actionbars"] then
-				Bartender4DB["namespaces"]["ActionBars"]["profiles"]["RealUI-HR"]["actionbars"][3]["enabled"] = true
-				Bartender4DB["namespaces"]["PetBar"]["profiles"]["RealUI-HR"]["position"]["y"] = -268.5
-			end
-			if Bartender4DB["namespaces"]["ActionBars"]["profiles"]["RealUI-HR-Healing"]["actionbars"] then
-				Bartender4DB["namespaces"]["ActionBars"]["profiles"]["RealUI-HR-Healing"]["actionbars"][1]["position"]["y"] = 92
-				Bartender4DB["namespaces"]["ActionBars"]["profiles"]["RealUI-HR-Healing"]["actionbars"][2]["position"]["y"] = 65
-				Bartender4DB["namespaces"]["ActionBars"]["profiles"]["RealUI-HR-Healing"]["actionbars"][3]["enabled"] = true
-				Bartender4DB["namespaces"]["MultiCast"]["profiles"]["RealUI-HR-Healing"]["position"]["y"] = 116
-				Bartender4DB["namespaces"]["StanceBar"]["profiles"]["RealUI-HR-Healing"]["position"]["y"] = 114
-				Bartender4DB["namespaces"]["Vehicle"]["profiles"]["RealUI-HR-Healing"]["position"]["y"] = 111
-			end
-		end
-	end
-	
 	-- 7.3 r1
 	if ver == "73r1" then
 		if IsAddOnLoaded("nibIceHUD") and IceCoreRealUIDB then
@@ -175,6 +157,107 @@ function nibRealUI:MiniPatch(ver)
 						["spec4"] = false,
 						["spec2"] = false,
 					},
+				}
+			end
+		end
+	elseif ver == "73r9" then
+		if IsAddOnLoaded("nibPointDisplay_RealUI") and nibPointDisplayRUIDB then
+			if nibPointDisplayRUIDB["profiles"]["RealUI"]["ROGUE"]["types"]["dp"]["bars"]["bg"] then
+				nibPointDisplayRUIDB["profiles"]["RealUI"]["ROGUE"]["types"]["dp"]["bars"]["bg"]["full"] = {
+					["color"] = {
+						["a"] = 1,
+						["r"] = 0.8235294117647058,
+						["g"] = 0.8235294117647058,
+						["b"] = 0,
+					},
+					["maxcolor"] = {
+						["r"] = 0.9411764705882353,
+						["g"] = 0.9411764705882353,
+						["b"] = 0,
+					},
+					["texture"] = "Round_Small_BG",
+				}
+			end
+			if nibPointDisplayRUIDB["profiles"]["RealUI"]["MONK"]["types"]["tp"] then
+				nibPointDisplayRUIDB["profiles"]["RealUI"]["MONK"]["types"]["tp"]["position"] = {
+					["y"] = -52,
+					["x"] = -66,
+				}
+			end
+			if nibPointDisplayRUIDB["profiles"]["RealUI"]["MONK"]["types"]["sz"] then
+				nibPointDisplayRUIDB["profiles"]["RealUI"]["MONK"]["types"]["sz"]["position"] = {
+					["y"] = -25,
+					["x"] = -83,
+				}
+			end
+			if nibPointDisplayRUIDB["profiles"]["RealUI"]["MONK"]["types"]["vm"] then
+				nibPointDisplayRUIDB["profiles"]["RealUI"]["MONK"]["types"]["vm"]["position"] = {
+					["y"] = -52,
+					["x"] = -63,
+				}
+			end
+			if nibPointDisplayRUIDB["profiles"]["RealUI"]["MONK"]["types"]["chi"] then
+				nibPointDisplayRUIDB["profiles"]["RealUI"]["MONK"]["types"]["chi"]["position"] = {
+					["y"] = -39,
+					["x"] = -64,
+				}
+			end
+			if nibPointDisplayRUIDB["profiles"]["RealUI"]["WARLOCK"]["types"]["be"] then
+				nibPointDisplayRUIDB["profiles"]["RealUI"]["WARLOCK"]["types"]["be"]["position"] = {
+					["y"] = -38,
+					["x"] = -70,
+				}
+			end
+			if nibPointDisplayRUIDB["profiles"]["RealUI-HR"]["ROGUE"]["types"]["dp"]["bars"]["bg"] then
+				nibPointDisplayRUIDB["profiles"]["RealUI-HR"]["ROGUE"]["types"]["dp"]["bars"]["bg"]["full"] = {
+					["color"] = {
+						["a"] = 1,
+						["r"] = 0.8235294117647058,
+						["g"] = 0.8235294117647058,
+						["b"] = 0,
+					},
+					["maxcolor"] = {
+						["r"] = 0.9411764705882353,
+						["g"] = 0.9411764705882353,
+						["b"] = 0,
+					},
+					["texture"] = "Round_Small_BG",
+				}
+			end
+			if nibPointDisplayRUIDB["profiles"]["RealUI-HR"]["ROGUE"]["types"]["dp"] then
+				nibPointDisplayRUIDB["profiles"]["RealUI-HR"]["ROGUE"]["types"]["dp"]["position"] = {
+					["y"] = -51,
+					["x"] = -79,
+				}
+			end
+			if nibPointDisplayRUIDB["profiles"]["RealUI-HR"]["MONK"]["types"]["tp"] then
+				nibPointDisplayRUIDB["profiles"]["RealUI-HR"]["MONK"]["types"]["tp"]["position"] = {
+					["y"] = -52,
+					["x"] = -66,
+				}
+			end
+			if nibPointDisplayRUIDB["profiles"]["RealUI-HR"]["MONK"]["types"]["sz"] then
+				nibPointDisplayRUIDB["profiles"]["RealUI-HR"]["MONK"]["types"]["sz"]["position"] = {
+					["y"] = -22,
+					["x"] = -97,
+				}
+			end
+			if nibPointDisplayRUIDB["profiles"]["RealUI-HR"]["MONK"]["types"]["vm"] then
+				nibPointDisplayRUIDB["profiles"]["RealUI-HR"]["MONK"]["types"]["vm"]["position"] = {
+					["y"] = -52,
+					["x"] = -78,
+				}
+			end
+			if nibPointDisplayRUIDB["profiles"]["RealUI-HR"]["MONK"]["types"]["chi"] then
+				nibPointDisplayRUIDB["profiles"]["RealUI-HR"]["MONK"]["types"]["chi"]["position"] = {
+					["y"] = -37,
+					["x"] = -74,
+				}
+			end
+			if nibPointDisplayRUIDB["profiles"]["RealUI-HR"]["WARLOCK"]["types"]["be"] then
+				nibPointDisplayRUIDB["profiles"]["RealUI-HR"]["WARLOCK"]["types"]["be"]["position"] = {
+					["y"] = -38,
+					["x"] = -88,
 				}
 			end
 		end
