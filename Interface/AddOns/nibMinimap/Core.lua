@@ -865,7 +865,7 @@ function nibMinimap:DungeonDifficultyUpdate()
 		local DifficultyText = ""
 		if isHeroic then DifficultyText = "+" end
 		DifficultyText = DifficultyText..tostring(maxPlayers)
-		if IS_GUILD_GROUP then DifficultyText = DifficultyText.." (Guild)" end
+		if IS_GUILD_GROUP then DifficultyText = DifficultyText.." ("..GUILD..")" end
 		
 		MMFrames.info.dungeondifficulty.text:SetText("D: "..DifficultyText)
 		MMFrames.info.dungeondifficulty:SetWidth(MMFrames.info.dungeondifficulty.text:GetStringWidth() + 12)

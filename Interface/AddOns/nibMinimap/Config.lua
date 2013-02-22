@@ -61,21 +61,21 @@ local function GetOptions()
 								},
 								pvp = {
 									type = "toggle",
-									name = "Battlegrounds",
+									name = BATTLEGROUNDS,
 									get = function(info) return db.hidden.zones.pvp end,
 									set = function(info, value) db.hidden.zones.pvp = value end,
 									order = 200,
 								},
 								party = {
 									type = "toggle",
-									name = "5 Man Dungeons",
+									name = DUNGEONS,
 									get = function(info) return db.hidden.zones.party end,
 									set = function(info, value) db.hidden.zones.party = value end,
 									order = 30,
 								},
 								raid = {
 									type = "toggle",
-									name = "Raid Dungeons",
+									name = RAIDS,
 									get = function(info) return db.hidden.zones.raid end,
 									set = function(info, value) db.hidden.zones.raid = value end,
 									order = 40,
@@ -161,7 +161,7 @@ local function GetOptions()
 					order = 20,
 					args = {
 						appearance = {
-							name = "Appearance",
+							name = APPEARANCE_LABEL,
 							type = "group",
 							inline = true,
 							order = 10,
