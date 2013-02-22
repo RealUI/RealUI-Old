@@ -14,6 +14,7 @@ local table_MiniPatches = {
 	"73r1",
 	"73r5",
 	"73r6",
+	"73r9",
 }
 
 local table_Addons = {
@@ -143,10 +144,6 @@ function RealUI_RunStage1()
 	-- Make Chat windows transparent (again)
 	SetChatWindowAlpha(1, 0)
 	SetChatWindowAlpha(2, 0)
-	
-	if Use3AB then
-		nibRealUI:MiniPatch("71s3ab")
-	end
 	
 	-- Addon Profiles
 	nibRealUI:SetAddonProfileKeys()
@@ -345,56 +342,6 @@ local function CreateInstallWindow()
 	
 	-- Logo
 	IWF.logo = CreateIWTextureFrame(IWTextures.Logo, 32, 32, {"CENTER", IWF, "CENTER", 0, 55}, {1, 1, 1, 1})
-	
-	-- 3 Action Bars
-	-- Checkbox
-	IWF.abcheck = CreateFrame("CheckButton", "RealUI_Install_3AB", IWF, "ChatConfigCheckButtonTemplate")
-	RealUI_Install_3ABText:SetText(L[" 3 Action Bars (High Res)"])
-	IWF.abcheck:SetPoint("CENTER", IWF, "CENTER", -75, -100)
-	IWF.abcheck:SetScript("OnClick", function(self)
-		Use3AB = self:GetChecked()
-	end)
-	IWF.abcheck:SetScript("OnEnter", function(self)
-		IWF.abcheck.note1:Show()
-		IWF.abcheck.note2:Show()
-		IWF.abcheck.note3:Show()
-		IWF.abcheck.line1:Show()
-		IWF.abcheck.line2:Show()
-		IWF.abcheck.line3:Show()
-	end)
-	IWF.abcheck:SetScript("OnLeave", function(self)
-		IWF.abcheck.note1:Hide()
-		IWF.abcheck.note2:Hide()
-		IWF.abcheck.note3:Hide()
-		IWF.abcheck.line1:Hide()
-		IWF.abcheck.line2:Hide()
-		IWF.abcheck.line3:Hide()
-	end)
-	IWF.abcheck:Hide()
-	
-	-- Note
-	IWF.abcheck.note1 = CreateIWTextFrame({"TOPLEFT", IWF.abcheck, "BOTTOMLEFT", -40, -29.5}, true)
-	IWF.abcheck.note1.text:SetFormattedText("%s|cff00ffff %s|r %s|cff00ff00 %s|r|cffffffff %s|r", L["By default,"], "RealUI", L["uses"], "2", L["Primary Action Bars."])
-	IWF.abcheck.note1:Hide()
-	
-	IWF.abcheck.note2 = CreateIWTextFrame({"TOPLEFT", IWF.abcheck.note1, "BOTTOMLEFT", 0, -(nibRealUI.font.pixel1[2] + 1)}, true)
-	IWF.abcheck.note2.text:SetFormattedText("%s|cff00ff00 %s|r|cffffffff %s|r", L["Tick this box if you wish to use"], "3", L["Primary Action Bars."])
-	IWF.abcheck.note2:Hide()
-	
-	IWF.abcheck.note3 = CreateIWTextFrame({"TOPLEFT", IWF.abcheck.note2, "BOTTOMLEFT", 0, -(nibRealUI.font.pixel1[2] + 1)}, true)
-	IWF.abcheck.note3.text:SetFormattedText("%s|cff00ff00 %s|r|cffffffff %s|r", L["This will only apply on the"], L["High Resolution"], L["layout."])
-	IWF.abcheck.note3:Hide()
-	
-	IWF.abcheck.line1 = CreateIWTextureFrame(IWTextures.Line, 60, 16, {"RIGHT", IWF.abcheck, "LEFT", -4, 6}, {1, 1, 1, 1})
-	IWF.abcheck.line1.bg:SetTexCoord(0, 60/256, 0, 1)
-	IWF.abcheck.line1:Hide()
-	
-	IWF.abcheck.line2 = CreateIWTextureFrame(IWTextures.LineVert, 16, 64, {"TOPRIGHT", IWF.abcheck.line1, "BOTTOMLEFT", 3, 1}, {1, 1, 1, 1})
-	IWF.abcheck.line2:Hide()
-	
-	IWF.abcheck.line3 = CreateIWTextureFrame(IWTextures.Line, 12, 16, {"BOTTOMLEFT", IWF.abcheck.line2, "BOTTOMRIGHT", -1, 1}, {1, 1, 1, 1})
-	IWF.abcheck.line3.bg:SetTexCoord(0, 12/256, 0, 1)
-	IWF.abcheck.line3:Hide()
 end
 
 local function InstallationStage1()
@@ -487,12 +434,14 @@ local function MiniPatchInstallation()
 			[2] = true,
 			[5] = true,
 			[6] = true,
+			[9] = true,
 		}
 		if dbg.minipatches ~= nil then
 			for k,v in pairs(dbg.minipatches) do
 				if v == "73r1" then NP[2] = false end
 				if v == "73r5" then NP[5] = false end
 				if v == "73r6" then NP[6] = false end
+				if v == "73r9" then NP[9] = false end
 			end
 		end
 		
@@ -511,6 +460,11 @@ local function MiniPatchInstallation()
 		if NP[6] then
 			nibRealUI:MiniPatch("73r6")
 			tinsert(dbg.minipatches, "73r6")
+			HasMPatched = true
+		end
+		if NP[9] then
+			nibRealUI:MiniPatch("73r9")
+			tinsert(dbg.minipatches, "73r9")
 			HasMPatched = true
 		end
 		
