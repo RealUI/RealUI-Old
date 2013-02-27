@@ -25,6 +25,7 @@ modules\TargetCast.lua
 modules\MirrorBar.lua
 modules\Rapture.lua
 modules\SavageRoar.lua
+modules\BanditsGuile.lua
 modules\SliceAndDice.lua
 modules\FocusCast.lua
 modules\CustomBar.lua

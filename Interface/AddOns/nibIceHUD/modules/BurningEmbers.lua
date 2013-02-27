@@ -79,6 +79,20 @@ function BurningEmbersBar.prototype:UpdateShown()
 	end
 end
 
+-- function EclipseBar.prototype:UpdateShown()
+	-- local form = GetShapeshiftFormID()
+
+	-- if form == MOONKIN_FORM or not form then
+		-- if ( (GetSpecialization() == 1) and UnitExists("target") and UnitCanAttack("player", "target") and not(UnitIsDeadOrGhost("target")) and not(UnitInVehicle("player")) ) then
+			-- self:Show(true)
+		-- else
+			-- self:Show(false)
+		-- end
+	-- else
+		-- self:Show(false)
+	-- end
+-- end
+
 function BurningEmbersBar.prototype:UseTargetAlpha(scale)
 	return UnitPower("player", SPELL_POWER_BURNING_EMBERS) ~= 0 and self.combat
 end
