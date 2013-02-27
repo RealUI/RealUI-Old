@@ -82,7 +82,7 @@ function DemonicFuryBar.prototype:CreateFrame()
 end
 
 function DemonicFuryBar.prototype:UpdateShown()
-	if  GetSpecialization() == 2 then
+	if ( (GetSpecialization() == 2) and UnitExists("target") and UnitCanAttack("player", "target") and not(UnitIsDeadOrGhost("target")) and not(UnitInVehicle("player")) ) then
 		self:Show(true)
 	else
 		self:Show(false)

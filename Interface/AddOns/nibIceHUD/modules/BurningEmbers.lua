@@ -72,7 +72,7 @@ function BurningEmbersBar.prototype:CreateFrame()
 end
 
 function BurningEmbersBar.prototype:UpdateShown()
-	if  GetSpecialization() == 3 then
+	if ( (GetSpecialization() == 3) and UnitExists("target") and UnitCanAttack("player", "target") and not(UnitIsDeadOrGhost("target")) and not(UnitInVehicle("player")) ) then
 		self:Show(true)
 	else
 		self:Show(false)

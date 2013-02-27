@@ -8,14 +8,6 @@ L["Layout will change after you leave combat."] = "Layout will change after you 
 
 -- Installation
 L["INSTALL"] = "INSTALL"	-- Note: Install Button isn't very wide, so string should be kept short
-L[" 3 Action Bars (High Res)"] = " 3 Action Bars (High Res)"
-L["By default,"] = "By default,"
-L["uses"] = "uses"
-L["Primary Action Bars."] = "Primary Action Bars."
-L["Tick this box if you wish to use"] = "Tick this box if you wish to use"
-L["This will only apply on the"] = "This will only apply on the"
-L["High Resolution"] = "High Resolution"
-L["layout."] = "layout."
 
 L["Your"] = "Your"
 L["WTF folder"] = "WTF folder"
@@ -39,27 +31,17 @@ L["Reload UI now to apply these changes?"] = "Reload UI now to apply these chang
 L["You need to Reload the UI for changes to take effect. Reload Now?"] = "You need to Reload the UI for changes to take effect. Reload Now?"
 
 -- Info Line
-L["Options"] = "Options"
 L["Micromenu"] = "Micromenu"
-L["Guild"] = "Guild"
-L["Friends"] = "Friends"
-L["Durability"] = "Durability"
-L["Bag"] = "Bag"
-L["Currency"] = "Currency"
 L["XP/Rep"] = "XP/Rep"
-L["Clock"] = "Clock"
 L["SysInfo"] = "SysInfo"
 L["Spec Changer"] = "Spec Changer"
 L["Layout Changer"] = "Layout Changer"
 L["Meter Toggle"] = "Meter Toggle"
-L["Whisper"] = "Whisper"
 
 L["Menu"] = "Menu"
 
 L["Meters"] = "Meters"
 
-L["Network"] = "Network"
-L["Computer"] = "Computer"
 L["Stat"] = "Stat"
 L["Cur"] = "Cur"
 L["Max"] = "Max"
@@ -68,8 +50,6 @@ L["Avg"] = "Avg"
 
 L["In"] = "In"
 L["Out"] = "Out"
-L["Home"] = "Home"
-L["World"] = "World"
 L["kbps"] = "kbps"
 L["ms"] = "ms"
 L["FPS"] = "FPS"

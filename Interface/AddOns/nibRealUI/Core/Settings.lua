@@ -15,6 +15,7 @@ local table_MiniPatches = {
 	"73r5",
 	"73r6",
 	"73r9",
+	"73r10",
 }
 
 local table_Addons = {
@@ -359,8 +360,6 @@ local function InstallationStage1()
 		dbg.resolution = newRes
 		dbc.resolution = newRes
 		nibRealUICharacter.resolution = newRes
-		
-		IWF.abcheck:Show()
 	end
 	
 	---- Initial Character Settings
@@ -435,6 +434,7 @@ local function MiniPatchInstallation()
 			[5] = true,
 			[6] = true,
 			[9] = true,
+			[10] = true,
 		}
 		if dbg.minipatches ~= nil then
 			for k,v in pairs(dbg.minipatches) do
@@ -442,11 +442,13 @@ local function MiniPatchInstallation()
 				if v == "73r5" then NP[5] = false end
 				if v == "73r6" then NP[6] = false end
 				if v == "73r9" then NP[9] = false end
+				if v == "73r10" then NP[10] = false end
 			end
 		end
 		
 		-- Run through MiniPatches
 		local HasMPatched = false
+		if dbg.minipatches == nil then dbg.minipatches = {} end
 		if NP[2] then
 			nibRealUI:MiniPatch("73r1")
 			tinsert(dbg.minipatches, "73r1")
@@ -465,6 +467,11 @@ local function MiniPatchInstallation()
 		if NP[9] then
 			nibRealUI:MiniPatch("73r9")
 			tinsert(dbg.minipatches, "73r9")
+			HasMPatched = true
+		end
+		if NP[10] then
+			nibRealUI:MiniPatch("73r10")
+			tinsert(dbg.minipatches, "73r10")
 			HasMPatched = true
 		end
 		

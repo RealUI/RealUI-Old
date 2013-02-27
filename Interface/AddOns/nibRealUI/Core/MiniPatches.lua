@@ -261,5 +261,28 @@ function nibRealUI:MiniPatch(ver)
 				}
 			end
 		end
+	elseif ver == "73r10" then
+		if IsAddOnLoaded("nibPointDisplay_RealUI") and nibPointDisplayRUIDB then
+			if nibPointDisplayRUIDB["profiles"]["RealUI-HR"]["ROGUE"]["types"]["dp"] then
+				nibPointDisplayRUIDB["profiles"]["RealUI-HR"]["ROGUE"]["types"]["dp"]["position"] = {
+					["y"] = -51,
+					["x"] = 79,
+				}
+			end
+		end
+		if IsAddOnLoaded("nibIceHUD") and IceCoreRealUIDB then
+			if IceCoreRealUIDB["profiles"]["RealUI"]["modules"]["DemonicFuryBar"] then
+				IceCoreRealUIDB["profiles"]["RealUI"]["modules"]["DemonicFuryBar"]["alwaysFullAlpha"] = true
+			end
+			if IceCoreRealUIDB["profiles"]["RealUI-HR"]["modules"]["DemonicFuryBar"] then
+				IceCoreRealUIDB["profiles"]["RealUI-HR"]["modules"]["DemonicFuryBar"]["alwaysFullAlpha"] = true
+			end
+			if IceCoreRealUIDB["profiles"]["RealUI"]["modules"]["BurningEmbersBar"] then
+				IceCoreRealUIDB["profiles"]["RealUI"]["modules"]["BurningEmbersBar"]["alwaysFullAlpha"] = true
+			end
+			if IceCoreRealUIDB["profiles"]["RealUI-HR"]["modules"]["BurningEmbersBar"] then
+				IceCoreRealUIDB["profiles"]["RealUI-HR"]["modules"]["BurningEmbersBar"]["alwaysFullAlpha"] = true
+			end
+		end
 	end
 end

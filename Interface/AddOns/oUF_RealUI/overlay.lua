@@ -376,6 +376,7 @@ local ClassificationShort = {
 	["rare"] = "r",
 	["normal"] = "",
 	["trivial"] = "",
+	["pvp"] = "P",
 }
 
 local RangeColors = {
@@ -1148,7 +1149,11 @@ function Overlay:UpdateUnitBackgroundColor(UnitID)
 	
 	local newColorID = ""
 	if UnitIsPVP(Unit) then
-		if UnitIsFriend(Unit, PLAYER_ID) then
+		if (Unit == PLAYER_ID) and (UFUnit == PLAYER_ID) then
+			UF[PLAYER_ID].endboxtext.text:SetText(ClassificationShort["pvp"])
+			bgColor = {0, 0, 0}
+			newColorID = "black"
+		elseif UnitIsFriend(Unit, PLAYER_ID) then
 			bgColor = StatusColors.pvpfriendly
 			newColorID = "friendly"
 		else
@@ -1159,11 +1164,14 @@ function Overlay:UpdateUnitBackgroundColor(UnitID)
 		bgColor = StatusColors.tapped
 		newColorID = "tapped"
 	else
+		if (Unit == PLAYER_ID) and (UFUnit == PLAYER_ID) then
+			UF[PLAYER_ID].endboxtext.text:SetText("")
+		end
 		bgColor = {0, 0, 0}
 		newColorID = "black"
 	end
 	
-	if UF[UFUnit].backgroundColorID ~= newColorID then
+	if (UF[UFUnit].backgroundColorID ~= newColorID) then
 		UF[UFUnit].backgroundColorID = newColorID
 		UF[UFUnit].health.background.bg:SetVertexColor(bgColor[1], bgColor[2], bgColor[3], cfg.bar.opacity.background)
 		if UF[UFUnit].power then
@@ -1736,6 +1744,11 @@ function Overlay:CreateFrames()
 			Overlay:Power_OnUpdate(self, elapsed, PET_ID)
 		end
 	end)
+	
+	
+	-- End Box Text
+	UF[PLAYER_ID].endboxtext = CreateTextFrame(UF[PLAYER_ID].endbox, "CENTER", "CENTER")
+	SetFramePosition(UF[PLAYER_ID].endboxtext, "MEDIUM", UF[PLAYER_ID].endbox:GetFrameLevel() + 1, 12, 12, {"CENTER", UF[PLAYER_ID].endbox, "CENTER", -2, 0})
 	
 	-- Range Display
 	UF[PLAYER_ID].rangedisplay = CreateTextFrame(UF[PLAYER_ID].endbox, "BOTTOM", "LEFT")

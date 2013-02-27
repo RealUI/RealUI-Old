@@ -6,7 +6,7 @@ local db, dbc, dbg
 local nibRealUI_Version = {
 	[1] = 7,
 	[2] = 3,
-	[3] = 9,
+	[3] = 10,
 }
 
 -- Default Options
@@ -21,7 +21,7 @@ local defaults = {
 			firsttime = true,
 			layouttip = false,
 		},
-		minipatches = nil,
+		minipatches = {},
 		resolution = 1,
 	},
 	char = {

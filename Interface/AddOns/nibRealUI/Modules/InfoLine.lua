@@ -59,15 +59,15 @@ local PlayerStatusValToStr = {
 }
 
 local Elements = {
-	options = 		{L["Options"]},
+	options = 		{GAMEOPTIONS_MENU},
 	micromenu = 	{L["Micromenu"]},
-	guild = 		{L["Guild"]},
-	friends = 		{L["Friends"]},
-	durability = 	{L["Durability"]},
-	bag = 			{L["Bag"]},
-	currency = 		{L["Currency"]},
+	guild = 		{ACHIEVEMENTS_GUILD_TAB},
+	friends = 		{QUICKBUTTON_NAME_FRIENDS},
+	durability = 	{DURABILITY},
+	bag = 			{INVTYPE_BAG},
+	currency = 		{BONUS_ROLL_REWARD_CURRENCY},
 	xprep = 		{L["XP/Rep"]},
-	clock = 		{L["Clock"]},
+	clock = 		{TIMEMANAGER_TITLE},
 	sysinfo = 		{L["SysInfo"]},
 	specchanger = 	{L["Spec Changer"]},
 	layoutchanger =	{L["Layout Changer"]},
@@ -2604,7 +2604,7 @@ local function SysInfo_UpdateTablet()
 	-- Network Category
 	SysSection["network"] = {}
 	SysSection["network"].cat = Tablets.sysinfo:AddCategory()
-	SysSection["network"].cat:AddLine("text", L["Network"], "size", 13 + resSizeExtra, "textR", 1, "textG", 1, "textB", 1)
+	SysSection["network"].cat:AddLine("text", NETWORK_LABEL, "size", 13 + resSizeExtra, "textR", 1, "textG", 1, "textB", 1)
 	AddBlankTabLine(SysSection["network"].cat, 2)
 	
 	-- Lines
@@ -2623,8 +2623,8 @@ local function SysInfo_UpdateTablet()
 	local NetworkLines = {
 		[1] = {L["In"], L["kbps"], "%.2f", SysStats.bwIn},
 		[2] = {L["Out"], L["kbps"], "%.2f", SysStats.bwOut},
-		[3] = {L["Home"], L["ms"], "%d", SysStats.lagHome},
-		[4] = {L["World"], L["ms"], "%d", SysStats.lagWorld},
+		[3] = {HOME , L["ms"], "%d", SysStats.lagHome},
+		[4] = {CHANNEL_CATEGORY_WORLD, L["ms"], "%d", SysStats.lagWorld},
 	}
 	local line = {}
 	for l = 1, #NetworkLines do
@@ -2677,7 +2677,7 @@ local function SysInfo_UpdateTablet()
 	-- Computer Category
 	SysSection["computer"] = {}
 	SysSection["computer"].cat = Tablets.sysinfo:AddCategory()
-	SysSection["computer"].cat:AddLine("text", L["Computer"], "size", 13 + resSizeExtra, "textR", 1, "textG", 1, "textB", 1)
+	SysSection["computer"].cat:AddLine("text", SYSTEMOPTIONS_MENU, "size", 13 + resSizeExtra, "textR", 1, "textG", 1, "textB", 1)
 	AddBlankTabLine(SysSection["computer"].cat, 2)
 	
 	-- Lines
