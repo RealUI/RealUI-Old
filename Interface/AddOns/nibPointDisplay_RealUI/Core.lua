@@ -213,6 +213,7 @@ local SoulShardBG
 local LoggedIn = false
 local PlayerClass
 local PlayerSpec
+local PlayerTalent = 0
 local PlayerInCombat
 local PlayerTargetHostile
 local PlayerInInstance
@@ -406,6 +407,8 @@ function nibPointDisplay_RealUI:UpdatePointDisplay(...)
 			if ((Points[tid] == 0)
 				or (ic ~= PlayerClass and ic ~= "GENERAL") 
 				or ((PlayerClass ~= "ROGUE") and (PlayerClass ~= "DRUID") and (ic == "GENERAL") and not UnitHasVehicleUI("player"))
+				or ((PlayerClass == "WARLOCK") and (PlayerTalent == 1) and (tid == "be")) --
+				or ((PlayerClass == "WARLOCK") and (PlayerTalent == 3) and (tid == "ss")) --	
 				or (db[ic].types[tid].general.hidein.vehicle and UnitHasVehicleUI("player")) 
 				or ((db[ic].types[tid].general.hidein.spec - 1) == PlayerSpec)
 				or (db[ic].types[tid].general.smarthide and SmartHideConditions))
@@ -576,10 +579,10 @@ function nibPointDisplay_RealUI:GetPoints(CurClass, CurType)
 	-- Warlock
 	elseif CurClass == "WARLOCK" then
 		-- Soul Shards
-		if CurType == "ss" and GetSpecialization() == 1 then
+		if CurType == "ss" and PlayerTalent == 1 then
 			NewPoints = UnitPower("player", SPELL_POWER_SOUL_SHARDS)
 		-- Burning Embers
-		elseif CurType == "be" and GetSpecialization() == 3 then
+		elseif CurType == "be" and PlayerTalent == 3 then
 			NewPoints = UnitPower("player", SPELL_POWER_BURNING_EMBERS)
 		-- Molten Core
 		elseif CurType == "mco" then
@@ -896,7 +899,8 @@ function nibPointDisplay_RealUI:HideUIElements()
 end
 
 function nibPointDisplay_RealUI:UpdateSpec()
-	PlayerSpec = GetActiveSpecGroup()	--
+	PlayerSpec = GetActiveSpecGroup()
+	PlayerTalent = GetSpecialization()
 end
 
 function nibPointDisplay_RealUI:UpdateSmartHideConditions()
@@ -983,7 +987,7 @@ function nibPointDisplay_RealUI:PLAYER_LOGIN()
 	SpellInfo["tw"] = GetSpellInfo(53390)		-- Tidal Waves
 	SpellInfo["ws"] = GetSpellInfo(52128)		-- Water Shield
 	-- Warlock
-	SpellInfo["mco"] = GetSpellInfo(71165)		-- Molten Core
+	SpellInfo["mco"] = GetSpellInfo(122351)		-- Molten Core
 	-- Warrior
 	SpellInfo["ts"] = GetSpellInfo(87096)		-- Thunderstruck
 	SpellInfo["mc"] = GetSpellInfo(85739)		-- Meat Cleaver
