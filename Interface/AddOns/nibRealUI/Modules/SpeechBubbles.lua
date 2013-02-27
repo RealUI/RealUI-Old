@@ -92,6 +92,44 @@ local function GetOptions()
 					},
 				},
 			},
+			colors = {
+				type = "group",
+				name = "Colors",
+				inline = true,
+				order = 50,
+				args = {
+					background = {
+						type = "color",
+						name = "Background",
+						hasAlpha = true,
+						get = function(info,r,g,b,a)
+							return db.colors.bg[1], db.colors.bg[2], db.colors.bg[3], db.colors.bg[4]
+						end,
+						set = function(info,r,g,b,a)
+							db.colors.bg[1] = r
+							db.colors.bg[2] = g
+							db.colors.bg[3] = b
+							db.colors.bg[4] = a
+						end,
+						order = 10,
+					},
+					border = {
+						type = "color",
+						name = "Border",
+						hasAlpha = true,
+						get = function(info,r,g,b,a)
+							return db.colors.border[1], db.colors.border[2], db.colors.border[3], db.colors.border[4]
+						end,
+						set = function(info,r,g,b,a)
+							db.colors.border[1] = r
+							db.colors.border[2] = g
+							db.colors.border[3] = b
+							db.colors.border[4] = a
+						end,
+						order = 10,
+					},
+				},
+			},
 		},
 	}
 	end
@@ -141,13 +179,13 @@ local function SkinBubble(frame)
 		edgeFile = nibRealUI.media.textures.plain,
 		edgeSize = UIParent:GetScale(),
 	})
-	frame:SetBackdropBorderColor(0, 0, 0)
+	frame:SetBackdropBorderColor(unpack(db.colors.border))
 	
 	-- Background
 	local bg = frame:CreateTexture(nil, "BACKGROUND")
 	bg:SetAllPoints()
 	bg:SetTexture(nibRealUI.media.textures.plain)
-	bg:SetVertexColor(0, 0, 0, 0.6)
+	bg:SetVertexColor(unpack(db.colors.bg))
 	
 	frame:HookScript("OnHide", function() frame.inUse = false end)
 end
@@ -205,9 +243,13 @@ function SpeechBubbles:OnInitialize()
 	self.db = nibRealUI.db:RegisterNamespace(MODNAME)
 	self.db:RegisterDefaults({
 		profile = {
-			sendersize = 11,
-			messagesize = 10,
+			sendersize = 14,
+			messagesize = 12,
 			edgesize = 6,
+			colors = {
+				bg = {0, 0, 0, 0},
+				border = {0, 0, 0, 0},
+			},
 		},
 	})
 	db = self.db.profile

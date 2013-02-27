@@ -149,16 +149,6 @@ local function GetOptions()
 					},
 				},
 			},
-			threeab = {
-				type = "execute",
-				name = "3 Action Bars (High Res)",
-				func = function()
-					nibRealUI:MiniPatch("71s3ab")
-					nibRealUI:ReloadUIDialog()
-				end,
-				width = "double",
-				order = 60,
-			},
 		},
 	}
 	end
