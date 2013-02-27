@@ -46,64 +46,175 @@
       </OnMouseUp>
     </Scripts>
   </CheckButton>
-
-  <Button name="EasyMail_CheckAllButton" inherits="UIPanelButtonTemplate" parent="InboxFrame" Text="EASYMAIL_CHECKALLTEXT">
+  
+  <Button name="EasyMail_CheckHandlerTemplate" virtual="true">
     <Size>
-      <AbsDimension x="86" y="22"/>
+      <AbsDimension x="34" y="34"/>
     </Size>
-    <Anchors>
+    <Scripts>
+		<OnLoad>
+			self:Disable();
+		</OnLoad>
+		<OnLeave function="GameTooltip_Hide"/>
+    </Scripts>
+	<HighlightTexture File="Interface\AddOns\EasyMail\Images\ButtonHilite.tga" alphaMode="ADD">
+		<TexCoords left="0" right="0.53125" top="0" bottom="0.53125"/>
+	</HighlightTexture>
+  </Button>
+
+  <Button name="EasyMail_CheckAllButton" inherits="EasyMail_CheckHandlerTemplate" parent="InboxFrame">
+   <Anchors>
       <Anchor point="TOPLEFT">
         <Offset>
-          <AbsDimension x="56" y="-32"/>
+          <AbsDimension x="62" y="-23"/>
         </Offset>
       </Anchor>
     </Anchors>
     <Scripts>
-      <OnClick>
-        EasyMail.CheckAll();
-      </OnClick>
+		<OnClick>
+			EasyMail.CheckAll(true);
+		</OnClick>
+		<OnEnter>
+			GameTooltip:SetOwner(self, "ANCHOR_TOPLEFT");
+			GameTooltip:SetText(EASYMAIL_CHECKALLHELPMSG, nil, nil, nil, nil, 1);
+		</OnEnter>
     </Scripts>
-  </Button>
-
-  <Button name="EasyMail_CheckPageButton" inherits="UIPanelButtonTemplate" parent="EasyMail_CheckAllButton" Text="EASYMAIL_CHECKPAGETEXT">
-    <Size>
-      <AbsDimension x="90" y="22"/>
-    </Size>
-    <Anchors>
-      <Anchor point="TOPLEFT" relativePoint="TOPRIGHT">
-        <Offset>
-          <AbsDimension x="1" y="0"/>
-        </Offset>
-      </Anchor>
-    </Anchors>
-    <Scripts>
-      <OnClick>
-        EasyMail.CheckPage();
-      </OnClick>
-    </Scripts>
-  </Button>
-
-  <Button name="EasyMail_GetAllButton" inherits="UIPanelButtonTemplate" parent="EasyMail_CheckPageButton" Text="EASYMAIL_GETALLTEXT">
-    <Size>
-      <AbsDimension x="99" y="22"/>
-    </Size>
-    <Anchors>
-      <Anchor point="TOPLEFT" relativePoint="TOPRIGHT">
-        <Offset>
-          <AbsDimension x="1" y="0"/>
-        </Offset>
-      </Anchor>
-    </Anchors>
-    <Scripts>
-      <OnClick>
-        EasyMail.GetAll();
-      </OnClick>
-    </Scripts>
+	<NormalTexture File="Interface\AddOns\EasyMail\Images\CheckAll.tga">
+		<TexCoords left="0" right="0.53125" top="0" bottom="0.53125"/>
+	</NormalTexture>
+	<PushedTexture File="Interface\AddOns\EasyMail\Images\CheckAllDown.tga">
+		<TexCoords left="0" right="0.53125" top="0" bottom="0.53125"/>
+	</PushedTexture>
+	<DisabledTexture File="Interface\AddOns\EasyMail\Images\CheckAllDisabled.tga">
+		<TexCoords left="0" right="0.53125" top="0" bottom="0.53125"/>
+	</DisabledTexture>
   </Button>
   
-  <Button name="EasyMail_AttButton" inherits="UIPanelButtonTemplate" text="EASYMAIL_ATTBUTTONTEXT">
+  <Button name="EasyMail_ClearAllButton" inherits="EasyMail_CheckHandlerTemplate" parent="InboxFrame">
+    <Anchors>
+      <Anchor point="TOPLEFT" relativeTo="EasyMail_CheckAllButton" relativePoint="TOPRIGHT">
+        <Offset>
+          <AbsDimension x="0" y="0"/>
+        </Offset>
+      </Anchor>
+    </Anchors>
+    <Scripts>
+      <OnClick>
+        EasyMail.CheckAll(false);
+      </OnClick>
+		<OnEnter>
+			GameTooltip:SetOwner(self, "ANCHOR_TOPLEFT");
+			GameTooltip:SetText(EASYMAIL_CLEARALLHELPMSG, nil, nil, nil, nil, 1);
+		</OnEnter>
+    </Scripts>
+	<NormalTexture File="Interface\AddOns\EasyMail\Images\ClearAll.tga">
+		<TexCoords left="0" right="0.53125" top="0" bottom="0.53125"/>
+	</NormalTexture>
+	<PushedTexture File="Interface\AddOns\EasyMail\Images\ClearAllDown.tga">
+		<TexCoords left="0" right="0.53125" top="0" bottom="0.53125"/>
+	</PushedTexture>
+	<DisabledTexture File="Interface\AddOns\EasyMail\Images\ClearAllDisabled.tga">
+		<TexCoords left="0" right="0.53125" top="0" bottom="0.53125"/>
+	</DisabledTexture>
+  </Button>
+
+  <Button name="EasyMail_CheckPageButton" inherits="EasyMail_CheckHandlerTemplate" parent="InboxFrame">
+    <Anchors>
+      <Anchor point="TOPLEFT" relativeTo="EasyMail_ClearAllButton" relativePoint="TOPRIGHT">
+        <Offset>
+          <AbsDimension x="7" y="0"/>
+        </Offset>
+      </Anchor>
+    </Anchors>
+    <Scripts>
+      <OnClick>
+        EasyMail.CheckPage(true);
+      </OnClick>
+		<OnEnter>
+			GameTooltip:SetOwner(self, "ANCHOR_TOPLEFT");
+			GameTooltip:SetText(EASYMAIL_CHECKPAGEHELPMSG, nil, nil, nil, nil, 1);
+		</OnEnter>
+    </Scripts>
+	<NormalTexture File="Interface\AddOns\EasyMail\Images\CheckPage.tga">
+		<TexCoords left="0" right="0.53125" top="0" bottom="0.53125"/>
+	</NormalTexture>
+	<PushedTexture File="Interface\AddOns\EasyMail\Images\CheckPageDown.tga">
+		<TexCoords left="0" right="0.53125" top="0" bottom="0.53125"/>
+	</PushedTexture>
+	<DisabledTexture File="Interface\AddOns\EasyMail\Images\CheckPageDisabled.tga">
+		<TexCoords left="0" right="0.53125" top="0" bottom="0.53125"/>
+	</DisabledTexture>
+  </Button>
+
+  <Button name="EasyMail_ClearPageButton" inherits="EasyMail_CheckHandlerTemplate" parent="InboxFrame">
+    <Anchors>
+      <Anchor point="TOPLEFT" relativeTo="EasyMail_CheckPageButton" relativePoint="TOPRIGHT">
+        <Offset>
+          <AbsDimension x="0" y="0"/>
+        </Offset>
+      </Anchor>
+    </Anchors>
+    <Scripts>
+      <OnClick>
+        EasyMail.CheckPage(false);
+      </OnClick>
+		<OnEnter>
+			GameTooltip:SetOwner(self, "ANCHOR_TOPLEFT");
+			GameTooltip:SetText(EASYMAIL_CLEARPAGEHELPMSG, nil, nil, nil, nil, 1);
+		</OnEnter>
+    </Scripts>
+	<NormalTexture File="Interface\AddOns\EasyMail\Images\ClearPage.tga">
+		<TexCoords left="0" right="0.53125" top="0" bottom="0.53125"/>
+	</NormalTexture>
+	<PushedTexture File="Interface\AddOns\EasyMail\Images\ClearPageDown.tga">
+		<TexCoords left="0" right="0.53125" top="0" bottom="0.53125"/>
+	</PushedTexture>
+	<DisabledTexture File="Interface\AddOns\EasyMail\Images\ClearPageDisabled.tga">
+		<TexCoords left="0" right="0.53125" top="0" bottom="0.53125"/>
+	</DisabledTexture>
+  </Button>
+
+  <Button name="EasyMail_GetAllButton" parent="InboxFrame">
     <Size>
-      <AbsDimension x="85" y="22"/>
+      <AbsDimension x="112" y="34"/>
+    </Size>
+   <Anchors>
+      <Anchor point="TOPLEFT" relativeTo="EasyMail_ClearPageButton" relativePoint="TOPRIGHT">
+        <Offset>
+          <AbsDimension x="7" y="0"/>
+        </Offset>
+      </Anchor>
+    </Anchors>
+    <Scripts>
+		<OnLoad>
+			self:Disable();
+		</OnLoad>
+		<OnClick>
+			EasyMail.GetAll();
+		</OnClick>
+		<OnEnter>
+			GameTooltip:SetOwner(self, "ANCHOR_TOPLEFT");
+			GameTooltip:SetText(EASYMAIL_GETALLHELPMSG, nil, nil, nil, nil, 1);
+		</OnEnter>
+ 		<OnLeave function="GameTooltip_Hide"/>
+   </Scripts>
+	<NormalTexture File="Interface\AddOns\EasyMail\Images\GetChecked.tga">
+		<TexCoords left="0" right="0.890625" top="0" bottom="0.53125"/>
+	</NormalTexture>
+	<PushedTexture File="Interface\AddOns\EasyMail\Images\GetCheckedDown.tga">
+		<TexCoords left="0" right="0.890625" top="0" bottom="0.53125"/>
+	</PushedTexture>
+	<DisabledTexture File="Interface\AddOns\EasyMail\Images\GetCheckedDisabled.tga">
+		<TexCoords left="0" right="0.890625" top="0" bottom="0.53125"/>
+	</DisabledTexture>
+	<HighlightTexture File="Interface\AddOns\EasyMail\Images\GetCheckedHilite.tga" alphaMode="ADD">
+		<TexCoords left="0" right="0.890625" top="0" bottom="0.53125"/>
+	</HighlightTexture>
+  </Button>
+
+   <Button name="EasyMail_AttButton" inherits="UIPanelButtonTemplate" text="EASYMAIL_ATTBUTTONTEXT">
+    <Size>
+      <AbsDimension x="125" y="22"/>
     </Size>
     <Scripts>
       <OnClick>
@@ -203,11 +314,11 @@
       </OnClick>
       <OnEnter>
         EasyMail.StopCounting();
-        getglobal(self:GetName().."Highlight"):Show();
+        _G[self:GetName().."Highlight"]:Show();
       </OnEnter>
       <OnLeave>
         EasyMail.StartCounting();
-        getglobal(self:GetName().."Highlight"):Hide();
+        _G[self:GetName().."Highlight"]:Hide();
       </OnLeave>
     </Scripts>
   </Button>

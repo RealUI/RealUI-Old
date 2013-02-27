@@ -1,5 +1,5 @@
 ## Interface: 50100
-## Title: EasyMail 3.3
+## Title: EasyMail 3.4
 ## Notes: Mail frame mod that allows the user to select addressees from a drop-down list and to automatically collect all attachments from all mails in the in-box
 ## Notes-deDE: Mail frame mod that allows the user to select addressees from a drop-down list and to automatically collect all attachments from all mails in the in-box
 ## Notes-frFR: Mail frame mod that allows the user to select addressees from a drop-down list and to automatically collect all attachments from all mails in the in-box

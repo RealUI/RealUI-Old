@@ -5,7 +5,9 @@ Addon Update Exclusions
 -----------------------
 The following addons have been modified to suit RealUI and should not be updated:
 
+  - Aurora
   - BugSack
+  - EasyMail
   - GridManaBars
   - SharedMedia + SharedMedia_MyMedia
 

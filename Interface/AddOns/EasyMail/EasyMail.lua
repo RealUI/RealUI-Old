@@ -148,8 +148,8 @@ local CurAtt = nil;
 
 -- Checkbox table
 local CheckBoxes = {};
-local CheckAll = true;
-local CheckPage = true;
+--local CheckAll = true;
+--local CheckPage = true;
 
 -- Get all mail attachment variables
 local GettingAll = false;
@@ -264,14 +264,14 @@ function EasyMail.OnEvent(self, event, ...)
 		
 		-- Hook to Blizzard's mail reset function to fill in the addressee field with the last mailed name
 		hooksecurefunc("SendMailFrame_Reset", function() EasyMail.SetAddressee(nil, CurrentAddressee); end);
-		
+
 		-- Hook to the redraw function for the open mail to move the attachments down a bit to make room for the 
 		-- Take All button
 		hooksecurefunc("OpenMail_Update", EasyMail.AdjustAtt);
 		
 		-- Replace inbox onclick to cancel Take All if user changes open emails and to handle right-click
 		for t = 1, INBOXITEMS_TO_DISPLAY do
-			getglobal("MailItem"..t.."Button"):SetScript("OnClick", EasyMail.MailItemOnClickHandler);
+			_G["MailItem"..t.."Button"]:SetScript("OnClick", EasyMail.MailItemOnClickHandler);
 		end
 		
 		-- Place the Take All button
@@ -344,7 +344,8 @@ function EasyMail.OnEvent(self, event, ...)
 		SendMailNameEditBox:SetScript("OnTextChanged", EasyMail.OnTextChanged);
 		
 		-- Reposition too many mails warning at top of inbox
-		InboxTooMuchMail:SetPoint("CENTER", InboxTooMuchMail:GetParent(), "CENTER", 7, 232);
+		--InboxTooMuchMail:SetPoint("CENTER", InboxTooMuchMail:GetParent(), "CENTER", 7, 232);
+		InboxTooMuchMail:SetPoint("TOP", InboxFrame, "TOP", -13, 4)
 		
 		-- Add logged-in character to list if option is enabled
 		if (EasyMail_SavedVars.AutoAdd == "Y") then
@@ -387,17 +388,17 @@ function EasyMail.OnEvent(self, event, ...)
 			end
 		else
 			-- User or take all process closed the mail - stop trying to take all
-			GettingAtt = false;
-			
 			if (OpenMailFrame:IsVisible()) then
 				HideUIPanel(OpenMailFrame);
 			end
 			
-			if (GettingAll) then
+			if (GettingAtt) then
 				-- Take all probably completed, uncheck the checkbox
 				CheckBoxes[CurMail] = false;
 				InboxFrame_Update();
 			end
+			
+			GettingAtt = false;
 		end
 	end
 	
@@ -542,11 +543,11 @@ function EasyMail.DropdownUpdate()
 	
 	for t = 1, EasyMail.ListLenMax do
 		index = t + offset;
-		button = getglobal("EasyMail_MailDropdownButton"..t);
+		button = _G["EasyMail_MailDropdownButton"..t];
 		
 		if (index <= #FullList) then
-			invisButton = getglobal("EasyMail_MailDropdownButton"..t.."InvisibleButton");
-			buttonText = getglobal("EasyMail_MailDropdownButton"..t.."NormalText");
+			invisButton = _G["EasyMail_MailDropdownButton"..t.."InvisibleButton"];
+			buttonText = _G["EasyMail_MailDropdownButton"..t.."NormalText"];
 			button:SetText(FullList[index].text or FullList[index].value);
 			
 			if (FullList[index].noclick) then
@@ -573,7 +574,7 @@ function EasyMail.DropdownUpdate()
 	-- Adjust menu width
 	if (not MenuResized) then
 		for t = 1,  EasyMail.ListLenMax do
-			button = getglobal("EasyMail_MailDropdownButton"..t);
+			button = _G["EasyMail_MailDropdownButton"..t];
 			button:SetWidth(maxwidth);
 		end
 		
@@ -973,8 +974,8 @@ function EasyMail.GetAll()
 	HideUIPanel(OpenMailFrame);
 		
 	GettingAll = true;
-	CheckAll = true;
-	CheckPage = true;
+	--CheckAll = true;
+	--CheckPage = true;
 	CurMail = GetInboxNumItems() + 1;
 	TotalMoney = 0;
 end
@@ -1003,6 +1004,7 @@ function EasyMail.MailAtt(mailid)
 	TimeSinceLastAtt = AttInterval;
 	CurAtt = nil;
 	GettingAtt = true;
+	CurMail = mailid;
 end
 
 
@@ -1064,7 +1066,7 @@ function EasyMail.OnUpdate(self, elapsed)
 							EasyMail.PrintMoney();
 						end
 					else
-						TakeInboxItem(InboxFrame.openMailID, getglobal(CurAtt:GetName()):GetID());				
+						TakeInboxItem(InboxFrame.openMailID, _G[CurAtt:GetName()]:GetID());				
 					end
 				end
 				
@@ -1085,7 +1087,7 @@ function EasyMail.OnUpdate(self, elapsed)
 					end
 				end
 				
-				if (AttIndex > ATTACHMENTS_MAX and GettingAll) then
+				if (AttIndex > ATTACHMENTS_MAX and GettingAtt) then
 					-- Completed take all successully, uncheck the checkbox
 					CheckBoxes[CurMail] = false;
 					InboxFrame_Update();
@@ -1115,7 +1117,7 @@ function EasyMail.OnUpdate(self, elapsed)
 				InboxFrame_Update();
 				
 				-- Actually open the mail
-				getglobal("MailItem"..(((CurMail - 1) % INBOXITEMS_TO_DISPLAY) + 1).."Button"):Click("LeftButton");
+				_G["MailItem"..(((CurMail - 1) % INBOXITEMS_TO_DISPLAY) + 1).."Button"]:Click("LeftButton");
 				
 				if (pending) then
 					OpenMail_Delete();
@@ -1315,15 +1317,15 @@ function EasyMail.ShowCheckBoxes()
 
 	for t = 1, INBOXITEMS_TO_DISPLAY do
 		-- Shorten the widths of the inbox frames, shorten the subject, and move the expire time text over
-		getglobal("MailItem"..t):SetWidth(288);
-		getglobal("MailItem"..t.."Subject"):SetWidth(231);
-		--getglobal("MailItem"..t.."ExpireTime"):SetPoint("TOPRIGHT", "MailItem"..t, "TOPRIGHT", 10, -4);
+		_G["MailItem"..t]:SetWidth(288);
+		_G["MailItem"..t.."Subject"]:SetWidth(231);
+		--_G["MailItem"..t.."ExpireTime"]:SetPoint("TOPRIGHT", "MailItem"..t, "TOPRIGHT", 10, -4);
 		
 		-- Create checkboxes and locate them
 		local frame;
 		
-		if (not getglobal("EasyMail_CheckButton"..t)) then
-			frame = CreateFrame("CheckButton", "EasyMail_CheckButton"..t, getglobal("MailItem"..t), 
+		if (not _G["EasyMail_CheckButton"..t]) then
+			frame = CreateFrame("CheckButton", "EasyMail_CheckButton"..t, _G["MailItem"..t], 
 				"EasyMail_CheckButtonTemplate");
 			frame:SetPoint("TOPLEFT", "MailItem"..t, "TOPLEFT", -25, -9);
 			frame:Hide();
@@ -1337,17 +1339,21 @@ end
 -- Draw the inbox checkboxes
 ---------------------------------------------------
 function EasyMail.InboxUpdate()
-	EasyMail_CheckAllButton:SetText((CheckAll and EASYMAIL_CHECKALLTEXT) or EASYMAIL_CLEARALLTEXT);
-	EasyMail_CheckPageButton:SetText((CheckPage and EASYMAIL_CHECKPAGETEXT) or EASYMAIL_CLEARPAGETEXT);
+	--EasyMail_CheckAllButton:SetText((CheckAll and EASYMAIL_CHECKALLTEXT) or EASYMAIL_CLEARALLTEXT);
+	--EasyMail_CheckPageButton:SetText((CheckPage and EASYMAIL_CHECKPAGETEXT) or EASYMAIL_CLEARPAGETEXT);
 	
 	local numItems, totalItems = GetInboxNumItems();
 	
 	if (numItems > 0) then
 		EasyMail_CheckAllButton:Enable();
+		EasyMail_ClearAllButton:Enable();
 		EasyMail_CheckPageButton:Enable();
+		EasyMail_ClearPageButton:Enable();
 	else
 		EasyMail_CheckAllButton:Disable();
+		EasyMail_ClearAllButton:Disable();
 		EasyMail_CheckPageButton:Disable();
+		EasyMail_ClearPageButton:Disable();
 	end
 	
 	EasyMail.EnableGetButton();
@@ -1357,9 +1363,9 @@ function EasyMail.InboxUpdate()
 		tremove(CheckBoxes, numItems + 1);
 	end
 	
-	-- Add entries to the checkbox table if necessary defaulting them off
+	-- Add entries to the checkbox table if necessary defaulting them off (new mails appear at front of list)
 	for t = #CheckBoxes + 1, numItems do
-		CheckBoxes[t] = false;
+		tinsert(CheckBoxes, 1, false);
 	end
 	
 	local index = ((InboxFrame.pageNum - 1) * INBOXITEMS_TO_DISPLAY) + 1;
@@ -1367,10 +1373,10 @@ function EasyMail.InboxUpdate()
 	for i=1, INBOXITEMS_TO_DISPLAY do
 		if ( index <= numItems ) then
 			-- Show the box as checked if the corresponding table entry is true
-			getglobal("EasyMail_CheckButton"..i):SetChecked(CheckBoxes[index]);
-			getglobal("EasyMail_CheckButton"..i):Show();
+			_G["EasyMail_CheckButton"..i]:SetChecked(CheckBoxes[index]);
+			_G["EasyMail_CheckButton"..i]:Show();
 		else
-			getglobal("EasyMail_CheckButton"..i):Hide();
+			_G["EasyMail_CheckButton"..i]:Hide();
 		end
 		
 		index = index + 1;
@@ -1392,7 +1398,7 @@ function EasyMail.EnableGetButton()
 	local t;
 	local val = false;
 	
-	for t = 1, #CheckBoxes do
+	for t = 1, GetInboxNumItems() do
 		if (CheckBoxes[t]) then
 			val = true;
 			break;
@@ -1414,7 +1420,7 @@ end
 function EasyMail.CheckButtonOnMouseUp(self)
 	-- Get the inbox button for the selected mail
 	local index = gsub(self:GetName(), "EasyMail_CheckButton(%d+)", "%1");
-	local button = getglobal("MailItem"..index.."Button");
+	local button = _G["MailItem"..index.."Button"];
 	
 	-- Toggle the table entry indicated by the mail index field on the inbox button
 	CheckBoxes[button.index] = not CheckBoxes[button.index];
@@ -1427,15 +1433,15 @@ end
 -- EasyMail.CheckAll
 -- Check or uncheck all checkboxes
 ---------------------------------------------------
-function EasyMail.CheckAll()
+function EasyMail.CheckAll(flag)
 	PlaySound("igMainMenuOptionCheckBoxOn");
 	
 	if (not GettingAll) then
 		for t = 1, #CheckBoxes do
-			CheckBoxes[t] = CheckAll;
+			CheckBoxes[t] = flag;
 		end
 		
-		CheckAll = not CheckAll;
+		--CheckAll = not CheckAll;
 		
 		EasyMail.InboxUpdate();
 	end
@@ -1446,7 +1452,7 @@ end
 -- EasyMail.CheckPage
 -- Check or uncheck all checkboxes on current inbox page
 ---------------------------------------------------
-function EasyMail.CheckPage()
+function EasyMail.CheckPage(flag)
 	PlaySound("igMainMenuOptionCheckBoxOn");
 	
 	if (not GettingAll) then
@@ -1457,11 +1463,11 @@ function EasyMail.CheckPage()
 				break;
 			end
 			
-			CheckBoxes[index] = CheckPage;
+			CheckBoxes[index] = flag;
 			index = index + 1;
 		end
 		
-		CheckPage = not CheckPage;
+		--CheckPage = not CheckPage;
 		
 		EasyMail.InboxUpdate();
 	end
@@ -1474,11 +1480,11 @@ end
 -- Also execute friend and quild queries to refresh the lists when the inbox is opened
 ---------------------------------------------------
 function EasyMail.ResetMarkAll()
-	CheckAll = true;
-	CheckPage = true;
-	EasyMail_CheckAllButton:Disable();
-	EasyMail_CheckPageButton:Disable();
-	EasyMail_GetAllButton:Disable();
+	--CheckAll = true;
+	--CheckPage = true;
+	--EasyMail_CheckAllButton:Disable();
+	--EasyMail_CheckPageButton:Disable();
+	--EasyMail_GetAllButton:Disable();
 	
 	-- Query for the friends and guild lists
 	if (IsInGuild() and EasyMail_SavedVars.Guild == "Y") then
@@ -1878,7 +1884,7 @@ end
 
 ---------------------------------------------------
 -- EasyMail.Forward
--- Make forwarding eaiser
+-- Make forwarding easier
 ---------------------------------------------------
 function EasyMail.Forward()
 	MailFrameTab_OnClick(nil, 2);
