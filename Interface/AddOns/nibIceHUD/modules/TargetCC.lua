@@ -4,6 +4,7 @@ TargetCC = IceCore_CreateClass(IceUnitBar)
 
 local max = math.max
 local ceil = math.ceil
+local strform = string.format
 
 TargetCC.prototype.debuffName = nil
 TargetCC.prototype.debuffRemaining = 0
