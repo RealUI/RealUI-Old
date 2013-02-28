@@ -1,18 +1,18 @@
-local L = LibStub("AceLocale-3.0"):GetLocale("IceHUD", false)
+local L = LibStub("AceLocale-3.0"):GetLocale("nibIceHUD", false)
 -- needs to not be local so that we can inherit from it
 TargetCC = IceCore_CreateClass(IceUnitBar)
+
+local max = math.max
+local strform = string.format
 
 TargetCC.prototype.debuffName = nil
 TargetCC.prototype.debuffRemaining = 0
 TargetCC.prototype.debuffDuration = 0
 
-local GetNumPartyMembers, GetNumRaidMembers = GetNumPartyMembers, GetNumRaidMembers
-if IceHUD.WowVer >= 50000 then
-	GetNumPartyMembers = GetNumGroupMembers
-	GetNumRaidMembers = GetNumGroupMembers
-end
+local AuraTexCoord = {0.1, 0.9, 0.1, 0.9}
 
--- list of spell ID's for each CC type so we can avoid localization issues
+local GetNumPartyMembers, GetNumRaidMembers = GetNumGroupMembers, GetNumGroupMembers
+
 local StunCCList = {
 	-- kidney shot
 	408,
@@ -175,10 +175,8 @@ local RootCCList = {
 }
 
 
-
 -- Constructor --
 function TargetCC.prototype:init(moduleName, unit)
-	-- not sure if this is necessary...i think it is...this way, we can instantiate this bar on its own or as a parent class
 	if moduleName == nil or unit == nil then
 		TargetCC.super.prototype.init(self, "TargetCC", "target")
 	else
@@ -186,8 +184,6 @@ function TargetCC.prototype:init(moduleName, unit)
 	end
 
 	self.moduleSettings = {}
-	self.moduleSettings.desiredLerpTime = 0
---	self.moduleSettings.shouldAnimate = false
 
 	self:SetDefaultColor("CC:Stun", 0.85, 0.55, 0.2)
 	self:SetDefaultColor("CC:Incapacitate", 0.90, 0.6, 0.2)
@@ -211,7 +207,7 @@ end
 function TargetCC.prototype:PopulateSpellList(debuffListVar, ccList, ccName)
 	local spellName
 
-	for i=1,#ccList do
+	for i=1, #ccList do
 		spellName = GetSpellInfo(ccList[i])
 
 		if spellName and spellName ~= "" then
@@ -229,11 +225,23 @@ function TargetCC.prototype:Enable(core)
 	self:RegisterEvent("UNIT_AURA", "UpdateTargetDebuffs")
 	self:RegisterEvent("PLAYER_TARGET_CHANGED", "UpdateTargetDebuffs")
 
-	self:Show(false)
+	if not self.moduleSettings.alwaysFullAlpha then
+		self:Show(false)
+	else
+		self:UpdateTargetDebuffs()
+	end
+
+	self:SetBottomText1("")
+	self:SetBottomText2("")
 end
 
 function TargetCC.prototype:Disable(core)
 	TargetCC.super.prototype.Disable(self, core)
+end
+
+function TargetCC.prototype:TargetChanged()
+	TargetCC.super.prototype.TargetChanged(self)
+	self:UpdateTargetDebuffs(nil, "target", nil)
 end
 
 -- OVERRIDE
@@ -241,14 +249,13 @@ function TargetCC.prototype:GetDefaultSettings()
 	local settings = TargetCC.super.prototype.GetDefaultSettings(self)
 
 	settings["enabled"] = false
-	settings["shouldAnimate"] = false
-	settings["hideAnimationSettings"] = true
-	settings["desiredLerpTime"] = nil
 	settings["lowThreshold"] = 0
-	settings["side"] = IceCore.Side.Left
-	settings["offset"] = 5
-	settings["usesDogTagStrings"] = false
-	settings["onlyShowForMyDebuffs"] = false
+	settings["side"] = IceCore.Side.Right
+	settings["offset"] = 2
+	settings["displayAuraIcon"] = false
+	settings["auraIconXOffset"] = 0
+	settings["auraIconYOffset"] = 0
+	settings["auraIconSize"] = 27
 
 	return settings
 end
@@ -261,35 +268,93 @@ function TargetCC.prototype:GetOptions()
 	opts["textSettings"].args["upperTextString"] = nil
 	opts["textSettings"].args["lowerTextString"] = nil
 
-	opts["alertParty"] = {
-		type = "toggle",
-		name = L["Alert Party"],
-		desc = L["Broadcasts crowd control effects you apply to your target via the party chat channel"],
-		get = function()
-			return self.moduleSettings.alertParty
-		end,
-		set = function(info, v)
-			self.moduleSettings.alertParty = v
-		end,
-		disabled = function()
-			return not self.moduleSettings.enabled
-		end,
-	}
+	opts["iconSettings"] = {
+		type = 'group',
+		name = "|c"..self.configColor..L["Icon Settings"].."|r",
+		args = {
+			displayAuraIcon = {
+				type = 'toggle',
+				name = L["Display aura icon"],
+				desc = L["Whether or not to display an icon for the aura that this bar is tracking"],
+				get = function()
+					return self.moduleSettings.displayAuraIcon
+				end,
+				set = function(info, v)
+					self.moduleSettings.displayAuraIcon = v
+					if self.barFrame.icon then
+						if v then
+							self.barFrame.icon:Show()
+						else
+							self.barFrame.icon:Hide()
+						end
+					end
+				end,
+				disabled = function()
+					return not self.moduleSettings.enabled
+				end,
+				order = 51,
+			},
 
-	opts["onlyShowForMyDebuffs"] = {
-		type = 'toggle',
-		name = L["Only show for my debuffs"],
-		desc = L["With this checked, the bar will only activate for your own CC spells and not those of others."],
-		width = 'double',
-		get = function()
-			return self.moduleSettings.onlyShowForMyDebuffs
-		end,
-		set = function(info, v)
-			self.moduleSettings.onlyShowForMyDebuffs = v
-		end,
-		disabled = function()
-			return not self.moduleSettings.enabled
-		end,
+			auraIconXOffset = {
+				type = 'range',
+				min = -250,
+				max = 250,
+				step = 0.5,
+				name = L["Aura icon horizontal offset"],
+				desc = L["Adjust the horizontal position of the aura icon"],
+				get = function()
+					return self.moduleSettings.auraIconXOffset
+				end,
+				set = function(info, v)
+					self.moduleSettings.auraIconXOffset = v
+					self:PositionIcons()
+				end,
+				disabled = function()
+					return not self.moduleSettings.enabled or not self.moduleSettings.displayAuraIcon
+				end,
+				order = 52,
+			},
+
+			auraIconYOffset = {
+				type = 'range',
+				min = -250,
+				max = 250,
+				step = 0.5,
+				name = L["Aura icon vertical offset"],
+				desc = L["Adjust the vertical position of the aura icon"],
+				get = function()
+					return self.moduleSettings.auraIconYOffset
+				end,
+				set = function(info, v)
+					self.moduleSettings.auraIconYOffset = v
+					self:PositionIcons()
+				end,
+				disabled = function()
+					return not self.moduleSettings.enabled or not self.moduleSettings.displayAuraIcon
+				end,
+				order = 53,
+			},
+
+			auraIconSize = {
+				type = 'range',
+				min = 16,
+				max = 32,
+				step = 1,
+				name = "Aura icon size",
+				desc = L["Adjusts the size of the aura icon for this bar"],
+				get = function()
+					return self.moduleSettings.auraIconSize
+				end,
+				set = function(info, v)
+					self.moduleSettings.auraIconSize = v
+					self:PositionIcons()
+				end,
+				disabled = function()
+					return not self.moduleSettings.enabled or not self.moduleSettings.displayAuraIcon
+				end,
+				order = 54,
+			},
+		},
 	}
 
 	return opts
@@ -297,45 +362,97 @@ end
 
 -- 'Protected' methods --------------------------------------------------------
 
-function TargetCC.prototype:GetMaxDebuffDuration(unitName, debuffNames)
+-- OVERRIDE
+function TargetCC.prototype:CreateFrame()
+	TargetCC.super.prototype.CreateFrame(self)
+
+	self.frame.bottomUpperText:SetWidth(self.settings.gap + 30)
+	
+	if not self.barFrame.icon then
+		self.barFrame.icon = self.frame:CreateTexture(nil, "OVERLAY")
+		self.barFrame.icon:SetTexture("Interface\\Icons\\Spell_Frost_Frost")
+		self.barFrame.icon:SetTexCoord(unpack(AuraTexCoord))
+		
+		self.barFrame.iconborder = CreateFrame("Frame", nil, self.frame)
+	end
+	self:PositionIcons()
+	
+	self.barFrame.icon:Hide()
+	self.barFrame.iconborder:Hide()
+end
+
+function TargetCC.prototype:PositionIcons()
+	if not self.barFrame or not self.barFrame.icon then
+		return
+	end
+	
+	if not self.moduleSettings.auraIconSize then self.moduleSettings.auraIconSize = 27 end
+	local scaleSize = (1 / self.moduleSettings.scale)
+	local size = self.moduleSettings.auraIconSize * scaleSize
+	local posX = self.moduleSettings.auraIconXOffset * scaleSize
+	local posY = self.moduleSettings.auraIconYOffset * scaleSize
+	
+	self.barFrame.icon:ClearAllPoints()
+	self.barFrame.icon:SetPoint("BOTTOMRIGHT", self.frame, "BOTTOMRIGHT", posX, posY)
+	self.barFrame.icon:SetWidth(size)
+	self.barFrame.icon:SetHeight(size)
+	
+	self.barFrame.iconborder:ClearAllPoints()
+	self.barFrame.iconborder:SetFrameStrata(self.frame:GetFrameStrata())
+	self.barFrame.iconborder:SetFrameLevel(self.frame:GetFrameLevel() + 2)
+	self.barFrame.iconborder:SetPoint("BOTTOMRIGHT", self.frame, "BOTTOMRIGHT", posX, posY)
+	self.barFrame.iconborder:SetWidth(size)
+	self.barFrame.iconborder:SetHeight(size)
+	
+	self.barFrame.iconborder:SetBackdrop({
+		bgFile = [[Interface\AddOns\nibIceHUD\textures\Plain]], 
+		edgeFile = [[Interface\AddOns\nibIceHUD\textures\Plain]], 
+		tile = false, tileSize = 0, edgeSize = scaleSize, 
+		insets = { left = scaleSize, right = scaleSize, top = scaleSize, bottom = scaleSize	}
+	})
+	self.barFrame.iconborder:SetBackdropColor(0, 0, 0, 0)
+	self.barFrame.iconborder:SetBackdropBorderColor(0, 0, 0, 1)
+end
+
+function TargetCC.prototype:GetMaxDebuffDuration(unitName, debuffNames, oldIcon)
 	local i = 1
 	local debuff, rank, texture, count, debuffType, duration, endTime, unitCaster = UnitAura(unitName, i, "HARMFUL")
-	local isMine = unitCaster == "player"
-	local result = {nil, nil, nil}
+	local result = {nil, nil, nil, nil}
 	local remaining
 
 	while debuff do
 		remaining = endTime - GetTime()
-
-		if debuffNames[debuff] and (not self.moduleSettings.onlyShowForMyDebuffs or isMine) then
+		
+		if (duration == 0) and (remaining < 0) then
+			duration = 100000
+			remaining = 100000
+		end
+		
+		if debuffNames[debuff] then
 			if result[0] then
 				if result[2] < remaining then
-					result = {debuff, duration, remaining}
+					result = {debuff, duration, remaining, texture or oldIcon}
 				end
 			else
-				result = {debuff, duration, remaining}
+				result = {debuff, duration, remaining, texture or oldIcon}
 			end
 		end
 
-		i = i + 1;
+		i = i + 1
 
 		debuff, rank, texture, count, debuffType, duration, endTime, unitCaster = UnitAura(unitName, i, "HARMFUL")
-		isMine = unitCaster == "player"
 	end
 
 	return unpack(result)
 end
 
-function TargetCC.prototype:MyOnUpdate()
-	TargetCC.super.prototype.MyOnUpdate(self)
-	self:UpdateTargetDebuffs(nil, self.unit, true)
-end
-
 function TargetCC.prototype:UpdateTargetDebuffs(event, unit, isUpdate)
-	local name, duration, remaining
-
+	if unit and (unit ~= self.unit) then return end
+	
+	local name, duration, remaining, icon
+	
 	if not isUpdate then
-		self.debuffName, self.debuffDuration, self.debuffRemaining = self:GetMaxDebuffDuration(self.unit, self.debuffList)
+		self.debuffName, self.debuffDuration, self.debuffRemaining, self.buffIcon = self:GetMaxDebuffDuration(self.unit, self.debuffList, self.buffIcon)
 	else
 		self.debuffRemaining = math.max(0, self.debuffRemaining - (GetTime() - self.lastUpdateTime))
 		if self.debuffRemaining <= 0 then
@@ -347,47 +464,59 @@ function TargetCC.prototype:UpdateTargetDebuffs(event, unit, isUpdate)
 	name = self.debuffName
 	duration = self.debuffDuration
 	remaining = self.debuffRemaining
+	icon = self.buffIcon
 
 	local targetName = UnitName(self.unit)
-
-	if (name ~= nil) and (self.previousDebuff == nil) and (duration ~= nil) and (remaining ~= nil) then
-		if (duration > 1) and (self.moduleSettings.alertParty) and ((GetNumPartyMembers() >= 1) or (GetNumRaidMembers() >= 1)) then
-			SendChatMessage(targetName .. ": " .. name .. " (" .. tostring(floor(remaining * 10) / 10) .. "/" .. tostring(duration) .. "s)", "PARTY")
-		end
-
-		self.previousDebuff = name
-		self.previousDebuffTarget = targetName
-		self.previousDebuffTime = GetTime() + duration
-	-- Parnic: Force the CurrScale to 1 so that the lerping doesn't make it animate up and back down
-	self.CurrScale = 1.0
-	elseif (self.previousDebuff ~= nil) then
-		if (targetName ~= self.previousDebuffTarget) then
-			self.previousDebuff = nil
-			self.previousDebuffTarget = nil
-			self.previousDebuffTime = nil
-		elseif (GetTime() > self.previousDebuffTime) then
-			self.previousDebuff = nil
-			self.previousDebuffTarget = nil
-			self.previousDebuffTime = nil
-		end
-	end
-
+	
 	if (name ~= nil) then
-		self:Show(true)
-
+		if not isUpdate then
+			if not nibIceHUD.IceCore:IsUpdateSubscribed(self) then
+				if not self.UpdateCustomBarFunc then
+					self.UpdateCustomBarFunc = function() self:UpdateTargetDebuffs(nil, self.unit, true) end
+				end
+				nibIceHUD.IceCore:RequestUpdates(self, self.UpdateCustomBarFunc)
+			end
+			
+			self.barFrame.icon:SetTexture(icon or "")
+			self:Toggle(true)
+		end
+		
 		if (duration ~= nil and duration > 0) then
 			self:UpdateBar(duration ~= 0 and remaining / duration or 0, "CC:" .. self.debuffList[name])
-			self:SetBottomText2(floor(remaining * 10) / 10)
+			self:SetBottomText2(strform("%d", ceil(remaining)))
 		else
 			self:UpdateBar(0, "CC:" .. self.debuffList[name])
 			self:SetBottomText2("")
 		end
 
 		self:SetBottomText1(name)
+		
+		-- In case we haven't yet subscribed (bug)
+		if not nibIceHUD.IceCore:IsUpdateSubscribed(self) then
+			if self.UpdateCustomBarFunc ~= nil then
+				nibIceHUD.IceCore:RequestUpdates(self, self.UpdateCustomBarFunc)
+			end
+		end
+	else
+		self:UpdateBar(0, "CC:")
+		self:Toggle(false)
+		nibIceHUD.IceCore:RequestUpdates(self, nil)
+	end
+end
+
+function TargetCC.prototype:Toggle(vis)
+	if vis then
+		self:Show(true)
+		if nibIceHUD.IceCore:IsInConfigMode() or self.moduleSettings.displayAuraIcon then
+			self.barFrame.icon:Show()
+			self.barFrame.iconborder:Show()
+		end
 	else
 		self:Show(false)
+		self.barFrame.icon:Hide()
+		self.barFrame.iconborder:Hide()
 	end
 end
 
 -- Load us up
-IceHUD.TargetCC = TargetCC:new()
+nibIceHUD.TargetCC = TargetCC:new()

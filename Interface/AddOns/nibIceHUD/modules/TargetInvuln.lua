@@ -2,6 +2,7 @@ local L = LibStub("AceLocale-3.0"):GetLocale("nibIceHUD", false)
 TargetInvuln = IceCore_CreateClass(IceUnitBar)
 
 local max = math.max
+local strform = string.format
 
 TargetInvuln.prototype.buffName = nil
 TargetInvuln.prototype.buffRemaining = 0
@@ -46,7 +47,6 @@ local InvulnList= {
 
 -- Constructor --
 function TargetInvuln.prototype:init(moduleName, unit)
-	-- not sure if this is necessary...i think it is...this way, we can instantiate this bar on its own or as a parent class
 	if moduleName == nil or unit == nil then
 		TargetInvuln.super.prototype.init(self, "TargetInvuln", "target")
 	else
@@ -68,7 +68,7 @@ end
 function TargetInvuln.prototype:PopulateSpellList(buffListVar, ccList, ccName)
 	local spellName
 
-	for i = 1 ,#ccList do
+	for i = 1, #ccList do
 		spellName = GetSpellInfo(ccList[i])
 
 		if spellName and spellName ~= "" then
@@ -282,7 +282,7 @@ end
 function TargetInvuln.prototype:GetMaxbuffDuration(unitName, buffNames, oldIcon)
 	local i = 1
 	local buff, rank, texture, count, buffType, duration, endTime, unitCaster = UnitAura(unitName, i, "HELPFUL")
-	local result = {nil, nil, nil}
+	local result = {nil, nil, nil, nil}
 	local remaining
 
 	while buff do
@@ -296,14 +296,14 @@ function TargetInvuln.prototype:GetMaxbuffDuration(unitName, buffNames, oldIcon)
 		if buffNames[buff] then
 			if result[0] then
 				if result[2] <= remaining then
-					result = {buff, duration, remaining, oldIcon or texture}
+					result = {buff, duration, remaining, texture or oldIcon}
 				end
 			else
-				result = {buff, duration, remaining, oldIcon or texture}
+				result = {buff, duration, remaining, texture or oldIcon}
 			end
 		end
 
-		i = i + 1;
+		i = i + 1
 
 		buff, rank, texture, count, buffType, duration, endTime, unitCaster = UnitAura(unitName, i, "HELPFUL")
 	end
@@ -311,23 +311,15 @@ function TargetInvuln.prototype:GetMaxbuffDuration(unitName, buffNames, oldIcon)
 	return unpack(result)
 end
 
-function TargetInvuln.prototype:MyOnUpdate()
-	TargetInvuln.super.prototype.MyOnUpdate(self)
-	if self.bUpdateTI then
-		self:UpdateTargetBuffs(nil, self.unit, true)
-	end
-end
-
 function TargetInvuln.prototype:UpdateTargetBuffs(event, unit, isUpdate)
-	if unit and (unit ~= "target") then return end
+	if unit and (unit ~= self.unit) then return end
 	
 	local name, duration, remaining, icon
 
 	if not isUpdate then
-		self.buffName, self.buffDuration, self.buffRemaining, self.buffTexture = self:GetMaxbuffDuration(self.unit, self.buffList, self.buffTexture)
+		self.buffName, self.buffDuration, self.buffRemaining, self.buffIcon = self:GetMaxbuffDuration(self.unit, self.buffList, self.buffTexture)
 	else
 		self.buffRemaining = max(0, self.buffRemaining - (GetTime() - self.lastUpdateTime))
-
 		if self.buffRemaining <= 0 then
 			self.buffName = nil
 		end
@@ -337,48 +329,43 @@ function TargetInvuln.prototype:UpdateTargetBuffs(event, unit, isUpdate)
 	name = self.buffName
 	duration = self.buffDuration
 	remaining = self.buffRemaining
-	icon = self.buffTexture
+	icon = self.buffIcon
 
 	local targetName = UnitName(self.unit)
 
-	if (name ~= nil) and (self.previousbuff == nil) and (duration ~= nil) and (remaining ~= nil) then
-		self.previousbuff = name
-		self.previousbuffTarget = targetName
-		self.previousbuffTime = GetTime() + duration
-		
-		-- self.CurrScale = 1.0
-	elseif (self.previousbuff ~= nil) then
-		if (targetName ~= self.previousbuffTarget) then
-			self.previousbuff = nil
-			self.previousbuffTarget = nil
-			self.previousbuffTime = nil
-		elseif (GetTime() > self.previousbuffTime) then
-			self.previousbuff = nil
-			self.previousbuffTarget = nil
-			self.previousbuffTime = nil
-		end
-	end
-
 	if (name ~= nil) then
 		if not isUpdate then
-			self.bUpdateTI = true
+			if not nibIceHUD.IceCore:IsUpdateSubscribed(self) then
+				if not self.UpdateCustomBarFunc then
+					self.UpdateCustomBarFunc = function() self:UpdateTargetBuffs(nil, self.unit, true) end
+				end
+				nibIceHUD.IceCore:RequestUpdates(self, self.UpdateCustomBarFunc)
+			end
+			
 			self.barFrame.icon:SetTexture(icon or "")
 			self:Toggle(true)
 		end
 
 		if (duration ~= nil and duration >= 0) then
 			self:UpdateBar(duration ~= 0 and remaining / duration or 0, "CC:" .. self.buffList[name])
-			self:SetBottomText2(string.format("%d", ceil(remaining)))
+			self:SetBottomText2(strform("%d", ceil(remaining)))
 		else
 			self:UpdateBar(0, "CC:" .. self.buffList[name])
 			self:SetBottomText2("")
 		end
 
 		self:SetBottomText1(name)
+		
+		-- In case we haven't yet subscribed (bug)
+		if not nibIceHUD.IceCore:IsUpdateSubscribed(self) then
+			if self.UpdateCustomBarFunc ~= nil then
+				nibIceHUD.IceCore:RequestUpdates(self, self.UpdateCustomBarFunc)
+			end
+		end
 	else
 		self:UpdateBar(0, "CC:")
 		self:Toggle(false)
-		self.bUpdateTI = false
+		nibIceHUD.IceCore:RequestUpdates(self, nil)
 	end
 end
 

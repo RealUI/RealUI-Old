@@ -22,21 +22,21 @@ IceCastBar.lua
 # - Feel free to comment these out if you like
 modules\CastBar.lua
 modules\TargetCast.lua
+modules\TargetOfTargetCast.lua
+modules\FocusCast.lua
 modules\MirrorBar.lua
-modules\Rapture.lua
-modules\SavageRoar.lua
+modules\CustomBar.lua
+modules\CustomCDBar.lua
 modules\BanditsGuile.lua
 modules\SliceAndDice.lua
-modules\FocusCast.lua
-modules\CustomBar.lua
-modules\TargetOfTargetCast.lua
-modules\CustomCDBar.lua
+modules\RogueExtras1.lua
+modules\RogueExtras2.lua
+modules\Rapture.lua
+modules\SavageRoar.lua
 modules\EclipseBar.lua
 modules\DemonicFury.lua
 modules\BurningEmbers.lua
 modules\Vengeance.lua
 modules\WeakenedBlows.lua
-modules\RogueExtras1.lua
-modules\RogueExtras2.lua
-# modules\TargetCC.lua
+modules\TargetCC.lua
 modules\TargetInvuln.lua
