@@ -38,4 +38,5 @@ modules\Vengeance.lua
 modules\WeakenedBlows.lua
 modules\RogueExtras1.lua
 modules\RogueExtras2.lua
-modules\RogueLegendary.lua
+# modules\TargetCC.lua
+modules\TargetInvuln.lua

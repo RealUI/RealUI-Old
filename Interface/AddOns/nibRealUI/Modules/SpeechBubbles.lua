@@ -243,12 +243,12 @@ function SpeechBubbles:OnInitialize()
 	self.db = nibRealUI.db:RegisterNamespace(MODNAME)
 	self.db:RegisterDefaults({
 		profile = {
-			sendersize = 14,
-			messagesize = 12,
+			sendersize = 12,
+			messagesize = 10,
 			edgesize = 6,
 			colors = {
-				bg = {0, 0, 0, 0},
-				border = {0, 0, 0, 0},
+				bg = {0, 0, 0, .65},
+				border = {0, 0, 0, 1},
 			},
 		},
 	})

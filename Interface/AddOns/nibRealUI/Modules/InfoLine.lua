@@ -2207,17 +2207,6 @@ function Guild_OnMouseDown(self)
 end
 
 -- Meters
-local function Meter_ButtonUpdate(self, shown)
-	if not self.initialized then return end
-	
-	if shown then
-		self.windowopen = true
-	else
-		self.windowopen = false
-	end
-	InfoLine:UpdateTextButtonColors()
-end
-
 local function Meter_Toggle(self)
 	if not self.initialized then return end
 	
@@ -2231,7 +2220,6 @@ local function Meter_Toggle(self)
 				Skada:ToggleWindow()
 			end
 		end
-		Meter_ButtonUpdate(self, true)
 		PlaySound("igMiniMapOpen")
 	else
 		if self.arecount then
@@ -2242,7 +2230,6 @@ local function Meter_Toggle(self)
 				Skada:ToggleWindow()
 			end
 		end
-		Meter_ButtonUpdate(self, false)
 		PlaySound("igMiniMapClose")
 	end
 end
@@ -2257,10 +2244,7 @@ local function Meter_Update(self)
 		self.initialized = true
 	end
 	
-	if self.hidden then
-		self.text:SetText("")
-		UpdateElementWidth(self, true)
-	else
+	if not self.hidden then
 		local SkadaOpen, RecountOpen
 		if self.fskada then
 			SkadaOpen = self.fskada:IsVisible()
@@ -2270,12 +2254,9 @@ local function Meter_Update(self)
 		end
 		
 		self.windowopen = SkadaOpen or RecountOpen
-
-		InfoLine:UpdateTextButtonColors()
-		
-		self.text:SetText(L["Meters"])
-		UpdateElementWidth(self)
 	end
+	
+	InfoLine:UpdatePositions()
 end
 
 ---- Layout Button
@@ -3270,12 +3251,6 @@ function InfoLine:UpdateTextButtonColors()
 	else
 		ILFrames.layout.text:SetTextColor(unpack(TextColorNormalVals))
 	end
-	-- Meters Button
-	if ILFrames.meter.windowopen or ILFrames.meter.mouseover then
-		ILFrames.meter.text:SetTextColor(unpack(TextColorHighlightVals))
-	else
-		ILFrames.meter.text:SetTextColor(unpack(TextColorNormalVals))
-	end
 end
 
 function InfoLine:TextButton_OnMouseDown(self)
@@ -3300,9 +3275,6 @@ function InfoLine:TextButton_OnMouseDown(self)
 			ndbc.layout.current = NewLayout
 			nibRealUI:UpdateLayout()
 		end
-	elseif self.tag == "meter" then
-		-- Meter Button
-		Meter_Toggle(self)
 	end
 end
 
@@ -3345,21 +3317,6 @@ function InfoLine:TextButton_OnEnter(self)
 		-- Tip
 		ILFrames.layout.tip:Hide()
 		ndbg.tags.layouttip = false
-	elseif self.tag == "meter" then
-		-- Meter Button
-		GameTooltip:SetOwner(self, "ANCHOR_TOP"..self.side, 0, 2)
-		GameTooltip:AddLine(strform("|cff%s%s|r", TextColorTTHeader, L["Meter Toggle"]))
-		GameTooltip:AddLine(" ")
-		GameTooltip:AddLine(strform("|cff%s%s|r", TextColorOrange2, L["Active Meters:"]))
-		if IsAddOnLoaded("Recount") then
-			GameTooltip:AddLine(strform("|cff%s%s|r", TextColorWhite, "Recount"))
-		end
-		if IsAddOnLoaded("Skada") then
-			GameTooltip:AddLine(strform("|cff%s%s|r", TextColorWhite, "Skada"))
-		end
-		GameTooltip:AddLine(" ")
-		GameTooltip:AddLine(strform("|cff00ff00%s|r", L["<Click> to toggle meters."]))
-		GameTooltip:Show()
 	end
 end
 
@@ -3371,12 +3328,21 @@ function InfoLine:UpdateIconButtonColors()
 	else
 		ILFrames.options.icon:SetVertexColor(unpack(TextColorNormalVals))
 	end
+	-- Meters Button
+	if ILFrames.meters.mouseover then
+		ILFrames.meters.icon:SetVertexColor(unpack(TextColorHighlightVals))
+	else
+		ILFrames.meters.icon:SetVertexColor(unpack(TextColorNormalVals))
+	end
 end
 
 function InfoLine:IconButton_OnMouseDown(self)
 	if self.tag == "options" then
 		-- Options Button
 		nibRealUI:OpenOptions()
+	elseif self.tag == "meters" then
+		-- Meters Button
+		Meter_Toggle(self)
 	end
 end
 
@@ -3397,6 +3363,21 @@ function InfoLine:IconButton_OnEnter(self)
 		GameTooltip:SetOwner(self, "ANCHOR_TOP"..self.side, 0, -1)
 		GameTooltip:AddLine(strform("|cff%s%s|r", TextColorTTHeader, L["RealUI Options"]))
 		GameTooltip:AddLine(strform("%s", nibRealUI:GetVerString(true)))
+		GameTooltip:Show()
+	elseif self.tag == "meters" then
+		-- Meters Button
+		GameTooltip:SetOwner(self, "ANCHOR_TOP"..self.side, 0, 2)
+		GameTooltip:AddLine(strform("|cff%s%s|r", TextColorTTHeader, L["Meter Toggle"]))
+		GameTooltip:AddLine(" ")
+		GameTooltip:AddLine(strform("|cff%s%s|r", TextColorOrange2, L["Active Meters:"]))
+		if IsAddOnLoaded("Recount") then
+			GameTooltip:AddLine(strform("|cff%s%s|r", TextColorWhite, "Recount"))
+		end
+		if IsAddOnLoaded("Skada") then
+			GameTooltip:AddLine(strform("|cff%s%s|r", TextColorWhite, "Skada"))
+		end
+		GameTooltip:AddLine(" ")
+		GameTooltip:AddLine(strform("|cff00ff00%s|r", L["<Click> to toggle meters."]))
 		GameTooltip:Show()
 	end
 end
@@ -3431,6 +3412,8 @@ end
 function InfoLine:UpdateTextures()
 	-- Options Button
 	ILFrames.options.icon:SetTexture(db.resolution[ndbc.resolution].configicon)
+	-- Meters Button
+	ILFrames.meters.icon:SetTexture(db.resolution[ndbc.resolution].metersicon)
 end
 
 -- Positions
@@ -3450,7 +3433,7 @@ end
 
 function InfoLine:UpdateMMPositions()
 	local XPos = 0
-	local EHeight = nibRealUI.font.pixel1[2] + 2
+	local EHeight = nibRealUI.font.pixel1[2] + 2 + 8
 	local EWidth = nibRealUI.font.pixel1[2] + db.resolution[ndbc.resolution].micromenupadding
 	
 	for i = 1, 12 do
@@ -3501,13 +3484,13 @@ function InfoLine:UpdatePositions()
 	AlreadyUpdating = true
 	
 	local XPos = 0
-	local EHeight = nibRealUI.font.pixel1[2] + 2
+	local EHeight = nibRealUI.font.pixel1[2] + 2 + 8
 	
 	-- Parent
 	ILFrames.parent:ClearAllPoints()
 	ILFrames.parent:SetPoint("BOTTOMLEFT", UIParent, "BOTTOMLEFT",  db.position.xl, db.position.y)
 	ILFrames.parent:SetPoint("BOTTOMRIGHT", UIParent, "BOTTOMRIGHT",  -db.position.xr, db.position.y)
-	ILFrames.parent:SetHeight(20)
+	ILFrames.parent:SetHeight(24)
 	
 	---- LEFT
 	-- Options Button
@@ -3608,6 +3591,15 @@ function InfoLine:UpdatePositions()
 		ILFrames.clock:Hide()
 	end
 	
+	-- Meter Button
+	if db.elements.metertoggle and not(ILFrames.meters.hidden) then
+		ILFrames.meters:Show()
+		SetPosition(ILFrames.meters, ILFrames.parent, "BOTTOMRIGHT", XPos, db.iconbuttons.yoffset, db.iconbuttons.size, db.iconbuttons.size)
+		XPos = XPos - db.iconbuttons.size
+	else
+		ILFrames.meters:Hide()
+	end
+	
 	-- SysInfo
 	if db.elements.sysinfo then
 		ILFrames.sysinfo:Show()
@@ -3633,15 +3625,6 @@ function InfoLine:UpdatePositions()
 		XPos = XPos - ILFrames.layout.curwidth
 	else
 		ILFrames.layout:Hide()
-	end
-	
-	-- Meter Button
-	if db.elements.metertoggle and not(ILFrames.meter.hidden) then
-		ILFrames.meter:Show()
-		SetPosition(ILFrames.meter, ILFrames.parent, "BOTTOMRIGHT", XPos, db.text.yoffset, EHeight, ILFrames.meter.curwidth)
-		XPos = XPos - ILFrames.meter.curwidth
-	else
-		ILFrames.meter:Hide()
 	end
 	
 	-- Custom
@@ -3761,7 +3744,7 @@ local function CreateIconButtonFrame(side)
 	NewButton:SetFrameLevel(ILFrames.parent:GetFrameLevel() + 1)
 	
 	NewButton.icon = NewButton:CreateTexture(nil, "ARTWORK")
-	NewButton.icon:SetAllPoints(NewButton)
+	NewButton.icon:SetPoint("CENTER", NewButton, "CENTER", 0, 0)
 	
 	NewButton:EnableMouse(true)
 	NewButton.mouseover = false
@@ -4003,6 +3986,24 @@ function InfoLine:CreateFrames()
 	ILFrames.clock.pulse = CreateFrame("Frame")
 	ILFrames.clock.pulse:Hide()
 	
+	-- Meters Button
+	ILFrames.meters = CreateIconButtonFrame("LEFT")
+	ILFrames.meters.tag = "meters"
+	ILFrames.meters:RegisterEvent("PLAYER_ENTERING_WORLD")
+	ILFrames.meters:SetScript("OnEvent", function(self) 
+		if not db.elements.metertoggle then return end
+		Meter_Update(self)
+	end)
+	ILFrames.meters.elapsed = 2
+	ILFrames.meters:SetScript("OnUpdate", function(self, elapsed) 
+		if not db.elements.metertoggle then return end
+		self.elapsed = self.elapsed + elapsed
+		if self.elapsed >= 2 then
+			Meter_Update(self)
+			self.elapsed = 0
+		end
+	end)
+	
 	-- SysInfo
 	ILFrames.sysinfo = CreateTextFrame("RIGHT")
 	CreateGraph("fps", 60, 60, ILFrames.sysinfo)
@@ -4066,24 +4067,6 @@ function InfoLine:CreateFrames()
 		ndbg.tags.layouttip = false
 	end
 	
-	-- Meter Button
-	ILFrames.meter = CreateTextButtonFrame("RIGHT")
-	ILFrames.meter.tag = "meter"
-	ILFrames.meter:RegisterEvent("PLAYER_ENTERING_WORLD")
-	ILFrames.meter:SetScript("OnEvent", function(self) 
-		if not db.elements.metertoggle then return end
-		Meter_Update(self)
-	end)
-	ILFrames.meter.elapsed = 2
-	ILFrames.meter:SetScript("OnUpdate", function(self, elapsed) 
-		if not db.elements.metertoggle then return end
-		self.elapsed = self.elapsed + elapsed
-		if self.elapsed >= 2 then
-			Meter_Update(self)
-			self.elapsed = 0
-		end
-	end)
-	
 	FramesCreated = true
 end
 
@@ -4101,7 +4084,7 @@ function InfoLine:UpdateAllInfo()
 	SysInfo_Update(ILFrames.sysinfo, true)
 	Spec_Update(ILFrames.spec)
 	Layout_Update(ILFrames.layout)
-	Meter_Update(ILFrames.meter)
+	Meter_Update(ILFrames.meters)
 end
 
 function InfoLine:Refresh()
@@ -4255,14 +4238,14 @@ function InfoLine:OnInitialize()
 				xl = 4,
 				xr = 0,
 				xgap = 10,
-				y = 4,
+				y = 0,
 			},
 			text = {
 				yoffset = 0.5,
 			},
 			iconbuttons = {
-				size = 16,
-				yoffset = -2,
+				size = 20,
+				yoffset = 0,
 			},
 			colors = {
 				normal = {1, 1, 1},
@@ -4306,13 +4289,15 @@ function InfoLine:OnInitialize()
 					micromenupadding = 0,
 					tabfontsize = 0,
 					layouttipsize = {width = 186, height = 65},
-					configicon = [[Interface\AddOns\nibRealUI\Media\InfoLine\Config]]
+					configicon = [[Interface\AddOns\nibRealUI\Media\InfoLine\Config]],
+					metersicon = [[Interface\AddOns\nibRealUI\Media\InfoLine\Meters]],
 				},
 				[2] = {
 					micromenupadding = 2,
 					tabfontsize = 1,
 					layouttipsize = {width = 200, height = 68},
-					configicon = [[Interface\AddOns\nibRealUI\Media\InfoLine\Config_HR]]
+					configicon = [[Interface\AddOns\nibRealUI\Media\InfoLine\Config_HR]],
+					metersicon = [[Interface\AddOns\nibRealUI\Media\InfoLine\Meters_HR]],
 				},
 			},
 		},
