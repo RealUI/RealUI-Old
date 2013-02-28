@@ -53,8 +53,8 @@ cfg.overlay = {
 			surround = 1,			-- Border of objects
 			background = 0.5,		-- Background of unit frame
 			status = 0.8,			-- Background of objects (arrow, end box, etc)
-			bar = {0.2, 0.5},		-- Health/Power gradient {start, end}
-			bar2 = {0.4, 1},		-- Pet/Vehicle Health/Power gradient {start, end}
+			bar = {0.1, 0.35},		-- Health/Power gradient {start, end}
+			bar2 = {0.3, 0.85},		-- Pet/Vehicle Health/Power gradient {start, end}
 			steps = 0.7,			-- Tiny step indicator
 		},
 		colors = {

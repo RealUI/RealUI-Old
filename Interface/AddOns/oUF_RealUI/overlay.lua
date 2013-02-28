@@ -293,6 +293,15 @@ local PowerTextYOffset = {
 	},
 }
 
+local EndBoxTextXOffset = {
+	small = {
+		[PLAYER_ID] = -2,
+	},
+	large = {
+		[PLAYER_ID] = -1,
+	},
+}
+
 local HealthArrowYOffset = {
 	small = 12,
 	large = 13,
@@ -355,9 +364,9 @@ local StatusColors = {
 	offline = {0.6, 0.6, 0.6},
 	leader = {0, 1, 1},
 	tapped = {0.4, 0.4, 0.4},
-	pvpenemy = {0.25, 0, 0},
-	pvpfriendly = {0, 0.25, 0},
-	dead = {0.5, 0.5, 0.5},
+	pvpenemy = {0.2, 0, 0},
+	pvpfriendly = {0, 0.2, 0},
+	dead = {0.6, 0.4, 0.4},
 }
 
 local HealthColors = {
@@ -394,6 +403,19 @@ local UnitHealthVal = {
 }
 
 ---- MISC FUNCTIONS ----
+local function UnitIsPvPFriend(Unit, UFUnit)
+	if UnitIsPVP(Unit) then
+		if (Unit == PLAYER_ID) and (UFUnit == PLAYER_ID) then
+			return true
+		elseif (Unit == TARGET_ID) and UnitExists(TARGET_ID) then
+			if UnitIsPlayer(TARGET_ID) and UnitIsFriend(PLAYER_ID, TARGET_ID) then
+				return true
+			end
+		end
+	end
+	return false
+end
+
 -- Seconds to Time
 local function ConvertSecondstoTime(value)
 	local minues, seconds
@@ -1138,7 +1160,9 @@ function Overlay:UpdateUnitInfo(UnitID)
 		end
 		UF[UnitID].healthtext.text:SetText(InfoText)
 	end
-	UF[UnitID].endboxtext.text:SetText(uClassification)
+	if not UnitIsPvPFriend(TARGET_ID, TARGET_ID) then
+		UF[UnitID].endboxtext.text:SetText(uClassification)
+	end
 end
 
 -- Unit Background Colors
@@ -1149,8 +1173,8 @@ function Overlay:UpdateUnitBackgroundColor(UnitID)
 	
 	local newColorID = ""
 	if UnitIsPVP(Unit) then
-		if (Unit == PLAYER_ID) and (UFUnit == PLAYER_ID) then
-			UF[PLAYER_ID].endboxtext.text:SetText(ClassificationShort["pvp"])
+		if UnitIsPvPFriend(Unit, UFUnit) then
+			UF[UFUnit].endboxtext.text:SetText(ClassificationShort["pvp"])
 			bgColor = {0, 0, 0}
 			newColorID = "black"
 		elseif UnitIsFriend(Unit, PLAYER_ID) then
@@ -1164,8 +1188,8 @@ function Overlay:UpdateUnitBackgroundColor(UnitID)
 		bgColor = StatusColors.tapped
 		newColorID = "tapped"
 	else
-		if (Unit == PLAYER_ID) and (UFUnit == PLAYER_ID) then
-			UF[PLAYER_ID].endboxtext.text:SetText("")
+		if UnitIsPvPFriend(Unit, UFUnit) then
+			UF[UFUnit].endboxtext.text:SetText("")
 		end
 		bgColor = {0, 0, 0}
 		newColorID = "black"
@@ -1748,7 +1772,7 @@ function Overlay:CreateFrames()
 	
 	-- End Box Text
 	UF[PLAYER_ID].endboxtext = CreateTextFrame(UF[PLAYER_ID].endbox, "CENTER", "CENTER")
-	SetFramePosition(UF[PLAYER_ID].endboxtext, "MEDIUM", UF[PLAYER_ID].endbox:GetFrameLevel() + 1, 12, 12, {"CENTER", UF[PLAYER_ID].endbox, "CENTER", -2, 0})
+	SetFramePosition(UF[PLAYER_ID].endboxtext, "MEDIUM", UF[PLAYER_ID].endbox:GetFrameLevel() + 1, 12, 12, {"CENTER", UF[PLAYER_ID].endbox, "CENTER", EndBoxTextXOffset[layoutSize][PLAYER_ID], 0})
 	
 	-- Range Display
 	UF[PLAYER_ID].rangedisplay = CreateTextFrame(UF[PLAYER_ID].endbox, "BOTTOM", "LEFT")
