@@ -503,21 +503,21 @@ local function initDatabase()
 		addon.LoadTranslations = nil
 	end
 
-	-- Only warn about missing display if we're running standalone.
-	if not displayObjectName and bugGrabberParentAddon == STANDALONE_NAME then
-		local currentInterface = select(4, GetBuildInfo())
-		if type(currentInterface) ~= "number" then currentInterface = 0 end
-		if not sv.stopnag or sv.stopnag < currentInterface then
-			print(L.NO_DISPLAY_1)
-			print(L.NO_DISPLAY_2)
-			print(L.NO_DISPLAY_STOP)
-			_G.SlashCmdList.BugGrabberStopNag = function()
-				print(L.STOP_NAG)
-				sv.stopnag = currentInterface
-			end
-			_G.SLASH_BugGrabberStopNag1 = "/stopnag"
-		end
-	end
+	-- -- Only warn about missing display if we're running standalone.
+	-- if not displayObjectName and bugGrabberParentAddon == STANDALONE_NAME then
+		-- local currentInterface = select(4, GetBuildInfo())
+		-- if type(currentInterface) ~= "number" then currentInterface = 0 end
+		-- if not sv.stopnag or sv.stopnag < currentInterface then
+			-- print(L.NO_DISPLAY_1)
+			-- print(L.NO_DISPLAY_2)
+			-- print(L.NO_DISPLAY_STOP)
+			-- _G.SlashCmdList.BugGrabberStopNag = function()
+				-- print(L.STOP_NAG)
+				-- sv.stopnag = currentInterface
+			-- end
+			-- _G.SLASH_BugGrabberStopNag1 = "/stopnag"
+		-- end
+	-- end
 
 	initDatabase = nil
 end

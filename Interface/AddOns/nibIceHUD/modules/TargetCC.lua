@@ -3,15 +3,13 @@ local L = LibStub("AceLocale-3.0"):GetLocale("nibIceHUD", false)
 TargetCC = IceCore_CreateClass(IceUnitBar)
 
 local max = math.max
-local strform = string.format
+local ceil = math.ceil
 
 TargetCC.prototype.debuffName = nil
 TargetCC.prototype.debuffRemaining = 0
 TargetCC.prototype.debuffDuration = 0
 
 local AuraTexCoord = {0.1, 0.9, 0.1, 0.9}
-
-local GetNumPartyMembers, GetNumRaidMembers = GetNumGroupMembers, GetNumGroupMembers
 
 local StunCCList = {
 	-- kidney shot
@@ -146,32 +144,32 @@ local SilenceCCList = {
 }
 
 local RootCCList = {
-	-- Entangling Roots
-	339,
-	-- Entangling Roots - Nature's Grasp
-	16689,
-	-- Frost Nova
-	122,
-	-- Earthbind Effect
-	64695,
-	-- Shattered Barrier
-	55080,
-	-- Imp Hamstring
-	23694,
-	-- Freeze
-	33395,
-	-- Entrapment 2 sec
-	19185,
-	-- Entrapment 4 sec
-	64803,
-	-- Web
-	4167,
-	-- Pin
-	50245,
-	-- Venom Web Spray
-	54706,
-	-- Chains of Ice
-	45524,
+	-- -- Entangling Roots
+	-- 339,
+	-- -- Entangling Roots - Nature's Grasp
+	-- 16689,
+	-- -- Frost Nova
+	-- 122,
+	-- -- Earthbind Effect
+	-- 64695,
+	-- -- Shattered Barrier
+	-- 55080,
+	-- -- Imp Hamstring
+	-- 23694,
+	-- -- Freeze
+	-- 33395,
+	-- -- Entrapment 2 sec
+	-- 19185,
+	-- -- Entrapment 4 sec
+	-- 64803,
+	-- -- Web
+	-- 4167,
+	-- -- Pin
+	-- 50245,
+	-- -- Venom Web Spray
+	-- 54706,
+	-- -- Chains of Ice
+	-- 45524,
 }
 
 
@@ -416,7 +414,7 @@ end
 
 function TargetCC.prototype:GetMaxDebuffDuration(unitName, debuffNames, oldIcon)
 	local i = 1
-	local debuff, rank, texture, count, debuffType, duration, endTime, unitCaster = UnitAura(unitName, i, "HARMFUL")
+	local debuff, rank, texture, count, debuffType, duration, endTime = UnitAura(unitName, i, "HARMFUL")
 	local result = {nil, nil, nil, nil}
 	local remaining
 
@@ -440,21 +438,20 @@ function TargetCC.prototype:GetMaxDebuffDuration(unitName, debuffNames, oldIcon)
 
 		i = i + 1
 
-		debuff, rank, texture, count, debuffType, duration, endTime, unitCaster = UnitAura(unitName, i, "HARMFUL")
+		debuff, rank, texture, count, debuffType, duration, endTime = UnitAura(unitName, i, "HARMFUL")
 	end
 
 	return unpack(result)
 end
 
+local name, duration, remaining, icon
 function TargetCC.prototype:UpdateTargetDebuffs(event, unit, isUpdate)
 	if unit and (unit ~= self.unit) then return end
-	
-	local name, duration, remaining, icon
 	
 	if not isUpdate then
 		self.debuffName, self.debuffDuration, self.debuffRemaining, self.buffIcon = self:GetMaxDebuffDuration(self.unit, self.debuffList, self.buffIcon)
 	else
-		self.debuffRemaining = math.max(0, self.debuffRemaining - (GetTime() - self.lastUpdateTime))
+		self.debuffRemaining = max(0, self.debuffRemaining - (GetTime() - self.lastUpdateTime))
 		if self.debuffRemaining <= 0 then
 			self.debuffName = nil
 		end

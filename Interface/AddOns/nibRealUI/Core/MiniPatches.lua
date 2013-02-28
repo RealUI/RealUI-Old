@@ -284,5 +284,143 @@ function nibRealUI:MiniPatch(ver)
 				IceCoreRealUIDB["profiles"]["RealUI-HR"]["modules"]["BurningEmbersBar"]["alwaysFullAlpha"] = true
 			end
 		end
+	elseif ver == "73r11" then
+		if IsAddOnLoaded("nibPointDisplay_RealUI") and nibPointDisplayRUIDB then
+			if nibPointDisplayRUIDB["profiles"]["RealUI"]["ROGUE"]["types"] then
+				nibPointDisplayRUIDB["profiles"]["RealUI"]["ROGUE"]["types"]["dp"] = {
+					["bars"] = {
+						["bg"] = {
+							["full"] = {
+								["color"] = {["a"] = 1, ["r"] = 0.8627450980392157, ["g"] = 0, ["b"] = 0},
+								["maxcolor"] = {["r"] = 0.9882352941176471, ["g"] = 0, ["b"] = 0},
+							},
+						},
+					},
+					["general"] = {
+						["direction"] = {["reverse"] = true},
+					},
+					["position"] = {
+						["y"] = -37,
+						["x"] = 56,
+						["framelevel"] = {["level"] = 4},
+					},
+				}
+			end
+			if nibPointDisplayRUIDB["profiles"]["RealUI-HR"]["ROGUE"]["types"] then
+				nibPointDisplayRUIDB["profiles"]["RealUI-HR"]["ROGUE"]["types"]["dp"] = {
+					["bars"] = {
+						["bg"] = {
+							["full"] = {
+								["color"] = {["a"] = 1, ["r"] = 0.8627450980392157, ["g"] = 0, ["b"] = 0},
+								["maxcolor"] = {["r"] = 0.9882352941176471, ["g"] = 0, ["b"] = 0},
+							},
+						},
+					},
+					["general"] = {
+						["direction"] = {["reverse"] = true},
+					},
+					["position"] = {
+						["y"] = -37,
+						["x"] = 76,
+						["framelevel"] = {["level"] = 4},
+					},
+				}
+			end
+		end
+		if IsAddOnLoaded("nibIceHUD") and IceCoreRealUIDB then
+			if IceCoreRealUIDB["profiles"]["RealUI"]["modules"] then
+				IceCoreRealUIDB["profiles"]["RealUI"]["modules"]["BanditsGuile"] = {
+					["offset"] = 2,
+					["scale"] = 0.745,
+					["textVisible"] = {["lower"] = false},
+					["barHorizontalOffset"] = 5,
+					["barVerticalOffset"] = 33,
+					["textVerticalOffset"] = 12,
+					["textHorizontalOffset"] = 12,
+					["myTagVersion"] = 3,
+					["forceJustifyText"] = "LEFT",
+					["widthModifier"] = -22,
+				}
+				IceCoreRealUIDB["profiles"]["RealUI"]["modules"]["zCT-Rog-BanditsGuile-1"] = nil
+				IceCoreRealUIDB["profiles"]["RealUI"]["modules"]["zCT-Rog-BanditsGuile-2"] = nil
+				IceCoreRealUIDB["profiles"]["RealUI"]["modules"]["zCT-Rog-BanditsGuile-3"] = nil
+				IceCoreRealUIDB["profiles"]["RealUI"]["modules"]["TargetInvuln"] = {
+					["barVerticalOffset"] = 32,
+					["forceJustifyText"] = "LEFT",
+					["lockLowerTextAlpha"] = true,
+					["scale"] = 0.75,
+					["textHorizontalOffset"] = 60,
+					["displayAuraIcon"] = true,
+					["widthModifier"] = -16,
+					["auraIconYOffset"] = -7,
+					["textVerticalOffset"] = 22,
+					["barHorizontalOffset"] = 12,
+					["myTagVersion"] = 3,
+					["enabled"] = true,
+					["auraIconXOffset"] = -49,
+				}
+				IceCoreRealUIDB["profiles"]["RealUI"]["modules"]["TargetCC"] = {
+					["enabled"] = true,
+					["forceJustifyText"] = "LEFT",
+					["textHorizontalOffset"] = 8,
+					["displayAuraIcon"] = true,
+					["auraIconXOffset"] = -128.5,
+					["lockLowerTextAlpha"] = true,
+					["auraIconYOffset"] = -29,
+					["textVerticalOffset"] = 0,
+					["barVerticalOffset"] = 15,
+					["myTagVersion"] = 3,
+					["scale"] = 0.85,
+					["barHorizontalOffset"] = 4,
+				}
+			end
+			if IceCoreRealUIDB["profiles"]["RealUI-HR"]["modules"] then
+				IceCoreRealUIDB["profiles"]["RealUI-HR"]["modules"]["BanditsGuile"] = {
+					["offset"] = 2,
+					["scale"] = 0.745,
+					["textVisible"] = {["lower"] = false},
+					["barHorizontalOffset"] = 5,
+					["barVerticalOffset"] = 33,
+					["textVerticalOffset"] = 14,
+					["textHorizontalOffset"] = 13,
+					["myTagVersion"] = 3,
+					["forceJustifyText"] = "LEFT",
+					["widthModifier"] = -22,
+				}
+				IceCoreRealUIDB["profiles"]["RealUI-HR"]["modules"]["zCT-Rog-BanditsGuile-1"] = nil
+				IceCoreRealUIDB["profiles"]["RealUI-HR"]["modules"]["zCT-Rog-BanditsGuile-2"] = nil
+				IceCoreRealUIDB["profiles"]["RealUI-HR"]["modules"]["zCT-Rog-BanditsGuile-3"] = nil
+				IceCoreRealUIDB["profiles"]["RealUI-HR"]["modules"]["TargetInvuln"] = {
+					["forceJustifyText"] = "LEFT",
+					["lockLowerTextAlpha"] = true,
+					["auraIconYOffset"] = -7,
+					["textVerticalOffset"] = 22,
+					["myTagVersion"] = 3,
+					["enabled"] = true,
+					["displayAuraIcon"] = true,
+					["textHorizontalOffset"] = 59,
+					["auraIconSize"] = 28,
+					["widthModifier"] = -16,
+					["barVerticalOffset"] = 32,
+					["barHorizontalOffset"] = 12,
+					["scale"] = 0.75,
+					["auraIconXOffset"] = -50,
+				}
+				IceCoreRealUIDB["profiles"]["RealUI-HR"]["modules"]["TargetCC"] = {
+					["forceJustifyText"] = "LEFT",
+					["displayAuraIcon"] = true,
+					["auraIconYOffset"] = -30,
+					["myTagVersion"] = 3,
+					["enabled"] = true,
+					["lockLowerTextAlpha"] = true,
+					["textHorizontalOffset"] = 8,
+					["auraIconSize"] = 28,
+					["auraIconXOffset"] = -128.5,
+					["barVerticalOffset"] = 15,
+					["scale"] = 0.85,
+					["barHorizontalOffset"] = 4,
+				}
+			end
+		end
 	end
 end

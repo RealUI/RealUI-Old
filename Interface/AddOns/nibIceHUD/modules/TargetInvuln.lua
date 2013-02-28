@@ -2,6 +2,7 @@ local L = LibStub("AceLocale-3.0"):GetLocale("nibIceHUD", false)
 TargetInvuln = IceCore_CreateClass(IceUnitBar)
 
 local max = math.max
+local ceil = math.ceil
 local strform = string.format
 
 TargetInvuln.prototype.buffName = nil
@@ -9,8 +10,6 @@ TargetInvuln.prototype.buffRemaining = 0
 TargetInvuln.prototype.buffDuration = 0
 
 local AuraTexCoord = {0.1, 0.9, 0.1, 0.9}
-
-local GetNumPartyMembers, GetNumRaidMembers = GetNumGroupMembers, GetNumGroupMembers
 
 local InvulnList= {
 	-- Anti-Magic Shell
@@ -281,7 +280,7 @@ end
 
 function TargetInvuln.prototype:GetMaxbuffDuration(unitName, buffNames, oldIcon)
 	local i = 1
-	local buff, rank, texture, count, buffType, duration, endTime, unitCaster = UnitAura(unitName, i, "HELPFUL")
+	local buff, rank, texture, count, buffType, duration, endTime = UnitAura(unitName, i, "HELPFUL")
 	local result = {nil, nil, nil, nil}
 	local remaining
 
@@ -305,16 +304,15 @@ function TargetInvuln.prototype:GetMaxbuffDuration(unitName, buffNames, oldIcon)
 
 		i = i + 1
 
-		buff, rank, texture, count, buffType, duration, endTime, unitCaster = UnitAura(unitName, i, "HELPFUL")
+		buff, rank, texture, count, buffType, duration, endTime = UnitAura(unitName, i, "HELPFUL")
 	end
 
 	return unpack(result)
 end
 
+local name, duration, remaining, icon
 function TargetInvuln.prototype:UpdateTargetBuffs(event, unit, isUpdate)
 	if unit and (unit ~= self.unit) then return end
-	
-	local name, duration, remaining, icon
 
 	if not isUpdate then
 		self.buffName, self.buffDuration, self.buffRemaining, self.buffIcon = self:GetMaxbuffDuration(self.unit, self.buffList, self.buffTexture)
