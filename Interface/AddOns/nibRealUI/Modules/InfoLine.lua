@@ -59,8 +59,7 @@ local PlayerStatusValToStr = {
 }
 
 local Elements = {
-	options = 		{GAMEOPTIONS_MENU},
-	micromenu = 	{L["Micromenu"]},
+	start = 		{L["Start"]},
 	guild = 		{ACHIEVEMENTS_GUILD_TAB},
 	friends = 		{QUICKBUTTON_NAME_FRIENDS},
 	durability = 	{DURABILITY},
@@ -74,82 +73,96 @@ local Elements = {
 	metertoggle = 	{L["Meter Toggle"]},
 }
 
-local MMButtonTable = {
-	[1] = "character",
-	[2] = "spellbook",
-	[3] = "talents",
-	[4] = "achievements",
-	[5] = "questlog",
-	[6] = "social",
-	[7] = "guild",
-	[8] = "pvp",
-	[9] = "dungeonfinder",
---	[10] = "raidfinder",
-	[10] = "mountsandpets",
-	[11] = "dungeonjournal",
-	[12] = "helprequest",
-}
-local MMButtonTexts = {
-	[1] = "C",
-	[2] = "S",
-	[3] = "T",
-	[4] = "A",
-	[5] = "Q",
-	[6] = "O",
-	[7] = "G",
-	[8] = "P",
-	[9] = "D",
---	[10] = "R",
-	[10] = "M",
-	[11] = "J",
-	[12] = "?",
-}
-local MMIDs = {
-	Char = 1,
-	SpellBook = 2,
-	Talents = 3,
-	Achievements = 4,
-	QuestLog = 5,
-	Social = 6,
-	Guild = 7,
-	PvP = 8,
-	LFD = 9,
---	LFR = 10,
-	MountsPets = 10,
-	DJ = 11,
-	Help = 12,
-}
-
 local HPName, CPName, JPName, VPName, GoldName
 local CurrencyStartSet
+
+local ddMenuFrame = CreateFrame("Frame", "RealUIStartDropDown", UIParent, "UIDropDownMenuTemplate")
+local MicroMenu = {
+	{text = "|cffffffffRealUI|r",
+		isTitle = true,
+		notCheckable = true
+	},
+	{text = GAMEOPTIONS_MENU,
+		func = function() nibRealUI:OpenOptions() end,
+		notCheckable = true
+	},
+	{text = "",
+		notCheckable = true,
+		disabled = true
+	},
+	{text = CHARACTER_BUTTON,
+		func = function() ToggleCharacter("PaperDollFrame") end,
+		notCheckable = true
+	},
+	{text = SPELLBOOK_ABILITIES_BUTTON,
+		func = function() ToggleFrame(SpellBookFrame) end,
+		notCheckable = true
+	},
+	{text = TALENTS_BUTTON,
+		func = function() 
+			if not PlayerTalentFrame then 
+				TalentFrame_LoadUI()
+			end 
+
+			ShowUIPanel(PlayerTalentFrame)
+		end,
+		notCheckable = true
+	},
+	{text = ACHIEVEMENT_BUTTON,
+		func = function() ToggleAchievementFrame() end,
+		notCheckable = true
+	},
+	{text = QUESTLOG_BUTTON,
+		func = function() ToggleFrame(QuestLogFrame) end,
+		notCheckable = true
+	},
+	{text = MOUNTS_AND_PETS,
+		func = function() TogglePetJournal() end,
+		notCheckable = true
+	},
+	{text = SOCIAL_BUTTON,
+		func = function() ToggleFriendsFrame(1) end,
+		notCheckable = true
+	},
+	{text = COMPACT_UNIT_FRAME_PROFILE_AUTOACTIVATEPVE,
+		func = function() PVEFrame_ToggleFrame() end,
+		notCheckable = true
+	},
+	{text = COMPACT_UNIT_FRAME_PROFILE_AUTOACTIVATEPVP,
+		func = function() ToggleFrame(PVPFrame) end,
+		notCheckable = true
+	},
+	{text = ACHIEVEMENTS_GUILD_TAB,
+		func = function() 
+			if IsInGuild() then 
+				if not GuildFrame then GuildFrame_LoadUI() end 
+				GuildFrame_Toggle() 
+			else 
+				if not LookingForGuildFrame then LookingForGuildFrame_LoadUI() end 
+				LookingForGuildFrame_Toggle() 
+			end
+		end,
+		notCheckable = true
+	},
+	{text = RAID,
+		func = function() ToggleFriendsFrame(4) end,
+		notCheckable = true
+	},
+	{text = HELP_BUTTON,
+		func = function() ToggleHelpFrame() end,
+		notCheckable = true
+	},	
+	{text = ENCOUNTER_JOURNAL,
+		func = function() ToggleEncounterJournal() end,
+		notCheckable = true
+	},
+}
 
 -- Options
 local table_Sides = {
 	"LEFT",
 	"RIGHT"
 }
-
-local function AddCustomFrame(name)
-	if name == "" then return end
-	local f = _G[name]
-	if not f then
-		print("Frame not found!")
-		return
-	end
-	for k,v in ipairs(db.customframes) do
-		if v[1] == name then
-			print("This frame is already included!")
-			return
-		end
-	end
-	tinsert(db.customframes, {name, "LEFT", 0})
-	InfoLine:UpdatePositions()
-end
-
-local function RemoveCustomFrame(index)
-	tremove(db.customframes, index)
-	InfoLine:UpdatePositions()
-end
 
 local options
 local function GetOptions()
@@ -523,97 +536,6 @@ local function GetOptions()
 	end
 	options.args.elements = elementopts
 	
-	-- Create Custom Frames options table
-	local customopts = {
-		name = "Custom Frames",
-		type = "group",
-		disabled = function() if nibRealUI:GetModuleEnabled(MODNAME) then return false else return true end end,
-		order = 80,
-		args = {
-			desc = {
-				type = "description",
-				name = "Add your own frames/info displays to the Info Line.",
-				fontSize = "medium",
-				order = 1,
-			},
-			sep1 = {
-				type = "description",
-				name = " ",
-				order = 2,
-			},
-			addframe = {
-				type = "input",
-				name = "Add Frame",
-				desc = "Frame name to add to the Info Line.\n\nTo find out the name of a frame, you can type '/fstack' then mouse over the frame.",
-				get = function(info) return nil end,
-				set = function(info, value)
-					AddCustomFrame(value)
-					GetOptions()
-				end,
-				order = 4,
-			},
-			sep2 = {
-				type = "description",
-				name = " ",
-				order = 5,
-			},
-		},
-	}
-	local customordercnt = 20;	
-	for k_c, v_c in ipairs(db.customframes) do
-		-- Create base options for Elements
-		customopts.args[v_c[1]..tostring(customordercnt)] = {
-			type = "group",
-			name = v_c[1],
-			arg = k_c,
-			inline = true,
-			order = customordercnt,
-			args = {
-				removeframe = {
-					type = "execute",
-					name = "Remove",
-					desc = "Remove this frame from the Info Line.",
-					func = function(info)
-						RemoveCustomFrame(k_c)
-						GetOptions()
-						nibRealUI:ReloadUIDialog()
-					end,
-					order = 10,
-				},
-				side = {
-					type = "select",
-					name = "Side",
-					get = function(info) 
-						for k,v in pairs(table_Sides) do
-							if v == v_c[2] then return k end
-						end
-					end,
-					set = function(info, value)
-						db.customframes[k_c][2] = table_Sides[value]
-						InfoLine:UpdatePositions()
-					end,
-					style = "dropdown",
-					values = table_Sides,
-					order = 20,
-				},
-				yoffset = {
-					type = "input",
-					name = "Y Offset",
-					width = "half",
-					order = 30,
-					get = function(info) return tostring(v_c[3]) end,
-					set = function(info, value)
-						value = nibRealUI:ValidateOffset(value)
-						db.customframes[k_c][3] = value
-						InfoLine:UpdatePositions()
-					end,
-				},
-			},
-		}
-		customordercnt = customordercnt + 10
-	end
-	options.args.customframes = customopts
-	
 	return options
 end
 ----
@@ -752,25 +674,6 @@ local function GetTextWidth(str, size)
 	TestStr.text:SetFont(nibRealUI.font.standard, size)
 	TestStr.text:SetText(str)
 	return TestStr.text:GetWidth() + 4
-end
-
-local function GetStrToDistance(str, size, fontsize, ...)
-	local newStr
-	for i = 1, strlen(str) do
-		newStr = strsub(str, 1, i)
-		if GetTextWidth(newStr, fontsize) > size then
-			if ... then
-				return {strsub(newStr, 1, i), i}
-			else
-				return strsub(newStr, 1, i - 2).."..."
-			end
-		end
-	end
-	if ... then 
-		return {str, nil}
-	else
-		return str
-	end
 end
 
 -- Add blank line to Tablet
@@ -3037,206 +2940,6 @@ end
 -------------
 -- Buttons --
 -------------
----- MM Button Functions
-function InfoLine:UpdateMMButtonColors(...)
-	local i1, i2 = ... or 1, ... or 12
-	for i = i1, i2 do
-		local newcolors
-		if not ILFrames.micromenu.buttons[i].disabled then
-			if ILFrames.micromenu.buttons[i].highlight or ILFrames.micromenu.buttons[i].windowopen then
-				-- Highlight
-				newcolors = TextColorHighlightVals
-			else
-				-- Normal
-				newcolors = TextColorNormalVals
-			end
-		else	-- Disable
-			newcolors = TextColorDisabledVals
-		end
-		if ILFrames.micromenu.buttons[i] ~= nil then
-			ILFrames.micromenu.buttons[i].text:SetTextColor(unpack(newcolors))
-		end
-	end
-end
-
-function InfoLine:UpdateMMButtonState()
-	local playerLevel = UnitLevel("player")
-	local factionGroup = UnitFactionGroup("player")
-	
-	-- Character
-	if CharacterFrame:IsShown() then
-		ILFrames.micromenu.buttons[MMIDs.Char].windowopen = true
-	else
-		ILFrames.micromenu.buttons[MMIDs.Char].windowopen = false
-	end
-	
-	-- SpellBook
-	if SpellBookFrame:IsShown() then
-		ILFrames.micromenu.buttons[MMIDs.SpellBook].windowopen = true
-	else
-		ILFrames.micromenu.buttons[MMIDs.SpellBook].windowopen = false
-	end
-
-	-- Talents
-	if PlayerTalentFrame and PlayerTalentFrame:IsShown() then
-		ILFrames.micromenu.buttons[MMIDs.Talents].windowopen = true
-	else
-		if (playerLevel < SHOW_SPEC_LEVEL) then
-			ILFrames.micromenu.buttons[MMIDs.Talents].disabled = true
-		else
-			ILFrames.micromenu.buttons[MMIDs.Talents].disabled = false
-			ILFrames.micromenu.buttons[MMIDs.Talents].windowopen = false
-		end
-	end
-	
-	-- Achievements
-	if AchievementFrame and AchievementFrame:IsShown() then
-		ILFrames.micromenu.buttons[MMIDs.Achievements].windowopen = true
-	else
-		if (HasCompletedAnyAchievement() or IsInGuild()) and CanShowAchievementUI() then
-			ILFrames.micromenu.buttons[MMIDs.Achievements].disabled = false
-			ILFrames.micromenu.buttons[MMIDs.Achievements].windowopen = false			
-		else
-			ILFrames.micromenu.buttons[MMIDs.Achievements].disabled = true
-		end
-	end
-
-	-- QuestLog
-	if QuestLogFrame and QuestLogFrame:IsShown() then
-		ILFrames.micromenu.buttons[MMIDs.QuestLog].windowopen = true
-	else
-		ILFrames.micromenu.buttons[MMIDs.QuestLog].windowopen = false
-	end
-	
-	-- Social
-	if FriendsFrame and FriendsFrame:IsShown() then
-		ILFrames.micromenu.buttons[MMIDs.Social].windowopen = true
-	else
-		ILFrames.micromenu.buttons[MMIDs.Social].windowopen = false
-	end
-	
-	-- Guild
-	if ( IsTrialAccount() or factionGroup == "Neutral" ) then
-		ILFrames.micromenu.buttons[MMIDs.Guild].disabled = true
-	elseif (GuildFrame and GuildFrame:IsShown()) or (LookingForGuildFrame and LookingForGuildFrame:IsShown()) then
-		ILFrames.micromenu.buttons[MMIDs.Guild].windowopen = true
-	else
-		ILFrames.micromenu.buttons[MMIDs.Guild].disabled = false
-		ILFrames.micromenu.buttons[MMIDs.Guild].windowopen = false
-	end
-	
-	-- PvP
-	if PVPFrame and PVPFrame:IsShown() then
-		ILFrames.micromenu.buttons[MMIDs.PvP].windowopen = true
-	else
-		if playerLevel < PVPMicroButton.minLevel or factionGroup == "Neutral" then
-			ILFrames.micromenu.buttons[MMIDs.PvP].disabled = true
-		else
-			ILFrames.micromenu.buttons[MMIDs.PvP].disabled = false
-			ILFrames.micromenu.buttons[MMIDs.PvP].windowopen = false
-		end
-	end	
-
-	-- LFD
-	if PVEFrame and PVEFrame:IsShown() then
-		ILFrames.micromenu.buttons[MMIDs.LFD].windowopen = true
-	else
-		if playerLevel < LFDMicroButton.minLevel or factionGroup == "Neutral" then
-			ILFrames.micromenu.buttons[MMIDs.LFD].disabled = true
-		else
-			ILFrames.micromenu.buttons[MMIDs.LFD].disabled = false
-			ILFrames.micromenu.buttons[MMIDs.LFD].windowopen = false
-		end
-	end
-	
---[[	-- LFR
-	if ( RaidParentFrame:IsShown() ) then
-		ILFrames.micromenu.buttons[MMIDs.LFR].windowopen = true
-	else
-		if playerLevel < RaidMicroButton.minLevel then
-			ILFrames.micromenu.buttons[MMIDs.LFR].disabled = true
-		else
-			ILFrames.micromenu.buttons[MMIDs.LFR].disabled = false
-			ILFrames.micromenu.buttons[MMIDs.LFR].windowopen = false
-		end
-	end]]
-
-	-- Mounts & Pets
-	if PetJournalParent and PetJournalParent:IsShown() then
-		ILFrames.micromenu.buttons[MMIDs.MountsPets].windowopen = true
-	else
-		ILFrames.micromenu.buttons[MMIDs.MountsPets].disabled = false
-		ILFrames.micromenu.buttons[MMIDs.MountsPets].windowopen = false
-	end
-
-	-- EJ
-	if EncounterJournal and EncounterJournal:IsShown() then
-		ILFrames.micromenu.buttons[MMIDs.DJ].windowopen = true
-	else
-		ILFrames.micromenu.buttons[MMIDs.DJ].disabled = false
-		ILFrames.micromenu.buttons[MMIDs.DJ].windowopen = false
-	end
-
-	-- Help Request
-	if HelpFrame:IsShown() then
-		ILFrames.micromenu.buttons[MMIDs.Help].windowopen = true
-	else
-		ILFrames.micromenu.buttons[MMIDs.Help].windowopen = false
-	end
-	
-	-- Update Buttons with new information
-	InfoLine:UpdateMMButtonColors()
-end
-
-function InfoLine:MMButton_OnLeave(button)
-	ILFrames.micromenu.buttons[button].highlight = false
-	InfoLine:UpdateMMButtonColors(button)
-	
-	if GameTooltip:IsShown() then GameTooltip:Hide() end
-end
-
-function InfoLine:MMButton_OnEnter(button)
-	ILFrames.micromenu.buttons[button].highlight = true
-	InfoLine:UpdateMMButtonColors(button)
-	
-	local tt, tto = "", nil
-	tto = ILFrames.micromenu.buttons[button]
-	if button == MMIDs.Char then
-		tt = MicroButtonTooltipText(CHARACTER_BUTTON, "TOGGLECHARACTER0")
-	elseif button == MMIDs.SpellBook then
-		tt = MicroButtonTooltipText(SPELLBOOK_ABILITIES_BUTTON, "TOGGLESPELLBOOK")
-	elseif button == MMIDs.Talents then
-		tt = MicroButtonTooltipText(TALENTS_BUTTON, "TOGGLETALENTS")
-	elseif button == MMIDs.Achievements then
-		tt = MicroButtonTooltipText(ACHIEVEMENT_BUTTON, "TOGGLEACHIEVEMENT")
-	elseif button == MMIDs.QuestLog then
-		tt = MicroButtonTooltipText(QUESTLOG_BUTTON, "TOGGLEQUESTLOG")
-	elseif button == MMIDs.Social then
-		tt = MicroButtonTooltipText(SOCIAL_BUTTON, "TOGGLESOCIAL")
-	elseif button == MMIDs.Guild then
-		if ( IsInGuild() ) then
-			tt = MicroButtonTooltipText(GUILD, "TOGGLEGUILDTAB")
-		else
-			tt = MicroButtonTooltipText(LOOKINGFORGUILD, "TOGGLEGUILDTAB");
-		end
-	elseif button == MMIDs.PvP then
-		tt = MicroButtonTooltipText(PLAYER_V_PLAYER, "TOGGLECHARACTER4")
-	elseif button == MMIDs.LFD then
-		tt = MicroButtonTooltipText(DUNGEONS_BUTTON, "TOGGLELFGPARENT")
-	elseif button == MMIDs.LFR then
-		tt = MicroButtonTooltipText(RAID_FINDER, "TOGGLERAIDFINDER")
-	elseif button == MMIDs.MountsPets then
-		tt = MicroButtonTooltipText(MOUNTS_AND_PETS, "TOGGLEPETJOURNAL")
-	elseif button == MMIDs.DJ then
-		tt = MicroButtonTooltipText(ENCOUNTER_JOURNAL, "TOGGLEENCOUNTERJOURNAL")
-	elseif button == MMIDs.Help then
-		tt = HELP_BUTTON
-	end
-	GameTooltip:SetOwner(tto, "ANCHOR_TOP"..ILFrames.micromenu.side, 0, 2)
-	GameTooltip_AddNewbieTip(tto, tt, 1.0, 1.0, 1.0, "")
-	GameTooltip:Show()
-end
-
 ---- Text Button Functions
 function InfoLine:UpdateTextButtonColors()
 	-- Spec Button
@@ -3322,11 +3025,11 @@ end
 
 ---- Icon Button Functions
 function InfoLine:UpdateIconButtonColors()
-	-- Options Button
-	if ILFrames.options.mouseover then
-		ILFrames.options.icon:SetVertexColor(unpack(TextColorHighlightVals))
+	-- start Button
+	if ILFrames.start.mouseover then
+		ILFrames.start.icon:SetVertexColor(unpack(TextColorHighlightVals))
 	else
-		ILFrames.options.icon:SetVertexColor(unpack(TextColorNormalVals))
+		ILFrames.start.icon:SetVertexColor(unpack(TextColorNormalVals))
 	end
 	-- Meters Button
 	if ILFrames.meters.mouseover then
@@ -3337,9 +3040,9 @@ function InfoLine:UpdateIconButtonColors()
 end
 
 function InfoLine:IconButton_OnMouseDown(self)
-	if self.tag == "options" then
-		-- Options Button
-		nibRealUI:OpenOptions()
+	if self.tag == "start" then
+		-- start Button
+		EasyMenu(MicroMenu, RealUIStartDropDown, self, 0, 0, "MENU", 2)
 	elseif self.tag == "meters" then
 		-- Meters Button
 		Meter_Toggle(self)
@@ -3358,13 +3061,7 @@ function InfoLine:IconButton_OnEnter(self)
 	self.mouseover = true
 	self.icon:SetVertexColor(unpack(TextColorHighlightVals))
 	
-	if self.tag == "options" then
-		-- Options Button
-		GameTooltip:SetOwner(self, "ANCHOR_TOP"..self.side, 0, -1)
-		GameTooltip:AddLine(strform("|cff%s%s|r", TextColorTTHeader, L["RealUI Options"]))
-		GameTooltip:AddLine(strform("%s", nibRealUI:GetVerString(true)))
-		GameTooltip:Show()
-	elseif self.tag == "meters" then
+	if self.tag == "meters" then
 		-- Meters Button
 		GameTooltip:SetOwner(self, "ANCHOR_TOP"..self.side, 0, 2)
 		GameTooltip:AddLine(strform("|cff%s%s|r", TextColorTTHeader, L["Meter Toggle"]))
@@ -3400,18 +3097,12 @@ function InfoLine:UpdateFont()
 			UpdateElementWidth(ILFrames[i])
 		end
 	end
-	
-	-- Micro Menu
-	for i = 1, 11 do
-		ILFrames.micromenu.buttons[i].text:SetFont(unpack(nibRealUI.font.pixel1))
-		ILFrames.micromenu.buttons[i].text:SetShadowOffset(ShadowX, ShadowY)
-	end
 end
 
 -- Textures
 function InfoLine:UpdateTextures()
-	-- Options Button
-	ILFrames.options.icon:SetTexture(db.resolution[ndbc.resolution].configicon)
+	-- start Button
+	ILFrames.start.icon:SetTexture(db.resolution[ndbc.resolution].configicon)
 	-- Meters Button
 	ILFrames.meters.icon:SetTexture(db.resolution[ndbc.resolution].metersicon)
 end
@@ -3429,21 +3120,6 @@ local function SetPosition(info, parent, anchor, x, y, height, width)
 			info.text:SetPoint(info.side, info, info.side, xt, 0)
 		end
 	end
-end
-
-function InfoLine:UpdateMMPositions()
-	local XPos = 0
-	local EHeight = nibRealUI.font.pixel1[2] + 2 + 8
-	local EWidth = nibRealUI.font.pixel1[2] + db.resolution[ndbc.resolution].micromenupadding
-	
-	for i = 1, 12 do
-		ILFrames.micromenu.buttons[i]:SetPoint("BOTTOMLEFT", ILFrames.micromenu, "BOTTOMLEFT", XPos, 0)
-		ILFrames.micromenu.buttons[i]:SetHeight(EHeight + 2)
-		ILFrames.micromenu.buttons[i]:SetWidth(EWidth)
-		XPos = XPos + EWidth
-	end
-	
-	ILFrames.micromenu.curwidth = XPos + db.position.xgap - 2
 end
 
 local AlreadyUpdating
@@ -3474,12 +3150,6 @@ local function FinalizeCustomFrame(f, index)
 end
 
 function InfoLine:UpdatePositions()
-	if InCombatLockdown() then
-		-- In combat, set flag so we can refresh once combat ends
-		NeedRefreshed = true
-		return
-	end
-	
 	if AlreadyUpdating then return end
 	AlreadyUpdating = true
 	
@@ -3493,23 +3163,13 @@ function InfoLine:UpdatePositions()
 	ILFrames.parent:SetHeight(24)
 	
 	---- LEFT
-	-- Options Button
-	if db.elements.options then
-		ILFrames.options:Show()
-		SetPosition(ILFrames.options, ILFrames.parent, "BOTTOMLEFT", XPos, db.iconbuttons.yoffset, db.iconbuttons.size, db.iconbuttons.size)
-		XPos = XPos + ILFrames.options:GetWidth() + 4
+	-- start Button
+	if db.elements.start then
+		ILFrames.start:Show()
+		SetPosition(ILFrames.start, ILFrames.parent, "BOTTOMLEFT", XPos, db.iconbuttons.yoffset, db.iconbuttons.size, db.iconbuttons.size)
+		XPos = XPos + ILFrames.start:GetWidth() + 4
 	else
-		ILFrames.options:Hide()
-	end
-	
-	-- Micro Menu
-	if db.elements.micromenu then
-		ILFrames.micromenu:Show()
-		InfoLine:UpdateMMPositions()
-		SetPosition(ILFrames.micromenu, ILFrames.parent, "BOTTOMLEFT", XPos, db.text.yoffset, EHeight + 2, ILFrames.micromenu.curwidth)
-		XPos = XPos + ILFrames.micromenu.curwidth
-	else
-		ILFrames.micromenu:Hide()
+		ILFrames.start:Hide()
 	end
 	
 	-- Guild
@@ -3566,20 +3226,6 @@ function InfoLine:UpdatePositions()
 		ILFrames.xr:Hide()
 	end
 	
-	-- Custom
-	for k, v in ipairs(db.customframes) do
-		if v ~= nil then
-			if v[2] == "LEFT" then
-				local f = _G[v[1]]
-				if f then
-					SetPosition(f, ILFrames.parent, "BOTTOMLEFT", XPos, db.text.yoffset + v[3], EHeight, nil)
-					XPos = XPos + f:GetWidth()
-					FinalizeCustomFrame(f, v[1])
-				end
-			end
-		end
-	end
-	
 	---- RIGHT
 	XPos = 0
 	-- Clock
@@ -3627,20 +3273,6 @@ function InfoLine:UpdatePositions()
 		ILFrames.layout:Hide()
 	end
 	
-	-- Custom
-	for k, v in ipairs(db.customframes) do
-		if v ~= nil then
-			if v[2] == "RIGHT" then
-				local f = _G[v[1]]
-				if f then
-					SetPosition(f, ILFrames.parent, "BOTTOMRIGHT", XPos, db.text.yoffset + v[3], EHeight, nil)
-					XPos = XPos - f:GetWidth()
-					FinalizeCustomFrame(f, v[1])
-				end
-			end
-		end
-	end
-	
 	AlreadyUpdating = false
 end
 
@@ -3666,51 +3298,6 @@ local function CreateTipFrame(parent, width, height, header, body)
 	NewTF.arrow:SetPoint("TOP", NewTF, "BOTTOM", 0, 4)
 	
 	return NewTF
-end
-
-local function CreateMicroMenuFrame(side)
-	local NewMM = CreateFrame("Frame", nil, UIParent)
-	NewMM.side = side
-	
-	NewMM:SetFrameStrata(ILFrames.parent:GetFrameStrata())
-	NewMM:SetFrameLevel(ILFrames.parent:GetFrameLevel() + 1)
-	
-	-- Buttons
-	NewMM.buttons = {}
-	for i,v in ipairs(MMButtonTable) do
-		NewMM.buttons[i] = CreateFrame("Button", "RealUI_InfoLine_MM_"..v, NewMM, "SecureActionButtonTemplate")
-		NewMM.buttons[i]:SetAttribute("type", "click")
-		NewMM.buttons[i].highlight = false
-		NewMM.buttons[i].windowopen = false
-		NewMM.buttons[i].disabled = false
-		
-		NewMM.buttons[i].text = NewMM.buttons[i]:CreateFontString()
-		NewMM.buttons[i].text:SetPoint("CENTER", NewMM.buttons[i], "CENTER", 0.5, -1.5)
-		NewMM.buttons[i].text:SetFont(unpack(nibRealUI.font.pixel1))
-		NewMM.buttons[i].text:SetText(MMButtonTexts[i])
-		
-		NewMM.buttons[i]:SetScript("OnEnter", function() InfoLine:MMButton_OnEnter(i) end)
-		NewMM.buttons[i]:SetScript("OnLeave", function() InfoLine:MMButton_OnLeave(i) end)	
-	end
-
-	-- Set Macro texts
-	NewMM.buttons[1]:SetAttribute("type", "macro")
-	NewMM.buttons[1]:SetAttribute("macrotext", "/run ToggleCharacter('PaperDollFrame')")
-	NewMM.buttons[2]:SetAttribute("clickbutton", SpellbookMicroButton)
-	NewMM.buttons[3]:SetAttribute("clickbutton", TalentMicroButton)
-	NewMM.buttons[4]:SetAttribute("clickbutton", AchievementMicroButton)
-	NewMM.buttons[5]:SetAttribute("clickbutton", QuestLogMicroButton)
-	NewMM.buttons[6]:SetAttribute("clickbutton", FriendsMicroButton)
-	NewMM.buttons[7]:SetAttribute("clickbutton", GuildMicroButton)
-	NewMM.buttons[8]:SetAttribute("type", "macro")
-	NewMM.buttons[8]:SetAttribute("macrotext", "/run TogglePVPFrame()")
-	NewMM.buttons[9]:SetAttribute("clickbutton", LFDMicroButton)
---	NewMM.buttons[10]:SetAttribute("clickbutton", RaidMicroButton)
-	NewMM.buttons[10]:SetAttribute("clickbutton", CompanionsMicroButton)
-	NewMM.buttons[11]:SetAttribute("clickbutton", EJMicroButton)
-	NewMM.buttons[12]:SetAttribute("clickbutton", HelpMicroButton)
-	
-	return NewMM
 end
 
 local function CreateTextButtonFrame(side)
@@ -3778,7 +3365,7 @@ local function CreateTextFrame(side)
 end
 
 function InfoLine:CreateFrames()
-	if InCombatLockdown() or FramesCrated then return end
+	if FramesCrated then return end
 	
 	ILFrames = {}
 	
@@ -3790,13 +3377,9 @@ function InfoLine:CreateFrames()
 	
 	
 	---- LEFT
-	-- Options Button
-	ILFrames.options = CreateIconButtonFrame("LEFT")
-	ILFrames.options.tag = "options"
-	
-	-- Micro Menu
-	ILFrames.micromenu = CreateMicroMenuFrame("LEFT")
-	hooksecurefunc("UpdateMicroButtons", function() InfoLine:UpdateMMButtonState() end)
+	-- start Button
+	ILFrames.start = CreateIconButtonFrame("LEFT")
+	ILFrames.start.tag = "start"
 	
 	-- Guild
 	ILFrames.guild = CreateTextFrame("LEFT")
@@ -4088,70 +3671,38 @@ function InfoLine:UpdateAllInfo()
 end
 
 function InfoLine:Refresh()
-	-- Refresh Mod
-	if InCombatLockdown() then
-		-- In combat, set flag so we can refresh once combat ends
-		NeedRefreshed = true
+	-- Get Colors
+	TextColorNormal = ColorTableToStr(db.colors.normal)
+	TextColorNormalVals = db.colors.normal
+	if db.colors.classcolorhighlight then
+		local classColor = nibRealUI:GetClassColor(nibRealUI.class) or {1, 1, 1}
+		TextColorHighlight = ColorTableToStr(classColor)
+		TextColorHighlightVals = {classColor[1], classColor[2], classColor[3]}
 	else
-		-- Ready to refresh
-		NeedRefreshed = false
-		
-		-- Get Colors
-		TextColorNormal = ColorTableToStr(db.colors.normal)
-		TextColorNormalVals = db.colors.normal
-		if db.colors.classcolorhighlight then
-			local classColor = nibRealUI:GetClassColor(nibRealUI.class) or {1, 1, 1}
-			TextColorHighlight = ColorTableToStr(classColor)
-			TextColorHighlightVals = {classColor[1], classColor[2], classColor[3]}
-		else
-			TextColorHighlight = ColorTableToStr(db.colors.highlight)
-			TextColorHighlightVals = db.colors.highlight
-		end
-		TextColorDisabledVals = db.colors.disabled
-		TextColorWhite = ColorTableToStr({1, 1, 1})
-		TextColorTTHeader = ColorTableToStr(db.colors.ttheader)
-		TextColorOrange1 = ColorTableToStr(db.colors.orange1)
-		TextColorOrange2 = ColorTableToStr(db.colors.orange2)
-		TextColorBlue1 = ColorTableToStr(db.colors.blue1)
-		
-		-- Create Frames if it has been delayed
-		if not FramesCreated then
-			InfoLine:CreateFrames()
-		end
-		
-		-- Update
-		InfoLine:UpdateFont()
-		InfoLine:UpdatePositions()
-		InfoLine:UpdateTextures()
-		
-		InfoLine:UpdateIconButtonColors()
-		InfoLine:UpdateTextButtonColors()
-		InfoLine:UpdateMMButtonState()
-		
-		InfoLine:UpdateAllInfo()
+		TextColorHighlight = ColorTableToStr(db.colors.highlight)
+		TextColorHighlightVals = db.colors.highlight
 	end
-end
-
--- Lockdown Timer
-local LockdownTimer = CreateFrame("Frame")
-LockdownTimer.e = 0
-LockdownTimer:Hide()
-LockdownTimer:SetScript("OnUpdate", function(s, e)
-	s.e = s.e + e
-	if s.e >= 1 then
-		if not InCombatLockdown() then
-			if NeedRefreshed then
-				InfoLine:Refresh()
-			end
-			s.e = 0
-			s:Hide()
-		else
-			s.e = 0
-		end
+	TextColorDisabledVals = db.colors.disabled
+	TextColorWhite = ColorTableToStr({1, 1, 1})
+	TextColorTTHeader = ColorTableToStr(db.colors.ttheader)
+	TextColorOrange1 = ColorTableToStr(db.colors.orange1)
+	TextColorOrange2 = ColorTableToStr(db.colors.orange2)
+	TextColorBlue1 = ColorTableToStr(db.colors.blue1)
+	
+	-- Create Frames if it has been delayed
+	if not FramesCreated then
+		InfoLine:CreateFrames()
 	end
-end)
-function InfoLine:UpdateLockdown()
-	LockdownTimer:Show()
+	
+	-- Update
+	InfoLine:UpdateFont()
+	InfoLine:UpdatePositions()
+	InfoLine:UpdateTextures()
+	
+	InfoLine:UpdateIconButtonColors()
+	InfoLine:UpdateTextButtonColors()
+	
+	InfoLine:UpdateAllInfo()
 end
 
 local function ClassColorsUpdate()
@@ -4183,6 +3734,9 @@ function InfoLine:PLAYER_LOGIN()
 	VPName = GetCurrencyInfo(396)
 	
 	GoldName = strtrim(strsub(strform(nibRealUI.goldstr or GOLD_AMOUNT, 0), 2))
+	
+	-- Start title
+	MicroMenu[1].text = strform("|cffffffffRealUI|r %s", nibRealUI:GetVerString(true))
 	
 	InfoLine:Refresh()
 end
@@ -4237,7 +3791,7 @@ function InfoLine:OnInitialize()
 			position = {
 				xl = 4,
 				xr = 0,
-				xgap = 10,
+				xgap = 12,
 				y = 0,
 			},
 			text = {
@@ -4269,8 +3823,7 @@ function InfoLine:OnInitialize()
 				},
 			},
 			elements = {
-				options = true,
-				micromenu = true,
+				start = true,
 				guild = true,
 				friends = true,
 				durability = true,
@@ -4283,17 +3836,14 @@ function InfoLine:OnInitialize()
 				layoutchanger = true,
 				metertoggle = true,
 			},
-			customframes = {},
 			resolution = {
 				[1] = {
-					micromenupadding = 0,
 					tabfontsize = 0,
 					layouttipsize = {width = 186, height = 65},
 					configicon = [[Interface\AddOns\nibRealUI\Media\InfoLine\Config]],
 					metersicon = [[Interface\AddOns\nibRealUI\Media\InfoLine\Meters]],
 				},
 				[2] = {
-					micromenupadding = 2,
 					tabfontsize = 1,
 					layouttipsize = {width = 200, height = 68},
 					configicon = [[Interface\AddOns\nibRealUI\Media\InfoLine\Config_HR]],
@@ -4314,7 +3864,6 @@ end
 
 function InfoLine:OnEnable()
 	self:RegisterEvent("PLAYER_LOGIN")
-	self:RegisterEvent("PLAYER_REGEN_ENABLED", "UpdateLockdown")
 	
 	CreateCopyFrame()
 	

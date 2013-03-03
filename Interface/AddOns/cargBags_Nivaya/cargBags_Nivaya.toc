@@ -1,0 +1,12 @@
+## Interface: 50200
+## Title: cargBags_Nivaya
+## Author: Luzzifus
+## OptionalDeps: ItemRack, Outfitter
+## SavedVariables: cBnivCfg, cB_CustomBags, cBniv_CatInfo
+## SavedVariablesPerCharacter: cB_KnownItems, cBniv
+
+cargBags\embed.xml
+localization.lua
+filters.lua
+cargBags_Nivaya.lua
+style.lua

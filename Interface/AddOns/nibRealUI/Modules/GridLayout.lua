@@ -843,7 +843,7 @@ function GridLayout:Update()
 		-- If not BG, Arena, Raid or Dungeon, then set normal values
 	else
 		--print("You are not in an instance")
-		local difficulty = GetRaidDifficulty()
+		local difficulty = GetRaidDifficultyID()
 		local raidSize = GetNumGroupMembers()
 		local newSize = math.min(raidSize, tonumber(LayoutDB.bg.maxsize))
 		

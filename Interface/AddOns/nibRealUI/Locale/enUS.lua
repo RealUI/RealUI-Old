@@ -31,7 +31,6 @@ L["Reload UI now to apply these changes?"] = "Reload UI now to apply these chang
 L["You need to Reload the UI for changes to take effect. Reload Now?"] = "You need to Reload the UI for changes to take effect. Reload Now?"
 
 -- Info Line
-L["Micromenu"] = "Micromenu"
 L["XP/Rep"] = "XP/Rep"
 L["SysInfo"] = "SysInfo"
 L["Spec Changer"] = "Spec Changer"
@@ -78,7 +77,7 @@ L["Healing"] = "Healing"
 L["Meter Toggle"] = "Meter Toggle"
 L["Active Meters:"] = "Active Meters:"
 
-L["RealUI Options"] = "RealUI Options"
+L["Start"] = "Start"
 
 L["Current"] = "Current"
 L["Remaining"] = "Remaining"

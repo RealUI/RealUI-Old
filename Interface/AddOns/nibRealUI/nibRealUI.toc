@@ -1,8 +1,8 @@
-## Interface: 50100
+## Interface: 50200
 ## Title: |cffaaaaaanib|rRealUI
 ## Author: Nibelheim
 ## Notes: RealUI core functionality
-## Version: 7.3 r11
+## Version: 7.3 r12
 ## SavedVariables: nibRealUIDB
 ## SavedVariablesPerCharacter: nibRealUICharacter
 ## OptionalDeps: Aurora, oUF, oUF_RealUI, Ace3, LibSharedMedia-3.0, AceGUI-3.0-SharedMediaWidgets, ArkInventory, Grid, Omen, Recount, Skada

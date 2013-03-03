@@ -6,7 +6,7 @@ local db, dbc, dbg
 local nibRealUI_Version = {
 	[1] = 7,
 	[2] = 3,
-	[3] = 11,
+	[3] = 12,
 }
 
 -- Default Options
@@ -59,6 +59,8 @@ local defaults = {
 			},
 			textures = {
 				plain = [[Interface\AddOns\nibRealUI\Media\Plain.tga]],
+				border = [[Interface\AddOns\nibRealUI\Media\Glow.tga]],
+				background = [[Interface\AddOns\nibRealUI\Media\media\BG1.tga]],
 			},
 		},
 		other = {
@@ -206,7 +208,7 @@ function nibRealUI:GetClassColor(class, ...)
 	local classColors = CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[class] or RAID_CLASS_COLORS[class]
 	local offset
 	if not ... then
-		offset = (class == "PRIEST" and -0.2) or ((class == "ROGUE" or class == "MAGE" or class == "HUNTER") and -0.1) or 0
+		offset = 0--(class == "PRIEST" and -0.2) or ((class == "ROGUE" or class == "MAGE" or class == "HUNTER") and -0.1) or 0
 	else
 		offset = 0
 	end
@@ -487,6 +489,14 @@ function nibRealUI:PLAYER_LOGIN()
 	nibRealUI:InstallProcedure()
 end
 
+function nibRealUI:ADDON_LOADED(event, addon)
+	if addon ~= "nibRealUI" then return end
+	
+	-- Open before login to stop taint
+	ToggleFrame(SpellBookFrame)
+	PetJournal_LoadUI()
+end
+
 function nibRealUI:OnInitialize()
 	-- Initialize settings, options, slash commands
 	self.db = LibStub("AceDB-3.0"):New("nibRealUIDB", defaults, "RealUI")
@@ -519,6 +529,7 @@ function nibRealUI:OnInitialize()
 	nibRealUI:SetUpInitialOptions()
 	
 	-- Register events
+	self:RegisterEvent("ADDON_LOADED")
 	self:RegisterEvent("PLAYER_LOGIN")
 	self:RegisterEvent("UI_SCALE_CHANGED")
 	self:RegisterEvent("PLAYER_ENTERING_WORLD")

@@ -78,7 +78,7 @@ L["Healing"] = "Healing"
 L["Meter Toggle"] = "Meter Toggle"
 L["Active Meters:"] = "Active Meters:"
 
-L["RealUI Options"] = "RealUI Options"
+L["Start"] = "Start"
 
 L["Current"] = "Current"
 L["Remaining"] = "Remaining"

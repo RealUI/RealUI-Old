@@ -232,41 +232,6 @@ function Tooltip:SetupPosition()
 	end)
 end
 
--- Background
-function Tooltip:SetupBackground()
-	local tooltips = {
-		"GameTooltip",
-		"ItemRefTooltip",
-		"ItemRefShoppingTooltip1",
-		"ItemRefShoppingTooltip2",
-		"ShoppingTooltip1",
-		"ShoppingTooltip2",
-		"ShoppingTooltip3",
-		"WorldMapTooltip",
-		"ChatMenu",
-		"EmoteMenu",
-		"LanguageMenu",
-		"VoiceMacroMenu",
-	}
-
-	for i = 1, #tooltips do
-		local t = _G[tooltips[i]]
-		t:SetBackdrop({})
-		local bg = CreateFrame("Frame", nil, t)
-		bg:SetPoint("TOPLEFT")
-		bg:SetPoint("BOTTOMRIGHT")
-		bg:SetFrameLevel(t:GetFrameLevel()-1)
-		bg:SetBackdrop({
-			bgFile = nibRealUI.media.textures.plain, 
-			edgeFile = nibRealUI.media.textures.plain, 
-			tile = false, tileSize = 0, edgeSize = 1, 
-			insets = { left = 1, right = 1, top = 1, bottom = 1	}
-		})
-		bg:SetBackdropColor(0, 0, 0, 0.85)
-		bg:SetBackdropBorderColor(0, 0, 0, 1)
-	end
-end
-
 -- Fonts
 function Tooltip:SetupFonts()
 	-- Code from TipTop by Seerah
@@ -303,27 +268,6 @@ function Tooltip:SetupFonts()
 		GameTooltipMoneyFrame1SilverButtonText:SetFont(font, fontSize)
 		GameTooltipMoneyFrame1GoldButtonText:SetFont(font, fontSize)
 	end
-end
-
--- Statusbar
-function Tooltip:SetupStatusbar()
-	hooksecurefunc("HealthBar_OnValueChanged", function(self)
-		self:SetStatusBarColor(.3, 1, .3)
-	end)
-
-	local sb = _G["GameTooltipStatusBar"]
-	sb:SetHeight(3)
-	sb:ClearAllPoints()
-	sb:SetPoint("BOTTOMLEFT", GameTooltip, "BOTTOMLEFT", 1, 1)
-	sb:SetPoint("BOTTOMRIGHT", GameTooltip, "BOTTOMRIGHT", -1, 1)
-	sb:SetStatusBarTexture(nibRealUI.media.textures.plain)
-
-	local sep = GameTooltipStatusBar:CreateTexture(nil, "ARTWORK")
-	sep:SetHeight(1)
-	sep:SetPoint("BOTTOMLEFT", 0, 3)
-	sep:SetPoint("BOTTOMRIGHT", 0, 3)
-	sep:SetTexture(nibRealUI.media.textures.plain)
-	sep:SetVertexColor(0, 0, 0)
 end
 
 -- Unit Styling
@@ -431,9 +375,7 @@ function Tooltip:RefreshMod()
 	
 	-- Refresh Mod
 	self:SetupPosition()
-	self:SetupBackground()
 	self:SetupFonts()
-	self:SetupStatusbar()
 	self:SetupUnitStyling()
 end
 
