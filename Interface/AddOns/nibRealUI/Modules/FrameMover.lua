@@ -652,7 +652,7 @@ local function GetOptions()
 					get = function(info) return db.uiframes[k_u].move end,
 					set = function(info, value) 
 						db.uiframes[k_u].move = value 
-						if db.uiframes[k_u].move then FrameMover:MoveIndividualFrameGroup(FrameList.uiframes[k_u].frames, db.uiframes[k_u].frames) end
+						if db.uiframes[k_u].move and FrameList.uiframes[k_u].frames then FrameMover:MoveIndividualFrameGroup(FrameList.uiframes[k_u].frames, db.uiframes[k_u].frames) end
 					end,
 					order = 20,
 				},
@@ -1094,7 +1094,7 @@ end
 
 local function Hook_AchieveAlert()
 	if db.uiframes.achievementalert.move then
-		AlertFrame_FixAnchors = MoveAlertFrame
+		hooksecurefunc("AlertFrame_FixAnchors", MoveAlertFrame);
 	end
 end
 
@@ -1136,7 +1136,7 @@ function FrameMover:PLAYER_ENTERING_WORLD()
 		Hook_Grid()
 		Hook_Raven()
 		Hook_VSI()
-		--Hook_AchieveAlert()
+		Hook_AchieveAlert()
 		
 		self:MoveUIFrames()
 		self:MoveAddons()
