@@ -704,7 +704,7 @@ local function UpdateElementWidth(e, ...)
 		elseif e.type == 3 then
 			e.curwidth = db.position.xgap + e.iconwidth + extraWidth + (ceil(e.text:GetWidth() / TextPadding) * TextPadding) + db.position.xgap
 		elseif e.type == 4 then
-			extraWidth = 3
+			extraWidth = 4
 			e.curwidth = db.position.xgap + (e.icon1width + extraWidth + e.text1:GetWidth() + db.position.xgap) + (e.icon2width + extraWidth + (ceil(e.text2:GetWidth() / TextPadding) * TextPadding)) + db.position.xgap
 			e.text1:ClearAllPoints()
 			e.text1:SetPoint("BOTTOMLEFT", e, "BOTTOMLEFT", db.position.xgap + e.icon1width + extraWidth, db.position.yoff + 0.5)
@@ -725,7 +725,7 @@ end
 local function SetHighlightPosition(e)
 	HighlightBar:ClearAllPoints()
 	HighlightBar:SetPoint("BOTTOMLEFT", e, "BOTTOMLEFT", 0, -1)
-	HighlightBar:SetWidth(e.curwidth - 4)
+	HighlightBar:SetWidth(e.curwidth)
 end
 
 ------------
@@ -2402,7 +2402,7 @@ local function Spec_OnEnter(self)
 	end
 	
 	self.mouseover = true
-	self.text:SetTextColor(unpack(TextColorNormal))
+	self.text:SetTextColor(unpack(TextColorNormalVals))
 end
 
 local function Spec_Update(self)
