@@ -3,6 +3,7 @@ local LSM = LibStub("LibSharedMedia-3.0")
 local Astrolabe = DongleStub("Astrolabe-1.0")
 local db
 _G["nibMinimap"] = nibMinimap
+local CRFM
 
 local strform = _G.string.format
 
@@ -351,7 +352,7 @@ function nibMinimap:UpdateInfoPosition()
 		if (IsAddOnLoaded("Blizzard_CompactRaidFrames")) and (mm_point == "TOPLEFT") then
 			numText = numText + 1
 			ofsy = yofs + yadj
-			local CRFM = _G["CompactRaidFrameManager"]--:HookScript("OnEvent", function(self)
+			CRFM = _G["CompactRaidFrameManager"]--:HookScript("OnEvent", function(self)
 				--print("yofs: "..yofs)
 				--print("scale: "..scale)
 				--print("numText: "..numText)
