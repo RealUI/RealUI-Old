@@ -1,4 +1,4 @@
-## Interface: 50100
+## Interface: 50200
 ## Title: cargBags_Nivaya
 ## Author: Luzzifus
 ## OptionalDeps: ItemRack, Outfitter
