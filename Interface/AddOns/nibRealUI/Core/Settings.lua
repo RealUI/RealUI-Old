@@ -17,7 +17,7 @@ local table_MiniPatches = {
 	"73r9",
 	"73r10",
 	"73r11",
-	-- "73r12",
+	"73r12",
 }
 
 local table_Addons = {
@@ -438,7 +438,7 @@ local function MiniPatchInstallation()
 			[9] = true,
 			[10] = true,
 			[11] = true,
-			-- [12] = true,
+			[12] = true,
 		}
 		if dbg.minipatches ~= nil then
 			for k,v in pairs(dbg.minipatches) do
@@ -448,7 +448,7 @@ local function MiniPatchInstallation()
 				if v == "73r9" then NP[9] = false end
 				if v == "73r10" then NP[10] = false end
 				if v == "73r11" then NP[11] = false end
-				-- if v == "73r12" then NP[12] = false end
+				if v == "73r12" then NP[12] = false end
 			end
 		end
 		
@@ -485,11 +485,11 @@ local function MiniPatchInstallation()
 			tinsert(dbg.minipatches, "73r11")
 			HasMPatched = true
 		end
-		-- if NP[12] then
-			-- nibRealUI:MiniPatch("73r12")
-			-- tinsert(dbg.minipatches, "73r12")
-			-- HasMPatched = true
-		-- end
+		if NP[12] then
+			nibRealUI:MiniPatch("73r12")
+			tinsert(dbg.minipatches, "73r12")
+			HasMPatched = true
+		end
 		
 		-- Reload UI
 		if HasMPatched then
