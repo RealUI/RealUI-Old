@@ -422,38 +422,5 @@ function nibRealUI:MiniPatch(ver)
 				}
 			end
 		end
-	elseif ver == "73r12" then
-		if IsAddOnLoaded("Masque") and MasqueDB then
-			if MasqueDB["profiles"]["RealUI"]["Groups"]["Masque"] then
-				MasqueDB["profiles"]["RealUI"]["Groups"]["Masque"]["Backdrop"] = true
-			end
-			if MasqueDB["profiles"]["RealUI"]["Groups"]["Bartender4"] then
-				MasqueDB["profiles"]["RealUI"]["Groups"]["Bartender4"]["Backdrop"] = true
-			end
-			if MasqueDB["profiles"]["RealUI"]["Groups"]["Bartender4_1"] then
-				MasqueDB["profiles"]["RealUI"]["Groups"]["Bartender4_1"]["Backdrop"] = true
-			end
-			if MasqueDB["profiles"]["RealUI"]["Groups"]["Bartender4_2"] then
-				MasqueDB["profiles"]["RealUI"]["Groups"]["Bartender4_2"]["Backdrop"] = true
-			end
-			if MasqueDB["profiles"]["RealUI"]["Groups"]["Bartender4_3"] then
-				MasqueDB["profiles"]["RealUI"]["Groups"]["Bartender4_3"]["Backdrop"] = true
-			end
-			if MasqueDB["profiles"]["RealUI"]["Groups"]["Bartender4_4"] then
-				MasqueDB["profiles"]["RealUI"]["Groups"]["Bartender4_4"]["Backdrop"] = true
-			end
-			if MasqueDB["profiles"]["RealUI"]["Groups"]["Bartender4_5"] then
-				MasqueDB["profiles"]["RealUI"]["Groups"]["Bartender4_5"]["Backdrop"] = true
-			end
-			if MasqueDB["profiles"]["RealUI"]["Groups"]["Bartender4_6"] then
-				MasqueDB["profiles"]["RealUI"]["Groups"]["Bartender4_6"]["Backdrop"] = true
-			end
-			if MasqueDB["profiles"]["RealUI"]["Groups"]["Bartender4_PetBar"] then
-				MasqueDB["profiles"]["RealUI"]["Groups"]["Bartender4_PetBar"]["Backdrop"] = true
-			end
-			if MasqueDB["profiles"]["RealUI"]["Groups"]["Bartender4_Vehicle"] then
-				MasqueDB["profiles"]["RealUI"]["Groups"]["Bartender4_Vehicle"]["Backdrop"] = true
-			end
-		end
 	end
 end
