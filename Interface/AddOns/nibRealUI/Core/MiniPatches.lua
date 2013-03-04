@@ -422,5 +422,11 @@ function nibRealUI:MiniPatch(ver)
 				}
 			end
 		end
+	elseif ver == "73r12" then
+		if IsAddOnLoaded("Masque") and MasqueDB then
+			if MasqueDB["profiles"]["RealUI"]["Groups"]["Masque"] then
+				MasqueDB["profiles"]["RealUI"]["Groups"]["Masque"]["Backdrop"] = true
+			end
+		end
 	end
 end

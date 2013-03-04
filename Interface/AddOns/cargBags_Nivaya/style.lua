@@ -294,7 +294,7 @@ function MyContainer:OnCreate(name, settings)
 
 	-- Caption and close button
 	local caption = background:CreateFontString(background, "OVERLAY", nil)
-	caption:SetFont("Interface\\AddOns\\Media\\pixel.ttf", 8, 'Outlinemonochrome')
+	caption:SetFont("Interface\\AddOns\\cargBags_Nivaya\\media\\pixel.ttf", 8, 'Outlinemonochrome')
 	if(caption) then
 		local t = L.bagCaptions[self.name] or (tBankBags and strsub(self.name, 5))
 		if not t then t = self.name end
@@ -403,7 +403,7 @@ function MyContainer:OnCreate(name, settings)
             local resetBtn = createTextButton("Reset New", self, 75, 15)
 			self.text = self:CreateFontString(nil, "OVERLAY", nil)
 	        self.text:SetPoint("CENTER", resetBtn, 2, 0)
-	        self.text:SetFont("Interface\\AddOns\\Media\\pixel.ttf", 8, "Outlinemonochrome")
+	        self.text:SetFont("Interface\\AddOns\\cargBags_Nivaya\\media\\pixel.ttf", 8, "Outlinemonochrome")
 	        self.text:SetText("Reset New")
 		    self.text:SetJustifyH("CENTER")
             resetBtn:SetPoint("TOPRIGHT", self.bagToggle, "TOPLEFT", -5, 0)

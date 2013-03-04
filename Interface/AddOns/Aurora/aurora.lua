@@ -3947,9 +3947,8 @@ Delay:SetScript("OnEvent", function()
 
 		local backdrop = {
 			bgFile = C.media.backdrop,
-			edgeFile = C.media.glow,
-			edgeSize = 3,
-			insets = {left = 2, right = 2, top = 2, bottom = 2},
+			edgeFile = C.media.backdrop,
+			edgeSize = 1,
 		}
 
 		-- so other stuff which tries to look like GameTooltip doesn't mess up
@@ -3984,8 +3983,8 @@ Delay:SetScript("OnEvent", function()
 		local sb = _G["GameTooltipStatusBar"]
 		sb:SetHeight(3)
 		sb:ClearAllPoints()
-		sb:SetPoint("BOTTOMLEFT", GameTooltip, "BOTTOMLEFT", 3, 3)
-		sb:SetPoint("BOTTOMRIGHT", GameTooltip, "BOTTOMRIGHT", -3, 3)
+		sb:SetPoint("BOTTOMLEFT", GameTooltip, "BOTTOMLEFT", 1, 1)
+		sb:SetPoint("BOTTOMRIGHT", GameTooltip, "BOTTOMRIGHT", -1, 1)
 		sb:SetStatusBarTexture(C.media.backdrop)
 
 		local sep = GameTooltipStatusBar:CreateTexture(nil, "ARTWORK")
