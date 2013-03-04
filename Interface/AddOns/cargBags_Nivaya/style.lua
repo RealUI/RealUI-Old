@@ -3,11 +3,6 @@ local cargBags = ns.cargBags
 
 local L = cBnivL
 
-local PixelFont = [[Interface\AddOns\cargBags_Nivaya\media\pixel_lr_small.ttf]]
-local BorderTex = [[Interface\AddOns\cargBags_Nivaya\media\Glow.tga]]
-local BackgroundTex = [[Interface\AddOns\cargBags_Nivaya\media\BG1.tga]]
-local BackgroundAlpha = 0.65
-
 ------------------------------------------
 -- MyContainer specific
 ------------------------------------------
@@ -279,15 +274,15 @@ function MyContainer:OnCreate(name, settings)
 	local color_rb = 0.05
 	local color_gb = tBankCustom and .4 or 0.05
 	local color_bb = tBankCustom and .6 or 0.05
-	local alpha_fb = BackgroundAlpha
+	local alpha_fb = .8
 
 	-- The frame background
 	local background = CreateFrame("Frame", nil, self)
 	background:SetBackdrop{
-		bgFile = BackgroundTex,
-		edgeFile = BorderTex,
+		bgFile = "Interface\\AddOns\\cargBags_Nivaya\\media\\texture",
+		edgeFile = "Interface\\AddOns\\cargBags_Nivaya\\media\\glowTex",
 		tile = true, tileSize = 16, edgeSize = 3,
-		insets = {left = 4, right = 4, top = 4, bottom = 4},
+		insets = {left = 3, right = 3, top = 3, bottom = 3},
 	}
 	background:SetFrameStrata("HIGH")
     background:SetFrameLevel(1)
@@ -299,7 +294,7 @@ function MyContainer:OnCreate(name, settings)
 
 	-- Caption and close button
 	local caption = background:CreateFontString(background, "OVERLAY", nil)
-	caption:SetFont(PixelFont, 8, 'Outlinemonochrome')
+	caption:SetFont("Interface\\AddOns\\Media\\pixel.ttf", 8, 'Outlinemonochrome')
 	if(caption) then
 		local t = L.bagCaptions[self.name] or (tBankBags and strsub(self.name, 5))
 		if not t then t = self.name end
@@ -394,7 +389,7 @@ function MyContainer:OnCreate(name, settings)
         self.bagToggle = createTextButton("Bags", self, 40, 15)
 		self.text = self:CreateFontString(nil, "OVERLAY", nil)
 	    self.text:SetPoint("CENTER", self.bagToggle, 2, 0)
-	    self.text:SetFont(PixelFont, 8, "Outlinemonochrome")
+	    self.text:SetFont("Interface\\AddOns\\cargBags_Nivaya\\media\\pixel.ttf", 8, "Outlinemonochrome")
 	    self.text:SetText("Bags")
 		self.text:SetJustifyH("CENTER")
         self.bagToggle:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", -2, 2)
@@ -408,7 +403,7 @@ function MyContainer:OnCreate(name, settings)
             local resetBtn = createTextButton("Reset New", self, 75, 15)
 			self.text = self:CreateFontString(nil, "OVERLAY", nil)
 	        self.text:SetPoint("CENTER", resetBtn, 2, 0)
-	        self.text:SetFont(PixelFont, 8, "Outlinemonochrome")
+	        self.text:SetFont("Interface\\AddOns\\Media\\pixel.ttf", 8, "Outlinemonochrome")
 	        self.text:SetText("Reset New")
 		    self.text:SetJustifyH("CENTER")
             resetBtn:SetPoint("TOPRIGHT", self.bagToggle, "TOPLEFT", -5, 0)
@@ -460,7 +455,7 @@ function MyContainer:OnCreate(name, settings)
         search.highlightFunction = function(button, match) button:SetAlpha(match and 1 or 0.1) end
         
         local caption = background:CreateFontString(infoFrame, "OVERLAY", nil)
-		caption:SetFont(PixelFont, 8, 'Outlinemonochrome')
+		caption:SetFont("Interface\\AddOns\\cargBags_Nivaya\\media\\pixel.ttf", 8, 'Outlinemonochrome')
 		caption:SetText(L.Search)
 		caption:SetPoint("BOTTOMLEFT", infoFrame, 0, 11)
         

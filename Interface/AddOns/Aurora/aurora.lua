@@ -1931,8 +1931,8 @@ Skin:SetScript("OnEvent", function(self, event, addon)
 					ic:SetAlpha(1)
 					slot.bg:SetAlpha(1)
 				else
-					ic:SetAlpha(0)
-					slot.bg:SetAlpha(0)
+					ic:SetAlpha(1)
+					slot.bg:SetAlpha(1)
 				end
 			end
 		end)
@@ -3009,6 +3009,8 @@ Skin:SetScript("OnEvent", function(self, event, addon)
 				frame.NameBorderMid:Hide()
 				frame.IconBorder:Hide()
 
+				frame.WinnerRoll:SetTextColor(.9, .9, .9)
+
 				frame.Icon:SetTexCoord(.08, .92, .08, .92)
 				frame.Icon:SetDrawLayer("ARTWORK")
 				frame.bg = F.CreateBG(frame.Icon)
@@ -3035,12 +3037,23 @@ Skin:SetScript("OnEvent", function(self, event, addon)
 		end)
 
 		hooksecurefunc("LootHistoryFrame_UpdatePlayerFrame", function(_, playerFrame)
+			if not playerFrame.styled then
+				playerFrame.RollText:SetTextColor(.9, .9, .9)
+				playerFrame.WinMark:SetDesaturated(true)
+
+				playerFrame.styled = true
+			end
+
 			if playerFrame.playerIdx then
-				local name, class = C_LootHistory.GetPlayerInfo(playerFrame.itemIdx, playerFrame.playerIdx)
+				local name, class, _, _, isWinner = C_LootHistory.GetPlayerInfo(playerFrame.itemIdx, playerFrame.playerIdx)
 
 				if name then
 					local colour = C.classcolours[class]
 					playerFrame.PlayerName:SetTextColor(colour.r, colour.g, colour.b)
+
+					if isWinner then
+						playerFrame.WinMark:SetVertexColor(colour.r, colour.g, colour.b)
+					end
 				end
 			end
 		end)
@@ -3936,7 +3949,7 @@ Delay:SetScript("OnEvent", function()
 			bgFile = C.media.backdrop,
 			edgeFile = C.media.glow,
 			edgeSize = 3,
-			insets = {left = 4, right = 4, top = 4, bottom = 4},
+			insets = {left = 2, right = 2, top = 2, bottom = 2},
 		}
 
 		-- so other stuff which tries to look like GameTooltip doesn't mess up
@@ -3945,7 +3958,7 @@ Delay:SetScript("OnEvent", function()
 		end
 
 		local getBackdropColor = function()
-			return 0, 0, 0, .8
+			return 0, 0, 0, .85
 		end
 
 		local getBackdropBorderColor = function()
@@ -3960,7 +3973,7 @@ Delay:SetScript("OnEvent", function()
 			bg:SetPoint("BOTTOMRIGHT")
 			bg:SetFrameLevel(t:GetFrameLevel()-1)
 			bg:SetBackdrop(backdrop)
-			bg:SetBackdropColor(0, 0, 0, .8)
+			bg:SetBackdropColor(0, 0, 0, .85)
 			bg:SetBackdropBorderColor(0, 0, 0)
 
 			t.GetBackdrop = getBackdrop
@@ -3971,8 +3984,8 @@ Delay:SetScript("OnEvent", function()
 		local sb = _G["GameTooltipStatusBar"]
 		sb:SetHeight(3)
 		sb:ClearAllPoints()
-		sb:SetPoint("BOTTOMLEFT", GameTooltip, "BOTTOMLEFT", 5, 5)
-		sb:SetPoint("BOTTOMRIGHT", GameTooltip, "BOTTOMRIGHT", -5, 5)
+		sb:SetPoint("BOTTOMLEFT", GameTooltip, "BOTTOMLEFT", 3, 3)
+		sb:SetPoint("BOTTOMRIGHT", GameTooltip, "BOTTOMRIGHT", -3, 3)
 		sb:SetStatusBarTexture(C.media.backdrop)
 
 		local sep = GameTooltipStatusBar:CreateTexture(nil, "ARTWORK")

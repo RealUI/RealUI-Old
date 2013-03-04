@@ -1,22 +1,12 @@
 local nibRealUI = LibStub("AceAddon-3.0"):GetAddon("nibRealUI")
 local L = LibStub("AceLocale-3.0"):GetLocale("nibRealUI")
 local LSM = LibStub("LibSharedMedia-3.0")
-
-local _
 local Tablet20 = LibStub("Tablet-2.0")
-local Tablets = {
-	guild = Tablet20,
-	friends = Tablet20,
-	currency = Tablet20,
-	sysinfo = Tablet20,
-	spec = Tablet20
-}
-
-local db, dbc, dbg, ndbc, ndbg
 
 local MODNAME = "InfoLine"
 local InfoLine = nibRealUI:NewModule(MODNAME, "AceEvent-3.0")
 
+local _
 local _G = getfenv(0)
 local date = _G.date
 local GetGameTime = _G.GetGameTime
@@ -32,16 +22,60 @@ local gsub = _G.gsub
 local strsub = _G.strsub
 local sort = _G.sort
 
+local db, dbc, dbg, ndbc, ndbg
+
 local LoggedIn
 local NeedRefreshed = true
 
 local ILFrames
+local HighlightBar
 local FramesCreated = false
 
+local Icons = {
+	[1] = {
+		start = 		{[[Interface\AddOns\nibRealUI\Media\InfoLine\Start]], 			15},
+		mail = 			{[[Interface\AddOns\nibRealUI\Media\InfoLine\Mail]], 			14},
+		guild = 		{[[Interface\AddOns\nibRealUI\Media\InfoLine\Guild]], 			9},
+		friends = 		{[[Interface\AddOns\nibRealUI\Media\InfoLine\Friends]],			8},
+		durability = 	{[[Interface\AddOns\nibRealUI\Media\InfoLine\Durability]], 		8},
+		bag = 			{[[Interface\AddOns\nibRealUI\Media\InfoLine\Bags]],			10},
+		xp = 			{[[Interface\AddOns\nibRealUI\Media\InfoLine\XP]], 				11},
+		rep = 			{[[Interface\AddOns\nibRealUI\Media\InfoLine\Rep]], 			11},
+		meters = 		{[[Interface\AddOns\nibRealUI\Media\InfoLine\Meters]], 			10},
+		layout_dt =		{[[Interface\AddOns\nibRealUI\Media\InfoLine\Layout_DT]], 		30},
+		layout_h =		{[[Interface\AddOns\nibRealUI\Media\InfoLine\Layout_H]], 		20},
+		system = 		{[[Interface\AddOns\nibRealUI\Media\InfoLine\System]], 			10},
+		network = 		{[[Interface\AddOns\nibRealUI\Media\InfoLine\Network]],			11},
+	},
+	[2] = {
+		start = 		{[[Interface\AddOns\nibRealUI\Media\InfoLine\Start_HR.tga]], 	16},
+		mail = 			{[[Interface\AddOns\nibRealUI\Media\InfoLine\Mail_HR]], 		15},
+		guild = 		{[[Interface\AddOns\nibRealUI\Media\InfoLine\Guild_HR]], 		9},
+		friends = 		{[[Interface\AddOns\nibRealUI\Media\InfoLine\Friends_HR]], 		9},
+		durability = 	{[[Interface\AddOns\nibRealUI\Media\InfoLine\Durability_HR]], 	8},
+		bag = 			{[[Interface\AddOns\nibRealUI\Media\InfoLine\Bags_HR]],			11},
+		xp = 			{[[Interface\AddOns\nibRealUI\Media\InfoLine\XP_HR]], 			12},
+		rep = 			{[[Interface\AddOns\nibRealUI\Media\InfoLine\Rep_HR]], 			12},
+		meters = 		{[[Interface\AddOns\nibRealUI\Media\InfoLine\Meters_HR]], 		11},
+		layout_dt =		{[[Interface\AddOns\nibRealUI\Media\InfoLine\Layout_DT_HR]], 	31},
+		layout_h =		{[[Interface\AddOns\nibRealUI\Media\InfoLine\Layout_H_HR]], 	21},
+		system = 		{[[Interface\AddOns\nibRealUI\Media\InfoLine\System_HR]], 		10},
+		network = 		{[[Interface\AddOns\nibRealUI\Media\InfoLine\Network_HR]],		11},
+	},
+}
+
+local ElementHeight = {
+	[1] = 9,
+	[2] = 10,
+}
+
+local TextPadding = 1
+
+local HighlightColor
+local HighlightColorVals
+
 local TextColorNormal
-local TextColorHighlight
 local TextColorNormalVals
-local TextColorHighlightVals
 local TextColorDisabledVals
 local TextColorWhite
 local TextColorTTHeader
@@ -67,10 +101,18 @@ local Elements = {
 	currency = 		{BONUS_ROLL_REWARD_CURRENCY},
 	xprep = 		{L["XP/Rep"]},
 	clock = 		{TIMEMANAGER_TITLE},
-	sysinfo = 		{L["SysInfo"]},
+	pc = 			{L["SysInfo"]},
 	specchanger = 	{L["Spec Changer"]},
 	layoutchanger =	{L["Layout Changer"]},
 	metertoggle = 	{L["Meter Toggle"]},
+}
+
+local Tablets = {
+	guild = Tablet20,
+	friends = Tablet20,
+	currency = Tablet20,
+	pc = Tablet20,
+	spec = Tablet20
 }
 
 local HPName, CPName, JPName, VPName, GoldName
@@ -208,30 +250,6 @@ local function GetOptions()
 						inline = true,
 						order = 10,
 						args = {
-							xl = {
-								type = "input",
-								name = "X Left",
-								width = "half",
-								order = 10,
-								get = function(info) return tostring(db.position.xl) end,
-								set = function(info, value)
-									value = nibRealUI:ValidateOffset(value)
-									db.position.xl = value
-									InfoLine:UpdatePositions()
-								end,
-							},
-							xr = {
-								type = "input",
-								name = "X Right",
-								width = "half",
-								order = 20,
-								get = function(info) return tostring(db.position.xr) end,
-								set = function(info, value)
-									value = nibRealUI:ValidateOffset(value)
-									db.position.xr = value
-									InfoLine:UpdatePositions()
-								end,
-							},
 							xgap = {
 								type = "input",
 								name = "Padding",
@@ -241,18 +259,6 @@ local function GetOptions()
 								set = function(info, value)
 									value = nibRealUI:ValidateOffset(value)
 									db.position.xgap = value
-									InfoLine:UpdatePositions()
-								end,
-							},
-							y = {
-								type = "input",
-								name = "Y Offset",
-								width = "half",
-								order = 40,
-								get = function(info) return tostring(db.position.y) end,
-								set = function(info, value)
-									value = nibRealUI:ValidateOffset(value)
-									db.position.y = value
 									InfoLine:UpdatePositions()
 								end,
 							},
@@ -275,37 +281,6 @@ local function GetOptions()
 									InfoLine:UpdatePositions()
 								end,
 								order = 10,
-							},
-						},
-					},
-					iconbuttons = {
-						type = "group",
-						name = "Icons",
-						inline = true,
-						order = 30,
-						args = {
-							size = {
-								type = "range",
-								name = "Size",
-								min = 6, max = 32, step = 1,
-								get = function(info) return db.iconbuttons.size end,
-								set = function(info, value) 
-									db.iconbuttons.size = value
-									InfoLine:UpdatePositions()
-								end,
-								order = 10,
-							},
-							yoffset = {
-								type = "input",
-								name = "Y Offset",
-								width = "half",
-								order = 20,
-								get = function(info) return tostring(db.iconbuttons.yoffset) end,
-								set = function(info, value)
-									value = nibRealUI:ValidateOffset(value)
-									db.iconbuttons.yoffset = value
-									InfoLine:UpdatePositions()
-								end,
 							},
 						},
 					},
@@ -358,7 +333,7 @@ local function GetOptions()
 					classcolorhighlight = {
 						type = "toggle",
 						name = "Class Color Highlight",
-						desc = "Use your Class Color for the highlight text.",
+						desc = "Use your Class Color for the highlight.",
 						get = function() return db.colors.classcolorhighlight end,
 						set = function(info, value) 
 							db.colors.classcolorhighlight = value
@@ -715,17 +690,42 @@ end
 
 -- Element Width
 local function UpdateElementWidth(e, ...)
+	local extraWidth = 0
 	if ... or e.hidden then
 		e.curwidth = 0
+		e:SetWidth(e.curwidth)
 		InfoLine:UpdatePositions()
 	else
 		local OldWidth = e.curwidth
-		local div = db.position.xgap / 2
-		e.curwidth = (ceil(e.text:GetWidth() / div) * div) + db.position.xgap
+		if e.type == 1 then
+			e.curwidth = db.position.xgap + e.iconwidth + db.position.xgap
+		elseif e.type == 2 then
+			e.curwidth = db.position.xgap + (ceil(e.text:GetWidth() / TextPadding) * TextPadding) + db.position.xgap
+		elseif e.type == 3 then
+			e.curwidth = db.position.xgap + e.iconwidth + extraWidth + (ceil(e.text:GetWidth() / TextPadding) * TextPadding) + db.position.xgap
+		elseif e.type == 4 then
+			extraWidth = 3
+			e.curwidth = db.position.xgap + (e.icon1width + extraWidth + e.text1:GetWidth() + db.position.xgap) + (e.icon2width + extraWidth + (ceil(e.text2:GetWidth() / TextPadding) * TextPadding)) + db.position.xgap
+			e.text1:ClearAllPoints()
+			e.text1:SetPoint("BOTTOMLEFT", e, "BOTTOMLEFT", db.position.xgap + e.icon1width + extraWidth, db.position.yoff + 0.5)
+			e.icon2:ClearAllPoints()
+			e.icon2:SetPoint("BOTTOMLEFT", e, "BOTTOMLEFT", db.position.xgap + e.icon1width + extraWidth + e.text1:GetWidth() + db.position.xgap, db.position.yoff)
+			e.text2:ClearAllPoints()
+			e.text2:SetPoint("BOTTOMLEFT", e, "BOTTOMLEFT", db.position.xgap + e.icon1width + extraWidth + e.text1:GetWidth() + db.position.xgap + e.icon2width + extraWidth, db.position.yoff + 0.5)
+		end
+		e.curwidth = e.curwidth - 4
 		if e.curwidth ~= OldWidth then
+			e:SetWidth(e.curwidth)
 			InfoLine:UpdatePositions()
 		end
 	end
+end
+
+-- Highlight Bar
+local function SetHighlightPosition(e)
+	HighlightBar:ClearAllPoints()
+	HighlightBar:SetPoint("BOTTOMLEFT", e, "BOTTOMLEFT", 0, -1)
+	HighlightBar:SetWidth(e.curwidth - 4)
 end
 
 ------------
@@ -966,12 +966,14 @@ function InfoLine_XR_Update(self)
 	if XRPer < 10 then XRLen = 3 else XRLen = 4 end
 	if XRSuffix == "XP:" then
 		if XRRested ~= "" then
-			self.text:SetFormattedText("|cff%s%s|r|cff%s %s%% (%s%%)|r", TextColorHighlight, XRSuffix, TextColorNormal, strsub(XRStr, 1, XRLen), XRRested)
+			self.text:SetFormattedText("|cff%s %s%% (%s%%)|r", TextColorNormal, strsub(XRStr, 1, XRLen), XRRested)
 		else
-			self.text:SetFormattedText("|cff%s%s|r|cff%s %s%%|r", TextColorHighlight, XRSuffix, TextColorNormal, strsub(XRStr, 1, XRLen))
+			self.text:SetFormattedText("|cff%s %s%%|r", TextColorNormal, strsub(XRStr, 1, XRLen))
 		end
+		self.icon:SetTexture(Icons[ndbc.resolution].xp[1])
 	else
-		self.text:SetFormattedText("|cff%s%s|r|cff%s %s%%|r", TextColorHighlight, XRSuffix, TextColorNormal, strsub(XRStr, 1, XRLen))
+		self.text:SetFormattedText("|cff%s %s%%|r", TextColorNormal, strsub(XRStr, 1, XRLen))
+		self.icon:SetTexture(Icons[ndbc.resolution].rep[1])
 	end
 	
 	self.hidden = HideMe
@@ -1436,7 +1438,7 @@ local function Currency_Update(self)
 	elseif dbc.currencystate == 7 then
 		CurText = tostring(dbg.currency[nibRealUI.realm][nibRealUI.faction][nibRealUI.name].cpw) .. " CPw"
 	end
-	self.text:SetFormattedText("|cff%s%s|r %s", TextColorHighlight, "C:", CurText)
+	self.text:SetFormattedText("%s", CurText)
 	
 	UpdateElementWidth(self)
 end
@@ -1520,7 +1522,7 @@ function InfoLine_Bag_Update(self)
 	end
 
 	-- Info Text
-	self.text:SetFormattedText("|cff%s%s|r|cff%s %d|r", TextColorHighlight, "B:", TextColorNormal, freeSlots)
+	self.text:SetFormattedText("|cff%s %d|r", TextColorNormal, freeSlots)
 	UpdateElementWidth(self)
 end
 
@@ -1598,9 +1600,9 @@ function InfoLine_Durability_Update(self)
 	end
 	
 	-- Info Text
-	if minVal <= 90 then
+	if minVal <= 95 then
 		self.hidden = false
-		self.text:SetFormattedText("|cff%s%s|r|cff%s %d%%|r", TextColorHighlight, "A:", TextColorNormal, minVal)
+		self.text:SetFormattedText("|cff%s %d%%|r", TextColorNormal, minVal)
 	else
 		self.hidden = true
 		self.text:SetText("")
@@ -1862,11 +1864,9 @@ local function Friends_Update(self)
 	-- OnEnter
 	FriendsOnline = curFriendsOnline
 	if FriendsOnline > 0 then
-		self:SetScript("OnEnter", function(self) 
-			Friends_OnEnter(self)
-		end)
+		self.hasfriends = true
 	else
-		self:SetScript("OnEnter", nil)
+		self.hasfriends = false
 	end
 	
 	-- Refresh tablet
@@ -1877,7 +1877,7 @@ local function Friends_Update(self)
 	end
 	
 	-- Info Text
-	self.text:SetFormattedText("|cff%s%s|r|cff%s %d|r", TextColorHighlight, "F:", TextColorNormal, FriendsOnline)
+	self.text:SetFormattedText("|cff%s %d|r", TextColorNormal, FriendsOnline)
 	UpdateElementWidth(self)
 end
 
@@ -2085,11 +2085,9 @@ local function Guild_Update(self)
 	-- OnEnter
 	GuildOnline = guildonline
 	if GuildOnline > 0 then
-		self:SetScript("OnEnter", function(self) 
-			Guild_OnEnter(self)
-		end)
+		self.hasguild = true
 	else
-		self:SetScript("OnEnter", nil)
+		self.hasguild = false
 	end
 	
 	-- Refresh tablet
@@ -2099,7 +2097,7 @@ local function Guild_Update(self)
 	
 	-- Info Text
 	self.hidden = false
-	self.text:SetFormattedText("|cff%s%s|r|cff%s %d|r", TextColorHighlight, "G:", TextColorNormal, guildonline)
+	self.text:SetFormattedText("|cff%s %d|r", TextColorNormal, guildonline)
 	UpdateElementWidth(self)
 end
 
@@ -2164,9 +2162,17 @@ end
 
 ---- Layout Button
 local function Layout_Update(self)
-	local CurLayoutText = ndbc.layout.current == 1 and L["DPS/Tank"] or L["Healing"]
-	local CurResText = ndbc.resolution == 1 and L["LR"]..":" or L["HR"]..":"
-	self.text:SetText(CurResText..CurLayoutText)
+	local CurLayoutIcon
+
+	if ndbc.layout.current == 1 then
+		-- DPS/Tank
+		CurLayoutIcon = Icons[ndbc.resolution].layout_dt
+	else
+		-- Healing
+		CurLayoutIcon = Icons[ndbc.resolution].layout_h
+	end
+	self.icon:SetTexture(CurLayoutIcon[1])
+	self.iconwidth = CurLayoutIcon[2]
 	UpdateElementWidth(self)
 end
 
@@ -2396,7 +2402,7 @@ local function Spec_OnEnter(self)
 	end
 	
 	self.mouseover = true
-	self.text:SetTextColor(unpack(TextColorHighlightVals))
+	self.text:SetTextColor(unpack(TextColorNormal))
 end
 
 local function Spec_Update(self)
@@ -2468,7 +2474,7 @@ local function Spec_Update(self)
 	end
 end
 
----- SysInfo
+---- PC
 local SysStats = {
 	netTally = 0,
 	bwIn = 		{cur = 0, tally = {}, avg = 0, min = 0, max = 0},
@@ -2480,14 +2486,14 @@ local SysStats = {
 }
 
 local SysSection = {}
-local function SysInfo_UpdateTablet()
+local function PC_UpdateTablet()
 	resSizeExtra = db.resolution[ndbc.resolution].tabfontsize
 	local Cols, lineHeader
 	wipe(SysSection)
 	
 	-- Network Category
 	SysSection["network"] = {}
-	SysSection["network"].cat = Tablets.sysinfo:AddCategory()
+	SysSection["network"].cat = Tablets.pc:AddCategory()
 	SysSection["network"].cat:AddLine("text", NETWORK_LABEL, "size", 13 + resSizeExtra, "textR", 1, "textG", 1, "textB", 1)
 	AddBlankTabLine(SysSection["network"].cat, 2)
 	
@@ -2499,7 +2505,7 @@ local function SysInfo_UpdateTablet()
 		L["Min"],
 		L["Avg"],
 	}
-	SysSection["network"].lineCat = Tablets.sysinfo:AddCategory("columns", #Cols)
+	SysSection["network"].lineCat = Tablets.pc:AddCategory("columns", #Cols)
 	lineHeader = MakeTabletHeader(Cols, 10 + resSizeExtra, 12, {"LEFT", "RIGHT", "RIGHT", "RIGHT", "RIGHT"})
 	SysSection["network"].lineCat:AddLine(lineHeader)
 	AddBlankTabLine(SysSection["network"].lineCat, 1)
@@ -2560,7 +2566,7 @@ local function SysInfo_UpdateTablet()
 	
 	-- Computer Category
 	SysSection["computer"] = {}
-	SysSection["computer"].cat = Tablets.sysinfo:AddCategory()
+	SysSection["computer"].cat = Tablets.pc:AddCategory()
 	SysSection["computer"].cat:AddLine("text", SYSTEMOPTIONS_MENU, "size", 13 + resSizeExtra, "textR", 1, "textG", 1, "textB", 1)
 	AddBlankTabLine(SysSection["computer"].cat, 2)
 	
@@ -2572,7 +2578,7 @@ local function SysInfo_UpdateTablet()
 		L["Min"],
 		L["Avg"],
 	}
-	SysSection["computer"].lineCat = Tablets.sysinfo:AddCategory("columns", #Cols)
+	SysSection["computer"].lineCat = Tablets.pc:AddCategory("columns", #Cols)
 	lineHeader = MakeTabletHeader(Cols, 10 + resSizeExtra, 12, {"LEFT", "RIGHT", "RIGHT", "RIGHT", "RIGHT"})
 	SysSection["computer"].lineCat:AddLine(lineHeader)
 	AddBlankTabLine(SysSection["computer"].lineCat, 1)
@@ -2628,19 +2634,19 @@ local function SysInfo_UpdateTablet()
 	AddBlankTabLine(SysSection["computer"].lineCat, 8)	-- Space for graph
 end
 
-local function SysInfo_OnLeave(self)
-	if Tablets.sysinfo:IsRegistered(self) then
-		Tablets.sysinfo:Close(self)
+local function PC_OnLeave(self)
+	if Tablets.pc:IsRegistered(self) then
+		Tablets.pc:Close(self)
 		HideGraph("fps")
 	end
 end
 
-local function SysInfo_OnEnter(self)
-	-- Register Tablets.sysinfo
-	if not Tablets.sysinfo:IsRegistered(self) then
-		Tablets.sysinfo:Register(self,
+local function PC_OnEnter(self)
+	-- Register Tablets.pc
+	if not Tablets.pc:IsRegistered(self) then
+		Tablets.pc:Register(self,
 			"children", function()
-				SysInfo_UpdateTablet()
+				PC_UpdateTablet()
 			end,
 			"point", function()
 				return "BOTTOMRIGHT"
@@ -2654,20 +2660,20 @@ local function SysInfo_OnEnter(self)
 		)
 	end
 	
-	if Tablets.sysinfo:IsRegistered(self) then
-		-- Tablets.sysinfo appearance
-		Tablets.sysinfo:SetColor(self, 0, 0, 0)
-		Tablets.sysinfo:SetTransparency(self, .85)
-		Tablets.sysinfo:SetFontSizePercent(self, 1)
+	if Tablets.pc:IsRegistered(self) then
+		-- Tablets.pc appearance
+		Tablets.pc:SetColor(self, 0, 0, 0)
+		Tablets.pc:SetTransparency(self, .85)
+		Tablets.pc:SetFontSizePercent(self, 1)
 		
-		Tablets.sysinfo:Open(self)
+		Tablets.pc:Open(self)
 		
 		ShowGraph("fps", Tablet20Frame, "BOTTOMRIGHT", "BOTTOMRIGHT", -10, 10, self)
 		HideOtherGraphs(self)
 	end
 end
 
-local function SysInfo_Update(self, short)
+local function PC_Update(self, short)
 	if short then	
 		-- FPS
 		SysStats.fps.cur = floor((GetFramerate() or 0) + 0.5)
@@ -2782,13 +2788,14 @@ local function SysInfo_Update(self, short)
 	end
 	
 	-- Info Text
-	self.text:SetFormattedText("|cff%s%d|r|cff%s%s|r  |cff%s%d|r|cff%s%s|r", TextColorNormal, SysStats.lagWorld.cur, TextColorHighlight, "ms", TextColorNormal, floor(SysStats.fps.cur + 0.5), TextColorHighlight, "fps")
+	self.text1:SetFormattedText("|cff%s%d|r", TextColorNormal, floor(SysStats.fps.cur + 0.5))
+	self.text2:SetFormattedText("|cff%s%d|r", TextColorNormal, SysStats.lagWorld.cur)
 	UpdateElementWidth(self)
 	
 	-- Tablet
-	if Tablets.sysinfo:IsRegistered(self) then
+	if Tablets.pc:IsRegistered(self) then
 		if Tablet20Frame:IsShown() then
-			Tablets.sysinfo:Refresh(self)
+			Tablets.pc:Refresh(self)
 		end
 	end
 end
@@ -2932,36 +2939,44 @@ local function Clock_OnMouseDown(self)
 	end
 end
 
----- Text Functions
-function InfoLine:Text_OnLeave(self)
-	if GameTooltip:IsShown() then GameTooltip:Hide() end
-end
-
--------------
--- Buttons --
--------------
----- Text Button Functions
-function InfoLine:UpdateTextButtonColors()
-	-- Spec Button
-	if ILFrames.spec.mouseover then
-		ILFrames.spec.text:SetTextColor(unpack(TextColorHighlightVals))
-	else
-		ILFrames.spec.text:SetTextColor(unpack(TextColorNormalVals))
-	end
-	-- Layout Button
-	if ILFrames.layout.mouseover then
-		ILFrames.layout.text:SetTextColor(unpack(TextColorHighlightVals))
-	else
-		ILFrames.layout.text:SetTextColor(unpack(TextColorNormalVals))
-	end
-end
-
-function InfoLine:TextButton_OnMouseDown(self)
-	if self.tag == "spec" then
-		-- Spec Button
+---------------------
+-- Mouse functions --
+---------------------
+function InfoLine:OnMouseDown(self)
+	if self.tag == "start" then
+		EasyMenu(MicroMenu, RealUIStartDropDown, self, 0, 0, "MENU", 2)
+		
+	elseif self.tag == "guild" then
+		Guild_OnMouseDown(self)
+		
+	elseif self.tag == "friends" then
+		Friends_OnMouseDown(self)
+		
+	elseif self.tag == "durability" then
+		InfoLine_Durability_OnMouseDown(self)
+		
+	elseif self.tag == "bag" then
+		InfoLine_Bag_OnMouseDown(self)
+		
+	elseif self.tag == "currency" then
+		Currency_OnMouseDown(self)
+		
+	elseif self.tag == "xprep" then
+		InfoLine_XR_OnMouseDown(self)
+		
+	elseif self.tag == "clock" then
+		Clock_OnMouseDown(self)
+		
+	elseif self.tag == "meters" then
+		Meter_Toggle(self)
+		
+	elseif self.tag == "pc" then
+		Clock_OnEnter(self)
+		
+	elseif self.tag == "spec" then
 		SpecChangeClickFunc(self)
+		
 	elseif self.tag == "layout" then
-		-- Layout Button
 		if IsAltKeyDown() then
 			if InCombatLockdown() then
 				print("|cff00ffffRealUI:|r You can not change the Resolution Layout during combat. Please leave combat and try again.")
@@ -2976,27 +2991,86 @@ function InfoLine:TextButton_OnMouseDown(self)
 		else
 			local NewLayout = ndbc.layout.current == 1 and 2 or 1
 			ndbc.layout.current = NewLayout
+			Layout_Update(self)
 			nibRealUI:UpdateLayout()
 		end
+		
 	end
 end
 
-function InfoLine:TextButton_OnLeave(self)
-	-- Unhighlight
+function InfoLine:OnLeave(self)
 	self.mouseover = false
-	if not self.windowopen then
-		self.text:SetTextColor(unpack(TextColorNormalVals))
-	end
+	HighlightBar:Hide()
 	if GameTooltip:IsShown() then GameTooltip:Hide() end
+	if self.tag == "start" then
+		self.icon:SetVertexColor(1, 1, 1, 1)
+	end
 end
 
-function InfoLine:TextButton_OnEnter(self)
+function InfoLine:OnEnter(self)
 	-- Highlight
 	self.mouseover = true
-	self.text:SetTextColor(unpack(TextColorHighlightVals))
+	if self.tag ~= "start" then
+		HighlightBar:Show()
+		SetHighlightPosition(self)
+	end
 	
-	if self.tag == "layout" then
-		-- Layout Button
+	if self.tag == "start" then
+		GameTooltip:SetOwner(self, "ANCHOR_TOP"..self.side, 0, 2)
+		GameTooltip:AddLine(strform("|cff%s%s|r", TextColorTTHeader, MAINMENU_BUTTON))
+		GameTooltip:Show()
+			
+		self.icon:SetVertexColor(unpack(HighlightColorVals))
+		
+	elseif self.tag == "guild" then
+		if self.hasguild then
+			Guild_OnEnter(self)
+		end
+		
+	elseif self.tag == "friends" then
+		if self.hasfriends then
+			Friends_OnEnter(self)
+		end
+		
+	elseif self.tag == "durability" then
+		InfoLine_Durability_OnEnter(self)
+		
+	elseif self.tag == "bag" then
+		GameTooltip:SetOwner(self, "ANCHOR_TOP"..self.side, 0, 2)
+		GameTooltip:AddLine(strform("|cff%s%s|r", TextColorTTHeader, EMPTY .. " " .. BAGSLOTTEXT))
+		GameTooltip:Show()
+		
+	elseif self.tag == "currency" then
+		Currency_OnEnter(self)
+		
+	elseif self.tag == "xprep" then
+		InfoLine_XR_OnEnter(self)
+		
+	elseif self.tag == "clock" then
+		Clock_OnEnter(self)
+		
+	elseif self.tag == "meters" then
+		GameTooltip:SetOwner(self, "ANCHOR_TOP"..self.side, 0, 2)
+		GameTooltip:AddLine(strform("|cff%s%s|r", TextColorTTHeader, L["Meter Toggle"]))
+		GameTooltip:AddLine(" ")
+		GameTooltip:AddLine(strform("|cff%s%s|r", TextColorOrange2, L["Active Meters:"]))
+		if IsAddOnLoaded("Recount") then
+			GameTooltip:AddLine(strform("|cff%s%s|r", TextColorWhite, "Recount"))
+		end
+		if IsAddOnLoaded("Skada") then
+			GameTooltip:AddLine(strform("|cff%s%s|r", TextColorWhite, "Skada"))
+		end
+		GameTooltip:AddLine(" ")
+		GameTooltip:AddLine(strform("|cff00ff00%s|r", L["<Click> to toggle meters."]))
+		GameTooltip:Show()
+		
+	elseif self.tag == "pc" then
+		PC_OnEnter(self)
+		
+	elseif self.tag == "spec" then
+		Spec_OnEnter(self)
+		
+	elseif self.tag == "layout" then
 		local CurLayoutText = ndbc.layout.current == 1 and "DPS/Tank" or "Healing"
 		local CurResText = ndbc.resolution == 1 and "Low" or "High"
 		GameTooltip:SetOwner(self, "ANCHOR_TOP"..self.side, 0, 2)
@@ -3023,62 +3097,6 @@ function InfoLine:TextButton_OnEnter(self)
 	end
 end
 
----- Icon Button Functions
-function InfoLine:UpdateIconButtonColors()
-	-- start Button
-	if ILFrames.start.mouseover then
-		ILFrames.start.icon:SetVertexColor(unpack(TextColorHighlightVals))
-	else
-		ILFrames.start.icon:SetVertexColor(unpack(TextColorNormalVals))
-	end
-	-- Meters Button
-	if ILFrames.meters.mouseover then
-		ILFrames.meters.icon:SetVertexColor(unpack(TextColorHighlightVals))
-	else
-		ILFrames.meters.icon:SetVertexColor(unpack(TextColorNormalVals))
-	end
-end
-
-function InfoLine:IconButton_OnMouseDown(self)
-	if self.tag == "start" then
-		-- start Button
-		EasyMenu(MicroMenu, RealUIStartDropDown, self, 0, 0, "MENU", 2)
-	elseif self.tag == "meters" then
-		-- Meters Button
-		Meter_Toggle(self)
-	end
-end
-
-function InfoLine:IconButton_OnLeave(self)
-	-- Unhighlight
-	self.mouseover = false
-	self.icon:SetVertexColor(unpack(TextColorNormalVals))
-	if GameTooltip:IsShown() then GameTooltip:Hide() end
-end
-
-function InfoLine:IconButton_OnEnter(self)
-	-- Highlight
-	self.mouseover = true
-	self.icon:SetVertexColor(unpack(TextColorHighlightVals))
-	
-	if self.tag == "meters" then
-		-- Meters Button
-		GameTooltip:SetOwner(self, "ANCHOR_TOP"..self.side, 0, 2)
-		GameTooltip:AddLine(strform("|cff%s%s|r", TextColorTTHeader, L["Meter Toggle"]))
-		GameTooltip:AddLine(" ")
-		GameTooltip:AddLine(strform("|cff%s%s|r", TextColorOrange2, L["Active Meters:"]))
-		if IsAddOnLoaded("Recount") then
-			GameTooltip:AddLine(strform("|cff%s%s|r", TextColorWhite, "Recount"))
-		end
-		if IsAddOnLoaded("Skada") then
-			GameTooltip:AddLine(strform("|cff%s%s|r", TextColorWhite, "Skada"))
-		end
-		GameTooltip:AddLine(" ")
-		GameTooltip:AddLine(strform("|cff00ff00%s|r", L["<Click> to toggle meters."]))
-		GameTooltip:Show()
-	end
-end
-
 -------------------
 -- Frame Updates --
 -------------------
@@ -3099,178 +3117,74 @@ function InfoLine:UpdateFont()
 	end
 end
 
--- Textures
-function InfoLine:UpdateTextures()
-	-- start Button
-	ILFrames.start.icon:SetTexture(db.resolution[ndbc.resolution].configicon)
-	-- Meters Button
-	ILFrames.meters.icon:SetTexture(db.resolution[ndbc.resolution].metersicon)
-end
-
 -- Positions
-local function SetPosition(info, parent, anchor, x, y, height, width)
+local function SetPosition(info, parent, anchor, x, width, height)
 	info:ClearAllPoints()
-	info:SetPoint(anchor, parent, anchor, x, y)
-	if width ~= nil then
-		info:SetWidth(width)
-		info:SetHeight(height)
-		if info.text then
-			local xt = info.side == "LEFT" and (db.position.xgap / 2) or -(db.position.xgap / 2)
-			info.text:ClearAllPoints()
-			info.text:SetPoint(info.side, info, info.side, xt, 0)
-		end
-	end
+	info:SetPoint(anchor, parent, anchor, x, 0)
+	info:SetWidth(width)
+	info:SetHeight(height)
 end
 
 local AlreadyUpdating
-
-local HookedFrames = {}
-local function FinalizeCustomFrame(f, index)
-	if not HookedFrames[name] then
-		hooksecurefunc(f, "SetWidth", function()
-			if not AlreadyUpdating then
-				InfoLine:UpdatePositions()
-			end
-		end)
-		HookedFrames[name] = true
-	end
-
-	-- Try to fix up text
-	for i= 1, f:GetNumRegions() do
-		local region = select(i, f:GetRegions())
-		if region:GetObjectType() == "FontString" then
-			f.text = region
-			break
-		end
-	end
-	if f.text then
-		local fontName, fontHeight = f.text:GetFont()
-		f.text:SetFont(fontName, fontHeight, nibRealUI.font.pixel1[3])
-	end
-end
-
 function InfoLine:UpdatePositions()
 	if AlreadyUpdating then return end
 	AlreadyUpdating = true
 	
-	local XPos = 0
-	local EHeight = nibRealUI.font.pixel1[2] + 2 + 8
+	local Frames = {
+		left = {
+			{ILFrames.start,		db.elements.start},
+			{ILFrames.guild,		db.elements.guild},
+			{ILFrames.friends,		db.elements.friends},
+			{ILFrames.durability,	db.elements.durability},
+			{ILFrames.bag,			db.elements.bag},
+			{ILFrames.currency,		db.elements.currency},
+			{ILFrames.xprep,		db.elements.xprep},
+		},
+		right = {
+			{ILFrames.clock,		db.elements.clock},
+			{ILFrames.meters,		db.elements.metertoggle},
+			{ILFrames.layout,		db.elements.layoutchanger},
+			{ILFrames.spec,			db.elements.specchanger},
+			{ILFrames.pc,			db.elements.pc},
+		},
+	}
+	
+	local EHeight = db.position.yoff + ElementHeight[ndbc.resolution] + db.position.yoff
 	
 	-- Parent
 	ILFrames.parent:ClearAllPoints()
-	ILFrames.parent:SetPoint("BOTTOMLEFT", UIParent, "BOTTOMLEFT",  db.position.xl, db.position.y)
-	ILFrames.parent:SetPoint("BOTTOMRIGHT", UIParent, "BOTTOMRIGHT",  -db.position.xr, db.position.y)
-	ILFrames.parent:SetHeight(24)
+	ILFrames.parent:SetPoint("BOTTOMLEFT", UIParent, "BOTTOMLEFT",  0, 0)
+	ILFrames.parent:SetPoint("BOTTOMRIGHT", UIParent, "BOTTOMRIGHT",  0, 0)
+	ILFrames.parent:SetHeight(EHeight)
 	
-	---- LEFT
-	-- start Button
-	if db.elements.start then
-		ILFrames.start:Show()
-		SetPosition(ILFrames.start, ILFrames.parent, "BOTTOMLEFT", XPos, db.iconbuttons.yoffset, db.iconbuttons.size, db.iconbuttons.size)
-		XPos = XPos + ILFrames.start:GetWidth() + 4
-	else
-		ILFrames.start:Hide()
+	---- Left
+	local XPos = 0
+	for k,v in ipairs(Frames.left) do
+		if v[2] and not v[1].hidden then
+			v[1]:Show()
+			SetPosition(v[1], ILFrames.parent, "BOTTOMLEFT", XPos, v[1].curwidth, EHeight)
+			XPos = XPos + v[1].curwidth
+			if v[1].mouseover then
+				HighlightBar:SetWidth(v[1].curwidth)
+			end
+		else
+			v[1]:Hide()
+		end
 	end
 	
-	-- Guild
-	if db.elements.guild and not(ILFrames.guild.hidden) then
-		ILFrames.guild:Show()
-		SetPosition(ILFrames.guild, ILFrames.parent, "BOTTOMLEFT", XPos, db.text.yoffset, EHeight, ILFrames.guild.curwidth)
-		XPos = XPos + ILFrames.guild.curwidth
-	else
-		ILFrames.guild:Hide()
-	end
-	
-	-- Friends
-	if db.elements.friends then
-		ILFrames.friends:Show()
-		SetPosition(ILFrames.friends, ILFrames.parent, "BOTTOMLEFT", XPos, db.text.yoffset, EHeight, ILFrames.friends.curwidth)
-		XPos = XPos + ILFrames.friends.curwidth
-	else
-		ILFrames.friends:Hide()
-	end
-	
-	-- Durability
-	if db.elements.durability then
-		ILFrames.durability:Show()
-		SetPosition(ILFrames.durability, ILFrames.parent, "BOTTOMLEFT", XPos, db.text.yoffset, EHeight, ILFrames.durability.curwidth)
-		XPos = XPos + ILFrames.durability.curwidth
-	else
-		ILFrames.durability:Hide()
-	end
-	
-	-- Bag
-	if db.elements.bag then
-		ILFrames.bag:Show()
-		SetPosition(ILFrames.bag, ILFrames.parent, "BOTTOMLEFT", XPos, db.text.yoffset, EHeight, ILFrames.bag.curwidth)
-		XPos = XPos + ILFrames.bag.curwidth
-	else
-		ILFrames.bag:Hide()
-	end
-	
-	-- Currency
-	if db.elements.currency then
-		ILFrames.currency:Show()
-		SetPosition(ILFrames.currency, ILFrames.parent, "BOTTOMLEFT", XPos, db.text.yoffset, EHeight, ILFrames.currency.curwidth)
-		XPos = XPos + ILFrames.currency.curwidth
-	else
-		ILFrames.currency:Hide()
-	end
-	
-	-- XP/Rep
-	if db.elements.xprep and not(ILFrames.xr.hidden) then
-		ILFrames.xr:Show()
-		SetPosition(ILFrames.xr, ILFrames.parent, "BOTTOMLEFT", XPos, db.text.yoffset, EHeight, ILFrames.xr.curwidth)
-		XPos = XPos + ILFrames.xr.curwidth
-	else
-		ILFrames.xr:Hide()
-	end
-	
-	---- RIGHT
+	-- Right
 	XPos = 0
-	-- Clock
-	if db.elements.clock then
-		ILFrames.clock:Show()
-		SetPosition(ILFrames.clock, ILFrames.parent, "BOTTOMRIGHT", XPos, db.text.yoffset, EHeight, ILFrames.clock.curwidth)
-		XPos = XPos - ILFrames.clock.curwidth
-	else
-		ILFrames.clock:Hide()
-	end
-	
-	-- Meter Button
-	if db.elements.metertoggle and not(ILFrames.meters.hidden) then
-		ILFrames.meters:Show()
-		SetPosition(ILFrames.meters, ILFrames.parent, "BOTTOMRIGHT", XPos, db.iconbuttons.yoffset, db.iconbuttons.size, db.iconbuttons.size)
-		XPos = XPos - db.iconbuttons.size
-	else
-		ILFrames.meters:Hide()
-	end
-	
-	-- SysInfo
-	if db.elements.sysinfo then
-		ILFrames.sysinfo:Show()
-		SetPosition(ILFrames.sysinfo, ILFrames.parent, "BOTTOMRIGHT", XPos, db.text.yoffset, EHeight, ILFrames.sysinfo.curwidth)
-		XPos = XPos - ILFrames.sysinfo.curwidth
-	else
-		ILFrames.sysinfo:Hide()
-	end
-	
-	-- Spec Button
-	if db.elements.specchanger and not(ILFrames.spec.hidden) then
-		ILFrames.spec:Show()
-		SetPosition(ILFrames.spec, ILFrames.parent, "BOTTOMRIGHT", XPos, db.text.yoffset, EHeight, ILFrames.spec.curwidth)
-		XPos = XPos - ILFrames.spec.curwidth
-	else
-		ILFrames.spec:Hide()
-	end
-	
-	-- Layout Button
-	if db.elements.layoutchanger then
-		ILFrames.layout:Show()
-		SetPosition(ILFrames.layout, ILFrames.parent, "BOTTOMRIGHT", XPos, db.text.yoffset, EHeight, ILFrames.layout.curwidth)
-		XPos = XPos - ILFrames.layout.curwidth
-	else
-		ILFrames.layout:Hide()
+	for k,v in ipairs(Frames.right) do
+		if v[2] and not v[1].hidden then
+			v[1]:Show()
+			SetPosition(v[1], ILFrames.parent, "BOTTOMRIGHT", XPos, v[1].curwidth, EHeight)
+			XPos = XPos - v[1].curwidth
+			if v[1].mouseover then
+				HighlightBar:SetWidth(v[1].curwidth)
+			end
+		else
+			v[1]:Hide()
+		end
 	end
 	
 	AlreadyUpdating = false
@@ -3300,89 +3214,116 @@ local function CreateTipFrame(parent, width, height, header, body)
 	return NewTF
 end
 
-local function CreateTextButtonFrame(side)
-	local NewButton = CreateFrame("Frame", nil, UIParent)
-	NewButton.side = side
+local function CreateNewElement(side, type, iconInfo, ...)
+	local extra = ...
+	-- Types - 1 = Icon, 2 = Text, 3 = Icon + Text
+	local NewElement = CreateFrame("Frame", nil, UIParent)
+	NewElement.side = side
+	NewElement.type = type
 	
-	NewButton:SetFrameStrata(ILFrames.parent:GetFrameStrata())
-	NewButton:SetFrameLevel(ILFrames.parent:GetFrameLevel() + 1)
+	NewElement:SetFrameStrata(ILFrames.parent:GetFrameStrata())
+	NewElement:SetFrameLevel(ILFrames.parent:GetFrameLevel() + 1)
 	
-	NewButton.text = NewButton:CreateFontString(nil, "ARTWORK")
-	NewButton.text:SetPoint(side, NewButton, side, 0, 0.5)
-	NewButton.text:SetFont(unpack(nibRealUI.font.pixel1))
-	NewButton.text:SetJustifyH(side)
+	if type ~= 4 then
+		if (type == 1) or (type == 3) then
+			NewElement.icon = NewElement:CreateTexture(nil, "ARTWORK")
+			if extra == "start" then
+				NewElement.icon:SetPoint("BOTTOMLEFT", NewElement, "BOTTOMLEFT", db.position.xgap, db.position.yoff / 2)
+				extra = nil
+			else
+				NewElement.icon:SetPoint("BOTTOMLEFT", NewElement, "BOTTOMLEFT", db.position.xgap, db.position.yoff)
+			end
+			NewElement.icon:SetHeight(16)
+			NewElement.icon:SetWidth(extra or 16)
+			NewElement.icon:SetTexture(iconInfo[1])
+			if type == 1 then
+				NewElement.curwidth = (db.position.xgap * 2) + iconInfo[2]
+			end
+			NewElement.iconwidth = iconInfo[2]
+		end
+		
+		if (type == 2) or (type == 3) then
+			NewElement.text = NewElement:CreateFontString(nil, "ARTWORK")
+			NewElement.text:SetFont(unpack(nibRealUI.font.pixel1))
+			NewElement.text:SetJustifyH("LEFT")
+			if type == 2 then
+				NewElement.text:SetPoint("BOTTOMLEFT", NewElement, "BOTTOMLEFT", db.position.xgap, db.position.yoff + 0.5)
+			else
+				NewElement.text:SetPoint("BOTTOMLEFT", NewElement, "BOTTOMLEFT", db.position.xgap + iconInfo[2] - 1, db.position.yoff + 0.5)
+			end
+			NewElement.curwidth = 50
+		end
+	else
+		NewElement.icon1 = NewElement:CreateTexture(nil, "ARTWORK")
+		NewElement.icon1:SetPoint("BOTTOMLEFT", NewElement, "BOTTOMLEFT", db.position.xgap, db.position.yoff)
+		NewElement.icon1:SetHeight(16)
+		NewElement.icon1:SetWidth(16)
+		NewElement.icon1:SetTexture(iconInfo[1])
+		NewElement.icon1width = iconInfo[2]
+		
+		NewElement.text1 = NewElement:CreateFontString(nil, "ARTWORK")
+		NewElement.text1:SetFont(unpack(nibRealUI.font.pixel1))
+		NewElement.text1:SetJustifyH("LEFT")
+		NewElement.text1:SetPoint("BOTTOMLEFT", NewElement.icon1, "BOTTOMLEFT", iconInfo[2] - 1, 0.5)
+		
+		NewElement.icon2 = NewElement:CreateTexture(nil, "ARTWORK")
+		NewElement.icon2:SetPoint("BOTTOMRIGHT", NewElement.text1, "BOTTOMLEFT", db.position.xgap, -0.5)
+		NewElement.icon2:SetHeight(16)
+		NewElement.icon2:SetWidth(16)
+		NewElement.icon2:SetTexture(extra[1])
+		NewElement.icon2width = extra[2]
+		
+		NewElement.text2 = NewElement:CreateFontString(nil, "ARTWORK")
+		NewElement.text2:SetFont(unpack(nibRealUI.font.pixel1))
+		NewElement.text2:SetTextColor(unpack(TextColorNormalVals))
+		NewElement.text2:SetJustifyH("LEFT")
+		NewElement.text2:SetPoint("BOTTOMLEFT", NewElement.icon2, "BOTTOMLEFT", extra[2] + 3, 0.5)
+		
+		NewElement.curwidth = 100
+	end
 	
-	NewButton:EnableMouse(true)
-	NewButton.mouseover = false
-	NewButton:SetScript("OnEnter", function(self) InfoLine:TextButton_OnEnter(self) end)
-	NewButton:SetScript("OnLeave", function(self) InfoLine:TextButton_OnLeave(self) end)
-	NewButton:SetScript("OnMouseDown", function(self) InfoLine:TextButton_OnMouseDown(self) end)
+	NewElement:EnableMouse(true)
+	NewElement.mouseover = false
+	NewElement:SetScript("OnEnter", function(self) InfoLine:OnEnter(self) end)
+	NewElement:SetScript("OnLeave", function(self) InfoLine:OnLeave(self) end)
+	NewElement:SetScript("OnMouseDown", function(self) InfoLine:OnMouseDown(self) end)
 	
-	NewButton.curwidth = 0
-	
-	return NewButton
-end
-
-local function CreateIconButtonFrame(side)
-	local NewButton = CreateFrame("Frame", nil, UIParent)
-	NewButton.side = side
-	
-	NewButton:SetFrameStrata(ILFrames.parent:GetFrameStrata())
-	NewButton:SetFrameLevel(ILFrames.parent:GetFrameLevel() + 1)
-	
-	NewButton.icon = NewButton:CreateTexture(nil, "ARTWORK")
-	NewButton.icon:SetPoint("CENTER", NewButton, "CENTER", 0, 0)
-	
-	NewButton:EnableMouse(true)
-	NewButton.mouseover = false
-	NewButton:SetScript("OnEnter", function(self) InfoLine:IconButton_OnEnter(self) end)
-	NewButton:SetScript("OnLeave", function(self) InfoLine:IconButton_OnLeave(self) end)
-	NewButton:SetScript("OnMouseDown", function(self) InfoLine:IconButton_OnMouseDown(self) end)
-	
-	return NewButton
-end
-
-local function CreateTextFrame(side)
-	local NewText = CreateFrame("Frame", nil, UIParent)
-	NewText.side = side
-	
-	NewText:SetFrameStrata(ILFrames.parent:GetFrameStrata())
-	NewText:SetFrameLevel(ILFrames.parent:GetFrameLevel() + 1)
-	
-	NewText.text = NewText:CreateFontString(nil, "ARTWORK")
-	NewText.text:SetPoint(side, NewText, side, 0, 0.5)
-	NewText.text:SetFont(unpack(nibRealUI.font.pixel1))
-	NewText.text:SetJustifyH(side)
-	
-	NewText.curwidth = 50.5
-	
-	NewText:EnableMouse(true)
-	NewText:SetScript("OnLeave", function(self) 
-		InfoLine:Text_OnLeave(self)
-	end)
-	
-	return NewText
+	return NewElement
 end
 
 function InfoLine:CreateFrames()
-	if FramesCrated then return end
+	if FramesCreated then return end
 	
 	ILFrames = {}
 	
 	-- Parent
 	ILFrames.parent = CreateFrame("Frame", "RealUI_InfoLine", UIParent)
-	ILFrames.parent:SetPoint("BOTTOMLEFT", UIParent, "BOTTOMLEFT", db.position.x, db.position.y)
+	ILFrames.parent:SetPoint("BOTTOMLEFT", UIParent, "BOTTOMLEFT", 0, 0)
 	ILFrames.parent:SetFrameStrata("LOW")
 	ILFrames.parent:SetFrameLevel(0)
 	
+	-- Highlight Bar
+	HighlightBar = CreateFrame("Frame", nil, UIParent)
+	HighlightBar:Hide()
+	HighlightBar:SetHeight(3)
+	HighlightBar:SetFrameStrata("LOW")
+	HighlightBar:SetFrameLevel(0)
+	HighlightBar.bg = HighlightBar:CreateTexture(nil, "BORDER")
+	HighlightBar.bg:SetAllPoints(HighlightBar)
+	HighlightBar.bg:SetTexture(0, 0, 0, 1)
+	HighlightBar.line = HighlightBar:CreateTexture(nil, "ARTWORK")
+	HighlightBar.line:SetPoint("BOTTOMLEFT", HighlightBar, "BOTTOMLEFT", 1, 1)
+	HighlightBar.line:SetPoint("TOPRIGHT", HighlightBar, "TOPRIGHT", -1, -1)
+	HighlightBar.line:SetTexture(unpack(HighlightColorVals))
 	
 	---- LEFT
 	-- start Button
-	ILFrames.start = CreateIconButtonFrame("LEFT")
+	ILFrames.start = CreateNewElement("LEFT", 1, Icons[ndbc.resolution].start, "start")
 	ILFrames.start.tag = "start"
 	
-	-- Guild
-	ILFrames.guild = CreateTextFrame("LEFT")
+	-- -- Guild
+	ILFrames.guild = CreateNewElement("LEFT", 3, Icons[ndbc.resolution].guild)
+	ILFrames.guild.tag = "guild"
 	ILFrames.guild:RegisterEvent("GUILD_ROSTER_UPDATE")
 	ILFrames.guild:RegisterEvent("GUILD_PERK_UPDATE")
 	ILFrames.guild:RegisterEvent("GUILD_MOTD")
@@ -3409,10 +3350,10 @@ function InfoLine:CreateFrames()
 			self.elapsed = 0
 		end
 	end)
-	ILFrames.guild:SetScript("OnMouseDown", function(self) Guild_OnMouseDown(self) end)
 	
-	-- Friends
-	ILFrames.friends = CreateTextFrame("LEFT")
+	-- -- Friends
+	ILFrames.friends = CreateNewElement("LEFT", 3, Icons[ndbc.resolution].friends)
+	ILFrames.friends.tag = "friends"
 	ILFrames.friends:RegisterEvent("FRIENDLIST_UPDATE")
 	ILFrames.friends:RegisterEvent("BN_FRIEND_ACCOUNT_ONLINE")
 	ILFrames.friends:RegisterEvent("BN_FRIEND_ACCOUNT_OFFLINE")
@@ -3433,21 +3374,20 @@ function InfoLine:CreateFrames()
 			self.elapsed = 0
 		end
 	end)
-	ILFrames.friends:SetScript("OnMouseDown", function(self) Friends_OnMouseDown(self) end)
 	
-	-- Durability
-	ILFrames.durability = CreateTextFrame("LEFT")
+	-- -- Durability
+	ILFrames.durability = CreateNewElement("LEFT", 3, Icons[ndbc.resolution].durability)
+	ILFrames.durability.tag = "durability"
 	ILFrames.durability:RegisterEvent("UPDATE_INVENTORY_DURABILITY")
 	ILFrames.durability:RegisterEvent("PLAYER_ENTERING_WORLD")
 	ILFrames.durability:SetScript("OnEvent", function(self) 
 		if not db.elements.durability then return end
 		InfoLine_Durability_Update(self)
 	end)
-	ILFrames.durability:SetScript("OnEnter", function(self) InfoLine_Durability_OnEnter(self) end)
-	ILFrames.durability:SetScript("OnMouseDown", function(self) InfoLine_Durability_OnMouseDown(self) end)
 	
-	-- Bag Space
-	ILFrames.bag = CreateTextFrame("LEFT")
+	-- -- Bag Space
+	ILFrames.bag = CreateNewElement("LEFT", 3, Icons[ndbc.resolution].bag)
+	ILFrames.bag.tag = "bag"
 	ILFrames.bag:RegisterEvent("InfoLine_Bag_Update")
 	ILFrames.bag:RegisterEvent("UNIT_INVENTORY_CHANGED")
 	ILFrames.bag:RegisterEvent("BAG_UPDATE")
@@ -3456,10 +3396,10 @@ function InfoLine:CreateFrames()
 		if not db.elements.bag then return end
 		InfoLine_Bag_Update(self)
 	end)
-	ILFrames.bag:SetScript("OnMouseDown", function(self) InfoLine_Bag_OnMouseDown(self) end)
 	
-	-- Currency
-	ILFrames.currency = CreateTextFrame("LEFT")
+	-- -- Currency
+	ILFrames.currency = CreateNewElement("LEFT", 2, nil)
+	ILFrames.currency.tag = "currency"
 	ILFrames.currency:RegisterEvent("PLAYER_ENTERING_WORLD")
 	ILFrames.currency:RegisterEvent("SEND_MAIL_MONEY_CHANGED")
 	ILFrames.currency:RegisterEvent("SEND_MAIL_COD_CHANGED")
@@ -3518,29 +3458,26 @@ function InfoLine:CreateFrames()
 			self.elapsed = 0
 		end
 	end)
-	ILFrames.currency:SetScript("OnMouseDown", function(self) Currency_OnMouseDown(self) end)
-	ILFrames.currency:SetScript("OnEnter", function(self) Currency_OnEnter(self) end)
 	
-	-- XP/Rep
-	ILFrames.xr = CreateTextFrame("LEFT")
-	ILFrames.xr.hidden = false
-	ILFrames.xr:RegisterEvent("PLAYER_XP_UPDATE")
-	ILFrames.xr:RegisterEvent("UPDATE_FACTION")
-	ILFrames.xr:RegisterEvent("DISABLE_XP_GAIN")
-	ILFrames.xr:RegisterEvent("ENABLE_XP_GAIN")
-	ILFrames.xr:RegisterEvent("PLAYER_ENTERING_WORLD")
-	ILFrames.xr:SetScript("OnEvent", function(self) 
+	-- -- XP/Rep
+	ILFrames.xprep = CreateNewElement("LEFT", 3, Icons[ndbc.resolution].xp)
+	ILFrames.xprep.tag = "xprep"
+	ILFrames.xprep:RegisterEvent("PLAYER_XP_UPDATE")
+	ILFrames.xprep:RegisterEvent("UPDATE_FACTION")
+	ILFrames.xprep:RegisterEvent("DISABLE_XP_GAIN")
+	ILFrames.xprep:RegisterEvent("ENABLE_XP_GAIN")
+	ILFrames.xprep:RegisterEvent("PLAYER_ENTERING_WORLD")
+	ILFrames.xprep:SetScript("OnEvent", function(self) 
 		if not db.elements.xprep then return end
 		InfoLine_XR_Update(self)
 	end)
-	ILFrames.xr:SetScript("OnEnter", function(self) InfoLine_XR_OnEnter(self) end)
-	ILFrames.xr:SetScript("OnLeave", function(self) InfoLine_XR_OnLeave(self) end)
-	ILFrames.xr:SetScript("OnMouseDown", function(self) InfoLine_XR_OnMouseDown(self) end)
 	
 	
-	---- RIGHT
-	-- Clock
-	ILFrames.clock = CreateTextFrame("RIGHT")
+	-- ---- RIGHT
+	-- -- Clock
+	ILFrames.clock = CreateNewElement("RIGHT", 2, nil)
+	ILFrames.clock.tag = "clock"
+	ILFrames.clock.text:SetJustifyH("RIGHT")
 	ILFrames.clock.pendingCalendarInvites = 0
 	ILFrames.clock:RegisterEvent("PLAYER_ENTERING_WORLD")
 	ILFrames.clock:RegisterEvent("CALENDAR_UPDATE_PENDING_INVITES")
@@ -3564,13 +3501,11 @@ function InfoLine:CreateFrames()
 			self.elapsed2 = 0
 		end
 	end)
-	ILFrames.clock:SetScript("OnEnter", function(self) Clock_OnEnter(self) end)
-	ILFrames.clock:SetScript("OnMouseDown", function(self) Clock_OnMouseDown(self) end)
 	ILFrames.clock.pulse = CreateFrame("Frame")
 	ILFrames.clock.pulse:Hide()
 	
 	-- Meters Button
-	ILFrames.meters = CreateIconButtonFrame("LEFT")
+	ILFrames.meters = CreateNewElement("RIGHT", 1, Icons[ndbc.resolution].meters)
 	ILFrames.meters.tag = "meters"
 	ILFrames.meters:RegisterEvent("PLAYER_ENTERING_WORLD")
 	ILFrames.meters:SetScript("OnEvent", function(self) 
@@ -3587,46 +3522,44 @@ function InfoLine:CreateFrames()
 		end
 	end)
 	
-	-- SysInfo
-	ILFrames.sysinfo = CreateTextFrame("RIGHT")
-	CreateGraph("fps", 60, 60, ILFrames.sysinfo)
-	ILFrames.sysinfo:RegisterEvent("UPDATE_PENDING_MAIL")
-	ILFrames.sysinfo:SetScript("OnEvent", function(self)
-		if not db.elements.sysinfo then return end
-		ILFrames.sysinfo.ready = true
+	-- PC
+	ILFrames.pc = CreateNewElement("RIGHT", 4, Icons[ndbc.resolution].system, Icons[ndbc.resolution].network)
+	ILFrames.pc.tag = "pc"
+	CreateGraph("fps", 60, 60, ILFrames.pc)
+	ILFrames.pc:RegisterEvent("UPDATE_PENDING_MAIL")
+	ILFrames.pc:SetScript("OnEvent", function(self)
+		if not db.elements.pc then return end
+		ILFrames.pc.ready = true
 		Graphs["fps"].enabled = true
-		ILFrames.sysinfo:UnregisterEvent("UPDATE_PENDING_MAIL")
+		ILFrames.pc:UnregisterEvent("UPDATE_PENDING_MAIL")
 	end)
-	ILFrames.sysinfo.elapsed1 = 1
-	ILFrames.sysinfo.elapsed2 = 5
-	ILFrames.sysinfo:SetScript("OnUpdate", function(self, elapsed) 
-		if not db.elements.sysinfo then return end
-		if ILFrames.sysinfo.ready then
+	ILFrames.pc.elapsed1 = 1
+	ILFrames.pc.elapsed2 = 5
+	ILFrames.pc:SetScript("OnUpdate", function(self, elapsed) 
+		if not db.elements.pc then return end
+		if ILFrames.pc.ready then
 			self.elapsed1 = self.elapsed1 + elapsed
 			self.elapsed2 = self.elapsed2 + elapsed
 			if self.elapsed1 >= 1 then
 				-- FPS update
-				SysInfo_Update(self, true)
+				PC_Update(self, true)
 				self.elapsed1 = 0
 			end
 			if self.elapsed2 >= 5 then
-				SysInfo_Update(self, false)
+				PC_Update(self, false)
 				self.elapsed2 = 0
 			end
 		end
 	end)
-	ILFrames.sysinfo:SetScript("OnEnter", function(self) SysInfo_OnEnter(self) end)
-	ILFrames.sysinfo:SetScript("OnLeave", function(self) SysInfo_OnLeave(self) end)
 	
 	-- Spec Button
-	ILFrames.spec = CreateTextButtonFrame("RIGHT")
+	ILFrames.spec = CreateNewElement("RIGHT", 2, nil)
 	ILFrames.spec.tag = "spec"
 	ILFrames.spec:RegisterEvent("PLAYER_ENTERING_WORLD")
 	ILFrames.spec:RegisterEvent("UPDATE_PENDING_MAIL")
 	ILFrames.spec:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED")
 	ILFrames.spec:RegisterEvent("EQUIPMENT_SETS_CHANGED")
 	ILFrames.spec:RegisterEvent("PLAYER_EQUIPMENT_CHANGED")
-	--ILFrames.spec:RegisterEvent("EQUIPMENT_SWAP_FINISHED")
 	ILFrames.spec:SetScript("OnEvent", function(self) 
 		if not db.elements.specchanger then return end
 		if event == "UPDATE_PENDING_MAIL" then
@@ -3634,10 +3567,9 @@ function InfoLine:CreateFrames()
 		end
 		Spec_Update(self)
 	end)
-	ILFrames.spec:SetScript("OnEnter", function(self) Spec_OnEnter(self) end)
 	
 	-- Layout Button
-	ILFrames.layout = CreateTextButtonFrame("RIGHT")
+	ILFrames.layout = CreateNewElement("RIGHT", 1, Icons[ndbc.resolution].layout_dt, 32)
 	ILFrames.layout.tag = "layout"
 	ILFrames.layout:RegisterEvent("PLAYER_ENTERING_WORLD")
 	ILFrames.layout:SetScript("OnEvent", function(self) 
@@ -3662,9 +3594,9 @@ function InfoLine:UpdateAllInfo()
 	InfoLine_Durability_Update(ILFrames.durability)
 	InfoLine_Bag_Update(ILFrames.bag)
 	Currency_Update(ILFrames.currency)
-	InfoLine_XR_Update(ILFrames.xr)
+	InfoLine_XR_Update(ILFrames.xprep)
 	Clock_Update(ILFrames.clock, true)
-	SysInfo_Update(ILFrames.sysinfo, true)
+	PC_Update(ILFrames.pc, true)
 	Spec_Update(ILFrames.spec)
 	Layout_Update(ILFrames.layout)
 	Meter_Update(ILFrames.meters)
@@ -3676,11 +3608,11 @@ function InfoLine:Refresh()
 	TextColorNormalVals = db.colors.normal
 	if db.colors.classcolorhighlight then
 		local classColor = nibRealUI:GetClassColor(nibRealUI.class) or {1, 1, 1}
-		TextColorHighlight = ColorTableToStr(classColor)
-		TextColorHighlightVals = {classColor[1], classColor[2], classColor[3]}
+		HighlightColor = ColorTableToStr(classColor)
+		HighlightColorVals = {classColor[1], classColor[2], classColor[3]}
 	else
-		TextColorHighlight = ColorTableToStr(db.colors.highlight)
-		TextColorHighlightVals = db.colors.highlight
+		HighlightColor = ColorTableToStr(db.colors.highlight)
+		HighlightColorVals = db.colors.highlight
 	end
 	TextColorDisabledVals = db.colors.disabled
 	TextColorWhite = ColorTableToStr({1, 1, 1})
@@ -3697,12 +3629,8 @@ function InfoLine:Refresh()
 	-- Update
 	InfoLine:UpdateFont()
 	InfoLine:UpdatePositions()
-	InfoLine:UpdateTextures()
 	
-	InfoLine:UpdateIconButtonColors()
-	InfoLine:UpdateTextButtonColors()
-	
-	InfoLine:UpdateAllInfo()
+	-- InfoLine:UpdateAllInfo()
 end
 
 local function ClassColorsUpdate()
@@ -3789,17 +3717,11 @@ function InfoLine:OnInitialize()
 		},
 		profile = {
 			position = {
-				xl = 4,
-				xr = 0,
-				xgap = 12,
-				y = 0,
+				xgap = 8,
+				yoff = 6,
 			},
 			text = {
 				yoffset = 0.5,
-			},
-			iconbuttons = {
-				size = 20,
-				yoffset = 0,
 			},
 			colors = {
 				normal = {1, 1, 1},
@@ -3831,7 +3753,7 @@ function InfoLine:OnInitialize()
 				currency = true,
 				xprep = true,
 				clock = true,
-				sysinfo = true,
+				pc = true,
 				specchanger = true,
 				layoutchanger = true,
 				metertoggle = true,
@@ -3840,14 +3762,10 @@ function InfoLine:OnInitialize()
 				[1] = {
 					tabfontsize = 0,
 					layouttipsize = {width = 186, height = 65},
-					configicon = [[Interface\AddOns\nibRealUI\Media\InfoLine\Config]],
-					metersicon = [[Interface\AddOns\nibRealUI\Media\InfoLine\Meters]],
 				},
 				[2] = {
 					tabfontsize = 1,
 					layouttipsize = {width = 200, height = 68},
-					configicon = [[Interface\AddOns\nibRealUI\Media\InfoLine\Config_HR]],
-					metersicon = [[Interface\AddOns\nibRealUI\Media\InfoLine\Meters_HR]],
 				},
 			},
 		},
