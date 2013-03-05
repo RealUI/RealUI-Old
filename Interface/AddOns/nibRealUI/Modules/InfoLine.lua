@@ -171,7 +171,7 @@ local MicroMenu = {
 		notCheckable = true
 	},
 	{text = COMPACT_UNIT_FRAME_PROFILE_AUTOACTIVATEPVP,
-		func = function() ToggleFrame(PVPFrame) end,
+		func = function() TogglePVPUI() end,
 		notCheckable = true
 	},
 	{text = ACHIEVEMENTS_GUILD_TAB,
