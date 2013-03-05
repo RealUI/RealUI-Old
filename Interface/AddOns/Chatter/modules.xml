@@ -7,7 +7,6 @@
 	<Script file="Modules\PlayerNames.lua" />
 	<Script file="Modules\StickyChannels.lua" />
 	<Script file="Modules\UrlCopy.lua" />
-	<!-- <Script file="Modules\ChatLink.lua" /> //-->
 	<Script file="Modules\EditBox.lua" />
 	<Script file="Modules\ChatFont.lua" />
 	<Script file="Modules\CopyChat.lua" />

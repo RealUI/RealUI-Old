@@ -223,9 +223,7 @@ function mod:OnInitialize()
 end
 
 function mod:Decorate(frame)
-	if not self:IsHooked(frame,"AddMessage") then
-		self:RawHook(frame, "AddMessage", true)
-	end
+	self:RawHook(frame, "AddMessage", true)
 end
 
 function mod:LA_SetAlt(event,main,alt,source)
@@ -268,6 +266,7 @@ function mod:OnEnable()
 	for index,name in ipairs(self.TempChatFrames) do
 		local cf = _G[name]
 		if cf then
+			cf.altHooked = true
 			self:RawHook(cf, "AddMessage", true)
 		end
 	end

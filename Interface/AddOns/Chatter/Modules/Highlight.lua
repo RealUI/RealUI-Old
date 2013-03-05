@@ -28,90 +28,69 @@ local defaults = {
 		useSink = true,
 		rerouteMessage = true,
 		customChannels = {},
-		sinkOptions = {}
+		sinkOptions = {},
+		highlights = {}
 	}
 }
 
 local options = {
-	defaultOptions = {
-		type = "group",
-		name = L["Options"],
-		order = 1,
-		args = {
-			sound = {
-				type = "toggle",
-				name = L["Use sound"],
-				desc = L["Play a soundfile when one of your keywords is said."],
-				get = function()
-					return mod.db.profile.sound
-				end,
-				set = function(info, v)
-					mod.db.profile.sound = v
-				end
-			},
-			sink = {
-				type = "toggle",
-				name = L["Show SCT message"],
-				desc = L["Show highlights in your SCT mod"],
-				order = 21,
-				get = function()
-					return mod.db.profile.useSink
-				end,
-				set = function(info, v)
-					mod.db.profile.useSink = v
-				end
-			},
-			rerouteMessage = {
-				type = "toggle",
-				name = L["Reroute whole message to SCT"],
-				desc = L["Reroute whole message to SCT instead of just displaying 'who said keyword in channel'"],
-				order = 22,
-				get = function()
-					return mod.db.profile.rerouteMessage
-				end,
-				set = function(info, v)
-					mod.db.profile.rerouteMessage = v
-				end,
-				disabled = function() return not mod.db.profile.useSink end
-			},
-			soundFile = {
-				type = "select",
-				name = L["Sound File"],
-				desc = L["Sound file to play"],
-				get = function()
-					return mod.db.profile.soundFile
-				end,
-				set = function(info, v)
-					mod.db.profile.soundFile = v
-					PlaySoundFile(Media:Fetch("sound", v))
-				end,
-				dialogControl = "LSM30_Sound",
-				values = function () if Media:HashTable("sound") then return Media:HashTable("sound") else return defSound end end,
-				disabled = function() return not mod.db.profile.sound end
-			},
-			addWord = {
-				type = "input",
-				name = L["Add Word"],
-				desc = L["Add word to your highlight list"],
-				get = function() end,
-				set = function(info, v)
-					-- no whitespace only stuff
-					if v:match("^%s*$") then return end
-					mod.db.profile.words[v:lower()] = v
-				end
-			},
-			removeWord = {
-				type = "select",
-				name = L["Remove Word"],
-				desc = L["Remove a word from your highlight list"],
-				get = function() end,
-				set = function(info, v)
-					mod.db.profile.words[v:lower()] = nil
-				end,
-				values = function() return mod.db.profile.words end,
-				confirm = function(info, v) return (L["Remove this word from your highlights?"]) end
-			}
-		}
+	sound = {
+		type = "toggle",
+		name = L["Use sound"],
+		desc = L["Play a soundfile when one of your keywords is said."],
+		get = function()
+			return mod.db.profile.sound
+		end,
+		set = function(info, v)
+			mod.db.profile.sound = v
+		end
+		},
+	--sink = {
+	--	type = "toggle",
+	--	name = L["Show SCT message"],
+	--	desc = L["Show highlights in your SCT mod"],
+	--	order = 21,
+	--	get = function()
+	--		return mod.db.profile.useSink
+	--	end,
+	--	set = function(info, v)
+	--		mod.db.profile.useSink = v
+	--	end
+	--},
+	rerouteMessage = {
+		type = "toggle",
+		name = L["Reroute whole message to SCT"],
+		desc = L["Reroute whole message to SCT instead of just displaying 'who said keyword in channel'"],
+		order = 22,
+		get = function()
+			return mod.db.profile.rerouteMessage
+		end,
+		set = function(info, v)
+			mod.db.profile.rerouteMessage = v
+		end,
+		disabled = function() return not mod.db.profile.useSink end
+	},
+	addWord = {
+		type = "input",
+		name = L["Add Word"],
+		desc = L["Add word to your highlight list"],
+		get = function() end,
+		set = function(info, v)
+			-- no whitespace only stuff
+			if v:match("^%s*$") then return end
+			mod.db.profile.words[v:lower()] = v
+		end
+	},
+	removeWord = {
+		type = "select",
+		name = L["Remove Word"],
+		desc = L["Remove a word from your highlight list"],
+		get = function() end,
+		set = function(info, v)
+			mod.db.profile.words[v:lower()] = nil
+		end,
+		values = function() return mod.db.profile.words end,
+		confirm = function(info, v) return (L["Remove this word from your highlights?"]) end
 	},
 	config = {
 		type = "group",
@@ -164,6 +143,7 @@ function mod:OnEnable()
 		"YELL", CHAT_MSG_YELL
 	)
 	self.urlcopy = Chatter:GetModule("URL Copy")
+	mod.db.profile.useSink = true
 end
 
 function mod:CHAT_MSG_CHANNEL_NOTICE(evt, notice)
@@ -176,16 +156,34 @@ function mod:AddCustomChannels(...)
 		local id, name = select(i, ...)
 		if not options[name:gsub(" ", "_")] then
 			options.config.args[name:gsub(" ", "_")] = {
-				type = "select",
+				type = "group",
 				name = name,
-				values = Media:HashTable("sound") or {},
-				desc = L["Play a sound when a message is received in this channel"],
-				order = type(id) == "number" and 103 or 102,
-				get = function() return self.db.profile.customChannels[id] or "None" end,
-				set = function(info, v)
-					self.db.profile.customChannels[id] = v
-					PlaySoundFile(Media:Fetch("sound", v))
-				end
+				args = {
+					sound = {
+						type = "select",
+						name = L["Use sound"],
+						values = Media:HashTable("sound") or {},
+						dialogControl = "LSM30_Sound",
+						desc = L["Play a sound when a message is received in this channel"],
+						order = type(id) == "number" and 103 or 102,
+						get = function() return self.db.profile.customChannels[id] or "None" end,
+						set = function(info, v)
+							self.db.profile.customChannels[id] = v
+							PlaySoundFile(Media:Fetch("sound", v))
+						end
+					},
+					highlight = {
+						type = "toggle",
+						name = L["Enable"].." "..L["Highlights"],
+						desc = L["Alerts you when someone says a keyword or speaks in a specified channel."],
+						get = function()
+							return self.db.profile.highlights[""..id]
+						end,
+						set = function(info, v)
+							self.db.profile.highlights[""..id] = v
+						end
+					}
+				}
 			}
 		end
 	end
@@ -193,7 +191,6 @@ end
 
 function mod:ParseChat(evt, msg, sender, ...)
 	if sender == player then return end
-
 	local filters = ChatFrame_GetMessageEventFilters(evt)
 	if filters then
 		for i, filterFunc in ipairs(filters) do
@@ -205,32 +202,31 @@ function mod:ParseChat(evt, msg, sender, ...)
 		end
 	end
 
-	if self.urlcopy and self.urlcopy:IsEnabled() then
-		local match = self.urlcopy.filterFunc(nil, nil, msg)
-		if not match then return end
-	end
-
 	local msg = msg:lower()
 	for k, v in pairs(words) do
-		if msg:find(k) then
-			self:Highlight(msg, sender, k, select(7, ...), evt)
-			return
-		end
-	end
-
-	if evt == "CHAT_MSG_CHANNEL" then
-		local num = select(6, ...)
-		local snd = self.db.profile.customChannels[num]
-		if snd then
-			PlaySoundFile(Media:Fetch("sound", snd))
-			return
-		end
-	else
-		local e = evt:gsub("^CHAT_MSG_", "")
-		local snd = self.db.profile.customChannels[e]
-		if snd then
-			PlaySoundFile(Media:Fetch("sound", snd))
-			return
+		local found = false
+		for item in msg:gmatch("[^%s]+") do
+			if item == k then
+				found = true
+			end
+		end			
+		if found then
+			-- check to see if we need to highlight
+			if evt == "CHAT_MSG_CHANNEL" then
+				local num = select(7, ...)
+				local hl = self.db.profile.highlights[""..num]
+				if hl then
+					self:Highlight(msg, sender, k, num, evt)
+					return
+				end
+			else
+				local e = evt:gsub("^CHAT_MSG_", "")
+				local hl = self.db.profile.highlights[""..e]
+				if hl then
+					self:Highlight(msg, sender, k, e, evt)
+					return
+				end
+			end
 		end
 	end
 end
@@ -240,7 +236,9 @@ function mod:Highlight(msg, who, what, where, event)
 		where = _G[event] or event:gsub("CHAT_MSG_", "")
 	end
 	if self.db.profile.sound then
-		PlaySoundFile(Media:Fetch("sound", self.db.profile.soundFile))
+		if self.db.profile.customChannels[where] ~= nil then
+			PlaySoundFile(Media:Fetch("sound", self.db.profile.customChannels[where]))
+		end
 	end
 	if self.db.profile.useSink then
 		if mod.db.profile.rerouteMessage then

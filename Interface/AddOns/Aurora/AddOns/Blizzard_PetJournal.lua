@@ -6,6 +6,30 @@ C.modules["Blizzard_PetJournal"] = function()
 	local PetJournal = PetJournal
 	local MountJournal = MountJournal
 
+	if IsAddOnLoaded("BattlePetTabs") then
+			PetJournal:HookScript("OnShow", function(self)
+				if not self.styledTabs then
+					BattlePetTabsTab1:SetPoint("TOPLEFT", "$parent", "BOTTOMLEFT", 10, 0)
+					for i = 1, 8 do
+						local bu = _G["BattlePetTabsTab"..i.."Button"]
+
+						_G["BattlePetTabsTab"..i]:GetRegions():Hide()
+
+						bu:SetNormalTexture("")
+						bu:SetPushedTexture("")
+						bu:SetCheckedTexture(C.media.checked)
+
+						F.CreateBG(bu)
+						F.CreateSD(bu, 5, 0, 0, 0, 1, 1)
+
+						_G["BattlePetTabsTab"..i.."ButtonIconTexture"]:SetTexCoord(.08, .92, .08, .92)
+					end
+
+					self.styledTabs = true
+				end
+			end)
+		end
+
 	for i = 1, 14 do
 		if i ~= 8 then
 			select(i, PetJournalParent:GetRegions()):Hide()
@@ -101,17 +125,6 @@ C.modules["Blizzard_PetJournal"] = function()
 		for i = 1, #buttons do
 			local bu = buttons[i]
 			if bu.index ~= nil then
-				if i == 1 then
-					bu.bg:SetPoint("TOPLEFT", 0, -1)
-					bu.bg:SetPoint("BOTTOMRIGHT", -1, 1)
-					bu.selectedTexture:SetPoint("TOPLEFT", 0, -1)
-					bu.selectedTexture:SetPoint("BOTTOMRIGHT", -1, 1)
-				else
-					bu.bg:SetPoint("TOPLEFT", 0, -1)
-					bu.bg:SetPoint("BOTTOMRIGHT", 0, 1)
-					bu.selectedTexture:SetPoint("TOPLEFT", 0, -1)
-					bu.selectedTexture:SetPoint("BOTTOMRIGHT", 0, 1)
-				end
 				bu.bg:Show()
 				bu.icon:Show()
 				bu.icon.bg:Show()
@@ -123,9 +136,14 @@ C.modules["Blizzard_PetJournal"] = function()
 		end
 	end
 
+	local bu1 = MountJournal.ListScrollFrame.buttons[1]
+	bu1.bg:SetPoint("TOPLEFT", 0, -1)
+	bu1.bg:SetPoint("BOTTOMRIGHT", -1, 1)
+	bu1.selectedTexture:SetPoint("TOPLEFT", 0, -1)
+	bu1.selectedTexture:SetPoint("BOTTOMRIGHT", -1, 1)
+
 	hooksecurefunc("MountJournal_UpdateMountList", updateScroll)
-	MountJournalListScrollFrame:HookScript("OnVerticalScroll", updateScroll)
-	MountJournalListScrollFrame:HookScript("OnMouseWheel", updateScroll)
+	hooksecurefunc(MountJournalListScrollFrame, "update", updateScroll)
 
 	local tooltips = {PetJournalPrimaryAbilityTooltip, PetJournalSecondaryAbilityTooltip}
 	for _, f in pairs(tooltips) do
@@ -295,19 +313,13 @@ C.modules["Blizzard_PetJournal"] = function()
 						bu.name:SetTextColor(.5, .5, .5)
 					end
 				end
-
-				if i == 1 then
-					bu.selectedTexture:SetPoint("TOPLEFT", 0, -1)
-					bu.selectedTexture:SetPoint("BOTTOMRIGHT", -1, 1)
-				else
-					bu.selectedTexture:SetPoint("TOPLEFT", 0, -1)
-					bu.selectedTexture:SetPoint("BOTTOMRIGHT", 0, 1)
-				end
 			end
 		end
 	end
 
+	PetJournal.listScroll.buttons[1].selectedTexture:SetPoint("TOPLEFT", 0, -1)
+	PetJournal.listScroll.buttons[1].selectedTexture:SetPoint("BOTTOMRIGHT", -1, 1)
+
 	hooksecurefunc("PetJournal_UpdatePetList", ColourPetQuality)
-	PetJournalListScrollFrame:HookScript("OnVerticalScroll", ColourPetQuality)
-	PetJournalListScrollFrame:HookScript("OnMouseWheel", ColourPetQuality)
+	hooksecurefunc(PetJournalListScrollFrame, "update", ColourPetQuality)
 end

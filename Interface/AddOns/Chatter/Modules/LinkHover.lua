@@ -14,10 +14,8 @@ local linkTypes = {
 }
 
 function mod:Decorate(frame)
-	if not self:IsHooked(frame,"OnHyperlinkEnter") then
-		self:HookScript(frame, "OnHyperlinkEnter", OnHyperlinkEnter)
-		self:HookScript(frame, "OnHyperlinkLeave", OnHyperlinkLeave)
-	end
+	self:HookScript(frame, "OnHyperlinkEnter", OnHyperlinkEnter)
+	self:HookScript(frame, "OnHyperlinkLeave", OnHyperlinkLeave)
 end
 
 function mod:OnEnable()

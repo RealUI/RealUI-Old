@@ -14,7 +14,7 @@ local defaults = {
 	}
 }
 
-local outlines = {[""] = "None", ["OUTLINE"] = "Outline", ["THICKOUTLINE"] = "Thick Outline"}
+local outlines = {[""] = "None", ["OUTLINE"] = "Outline", ["THICKOUTLINE"] = "Thick Outline", ["OUTLINEMONOCHROME"] = "Monochrome"}
 
 local options = {
 	font = {

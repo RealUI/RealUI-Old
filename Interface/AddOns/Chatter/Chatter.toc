@@ -4,18 +4,21 @@
 ## Notes-zhTW: 一個輕量級的聊天增強插件
 ## Notes-zhCN: 一个轻量级的聊天增强插件
 ## Author: Antiarc
-## OptionalDeps: Ace3, LibSharedMedia-3.0, LibSink-2.0, LibAlts-1.0, LibDialog-1.0
 ## X-Category: Chat/Communication
-## Version: v1.4.1
+## Version: 1.4.3
 ## SavedVariables: ChatterDB
-## X-Curse-Packaged-Version: v1.4.1
+## X-Curse-Packaged-Version: 1.4.3
 ## X-Curse-Project-Name: Chatter
 ## X-Curse-Project-ID: chatter
 ## X-Curse-Repository-ID: wow/chatter/mainline
 
+## OptionalDeps: Ace3, LibSharedMedia-3.0, LibSink-2.0, LibAlts-1.0, LibDialog-1.0, LibChatAnims
+## X-Embeds: Ace3, LibSharedMedia-3.0, LibSink-2.0, LibAlts-1.0, LibDialog-1.0, LibChatAnims
+
 #@no-lib-strip@
 Libs\LibStub\LibStub.lua
 Libs\CallbackHandler-1.0\CallbackHandler-1.0.xml
+Libs\LibChatAnims\LibChatAnims.xml
 Libs\AceAddon-3.0\AceAddon-3.0.xml
 Libs\AceEvent-3.0\AceEvent-3.0.xml
 Libs\AceHook-3.0\AceHook-3.0.xml
@@ -46,3 +49,4 @@ Localization\koKR.lua
 
 Chatter.lua
 modules.xml
+

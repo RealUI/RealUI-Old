@@ -1,5 +1,5 @@
 ## Interface: 50100
-## Version: 11.431
+## Version: 11.604
 ## Title: BadBoy
 ## Notes: A simple spam blocker & reporter.
 ## Notes-deDE: A simple spam blocker & reporter.
@@ -17,10 +17,15 @@
 ## X-Credits: Shadowed(API hunting), Ellipsis(remembering odd things), Anea(original SpamSentry blacklist in BadBoy v1), WoW Community(for reporting spam)
 ## X-Category: Chat/Communication
 ## X-License: All Rights Reserved
-## X-Curse-Packaged-Version: v11.431
+## X-Curse-Packaged-Version: v11.604
 ## X-Curse-Project-Name: BadBoy: Spam Blocker & Reporter
 ## X-Curse-Project-ID: bad-boy
 ## X-Curse-Repository-ID: wow/bad-boy/mainline
+
+## OptionalDeps: LibChatAnims
+## X-Embeds: LibChatAnims
+
+embeds.xml
 
 SimpleOptions.lua
 BadBoy.lua

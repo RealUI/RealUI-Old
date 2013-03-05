@@ -380,3 +380,6 @@ L["Class icons"] = "Class icons"
 
 L["RealID"] = "RealID"
 L["Instance"] = "Instance"
+
+L["Enemy healing done"] = "Enemy healing done"
+L["Enemy healing taken"] = "Enemy healing taken"

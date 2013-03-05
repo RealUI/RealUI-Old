@@ -103,6 +103,15 @@ function mod:HideResizers(f)
 	f.resizeLeft:Hide()
 	f.resizeLeft:Hide()
 end
+--[[
+	Decorate new popuut windows with resizers
+--]]
+function mod:Decorate(frame)
+	self:MakeResizers(frame)
+	local b = _G[("ChatFrame%dResizeButton"):format(frame:GetID())]
+	b:SetScript("OnShow", b.Hide)
+	b:Hide()	
+end
 
 function mod:OnEnable()
 	for i = 1, NUM_CHAT_WINDOWS do

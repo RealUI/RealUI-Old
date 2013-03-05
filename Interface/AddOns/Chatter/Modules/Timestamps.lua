@@ -34,10 +34,12 @@ local CHATFRAMES = {
 	["Frame16"] = L["Chat Frame "].."16",
 	["Frame17"] = L["Chat Frame "].."17",
 	["Frame18"] = L["Chat Frame "].."18",
+	["Frame19"] = L["Chat Frame "].."19",
+	["Frame20"] = L["Chat Frame "].."20",
 }
 
 local defaults = {
-	profile = { format = "%X", color = { r = 0.45, g = 0.45, b = 0.45 }, frames = {["Frame1"] = true, ["Frame3"] = true, ["Frame4"] = true, ["Frame5"] = true, ["Frame6"] = true, ["Frame7"] = true} }
+	profile = { format = "%X", color = { r = 0.45, g = 0.45, b = 0.45 }, frames = {["Frame1"] = true, ["Frame3"] = true, ["Frame4"] = true, ["Frame5"] = true, ["Frame6"] = true, ["Frame7"] = true, ["Frame11"]=true,["Frame12"]=true,["Frame13"]=true,["Frame14"]=true,["Frame15"]=true,["Frame16"]=true,["Frame17"]=true,["Frame18"]=true,["Frame19"]=true,["Frame20"]=true,} }
 }
 
 local options = {
@@ -105,9 +107,7 @@ function mod:OnInitialize()
 end
 
 function mod:Decorate(frame)
-	if not self:IsHooked(frame,"AddMessage") then
-		self:RawHook(frame, "AddMessage", true)
-	end
+	self:RawHook(frame, "AddMessage", true)
 end
 
 function mod:OnEnable()

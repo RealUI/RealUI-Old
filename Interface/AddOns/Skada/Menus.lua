@@ -321,8 +321,8 @@ function Skada:SegmentMenu(window)
 		info.text = L["Total"]
 		info.func = function()
 						window.selectedset = "total"
-						window.changed = true
-						Skada:UpdateDisplay(false)
+	            				Skada:Wipe()
+						Skada:UpdateDisplay(true)
 					end
 		info.checked = (window.selectedset == "total")
 		UIDropDownMenu_AddButton(info, level)
@@ -331,8 +331,8 @@ function Skada:SegmentMenu(window)
 		info.text = L["Current"]
 		info.func = function()
 						window.selectedset = "current"
-						window.changed = true
-						Skada:UpdateDisplay(false)
+	            				Skada:Wipe()
+						Skada:UpdateDisplay(true)
 					end
 		info.checked = (window.selectedset == "current")
 		UIDropDownMenu_AddButton(info, level)
@@ -342,8 +342,8 @@ function Skada:SegmentMenu(window)
 			info.text = set.name..": "..date("%H:%M",set.starttime).." - "..date("%H:%M",set.endtime)
 			info.func = function()
 							window.selectedset = i
-							window.changed = true
-							Skada:UpdateDisplay(false)
+	            					Skada:Wipe()
+							Skada:UpdateDisplay(true)
 						end
 			info.checked = (window.selectedset == i)
 			UIDropDownMenu_AddButton(info, level)
