@@ -1,7 +1,7 @@
 --[[--------------------------------------------------------------------
 	Grid
 	Compact party and raid unit frames.
-	Copyright (c) 2006-2012 Kyle Smith (a.k.a. Pastamancer), A. Kinley (a.k.a. Phanx) <addons@phanx.net>
+	Copyright (c) 2006-2013 Kyle Smith (Pastamancer), A. Kinley (Phanx)
 	All rights reserved.
 	See the accompanying README and LICENSE files for more information.
 	http://www.wowinterface.com/downloads/info5747-Grid.html
@@ -9,7 +9,7 @@
 	http://www.curse.com/addons/wow/grid
 ------------------------------------------------------------------------
 	GridLocale-zhCN.lua
-	Simplified Chinese (简体中文) localization.
+	Simplified Chinese localization
 	Contributors: ananhaid, candykiss, flyflame, Ghostar, isler, samuelcup, wowuicn, yleaf
 ----------------------------------------------------------------------]]
 
@@ -24,8 +24,8 @@ Grid.L = L
 
 L["Debug"] = "除错"
 L["Debugging"] = "除错中"
-L["Hide minimap icon"] = "隐藏迷你地图图标"
 L["Module debugging menu."] = "除错模块功能表。"
+L["Show minimap icon"] = "显示迷你地图图标"
 L["Toggle debugging for %s."] = "切换%s除错。"
 
 ------------------------------------------------------------------------
@@ -153,14 +153,12 @@ L["Color options for class and pets."] = "玩家和宠物的颜色选项。"
 L["Colors"] = "颜色"
 L["Creature type colors"] = "生物种类颜色"
 L["Demon"] = "恶魔"
-L["Do not show the tab when Grid is unlocked."] = "当未锁定 Grid 时不显示标签。"
 L["Dragonkin"] = "龙类"
 L["Drag this tab to move Grid."] = "拖动此标签移动 Grid。"
 L["Elemental"] = "元素"
 L["Fallback colors"] = "已知颜色"
 L["Frame lock"] = "锁定框架"
 L["Group Anchor"] = "队伍锚点"
-L["Hide tab"] = "隐藏标签"
 L["Horizontal groups"] = "横向排列队伍"
 L["Humanoid"] = "人型"
 L["Layout"] = "布局"
@@ -188,7 +186,9 @@ L["Sets where Grid is anchored relative to the screen."] = "设置屏幕中 Grid
 L["Sets where groups are anchored relative to the layout frame."] = "设置布局中队伍的锚点。"
 L["Set the coloring strategy of pet units."] = "设置宠物颜色策略。"
 L["Set the color of pet units."] = "设定宠物的颜色。"
+L["Show a tab for dragging when Grid is unlocked."] = "当未锁定 Grid 时显示标签。"
 L["Show Frame"] = "显示框架"
+L["Show tab"] = "显示标签"
 L["Solo Layout"] = "单人布局"
 L["Spacing"] = "空隙"
 L["Switch between horizontal/vertical groups."] = "选择横向/竖向显示队伍。"

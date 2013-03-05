@@ -1,7 +1,7 @@
 --[[--------------------------------------------------------------------
 	Grid
 	Compact party and raid unit frames.
-	Copyright (c) 2006-2012 Kyle Smith (a.k.a. Pastamancer), A. Kinley (a.k.a. Phanx) <addons@phanx.net>
+	Copyright (c) 2006-2013 Kyle Smith (Pastamancer), A. Kinley (Phanx)
 	All rights reserved.
 	See the accompanying README and LICENSE files for more information.
 	http://www.wowinterface.com/downloads/info5747-Grid.html
@@ -12,13 +12,10 @@
 	GridStatus module for showing incoming resurrections.
 ----------------------------------------------------------------------]]
 
-if select(4, GetBuildInfo()) < 50000 then
-	return -- LibResInfo is not compatible with WoW 4.x
-end
-
 local _, Grid = ...
 local L = Grid.L
 
+local LibResInfo
 local GridRoster = Grid:GetModule("GridRoster")
 
 local GridStatusResurrect = Grid:NewStatusModule("GridStatusResurrect", "AceTimer-3.0")
@@ -83,13 +80,13 @@ end
 function GridStatusResurrect:OnStatusEnable(status)
 	self:Debug("OnStatusEnable", status)
 
-	local LibResInfo = LibStub("LibResInfo-1.0")
-	LibResInfo.RegisterCallback(self, "LibResInfo_ResCastStarted", "UpdateAllUnits")
-	LibResInfo.RegisterCallback(self, "LibResInfo_ResCastCancelled", "UpdateAllUnits")
-	LibResInfo.RegisterCallback(self, "LibResInfo_ResCastFinished", "UpdateAllUnits")
-	LibResInfo.RegisterCallback(self, "LibResInfo_ResPending", "UpdateAllUnits")
-	LibResInfo.RegisterCallback(self, "LibResInfo_ResUsed", "UpdateAllUnits")
-	LibResInfo.RegisterCallback(self, "LibResInfo_ResExpired", "UpdateAllUnits")
+	LibResInfo = LibStub("LibResInfo-1.0")
+	LibResInfo.RegisterCallback(self, "LibResInfo_ResCastStarted", "HandleCallback")
+	LibResInfo.RegisterCallback(self, "LibResInfo_ResCastCancelled", "HandleCallback")
+	LibResInfo.RegisterCallback(self, "LibResInfo_ResCastFinished", "HandleCallback")
+	LibResInfo.RegisterCallback(self, "LibResInfo_ResPending", "HandleCallback")
+	LibResInfo.RegisterCallback(self, "LibResInfo_ResUsed", "HandleCallback")
+	LibResInfo.RegisterCallback(self, "LibResInfo_ResExpired", "HandleCallback")
 
 	self:RegisterMessage("Grid_RosterUpdated", "UpdateAllUnits")
 end
@@ -100,7 +97,6 @@ function GridStatusResurrect:OnStatusDisable(status)
 	local LibResInfo = LibStub("LibResInfo-1.0")
 	LibResInfo.UnregisterAllCallbacks(self)
 
-	self:UnregisterMessage("Grid_RosterUpdated")
 	self.core:SendStatusLostAllUnits("alert_resurrect")
 end
 
@@ -108,37 +104,47 @@ end
 
 function GridStatusResurrect:UpdateAllUnits(event)
 	self:Debug("UpdateAllUnits", event)
-
-	local LibResInfo = LibStub("LibResInfo-1.0")
-	local db = self.db.profile.alert_resurrect
-	local now = GetTime()
-
 	for guid, unit in GridRoster:IterateRoster() do
-		local hasRes, endTime, casterUnit, casterGUID = LibResInfo:UnitHasIncomingRes(guid)
-		if hasRes and (hasRes == "CASTING" or db.showUntilUsed) then
+		self:UpdateUnit(unit, guid)
+	end
+end
 
-			local _, _, _, icon, startTime = casterUnit and UnitCastingInfo(casterUnit)
-			local duration
-			if startTime then
-				startTime = startTime / 1000
-				duration = endTime - startTime
-			else
-				startTime = endTime - 60
-				duration = 60
-			end
+function GridStatusResurrect:HandleCallback(callback, targetUnit, targetGUID, casterUnit, casterGUID, endTime)
+	self:Debug(callback, targetUnit, casterUnit)
+	self:UpdateUnit(targetUnit, targetGUID)
+end
 
-			self.core:SendStatusGained(guid, "alert_resurrect",
-				db.priority,
-				nil,
-				hasRes == "PENDING" and db.color2 or db.color,
-				db.text,
-				nil,
-				nil,
-				icon,
-				startTime,
-				duration)
+function GridStatusResurrect:UpdateUnit(unit, guid)
+	if not unit then return end
+	if not guid then guid = UnitGUID(unitid) end
+	if not GridRoster:IsGUIDInRaid(guid) then return end
+
+	local db = self.db.profile.alert_resurrect
+	local hasRes, endTime, casterUnit, casterGUID = LibResInfo:UnitHasIncomingRes(guid)
+
+	if hasRes and (hasRes == "CASTING" or db.showUntilUsed) then
+		local icon, startTime, duration, _
+		if hasRes == "CASTING" then
+			_, _, _, icon, startTime = UnitCastingInfo(casterUnit)
+			startTime = startTime / 1000
+			duration = endTime - startTime
 		else
-			self.core:SendStatusLost(guid, "alert_resurrect")
+			icon = "Interface\\Icons\\Spell_Nature_Reincarnation"
+			startTime = endTime - 60
+			duration = 60
 		end
+
+		self.core:SendStatusGained(guid, "alert_resurrect",
+			db.priority,
+			nil,
+			hasRes == "PENDING" and db.color2 or db.color,
+			db.text,
+			nil,
+			nil,
+			icon,
+			startTime,
+			duration)
+	else
+		self.core:SendStatusLost(guid, "alert_resurrect")
 	end
 end

@@ -488,38 +488,6 @@ end
 function nibRealUI:PLAYER_LOGIN()
 	-- Check if Installation/Patch is necessary
 	nibRealUI:InstallProcedure()
-	
-	if not dbc.cbResetNew and IsAddOnLoaded("cargBags_Nivaya") then
-		cB_KnownItems = {}
-		for i = 0,4 do
-			local tNumSlots = GetContainerNumSlots(i)
-			if tNumSlots > 0 then
-				for j = 1,tNumSlots do
-					local tLink = GetContainerItemLink(i,j)
-					if tLink then
-						if (strsub(tLink, 13, 21) == "battlepet") then
-							local _, tName = strmatch(tLink, "|H(.-)|h(.-)|h")
-							local _,tStackCount = GetContainerItemInfo(i,j)
-							if cB_KnownItems[tName] then
-								cB_KnownItems[tName] = cB_KnownItems[tName] + tStackCount
-							else
-								cB_KnownItems[tName] = tStackCount
-							end
-						else	
-							local tName = GetItemInfo(tLink)
-							local _,tStackCount = GetContainerItemInfo(i,j)
-							if cB_KnownItems[tName] then
-								cB_KnownItems[tName] = cB_KnownItems[tName] + tStackCount
-							else
-								cB_KnownItems[tName] = tStackCount
-							end
-						end
-					end
-				end 
-			end
-		end
-		dbc.cbResetNew = true
-	end
 end
 
 function nibRealUI:ADDON_LOADED(event, addon)

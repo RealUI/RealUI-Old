@@ -1,7 +1,7 @@
 --[[--------------------------------------------------------------------
 	Grid
 	Compact party and raid unit frames.
-	Copyright (c) 2006-2012 Kyle Smith (a.k.a. Pastamancer), A. Kinley (a.k.a. Phanx) <addons@phanx.net>
+	Copyright (c) 2006-2013 Kyle Smith (Pastamancer), A. Kinley (Phanx)
 	All rights reserved.
 	See the accompanying README and LICENSE files for more information.
 	http://www.wowinterface.com/downloads/info5747-Grid.html
@@ -9,7 +9,7 @@
 	http://www.curse.com/addons/wow/grid
 ------------------------------------------------------------------------
 	GridLocale-itIT.lua
-	Italian (Italiano) localization.
+	Italian localization
 	Contributors: Holydeath1984, kappesante
 ----------------------------------------------------------------------]]
 
@@ -24,8 +24,8 @@ Grid.L = L
 
 L["Debug"] = "Elimina errori"
 L["Debugging"] = "Eliminazione errori"
-L["Hide minimap icon"] = "Nascondi l'icona della Minimappa"
-L["Module debugging menu."] = "Menu del modulo di correzione errori." -- Needs review
+L["Module debugging menu."] = "Menu del modulo di correzione errori."
+L["Show minimap icon"] = "Mostra l'icona della Minimappa"
 -- L["Toggle debugging for %s."] = ""
 
 ------------------------------------------------------------------------
@@ -68,7 +68,7 @@ L["Frame Texture"] = "Trama del riquadro"
 L["Frame Width"] = "Larghezza del riquadro"
 L["Healing Bar"] = "Barra delle Cure"
 L["Healing Bar Opacity"] = "Opacita' della Barra delle Cure"
-L["Healing Bar Uses Status Color"] = "LA barra cure usa il colore di Stato" -- Needs review
+L["Healing Bar Uses Status Color"] = "La barra cure usa il colore di Stato"
 L["Health Bar"] = "Barra della salute"
 L["Health Bar Color"] = "Colore della barra della salute"
 L["Horizontal"] = "Orizzontale"
@@ -84,21 +84,21 @@ L["Invert Bar Color"] = "Inverti il Colore della Barra"
 L["Never"] = "Mai"
 L["None"] = "Nessuno"
 L["Number of characters to show on Center Text indicator."] = "Numero di caratteri da mostrare nell'indicatore del Testo Centrale"
-L["OOC"] = "NIC" -- Needs review
+L["OOC"] = "NIC"
 -- L["Options for assigning statuses to indicators."] = ""
 L["Options for GridFrame."] = "Opzioni per i riquadri di Grid"
-L["Options for %s indicator."] = "Opzioni per gli indicatori %s" -- Needs review
+L["Options for %s indicator."] = "Opzioni per gli indicatori %s"
 L["Options related to bar indicators."] = "Opzioni degli indicatori della barra"
-L["Options related to icon indicators."] = "Opzioni relative agli indicatori a icona" -- Needs review
-L["Options related to text indicators."] = "Opzioni relative agli indicatori di testo" -- Needs review
+L["Options related to icon indicators."] = "Opzioni relative agli indicatori a icona"
+L["Options related to text indicators."] = "Opzioni relative agli indicatori di testo"
 L["Orientation of Frame"] = "Orientamento del riquadro"
 L["Orientation of Text"] = "Orientamento del Testo"
 L["Set frame orientation."] = "Regola l'orientamento del riquadro"
-L["Set frame text orientation."] = "Stabilisci l'orientamento del testo nel riquadro" -- Needs review
-L["Sets the opacity of the healing bar."] = "Stabilisce l'opacità della barra delle cure" -- Needs review
+L["Set frame text orientation."] = "Stabilisci l'orientamento del testo nel riquadro"
+L["Sets the opacity of the healing bar."] = "Stabilisce l'opacità della barra delle cure"
 L["Show Tooltip"] = "Mostra suggerimenti"
-L["Show unit tooltip.  Choose 'Always', 'Never', or 'OOC'."] = "Mostra suggerimenti unità. Scegli 'Sempre', 'Mai', o 'NIC' " -- Needs review
-L["Statuses"] = "Stati" -- Needs review
+L["Show unit tooltip.  Choose 'Always', 'Never', or 'OOC'."] = "Mostra suggerimenti unità. Scegli 'Sempre', 'Mai', o 'NIC' "
+L["Statuses"] = "Stati"
 L["Swap foreground/background colors on bars."] = "Inverti i colori di primo piano e sfondo sulle barre."
 L["Text Options"] = "Opzioni di testo"
 L["Thick"] = "Spesso"
@@ -107,42 +107,42 @@ L["Thin"] = "Sottile"
 -- L["Throttle updates on group changes. This option may cause delays in updating frames, so you should only enable it if you're experiencing temporary freezes or lockups when people join or leave your group."] = ""
 -- L["Toggle center icon's cooldown frame."] = ""
 -- L["Toggle center icon's stack count text."] = ""
-L["Toggle mouseover highlight."] = "Mostra/nascondi illuminazione al passaggio del mouse." -- Needs review
-L["Toggle status display."] = "Mostra/nascondi stato" -- Needs review
-L["Toggle the font drop shadow effect."] = "Attiva/disattiva l'effetto ombra del carattere." -- Needs review
-L["Toggle the %s indicator."] = "Attiva/disattiva l'indicatore %s" -- Needs review
-L["Top Left Corner"] = "Angolo in alto a sinistra" -- Needs review
-L["Top Right Corner"] = "Angolo in alto a destra" -- Needs review
-L["Vertical"] = "Verticale" -- Needs review
+L["Toggle mouseover highlight."] = "Mostra/nascondi illuminazione al passaggio del mouse."
+L["Toggle status display."] = "Mostra/nascondi stato"
+L["Toggle the font drop shadow effect."] = "Attiva/disattiva l'effetto ombra del carattere."
+L["Toggle the %s indicator."] = "Attiva/disattiva l'indicatore %s"
+L["Top Left Corner"] = "Angolo in alto a sinistra"
+L["Top Right Corner"] = "Angolo in alto a destra"
+L["Vertical"] = "Verticale"
 
 ------------------------------------------------------------------------
 --	GridLayout
 
 -- L["10 Player Raid Layout"] = ""
 -- L["25 Player Raid Layout"] = ""
-L["Adjust background color and alpha."] = "Regola colore e trasparenza dello sfondo." -- Needs review
-L["Adjust border color and alpha."] = "Regola colore e trasparenza del margine." -- Needs review
-L["Adjust frame padding."] = "Regola spazio interno del riquadro." -- Needs review
-L["Adjust frame spacing."] = "Regola lo spazio tra i riquadri." -- Needs review
-L["Adjust Grid scale."] = "Regola la scala di Grid" -- Needs review
-L["Advanced"] = "Avanzato" -- Needs review
-L["Advanced options."] = "Opzioni avanzate." -- Needs review
-L["Allows mouse click through the Grid Frame."] = "Permetti click del mouse attraverso il riquadro di Grid." -- Needs review
+L["Adjust background color and alpha."] = "Regola colore e trasparenza dello sfondo."
+L["Adjust border color and alpha."] = "Regola colore e trasparenza del margine."
+L["Adjust frame padding."] = "Regola spazio interno del riquadro."
+L["Adjust frame spacing."] = "Regola lo spazio tra i riquadri."
+L["Adjust Grid scale."] = "Regola la scala di Grid"
+L["Advanced"] = "Avanzato"
+L["Advanced options."] = "Opzioni avanzate."
+L["Allows mouse click through the Grid Frame."] = "Permetti click del mouse attraverso il riquadro di Grid."
 -- L["Alt-Click to permanantly hide this tab."] = ""
 -- L["Arena Layout"] = ""
-L["Background color"] = "Colore sfondo" -- Needs review
+L["Background color"] = "Colore sfondo"
 -- L["Battleground Layout"] = ""
 -- L["Beast"] = ""
-L["Border color"] = "Colore margine" -- Needs review
-L["Border Texture"] = "Trama margine" -- Needs review
-L["Bottom"] = "Basso" -- Needs review
-L["Bottom Left"] = "In basso a sinistra" -- Needs review
-L["Bottom Right"] = "In basso a destra" -- Needs review
-L["By Creature Type"] = "Per tipo di creatura" -- Needs review
+L["Border color"] = "Colore margine"
+L["Border Texture"] = "Trama margine"
+L["Bottom"] = "Basso"
+L["Bottom Left"] = "In basso a sinistra"
+L["Bottom Right"] = "In basso a destra"
+L["By Creature Type"] = "Per tipo di creatura"
 -- L["By Owner Class"] = ""
-L["Center"] = "Centro" -- Needs review
-L["Choose the layout border texture."] = "Scegli la trama del bordo della disposizione" -- Needs review
-L["Clamped to screen"] = "Mantieni all'interno dello schermo" -- Needs review
+L["Center"] = "Centro"
+L["Choose the layout border texture."] = "Scegli la trama del bordo della disposizione"
+L["Clamped to screen"] = "Mantieni all'interno dello schermo"
 -- L["Class colors"] = ""
 -- L["Click through the Grid Frame"] = ""
 -- L["Color for %s."] = ""
@@ -153,14 +153,12 @@ L["Clamped to screen"] = "Mantieni all'interno dello schermo" -- Needs review
 -- L["Colors"] = ""
 -- L["Creature type colors"] = ""
 -- L["Demon"] = ""
--- L["Do not show the tab when Grid is unlocked."] = ""
 -- L["Dragonkin"] = ""
 -- L["Drag this tab to move Grid."] = ""
 -- L["Elemental"] = ""
 -- L["Fallback colors"] = ""
 -- L["Frame lock"] = ""
 -- L["Group Anchor"] = ""
--- L["Hide tab"] = ""
 -- L["Horizontal groups"] = ""
 -- L["Humanoid"] = ""
 -- L["Layout"] = ""
@@ -188,7 +186,9 @@ L["Clamped to screen"] = "Mantieni all'interno dello schermo" -- Needs review
 -- L["Sets where groups are anchored relative to the layout frame."] = ""
 -- L["Set the coloring strategy of pet units."] = ""
 -- L["Set the color of pet units."] = ""
+-- L["Show a tab for dragging when Grid is unlocked."] = ""
 -- L["Show Frame"] = ""
+-- L["Show tab"] = ""
 -- L["Solo Layout"] = ""
 -- L["Spacing"] = ""
 -- L["Switch between horizontal/vertical groups."] = ""
@@ -307,8 +307,8 @@ L["Clamped to screen"] = "Mantieni all'interno dello schermo" -- Needs review
 -- L["Present or missing"] = ""
 -- L["Refresh interval"] = ""
 -- L["Remove %s from the menu"] = ""
-L["%s colors"] = "colori %s" -- Needs review
-L["%s colors and threshold values."] = "colori e soglia %s" -- Needs review
+L["%s colors"] = "Colori %s"
+L["%s colors and threshold values."] = "Colori e soglia %s"
 -- L["Show duration"] = ""
 -- L["Show if mine"] = ""
 -- L["Show if missing"] = ""
@@ -318,7 +318,7 @@ L["%s colors and threshold values."] = "colori e soglia %s" -- Needs review
 -- L["Show the time left to tenths of a second, instead of only whole seconds."] = ""
 -- L["Show the time remaining, for use with the center icon cooldown."] = ""
 -- L["Show time left to tenths"] = ""
-L["%s is high when it is at or above this value."] = "%s è alto se maggiore o uguale a questo valore." -- Needs review
+L["%s is high when it is at or above this value."] = "%s è alto se maggiore o uguale a questo valore."
 -- L["%s is low when it is at or below this value."] = ""
 -- L["Stack count"] = ""
 -- L["Status Information"] = ""
@@ -406,16 +406,16 @@ L["%s is high when it is at or above this value."] = "%s è alto se maggiore o u
 --	GridStatusTarget
 
 -- L["Target"] = ""
-L["Your Target"] = "Tuo bersaglio" -- Needs review
+L["Your Target"] = "Tuo bersaglio"
 
 ------------------------------------------------------------------------
 --	GridStatusVehicle
 
-L["Driving"] = "Alla guida" -- Needs review
-L["In Vehicle"] = "In un Veicolo" -- Needs review
+L["Driving"] = "Alla guida"
+L["In Vehicle"] = "In un Veicolo"
 
 ------------------------------------------------------------------------
 --	GridStatusVoiceComm
 
-L["Talking"] = "Parlando" -- Needs review
-L["Voice Chat"] = "Chat Vocale" -- Needs review
+L["Talking"] = "Parlando"
+L["Voice Chat"] = "Chat Vocale"

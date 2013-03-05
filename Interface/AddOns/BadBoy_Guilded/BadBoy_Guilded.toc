@@ -1,4 +1,4 @@
-## Interface: 50100
+## Interface: 50200
 ## Version: 2.88
 ## Title: BadBoy_Guilded
 ## Notes: Removes guild advertising from public channels.

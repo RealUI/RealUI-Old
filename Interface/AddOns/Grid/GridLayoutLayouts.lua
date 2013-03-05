@@ -1,7 +1,7 @@
 --[[--------------------------------------------------------------------
 	Grid
 	Compact party and raid unit frames.
-	Copyright (c) 2006-2012 Kyle Smith (a.k.a. Pastamancer), A. Kinley (a.k.a. Phanx) <addons@phanx.net>
+	Copyright (c) 2006-2013 Kyle Smith (Pastamancer), A. Kinley (Phanx)
 	All rights reserved.
 	See the accompanying README and LICENSE files for more information.
 	http://www.wowinterface.com/downloads/info5747-Grid.html
@@ -282,6 +282,33 @@ GridLayout:AddLayout(L["By Class 25 w/Pets"], {
 	[2] = {
 		isPetGroup = true,
 		groupFilter = "1,2,3,4,5",
+		groupBy = "CLASS",
+		groupingOrder = "HUNTER,WARLOCK,DEATHKNIGHT,PRIEST,MAGE,DRUID,SHAMAN,WARRIOR,ROGUE,PALADIN",
+		unitsPerColumn = 5,
+		maxColumns = 5,
+	},
+})
+
+GridLayout:AddLayout(L["By Class 40"], {
+	[1] = {
+		groupBy = "CLASS",
+		groupingOrder = "WARRIOR,DEATHKNIGHT,ROGUE,MONK,PALADIN,DRUID,SHAMAN,PRIEST,MAGE,WARLOCK,HUNTER",
+		unitsPerColumn = 5,
+		maxColumns = 5,
+	},
+})
+
+GridLayout:AddLayout(L["By Class 40 w/Pets"], {
+	[1] = {
+		groupFilter = "1,2,3,4,5,6,7,8",
+		groupBy = "CLASS",
+		groupingOrder = "WARRIOR,DEATHKNIGHT,ROGUE,MONK,PALADIN,DRUID,SHAMAN,PRIEST,MAGE,WARLOCK,HUNTER",
+		unitsPerColumn = 5,
+		maxColumns = 5,
+	},
+	[2] = {
+		groupFilter = "1,2,3,4,5,6,7,8",
+		isPetGroup = true,
 		groupBy = "CLASS",
 		groupingOrder = "HUNTER,WARLOCK,DEATHKNIGHT,PRIEST,MAGE,DRUID,SHAMAN,WARRIOR,ROGUE,PALADIN",
 		unitsPerColumn = 5,

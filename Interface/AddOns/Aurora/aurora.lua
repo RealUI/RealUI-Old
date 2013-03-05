@@ -114,6 +114,8 @@ F.CreateGradient = function(f)
 	tex:SetPoint("BOTTOMRIGHT", -1, 1)
 	tex:SetTexture(C.media.backdrop)
 	tex:SetGradientAlpha(gradOr, startR, startG, startB, startAlpha, endR, endG, endB, endAlpha)
+
+	return tex
 end
 
 F.CreatePulse = function(frame)
@@ -1789,10 +1791,10 @@ Skin:SetScript("OnEvent", function(self, event, addon)
 				end
 			end
 		end
-		
+
 		local bu1 = FriendsFrameFriendsScrollFrameButton1
 		bu1.bg:SetPoint("BOTTOMRIGHT", bu1.gameIcon, 0, -1)
-		
+
 		hooksecurefunc("FriendsFrame_UpdateFriends", UpdateScroll)
 		hooksecurefunc(FriendsFrameFriendsScrollFrame, "update", UpdateScroll)
 

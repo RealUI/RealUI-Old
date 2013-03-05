@@ -1,7 +1,7 @@
 --[[--------------------------------------------------------------------
 	Grid
 	Compact party and raid unit frames.
-	Copyright (c) 2006-2012 Kyle Smith (a.k.a. Pastamancer), A. Kinley (a.k.a. Phanx) <addons@phanx.net>
+	Copyright (c) 2006-2013 Kyle Smith (Pastamancer), A. Kinley (Phanx)
 	All rights reserved.
 	See the accompanying README and LICENSE files for more information.
 	http://www.wowinterface.com/downloads/info5747-Grid.html
@@ -9,7 +9,7 @@
 	http://www.curse.com/addons/wow/grid
 ------------------------------------------------------------------------
 	GridLocale-deDE.lua
-	German (Deutsch) localization.
+	German localization
 	Contributors: Alakabaster, derwanderer, kaybe, kunda, Leialyn, ole510
 ----------------------------------------------------------------------]]
 
@@ -24,8 +24,8 @@ Grid.L = L
 
 L["Debug"] = "Debug"
 L["Debugging"] = "Debuggen"
-L["Hide minimap icon"] = "Minikarten Button verstecken"
 L["Module debugging menu."] = "Debug-Menü."
+L["Show minimap icon"] = "Minikarten Button anzeigen"
 L["Toggle debugging for %s."] = "Aktiviere das Debuggen für %s."
 
 ------------------------------------------------------------------------
@@ -155,14 +155,12 @@ L["Color options for class and pets."] = "Legt fest, wie Klassen und Begleiter e
 L["Colors"] = "Farben"
 L["Creature type colors"] = "Kreaturtypfarben"
 L["Demon"] = "Dämon"
-L["Do not show the tab when Grid is unlocked."] = "Reiter immer verstecken. (Egal ob Grid gesperrt oder entsperrt ist.)"
 L["Dragonkin"] = "Drachkin"
 L["Drag this tab to move Grid."] = "Reiter klicken und bewegen, um Grid zu verschieben."
 L["Elemental"] = "Elementar"
 L["Fallback colors"] = "Ersatzfarben"
 L["Frame lock"] = "Grid sperren"
 L["Group Anchor"] = "Ankerpunkt der Gruppe"
-L["Hide tab"] = "Reiter verstecken"
 L["Horizontal groups"] = "Horizontal gruppieren"
 L["Humanoid"] = "Humanoid"
 L["Layout"] = "Layout"
@@ -190,7 +188,9 @@ L["Sets where Grid is anchored relative to the screen."] = "Setzt den Ankerpunkt
 L["Sets where groups are anchored relative to the layout frame."] = "Setzt den Ankerpunkt der Gruppe relativ zum Layoutrahmen."
 L["Set the coloring strategy of pet units."] = "Legt fest, wie die Begleiter eingefärbt werden."
 L["Set the color of pet units."] = "Legt die Begleiterfarbe fest."
+L["Show a tab for dragging when Grid is unlocked."] = "Reiter immer anzeigen. (Egal ob Grid gesperrt oder entsperrt ist.)"
 L["Show Frame"] = "Zeige Rahmen"
+L["Show tab"] = "Reiter anzeigen"
 L["Solo Layout"] = "Solo Layout"
 L["Spacing"] = "Abstand"
 L["Switch between horizontal/vertical groups."] = "Wechselt zwischen horizontaler/vertikaler Gruppierung."

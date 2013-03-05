@@ -1,4 +1,4 @@
-## Interface: 50100
+## Interface: 50200
 ## Title: GridIndicatorCornerIcons
 ## Notes: Adds two icon indicators to each corner (total: 8 icon indicators).
 ## Notes-deDE: Erweitert jede Ecke um zwei Symbolindikatoren (Gesamt: 8 Symbolindikatoren).

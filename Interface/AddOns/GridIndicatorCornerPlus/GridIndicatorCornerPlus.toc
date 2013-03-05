@@ -1,4 +1,4 @@
-## Interface: 50100
+## Interface: 50200
 ## Title: GridIndicatorCornerPlus
 ## Notes: Adds 3 corner indicators to each corner of the Grid frames.
 ## Notes-deDE: Fügt 3 Eckenindikatoren in jede Ecke eines Gridfensters hinzu.

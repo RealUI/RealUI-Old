@@ -1,7 +1,7 @@
 --[[--------------------------------------------------------------------
 	Grid
 	Compact party and raid unit frames.
-	Copyright (c) 2006-2012 Kyle Smith (a.k.a. Pastamancer), A. Kinley (a.k.a. Phanx) <addons@phanx.net>
+	Copyright (c) 2006-2013 Kyle Smith (Pastamancer), A. Kinley (Phanx)
 	All rights reserved.
 	See the accompanying README and LICENSE files for more information.
 	http://www.wowinterface.com/downloads/info5747-Grid.html
@@ -9,7 +9,7 @@
 	http://www.curse.com/addons/wow/grid
 ------------------------------------------------------------------------
 	GridLocale-koKR.lua
-	Korean (한국어) localization.
+	Korean localization
 	Contributors: 7destiny, Sayclub
 ----------------------------------------------------------------------]]
 
@@ -24,8 +24,8 @@ Grid.L = L
 
 L["Debug"] = "디버그"
 L["Debugging"] = "디버깅"
-L["Hide minimap icon"] = "미니맵 아이콘 숨김"
 L["Module debugging menu."] = "모듈 디버깅 메뉴를 설정합니다."
+L["Show minimap icon"] = "미니맵 아이콘 표시"
 L["Toggle debugging for %s."] = "%s|1을;를; 위해 디버깅을 사용합니다."
 
 ------------------------------------------------------------------------
@@ -153,14 +153,12 @@ L["Color options for class and pets."] = "직업과 소환수의 색상 옵션�
 L["Colors"] = "색상"
 L["Creature type colors"] = "소환수 타입 색상"
 L["Demon"] = "악마형"
-L["Do not show the tab when Grid is unlocked."] = "Grid가 잠금 해제될 때 탭을 표시하지 않습니다."
 L["Dragonkin"] = "용족"
 L["Drag this tab to move Grid."] = "Grid를 이동시키려면 이 탭을 드래그합니다."
 L["Elemental"] = "정령"
 L["Fallback colors"] = "대체 색상"
 L["Frame lock"] = "창 잠금"
 L["Group Anchor"] = "그룹 위치"
-L["Hide tab"] = "탭 숨김"
 L["Horizontal groups"] = "그룹 정렬"
 L["Humanoid"] = "인간형"
 L["Layout"] = "배치"
@@ -188,7 +186,9 @@ L["Sets where Grid is anchored relative to the screen."] = "Grid의 화면 위�
 L["Sets where groups are anchored relative to the layout frame."] = "그룹 배치 창의 위치를 설정합니다."
 L["Set the coloring strategy of pet units."] = "소환수의 유닛 채색 방법을 설정합니다."
 L["Set the color of pet units."] = "소환수 유닛의 색상을 설정합니다."
+L["Show a tab for dragging when Grid is unlocked."] = "Show a tab for dragging when Grid is unlocked." -- Needs review
 L["Show Frame"] = "창 표시"
+L["Show tab"] = "탭 표시"
 L["Solo Layout"] = "솔로잉 배치"
 L["Spacing"] = "간격"
 L["Switch between horizontal/vertical groups."] = "그룹 표시 방법을 가로/세로로 변경합니다."

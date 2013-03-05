@@ -1,4 +1,4 @@
-## Interface: 50100
+## Interface: 50200
 ## Author: Parnic (modified by Nibelheim (MoP update by Gethe)) (originally created by Iceroth)
 ## Name: nibIceHUD
 ## Title: |cffaaaaaanib|rIceHUD

@@ -1,7 +1,7 @@
 --[[--------------------------------------------------------------------
 	Grid
 	Compact party and raid unit frames.
-	Copyright (c) 2006-2012 Kyle Smith (a.k.a. Pastamancer), A. Kinley (a.k.a. Phanx) <addons@phanx.net>
+	Copyright (c) 2006-2013 Kyle Smith (Pastamancer), A. Kinley (Phanx)
 	All rights reserved.
 	See the accompanying README and LICENSE files for more information.
 	http://www.wowinterface.com/downloads/info5747-Grid.html
@@ -100,8 +100,13 @@ Grid.options = {
 			desc = L["Module debugging menu."],
 			order = -1,
 			args = {
-				frame = {
+				desc = {
 					order = 1,
+					type = "description",
+					name = L["Debugging messages help developers or testers see what is happening inside Grid in real time. Regular users should leave debugging turned off except when troubleshooting a problem for a bug report."],
+				},
+				frame = {
+					order = 2,
 					name = L["Output Frame"],
 					desc = L["Show debugging messages in this frame."],
 					type = "select",
@@ -125,7 +130,7 @@ Grid.options = {
 					},
 				},
 				spacer = {
-					order = 2,
+					order = 3,
 					name = " ",
 					type = "description",
 				},
@@ -137,7 +142,9 @@ Grid.options = {
 ------------------------------------------------------------------------
 
 Grid.defaultDB = {
-	profile = {},
+	profile = {
+		minimap = {},
+	},
 	global = {
 		debug = {},
 		debugFrame = "ChatFrame1",
@@ -317,13 +324,64 @@ function Grid:OnInitialize()
 	self.db.RegisterCallback(self, "OnProfileReset", "OnProfileEnable")
 
 	self.options.args.profile = LibStub("AceDBOptions-3.0"):GetOptionsTable(self.db)
-	self.options.args.profile.order = -2
+	self.options.args.profile.order = -3
 
 	local LibDualSpec = LibStub("LibDualSpec-1.0")
 	LibDualSpec:EnhanceDatabase(self.db, "Grid")
 	LibDualSpec:EnhanceOptions(self.options.args.profile, self.db)
 
 	LibStub("AceConfigRegistry-3.0"):RegisterOptionsTable("Grid", self.options)
+
+	--
+	--	Broker launcher
+	--
+
+	local DataBroker = LibStub("LibDataBroker-1.1", true)
+	if DataBroker then
+		self.Broker = DataBroker:NewDataObject("Grid", {
+			type = "launcher",
+			label = GetAddOnInfo("Grid", "Title"),
+			icon = "Interface\\AddOns\\Grid\\icon",
+			OnClick = function(self, button)
+				if button == "RightButton" then
+					local dialog = LibStub("AceConfigDialog-3.0")
+					if dialog.OpenFrames["Grid"] then
+						dialog:Close("Grid")
+					else
+						dialog:Open("Grid")
+					end
+				elseif not InCombatLockdown() then
+					local GridLayout = Grid:GetModule("GridLayout")
+					GridLayout.db.profile.FrameLock = not GridLayout.db.profile.FrameLock
+					LibStub("AceConfigRegistry-3.0"):NotifyChange("Grid")
+					GridLayout:UpdateTabVisibility()
+				end
+			end,
+			OnTooltipShow = function(tooltip)
+				tooltip:AddLine("Grid", 1, 1, 1)
+				if InCombatLockdown() then
+					tooltip:AddLine(L["Click to toggle the frame lock."], 0.5, 0.5, 0.5)
+				else
+					tooltip:AddLine(L["Click to toggle the frame lock."])
+				end
+				tooltip:AddLine(L["Right-Click for more options."])
+			end,
+		})
+	end
+
+	local LDBIcon = LibStub("LibDBIcon-1.0", true)
+	if LDBIcon then
+		LDBIcon:Register("Grid", self.Broker, self.db.profile.minimap)
+		if self.db.profile.minimap.hide then
+			LDBIcon:Hide("Grid")
+		else
+			LDBIcon:Show("Grid")
+		end
+	end
+
+	--
+	--	Options window
+	--
 
 	local AceConfigCmd = LibStub("AceConfigCmd-3.0")
 	local AceConfigDialog = LibStub("AceConfigDialog-3.0")
@@ -332,16 +390,17 @@ function Grid:OnInitialize()
 	status.width = 780 -- 685
 	status.height = 500 -- 530
 
-	local child1 = AceConfigDialog:GetStatusTable("Grid", { "Indicators" })
-	child1.groups = child1.groups or { }
+	local child1 = AceConfigDialog:GetStatusTable("Grid", { "GridIndicator" })
+	child1.groups = child1.groups or {}
 	child1.groups.treewidth = 220
 
 	local child2 = AceConfigDialog:GetStatusTable("Grid", { "GridStatus" })
-	child2.groups = child2.groups or { }
-	child2.groups["GridStatusAuras"] = true
-	child2.groups["GridStatusHealth"] = true
-	child2.groups["GridStatusRange"] = true
+	child2.groups = child2.groups or {}
 	child2.groups.treewidth = 260
+
+	local child3 = AceConfigDialog:GetStatusTable("Grid", { "GridHelp" })
+	child3.groups = child3.groups or {}
+	child3.groups.treewidth = 300
 
 	self:RegisterChatCommand("grid", function(input)
 		if not input or input:trim() == "" then
@@ -389,6 +448,17 @@ end
 
 function Grid:OnProfileEnable()
 	self:Debug("Loaded profile", self.db:GetCurrentProfile())
+
+	local LDBIcon = LibStub("LibDBIcon-1.0", true)
+	if LDBIcon then
+		LDBIcon:Refresh("Grid", self.db.profile.minimap)
+		if self.db.profile.minimap.hide then
+			LDBIcon:Hide("Grid")
+		else
+			LDBIcon:Show("Grid")
+		end
+	end
+
 	self:ResetModules()
 end
 

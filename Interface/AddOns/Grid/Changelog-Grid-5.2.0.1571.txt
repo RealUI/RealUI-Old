@@ -1,0 +1,95 @@
+------------------------------------------------------------------------
+r1571 | phanx | 2013-03-05 12:10:50 +0000 (Tue, 05 Mar 2013) | 1 line
+Changed paths:
+   A /tags/5.2.0.1571 (from /trunk:1570)
+
+Tagging as 5.2.0.1571
+------------------------------------------------------------------------
+r1570 | Phanx | 2013-03-05 12:09:57 +0000 (Tue, 05 Mar 2013) | 1 line
+Changed paths:
+   M /trunk/Grid.toc
+
+- TOC 50200
+------------------------------------------------------------------------
+r1569 | Phanx | 2013-03-05 03:05:10 +0000 (Tue, 05 Mar 2013) | 1 line
+Changed paths:
+   M /trunk/Statuses/GridStatusResurrect.lua
+
+- Use LibResInfo callbacks more efficiently
+------------------------------------------------------------------------
+r1568 | Phanx | 2013-03-05 03:03:56 +0000 (Tue, 05 Mar 2013) | 1 line
+Changed paths:
+   M /trunk/Locales/GridLocale-deDE.lua
+   M /trunk/Locales/GridLocale-esES.lua
+   M /trunk/Locales/GridLocale-frFR.lua
+   M /trunk/Locales/GridLocale-itIT.lua
+   M /trunk/Locales/GridLocale-koKR.lua
+   M /trunk/Locales/GridLocale-ptBR.lua
+   M /trunk/Locales/GridLocale-ruRU.lua
+   M /trunk/Locales/GridLocale-zhCN.lua
+   M /trunk/Locales/GridLocale-zhTW.lua
+
+- Update translator credits
+------------------------------------------------------------------------
+r1567 | Phanx | 2013-03-05 02:21:41 +0000 (Tue, 05 Mar 2013) | 1 line
+Changed paths:
+   M /trunk/GridLayout.lua
+
+- Tab options tweak
+------------------------------------------------------------------------
+r1566 | Phanx | 2013-03-05 00:40:14 +0000 (Tue, 05 Mar 2013) | 1 line
+Changed paths:
+   M /trunk/GridLayout.lua
+
+- Fixed the minimap icon
+------------------------------------------------------------------------
+r1565 | Phanx | 2013-03-01 03:56:02 +0000 (Fri, 01 Mar 2013) | 1 line
+Changed paths:
+   M /trunk/Statuses/GridStatusResurrect.lua
+
+- Use LibResInfo callbacks more efficiently
+------------------------------------------------------------------------
+r1564 | Phanx | 2013-02-20 03:39:42 +0000 (Wed, 20 Feb 2013) | 1 line
+Changed paths:
+   M /trunk/GridCore.lua
+   M /trunk/GridFrame.lua
+   M /trunk/GridLayout.lua
+   M /trunk/GridLayoutLayouts.lua
+   M /trunk/GridRoster.lua
+   M /trunk/GridStatus.lua
+   M /trunk/Locales/GridLocale-deDE.lua
+   M /trunk/Locales/GridLocale-esES.lua
+   M /trunk/Locales/GridLocale-frFR.lua
+   M /trunk/Locales/GridLocale-itIT.lua
+   M /trunk/Locales/GridLocale-koKR.lua
+   M /trunk/Locales/GridLocale-ptBR.lua
+   M /trunk/Locales/GridLocale-ruRU.lua
+   M /trunk/Locales/GridLocale-zhCN.lua
+   M /trunk/Locales/GridLocale-zhTW.lua
+   M /trunk/Statuses/GridStatusAggro.lua
+   M /trunk/Statuses/GridStatusAuras.lua
+   M /trunk/Statuses/GridStatusHeals.lua
+   M /trunk/Statuses/GridStatusHealth.lua
+   M /trunk/Statuses/GridStatusMana.lua
+   M /trunk/Statuses/GridStatusName.lua
+   M /trunk/Statuses/GridStatusRange.lua
+   M /trunk/Statuses/GridStatusReadyCheck.lua
+   M /trunk/Statuses/GridStatusResurrect.lua
+   M /trunk/Statuses/GridStatusTarget.lua
+   M /trunk/Statuses/GridStatusVehicle.lua
+   M /trunk/Statuses/GridStatusVoiceComm.lua
+
+- Year 2013
+------------------------------------------------------------------------
+r1563 | Phanx | 2013-02-08 03:45:16 +0000 (Fri, 08 Feb 2013) | 1 line
+Changed paths:
+   M /trunk/GridHelp.lua
+
+- Add a few more help pages
+------------------------------------------------------------------------
+r1562 | Phanx | 2013-01-02 06:46:09 +0000 (Wed, 02 Jan 2013) | 1 line
+Changed paths:
+   M /trunk/GridLayout.lua
+
+- Don't tile the backdrop texture, for better compatibility with textures other than the default one
+------------------------------------------------------------------------

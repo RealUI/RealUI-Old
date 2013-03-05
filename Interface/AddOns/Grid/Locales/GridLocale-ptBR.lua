@@ -1,7 +1,7 @@
 --[[--------------------------------------------------------------------
 	Grid
 	Compact party and raid unit frames.
-	Copyright (c) 2006-2012 Kyle Smith (a.k.a. Pastamancer), A. Kinley (a.k.a. Phanx) <addons@phanx.net>
+	Copyright (c) 2006-2013 Kyle Smith (Pastamancer), A. Kinley (Phanx)
 	All rights reserved.
 	See the accompanying README and LICENSE files for more information.
 	http://www.wowinterface.com/downloads/info5747-Grid.html
@@ -9,7 +9,7 @@
 	http://www.curse.com/addons/wow/grid
 ------------------------------------------------------------------------
 	GridLocale-ptBR.lua
-	Brazilian Portuguese (Português do Brasil) localization.
+	Brazilian Portuguese localization
 	Contributors: heltonaugusto, leocolpas
 ----------------------------------------------------------------------]]
 
@@ -24,8 +24,8 @@ Grid.L = L
 
 L["Debug"] = "Depurar"
 L["Debugging"] = "Depurando"
-L["Hide minimap icon"] = "Ocultar ícone do minimapa"
 L["Module debugging menu."] = "Menu de depuração do modulo"
+L["Show minimap icon"] = "Mostrar ícone do minimapa"
 L["Toggle debugging for %s."] = "Alternar depuração para %s"
 
 ------------------------------------------------------------------------
@@ -153,14 +153,12 @@ L["Color options for class and pets."] = "Opções de cor para ajudantes e class
 L["Colors"] = "Cores"
 L["Creature type colors"] = "Cores de tipos de criaturas"
 L["Demon"] = "Demônio"
-L["Do not show the tab when Grid is unlocked."] = "Não mostre a aba quando o Grid estiver destravado."
 L["Dragonkin"] = "Draconiano"
 L["Drag this tab to move Grid."] = "Arraste essa aba para mover o Grid."
 L["Elemental"] = "Elemental"
 L["Fallback colors"] = "Cores para Fallback"
 L["Frame lock"] = "Travar quadro"
 L["Group Anchor"] = "Âncora do grupo"
-L["Hide tab"] = "Ocultar aba"
 L["Horizontal groups"] = "Grupos horizontais"
 L["Humanoid"] = "Humanoide"
 L["Layout"] = "Leiaute"
@@ -188,7 +186,9 @@ L["Sets where Grid is anchored relative to the screen."] = "Define onde o Grid e
 L["Sets where groups are anchored relative to the layout frame."] = "Define onde os grupos estão ancorados em relação ao quadro de leiaute."
 L["Set the coloring strategy of pet units."] = "Define a estratégia de coloração das unidades de ajudantes."
 L["Set the color of pet units."] = "Define a cor das unidades de ajudantes."
+L["Show a tab for dragging when Grid is unlocked."] = "Mostre a aba quando o Grid estiver destravado."
 L["Show Frame"] = "Mostrar quadro"
+L["Show tab"] = "Mostrar aba"
 L["Solo Layout"] = "Leiaute Solo"
 L["Spacing"] = "Espaçamento"
 L["Switch between horizontal/vertical groups."] = "Alternar entre grupos horizontais/verticais."

@@ -1,4 +1,4 @@
-## Interface: 50001
+## Interface: 50200
 ## Title: GridStatusDungeonRole
 ## Notes: Adds dungeon finder role status to Grid.
 ## Author: lokyst

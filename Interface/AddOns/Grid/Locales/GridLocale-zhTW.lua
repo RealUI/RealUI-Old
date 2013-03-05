@@ -1,7 +1,7 @@
 --[[--------------------------------------------------------------------
 	Grid
 	Compact party and raid unit frames.
-	Copyright (c) 2006-2012 Kyle Smith (a.k.a. Pastamancer), A. Kinley (a.k.a. Phanx) <addons@phanx.net>
+	Copyright (c) 2006-2013 Kyle Smith (Pastamancer), A. Kinley (Phanx)
 	All rights reserved.
 	See the accompanying README and LICENSE files for more information.
 	http://www.wowinterface.com/downloads/info5747-Grid.html
@@ -9,7 +9,7 @@
 	http://www.curse.com/addons/wow/grid
 ------------------------------------------------------------------------
 	GridLocale-zhTW.lua
-	Traditional Chinese (繁體中文) localization.
+	Traditional Chinese localization
 	Contributors: ananhaid, helium, lsjyzjl, scorpion, Whyv, zhTW
 ----------------------------------------------------------------------]]
 
@@ -24,8 +24,8 @@ Grid.L = L
 
 L["Debug"] = "除錯"
 L["Debugging"] = "除錯中"
-L["Hide minimap icon"] = "隱藏小地圖按鈕"
 L["Module debugging menu."] = "除錯模組設定。"
+L["Show minimap icon"] = "顯示小地圖按鈕"
 L["Toggle debugging for %s."] = "啟用/禁用 %s 的除錯訊息。"
 
 ------------------------------------------------------------------------
@@ -153,14 +153,12 @@ L["Color options for class and pets."] = "職業與寵物的顏色選項。"
 L["Colors"] = "顏色"
 L["Creature type colors"] = "召喚類型的顏色"
 L["Demon"] = "惡魔"
-L["Do not show the tab when Grid is unlocked."] = "當未鎖定 Grid 時不顯示標簽。"
 L["Dragonkin"] = "龍類"
 L["Drag this tab to move Grid."] = "拖動此標簽移動 Grid。"
 L["Elemental"] = "元素生物"
 L["Fallback colors"] = "備用顏色"
 L["Frame lock"] = "鎖定框架"
 L["Group Anchor"] = "小組錨點"
-L["Hide tab"] = "隱藏標簽"
 L["Horizontal groups"] = "橫向顯示小組"
 L["Humanoid"] = "人形生物"
 L["Layout"] = "版面編排"
@@ -188,7 +186,9 @@ L["Sets where Grid is anchored relative to the screen."] = "設定 Grid 的版�
 L["Sets where groups are anchored relative to the layout frame."] = "設定版面編排中的小組錨點。"
 L["Set the coloring strategy of pet units."] = "設定寵物的配色方案。"
 L["Set the color of pet units."] = "設定寵物使用的顏色"
+L["Show a tab for dragging when Grid is unlocked."] = "當未鎖定 Grid 時顯示標簽。"
 L["Show Frame"] = "顯示框架"
+L["Show tab"] = "顯示標簽"
 L["Solo Layout"] = "單人版面編排"
 L["Spacing"] = "空間"
 L["Switch between horizontal/vertical groups."] = "轉換橫向/垂直顯示小組。"

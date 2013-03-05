@@ -1,7 +1,7 @@
 --[[--------------------------------------------------------------------
 	Grid
 	Compact party and raid unit frames.
-	Copyright (c) 2006-2012 Kyle Smith (a.k.a. Pastamancer), A. Kinley (a.k.a. Phanx) <addons@phanx.net>
+	Copyright (c) 2006-2013 Kyle Smith (Pastamancer), A. Kinley (Phanx)
 	All rights reserved.
 	See the accompanying README and LICENSE files for more information.
 	http://www.wowinterface.com/downloads/info5747-Grid.html
@@ -9,8 +9,8 @@
 	http://www.curse.com/addons/wow/grid
 ------------------------------------------------------------------------
 	GridLocale-ruRU.lua
-	Russian (Русский) localization.
-	Contributors: Moschkara, nightik, onyxmaster, StingerSoft
+	Russian (Русский) localization
+	Contributors: Exzorm, Moschkara, nightik, onyxmaster, StingerSoft
 ----------------------------------------------------------------------]]
 
 if GetLocale() ~= "ruRU" then return end
@@ -24,8 +24,8 @@ Grid.L = L
 
 L["Debug"] = "Отладка"
 L["Debugging"] = "Отладка"
-L["Hide minimap icon"] = "Скрыть иконку на миникарте"
 L["Module debugging menu."] = "Меню модуля отладки"
+L["Show minimap icon"] = "Отображать иконку на миникарте"
 L["Toggle debugging for %s."] = "Показать отладку для  %s."
 
 ------------------------------------------------------------------------
@@ -35,7 +35,7 @@ L["Adjust the font outline."] = "Настройка контура шрифта"
 L["Adjust the font settings"] = "Настройка параметров шрифта"
 L["Adjust the font size."] = "Настройка размера шрифта"
 L["Adjust the height of each unit's frame."] = "Настроить высоту фреймов."
-L["Adjust the size of the border indicators."] = "Настроить размер гриниц индикаторов."
+L["Adjust the size of the border indicators."] = "Настроить размер границ индикаторов."
 L["Adjust the size of the center icon."] = "Настройка размера значка в центре"
 L["Adjust the size of the center icon's border."] = "Настраивает размер границы значка в центре."
 L["Adjust the size of the corner indicators."] = "Настроить размер углов индикаторов."
@@ -153,14 +153,12 @@ L["Color options for class and pets."] = "Опции окраски для кл�
 L["Colors"] = "Цвета"
 L["Creature type colors"] = "Цвет типов созданий"
 L["Demon"] = "Демон"
-L["Do not show the tab when Grid is unlocked."] = "Не отображать ярлык когда Grid откреплен."
 L["Dragonkin"] = "Дракон"
 L["Drag this tab to move Grid."] = "Перетаскивая этот ярлык вы перемстите Grid."
 L["Elemental"] = "Элементаль"
 L["Fallback colors"] = "Цвета неизветсных"
 L["Frame lock"] = "Закрепить фреймы"
 L["Group Anchor"] = "Пометка группы"
-L["Hide tab"] = "Скрыть ярлык"
 L["Horizontal groups"] = "Группы горизонтально"
 L["Humanoid"] = "Гуманоид"
 L["Layout"] = "Расположение"
@@ -188,7 +186,9 @@ L["Sets where Grid is anchored relative to the screen."] = "Установить
 L["Sets where groups are anchored relative to the layout frame."] = "Установить пометку где будет находиться группа на экране"
 L["Set the coloring strategy of pet units."] = "Установиь стратегию окраски питомцев."
 L["Set the color of pet units."] = "Установить цвет питомцев."
+L["Show a tab for dragging when Grid is unlocked."] = "Отображать ярлык когда Grid откреплен."
 L["Show Frame"] = "Отображение фреймов"
+L["Show tab"] = "Отображать ярлык"
 L["Solo Layout"] = "Расположение в соло"
 L["Spacing"] = "Интервалы"
 L["Switch between horizontal/vertical groups."] = "Переключить между группы вертикально/горизонтально."

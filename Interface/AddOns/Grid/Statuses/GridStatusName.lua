@@ -1,7 +1,7 @@
 --[[--------------------------------------------------------------------
 	Grid
 	Compact party and raid unit frames.
-	Copyright (c) 2006-2012 Kyle Smith (a.k.a. Pastamancer), A. Kinley (a.k.a. Phanx) <addons@phanx.net>
+	Copyright (c) 2006-2013 Kyle Smith (Pastamancer), A. Kinley (Phanx)
 	All rights reserved.
 	See the accompanying README and LICENSE files for more information.
 	http://www.wowinterface.com/downloads/info5747-Grid.html
@@ -32,7 +32,6 @@ GridStatusName.defaultDB = {
 	},
 }
 
-
 local nameOptions = {
 	class = {
 		name = L["Use class color"],
@@ -46,6 +45,17 @@ local nameOptions = {
 	},
 	range = false,
 }
+
+local classIconCoords = {}
+for class, t in pairs(CLASS_BUTTONS) do
+	local offset, left, right, bottom, top = 0.025, unpack(t)
+	classIconCoords[class] = {
+		left = (left + offset) * 256,
+		right = (right - offset) * 256,
+		bottom = (bottom + offset) * 256,
+		top = (top - offset) * 256,
+	}
+end
 
 function GridStatusName:PostInitialize()
 	self:RegisterStatus("unit_name", L["Unit Name"], nameOptions, true)
@@ -114,10 +124,11 @@ function GridStatusName:UpdateGUID(event, guid)
 
 	-- set text
 	local text = name
+	local unitid = GridRoster:GetUnitidByGUID(guid)
+	local _, class = UnitClass(unitid)
 
 	local show_owner_name = true
 	if show_owner_name then
-		local unitid = GridRoster:GetUnitidByGUID(guid)
 		local owner_unitid = GridRoster:GetOwnerUnitidByUnitid(unitid)
 
 		-- does this unit have an owner?
@@ -137,7 +148,14 @@ function GridStatusName:UpdateGUID(event, guid)
 		settings.priority,
 		nil,
 		color,
-		text)
+		text,
+		nil,
+		nil,
+		class and [[Interface\Glues\CharacterCreate\UI-CharacterCreate-Classes]] or nil,
+		nil,
+		nil,
+		nil,
+		class and classIconCoords[class] or nil)
 end
 
 function GridStatusName:UpdateAllUnits()

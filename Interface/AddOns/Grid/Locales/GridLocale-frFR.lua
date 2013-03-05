@@ -1,7 +1,7 @@
 --[[--------------------------------------------------------------------
 	Grid
 	Compact party and raid unit frames.
-	Copyright (c) 2006-2012 Kyle Smith (a.k.a. Pastamancer), A. Kinley (a.k.a. Phanx) <addons@phanx.net>
+	Copyright (c) 2006-2013 Kyle Smith (Pastamancer), A. Kinley (Phanx)
 	All rights reserved.
 	See the accompanying README and LICENSE files for more information.
 	http://www.wowinterface.com/downloads/info5747-Grid.html
@@ -9,8 +9,8 @@
 	http://www.curse.com/addons/wow/grid
 ------------------------------------------------------------------------
 	GridLocale-frFR.lua
-	French (Français) localization.
-	Contributors: Devfool, Pettigrow, Strigx, trasher
+	French localization
+	Contributors: Devfool, Matisk, NoGynGz, Pettigrow, Strigx, trasher
 ----------------------------------------------------------------------]]
 
 if GetLocale() ~= "frFR" then return end
@@ -24,8 +24,8 @@ Grid.L = L
 
 L["Debug"] = "Déboger"
 L["Debugging"] = "Débogage"
-L["Hide minimap icon"] = "Cacher l'icône de la minicarte"
 L["Module debugging menu."] = "Menu du module de débogage."
+L["Show minimap icon"] = "Afficher l'icône de la minicarte"
 L["Toggle debugging for %s."] = "Active ou non le débogage pour %s."
 
 ------------------------------------------------------------------------
@@ -53,7 +53,7 @@ L["Center Text 2"] = "Texte central 2"
 L["Center Text Length"] = "Longueur du texte central"
 L["Color the healing bar using the active status color instead of the health bar color."] = "Colorie la barre de soins en utilisant la couleur de statut active au lieu de la couleur de la barre de vie."
 L["Corner Size"] = "Taille des coins"
-L["Darken the text color to match the inverted bar."] = "Assombrit la couleur du texte pour correspondre à l'inversion de la barre." -- Needs review
+L["Darken the text color to match the inverted bar."] = "Assombrit la couleur du texte pour correspondre à l'inversion de la barre."
 L["Enable Mouseover Highlight"] = "Activer la surbrillance au survol"
 L["Enable %s"] = "Active %s."
 L["Enable %s indicator"] = "Activer l'indicateur %s"
@@ -79,7 +79,7 @@ L["Icon Size"] = "Taille de l'icône"
 L["Icon Stack Text"] = "Texte du cumul sur l'icône"
 L["Indicators"] = "Indicateurs"
 L["Invert Bar Color"] = "Inverser la couleur de la barre"
-L["Invert Text Color"] = "Inverser la couleur du texte" -- Needs review
+L["Invert Text Color"] = "Inverser la couleur du texte"
 L["Make the healing bar use the status color instead of the health bar color."] = "Fait en sorte que la barre de soins utilise la couleur de statut au lieu de la couleur de la barre de vie."
 L["Never"] = "Jamais"
 L["None"] = "Aucun"
@@ -103,13 +103,13 @@ L["Swap foreground/background colors on bars."] = "Permute la couleur de l'avant
 L["Text Options"] = "Options du texte"
 L["Thick"] = "Épais"
 L["Thin"] = "Mince"
-L["Throttle Updates"] = "Rafraîchissement" -- Needs review
-L["Throttle updates on group changes. This option may cause delays in updating frames, so you should only enable it if you're experiencing temporary freezes or lockups when people join or leave your group."] = "Rafraîchissement sur les changements du groupe. Cette option peut entraîner des retards dans la mise à jour des cadres, de sorte que vous ne devez l'activer que lorsque vous rencontrez des gels temporaires ou des blocages quand les gens rejoignent ou quittent votre groupe." -- Needs review
+L["Throttle Updates"] = "Rafraîchissement"
+L["Throttle updates on group changes. This option may cause delays in updating frames, so you should only enable it if you're experiencing temporary freezes or lockups when people join or leave your group."] = "Rafraîchissement sur les changements du groupe. Cette option peut entraîner des retards dans la mise à jour des cadres, de sorte que vous ne devez l'activer que lorsque vous rencontrez des gels temporaires ou des blocages quand les gens rejoignent ou quittent votre groupe."
 L["Toggle center icon's cooldown frame."] = "Active ou non le texte indiquant le temps de recharge sur l'icône centrale."
 L["Toggle center icon's stack count text."] = "Active ou non le texte indiquant le cumul sur l'icône centrale."
 L["Toggle mouseover highlight."] = "Active ou non la surbrillance lors du passage de la souris."
 L["Toggle status display."] = "Active ou non l'affichage de ce statut."
-L["Toggle the font drop shadow effect."] = "Active l'effet d'ombré de la police." -- Needs review
+L["Toggle the font drop shadow effect."] = "Active l'effet d'ombré de la police."
 L["Toggle the %s indicator."] = "Active ou non l'indicateur %s."
 L["Top Left Corner"] = "Coin supérieur gauche"
 L["Top Right Corner"] = "Coin supérieur droit"
@@ -136,8 +136,8 @@ L["Beast"] = "Bête"
 L["Border color"] = "Bordure"
 L["Border Texture"] = "Texture de la bordure"
 L["Bottom"] = "Bas"
-L["Bottom Left"] = "En bas à gauche" -- Needs review
-L["Bottom Right"] = "En bas à droite" -- Needs review
+L["Bottom Left"] = "En bas à gauche"
+L["Bottom Right"] = "En bas à droite"
 L["By Creature Type"] = "Selon le type de créature"
 L["By Owner Class"] = "Selon la classe du maître"
 L["Center"] = "Centre"
@@ -153,14 +153,12 @@ L["Color options for class and pets."] = "Options de couleurs des classes et des
 L["Colors"] = "Couleurs"
 L["Creature type colors"] = "Couleurs des types de créatures"
 L["Demon"] = "Démon"
-L["Do not show the tab when Grid is unlocked."] = "N'affiche pas l'onglet quand Grid est déverrouillé."
 L["Dragonkin"] = "Draconien"
 L["Drag this tab to move Grid."] = "Saississez cet onglet pour déplacer Grid."
 L["Elemental"] = "Elémentaire"
 L["Fallback colors"] = "Couleurs par défaut"
 L["Frame lock"] = "Verrouiller"
 L["Group Anchor"] = "Ancrage du groupe"
-L["Hide tab"] = "Cacher l'onglet"
 L["Horizontal groups"] = "Disposition horizontale"
 L["Humanoid"] = "Humanoïde"
 L["Layout"] = "Grille"
@@ -188,7 +186,9 @@ L["Sets where Grid is anchored relative to the screen."] = "Détermine où Grid 
 L["Sets where groups are anchored relative to the layout frame."] = "Détermine où les groupes sont ancrés par rapport à la grille."
 L["Set the coloring strategy of pet units."] = "Définir la stratégie de coloration des familiers"
 L["Set the color of pet units."] = "Ajuster la couleur des familiers"
+L["Show a tab for dragging when Grid is unlocked."] = "Affiche pas l'onglet quand Grid est déverrouillé."
 L["Show Frame"] = "Afficher la grille"
+L["Show tab"] = "Afficher l'onglet"
 L["Solo Layout"] = "Disposition quand seul"
 L["Spacing"] = "Espacement (grille)"
 L["Switch between horizontal/vertical groups."] = "Dispose les groupes horizontalement si coché."
@@ -196,8 +196,8 @@ L["The color of unknown pets."] = "Couleur des familiers inconnus."
 L["The color of unknown units."] = "Couleur des unités inconnues."
 L["Toggle whether to permit movement out of screen."] = "Permet ou non de déplacer la grille hors de l'écran."
 L["Top"] = "Haut"
-L["Top Left"] = "En haut à gauche" -- Needs review
-L["Top Right"] = "En haut à droite" -- Needs review
+L["Top Left"] = "En haut à gauche"
+L["Top Right"] = "En haut à droite"
 L["Undead"] = "Mort-vivant"
 L["Unknown Pet"] = "Familier inconnu"
 L["Unknown Unit"] = "Unité inconnue"
@@ -277,17 +277,17 @@ L["Adds a new debuff to the status module"] = "Ajoute un nouveau débuff au modu
 L["Auras"] = "Auras"
 L["<buff name>"] = "<nom du buff>"
 L["Buff: %s"] = "Buff : %s"
-L["Change what information is shown by the status color."] = "Changement lorsque l'information est affichée par la couleur d'état." -- Needs review
-L["Change what information is shown by the status color and text."] = "Changement lorsque l'information est affichée par la couleur et le texte d'état." -- Needs review
-L["Change what information is shown by the status text."] = "Modification de quelles informations à afficher par le texte d'état." -- Needs review
+L["Change what information is shown by the status color."] = "Changement lorsque l'information est affichée par la couleur d'état."
+L["Change what information is shown by the status color and text."] = "Changement lorsque l'information est affichée par la couleur et le texte d'état."
+L["Change what information is shown by the status text."] = "Modification de quelles informations à afficher par le texte d'état."
 L["Class Filter"] = "Filtrer les classes"
-L["Color"] = "Couleur" -- Needs review
-L["Color to use when the %s is above the high count threshold values."] = "Couleur à utiliser lorsque le %s est supérieur au plus grand seuil de la valeur." -- Needs review
-L["Color to use when the %s is between the low and high count threshold values."] = "Couleur à utiliser lorsque le %s est entre le plus petit et le plus grand seuil de la valeur." -- Needs review
-L["Color when %s is below the low threshold value."] = "Couleur à utiliser lorsque le %s est inférieur au plus grand seuil de la valeur." -- Needs review
+L["Color"] = "Couleur"
+L["Color to use when the %s is above the high count threshold values."] = "Couleur à utiliser lorsque le %s est supérieur au plus grand seuil de la valeur."
+L["Color to use when the %s is between the low and high count threshold values."] = "Couleur à utiliser lorsque le %s est entre le plus petit et le plus grand seuil de la valeur."
+L["Color when %s is below the low threshold value."] = "Couleur à utiliser lorsque le %s est inférieur au plus grand seuil de la valeur."
 L["Curse"] = "Malédiction"
 L["<debuff name>"] = "<nom du débuff>"
-L["(De)buff name"] = "Nom du (dé)buff" -- Needs review
+L["(De)buff name"] = "Nom du (dé)buff"
 L["Debuff: %s"] = "Débuff : %s"
 L["Debuff type: %s"] = "Type de débuff : %s"
 L["Delete (De)buff"] = "Supprimer (dé)buff"
@@ -296,35 +296,35 @@ L["Disease"] = "Maladie"
 L["Display status only if the buff is not active."] = "Affiche le statut uniquement si le buff n'est pas actif."
 L["Display status only if the buff was cast by you."] = "Affiche le statut uniquement si le buff est le vôtre."
 L["Ghost"] = "Fantôme"
-L["High color"] = "Couleur haute" -- Needs review
-L["High threshold"] = "Seul haut" -- Needs review
-L["Low color"] = "Couleur basse" -- Needs review
-L["Low threshold"] = "Seuil bas" -- Needs review
+L["High color"] = "Couleur haute"
+L["High threshold"] = "Seul haut"
+L["Low color"] = "Couleur basse"
+L["Low threshold"] = "Seuil bas"
 L["Magic"] = "Magie"
-L["Middle color"] = "Couleur du milieu" -- Needs review
+L["Middle color"] = "Couleur du milieu"
 L["Pet"] = "Familier"
 L["Poison"] = "Poison"
 L["Present or missing"] = "Présent ou absent"
 L["Refresh interval"] = "Intervalle de rafraîchissement"
 L["Remove %s from the menu"] = "Enlève %s du menu."
-L["%s colors"] = "%s couleurs" -- Needs review
-L["%s colors and threshold values."] = "%s couleurs et valeurs du seuil." -- Needs review
+L["%s colors"] = "%s couleurs"
+L["%s colors and threshold values."] = "%s couleurs et valeurs du seuil."
 L["Show duration"] = "Afficher la durée"
 L["Show if mine"] = "Afficher si le mien"
 L["Show if missing"] = "Afficher si manquant"
-L["Show on pets and vehicles."] = "Affiche sur familiers et véhicules." -- Needs review
+L["Show on pets and vehicles."] = "Affiche sur familiers et véhicules."
 L["Show on %s players."] = "Affiche le statut pour la classe %s."
 L["Show status for the selected classes."] = "Affiche le statut pour les classes sélectionnées."
 L["Show the time left to tenths of a second, instead of only whole seconds."] = "Affiche le temps restant en dixièmes de seconde au lieu des secondes entières."
 L["Show the time remaining, for use with the center icon cooldown."] = "Affiche le temps restant. À utiliser avec le temps de recharge de l'icône centrale."
 L["Show time left to tenths"] = "Afficher temps restant en dixièmes"
-L["%s is high when it is at or above this value."] = "%s est élevé lorsqu'il est égal ou supérieur à cette valeur." -- Needs review
-L["%s is low when it is at or below this value."] = "%s est bas lorsqu'il est égal ou inférieur à cette valeur." -- Needs review
-L["Stack count"] = "Compter l'accumulation" -- Needs review
-L["Status Information"] = "Information sur l'état" -- Needs review
-L["Text"] = "Texte" -- Needs review
-L["Time in seconds between each refresh of the status time left."] = "Durée en secondes du temps restant entre chaque rafraîchissement de l'état." -- Needs review
-L["Time left"] = "Durée restante" -- Needs review
+L["%s is high when it is at or above this value."] = "%s est élevé lorsqu'il est égal ou supérieur à cette valeur."
+L["%s is low when it is at or below this value."] = "%s est bas lorsqu'il est égal ou inférieur à cette valeur."
+L["Stack count"] = "Compter l'accumulation"
+L["Status Information"] = "Information sur l'état"
+L["Text"] = "Texte"
+L["Time in seconds between each refresh of the status time left."] = "Durée en secondes du temps restant entre chaque rafraîchissement de l'état."
+L["Time left"] = "Durée restante"
 
 ------------------------------------------------------------------------
 --	GridStatusHeals

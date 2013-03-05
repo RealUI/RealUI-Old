@@ -1,4 +1,4 @@
-## Interface: 50100
+## Interface: 50200
 ## Version: 3.62
 ## Title: BadBoy_CCleaner
 ## Notes: Filter crap from your chat.
