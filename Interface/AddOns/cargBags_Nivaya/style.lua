@@ -282,7 +282,7 @@ function MyContainer:OnCreate(name, settings)
 		bgFile = "Interface\\AddOns\\cargBags_Nivaya\\media\\texture",
 		edgeFile = "Interface\\AddOns\\cargBags_Nivaya\\media\\glowTex",
 		tile = true, tileSize = 16, edgeSize = 3,
-		insets = {left = 3, right = 3, top = 3, bottom = 3},
+		insets = {left = 4, right = 4, top = 4, bottom = 4},
 	}
 	background:SetFrameStrata("HIGH")
     background:SetFrameLevel(1)

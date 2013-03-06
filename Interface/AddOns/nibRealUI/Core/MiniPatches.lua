@@ -423,6 +423,8 @@ function nibRealUI:MiniPatch(ver)
 			end
 		end
 	elseif ver == "73r12" then
+		-- See r13
+	elseif ver == "73r13" then
 		if IsAddOnLoaded("Masque") and MasqueDB then
 			if MasqueDB["profiles"]["RealUI"]["Groups"]["Masque"] then
 				MasqueDB["profiles"]["RealUI"]["Groups"]["Masque"]["Backdrop"] = true
@@ -453,6 +455,14 @@ function nibRealUI:MiniPatch(ver)
 			end
 			if MasqueDB["profiles"]["RealUI"]["Groups"]["Bartender4_Vehicle"] then
 				MasqueDB["profiles"]["RealUI"]["Groups"]["Bartender4_Vehicle"]["Backdrop"] = true
+			end
+		end
+		if IsAddOnLoaded("nibIceHUD") and IceCoreRealUIDB then
+			if IceCoreRealUIDB["profiles"]["RealUI"]["modules"]["zCT-War-TasteBlood"] then
+				IceCoreRealUIDB["profiles"]["RealUI"]["modules"]["zCT-War-TasteBlood"]["buffToTrack"] = "56636"
+			end
+			if IceCoreRealUIDB["profiles"]["RealUI-HR"]["modules"]["zCT-War-TasteBlood"] then
+				IceCoreRealUIDB["profiles"]["RealUI-HR"]["modules"]["zCT-War-TasteBlood"]["buffToTrack"] = "56636"
 			end
 		end
 	end

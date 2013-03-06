@@ -13,6 +13,8 @@ local gapPerComboPoint = 6
 local maxComboPoints = 5
 local SREndTime = 0
 local SRDuration = 0
+local SRID, SRName = 52610
+local SRFID, SRFName = 127538
 
 local CurrMaxSRDuration = 0
 local PotentialSRDuration = 0
@@ -37,6 +39,9 @@ end
 function SavageRoar.prototype:Enable(core)
 	SavageRoar.super.prototype.Enable(self, core)
 
+	SRName = GetSpellInfo(52610)
+	SRFName = GetSpellInfo(127538)
+	
 	self:RegisterEvent("UNIT_AURA", "UpdateSavageRoar")
 	self:RegisterEvent("UPDATE_SHAPESHIFT_FORM", "TargetChanged")
 	self:RegisterEvent("UNIT_COMBO_POINTS", "UpdateDurationBar")
@@ -164,7 +169,10 @@ end
 -- 'Protected' methods --------------------------------------------------------
 
 function SavageRoar.prototype:GetBuffDuration(unitName)
-	local name,_,_,_,_, duration, expirationTime = UnitAura(unitName, GetSpellInfo(52610))
+	local name,_,_,_,_, duration, expirationTime = UnitAura(unitName, SRName)
+	if not name then
+		name,_,_,_,_, duration, expirationTime = UnitAura(unitName, SRFName)
+	end
 	if name then
 		return duration, expirationTime
 	else

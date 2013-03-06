@@ -2858,7 +2858,7 @@ local function Clock_Update(self, ...)
 	
 	-- Calendar
 	if ... and db.elements.clock then
-		local pendingCalendarInvites = CalendarGetNumPendingInvites()
+		local pendingCalendarInvites = CalendarGetNumPendingInvites() or 0
 		if ( pendingCalendarInvites > self.pendingCalendarInvites ) then
 			if ( not CalendarFrame or (CalendarFrame and not CalendarFrame:IsShown()) ) then
 				self.flashing = true
@@ -2918,7 +2918,7 @@ local function Clock_OnEnter(self)
 		GameTooltip:AddLine(strform("|cff%s%s|r", TextColorOrange2, L["No Tol Barad Time Available"]))
 	end
 	GameTooltip:AddLine(" ")
-	if self.pendingCalendarInvites > 0 then
+	if self.pendingCalendarInvites and self.pendingCalendarInvites > 0 then
 		GameTooltip:AddDoubleLine(strform("|cff%s%s|r", TextColorOrange2, L["Pending Invites:"]), strform("%s", self.pendingCalendarInvites), 0.9, 0.9, 0.9, 0.9, 0.9, 0.9)
 		GameTooltip:AddLine(" ")
 	end
@@ -2969,9 +2969,6 @@ function InfoLine:OnMouseDown(self)
 		
 	elseif self.tag == "meters" then
 		Meter_Toggle(self)
-		
-	elseif self.tag == "pc" then
-		Clock_OnEnter(self)
 		
 	elseif self.tag == "spec" then
 		SpecChangeClickFunc(self)

@@ -595,8 +595,8 @@ function Mapster:SetAlpha()
 end
 
 function Mapster:SetArrow()
-	PlayerArrowFrame:SetModelScale(db.arrowScale)
-	PlayerArrowEffectFrame:SetModelScale(db.arrowScale)
+	--PlayerArrowFrame:SetModelScale(db.arrowScale)
+	--PlayerArrowEffectFrame:SetModelScale(db.arrowScale)
 end
 
 function Mapster:SetScale()

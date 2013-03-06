@@ -10,22 +10,15 @@ local nibRealUICharacter_defaults = {
 }
 
 -- Minipatch list. These get flagged on a PrimaryInstall as not being required.
-local table_MiniPatches = {
-	"73r1",
-	"73r5",
-	"73r6",
-	"73r9",
-	"73r10",
-	"73r11",
-	"73r12",
-}
+local MiniPatchMajorVer = "73"
+local table_MiniPatches = {1, 5, 6, 9, 10, 11, 12, 13}
 
 local table_Addons = {
 --	{"ACP", "ACP_Data"},
 --	{"ArkInventory", "ARKINVDB"},
 	{"Bartender4", "Bartender4DB"},
 --	{"BugSack", "BugSackDB"},
-	{"DXE", "DXEDB"},
+--	{"DXE", "DXEDB"},
 	{"Grid", "GridDB"},
 	{"Mapster", "MapsterDB"},
 	{"Masque", "MasqueDB"},
@@ -374,7 +367,7 @@ local function InstallationStage1()
 	---- Set MiniPatch flags
 	dbg.minipatches = {}
 	for k,v in ipairs(table_MiniPatches) do
-		tinsert(dbg.minipatches, v)
+		tinsert(dbg.minipatches, MiniPatchMajorVer.."r"..tostring(v))
 	end
 	
 	---- Check WTF Folder
@@ -410,13 +403,6 @@ local function InstallationStage1()
 	
 	--
 	DEFAULT_CHATFRAME_ALPHA = 0
-	if not WTFState then
-		-- -- Disable Install Button
-		-- IWF.install:Disable()
-		-- IWF.installhighlight:SetBackdropColor(0.1, 0.1, 0.1, 0.25)
-		-- IWF.installhighlight:SetBackdropBorderColor(0.5, 0.5, 0.5, 1)
-		-- IWF.abcheck:Hide()
-	end
 end
 
 ---- Process
@@ -431,15 +417,10 @@ local function MiniPatchInstallation()
 	local CurVer = dbg.verinfo
 	if CurVer[1] == 7 and CurVer[2] == 3 then
 		-- Find out which Mini Patches are needed
-		local NP = {
-			[2] = true,
-			[5] = true,
-			[6] = true,
-			[9] = true,
-			[10] = true,
-			[11] = true,
-			[12] = true,
-		}
+		local NP = {}
+		for k,v in ipairs(table_MiniPatches) do
+			NP[v] = true
+		end
 		if dbg.minipatches ~= nil then
 			for k,v in pairs(dbg.minipatches) do
 				if v == "73r1" then NP[2] = false end
@@ -449,46 +430,30 @@ local function MiniPatchInstallation()
 				if v == "73r10" then NP[10] = false end
 				if v == "73r11" then NP[11] = false end
 				if v == "73r12" then NP[12] = false end
+				if v == "73r13" then NP[13] = false end
 			end
 		end
 		
 		-- Run through MiniPatches
+		local toPatch = {}
 		local HasMPatched = false
 		if dbg.minipatches == nil then dbg.minipatches = {} end
-		if NP[2] then
-			nibRealUI:MiniPatch("73r1")
-			tinsert(dbg.minipatches, "73r1")
-			HasMPatched = true
-		end
-		if NP[5] then
-			nibRealUI:MiniPatch("73r5")
-			tinsert(dbg.minipatches, "73r5")
-			HasMPatched = true
-		end
-		if NP[6] then
-			nibRealUI:MiniPatch("73r6")
-			tinsert(dbg.minipatches, "73r6")
-			HasMPatched = true
-		end
-		if NP[9] then
-			nibRealUI:MiniPatch("73r9")
-			tinsert(dbg.minipatches, "73r9")
-			HasMPatched = true
-		end
-		if NP[10] then
-			nibRealUI:MiniPatch("73r10")
-			tinsert(dbg.minipatches, "73r10")
-			HasMPatched = true
-		end
-		if NP[11] then
-			nibRealUI:MiniPatch("73r11")
-			tinsert(dbg.minipatches, "73r11")
-			HasMPatched = true
-		end
-		if NP[12] then
-			nibRealUI:MiniPatch("73r12")
-			tinsert(dbg.minipatches, "73r12")
-			HasMPatched = true
+		
+		if NP[2] then tinsert(toPatch, "73r1") end
+		if NP[5] then tinsert(toPatch, "73r5") end
+		if NP[6] then tinsert(toPatch, "73r6") end
+		if NP[9] then tinsert(toPatch, "73r9") end
+		if NP[10] then tinsert(toPatch, "73r10") end
+		if NP[11] then tinsert(toPatch, "73r11") end
+		if NP[12] then tinsert(toPatch, "73r12") end
+		if NP[13] then tinsert(toPatch, "73r13") end
+		
+		for k,v in ipairs(toPatch) do
+			if v then
+				nibRealUI:MiniPatch(v)
+				tinsert(dbg.minipatches, v)
+				HasMPatched = true
+			end
 		end
 		
 		-- Reload UI

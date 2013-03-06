@@ -370,44 +370,44 @@ function GridIndicatorCornerIcons:DisableConfigMode()
 end
 
 function GridIndicatorCornerIcons:CleanOptionsMenu()
-	if not Grid.options.args.Indicators.args.iconTLcornerleft then return end
+	if not Grid.options.args.GridIndicator.args.iconTLcornerleft then return end
 	if not GridIndicatorCornerIcons:IsEnabled() then return end
 
-	Grid.options.args.Indicators.args.GridIndicatorCornerIcons = {
+	Grid.options.args.GridIndicator.args.GridIndicatorCornerIcons = {
 		type = "group",
 		icon = "Interface\\AddOns\\GridIndicatorCornerIcons\\GridIndicatorCornerIcons-icon-TRTLBLBR",
 		name = L["Icon (Corners)"],
 		desc = L["Options for Icon (Corners) indicators."],
 		order = 8.2,
 		args = {
-			["iconTLcornerleft"]  = Grid.options.args.Indicators.args.iconTLcornerleft,
-			["iconTLcornerright"] = Grid.options.args.Indicators.args.iconTLcornerright,
-			["iconTRcornerleft"]  = Grid.options.args.Indicators.args.iconTRcornerleft,
-			["iconTRcornerright"] = Grid.options.args.Indicators.args.iconTRcornerright,
-			["iconBLcornerleft"]  = Grid.options.args.Indicators.args.iconBLcornerleft,
-			["iconBLcornerright"] = Grid.options.args.Indicators.args.iconBLcornerright,
-			["iconBRcornerleft"]  = Grid.options.args.Indicators.args.iconBRcornerleft,
-			["iconBRcornerright"] = Grid.options.args.Indicators.args.iconBRcornerright
+			["iconTLcornerleft"]  = Grid.options.args.GridIndicator.args.iconTLcornerleft,
+			["iconTLcornerright"] = Grid.options.args.GridIndicator.args.iconTLcornerright,
+			["iconTRcornerleft"]  = Grid.options.args.GridIndicator.args.iconTRcornerleft,
+			["iconTRcornerright"] = Grid.options.args.GridIndicator.args.iconTRcornerright,
+			["iconBLcornerleft"]  = Grid.options.args.GridIndicator.args.iconBLcornerleft,
+			["iconBLcornerright"] = Grid.options.args.GridIndicator.args.iconBLcornerright,
+			["iconBRcornerleft"]  = Grid.options.args.GridIndicator.args.iconBRcornerleft,
+			["iconBRcornerright"] = Grid.options.args.GridIndicator.args.iconBRcornerright
 		}
 	}
 
-	Grid.options.args.Indicators.args.GridIndicatorCornerIcons.args.iconTLcornerleft.icon  = "Interface\\AddOns\\GridIndicatorCornerIcons\\GridIndicatorCornerIcons-icon-TLleft"
-	Grid.options.args.Indicators.args.GridIndicatorCornerIcons.args.iconTLcornerright.icon = "Interface\\AddOns\\GridIndicatorCornerIcons\\GridIndicatorCornerIcons-icon-TLright"
-	Grid.options.args.Indicators.args.GridIndicatorCornerIcons.args.iconTRcornerleft.icon  = "Interface\\AddOns\\GridIndicatorCornerIcons\\GridIndicatorCornerIcons-icon-TRleft"
-	Grid.options.args.Indicators.args.GridIndicatorCornerIcons.args.iconTRcornerright.icon = "Interface\\AddOns\\GridIndicatorCornerIcons\\GridIndicatorCornerIcons-icon-TRright"
-	Grid.options.args.Indicators.args.GridIndicatorCornerIcons.args.iconBLcornerleft.icon  = "Interface\\AddOns\\GridIndicatorCornerIcons\\GridIndicatorCornerIcons-icon-BLleft"
-	Grid.options.args.Indicators.args.GridIndicatorCornerIcons.args.iconBLcornerright.icon = "Interface\\AddOns\\GridIndicatorCornerIcons\\GridIndicatorCornerIcons-icon-BLright"
-	Grid.options.args.Indicators.args.GridIndicatorCornerIcons.args.iconBRcornerleft.icon  = "Interface\\AddOns\\GridIndicatorCornerIcons\\GridIndicatorCornerIcons-icon-BRleft"
-	Grid.options.args.Indicators.args.GridIndicatorCornerIcons.args.iconBRcornerright.icon = "Interface\\AddOns\\GridIndicatorCornerIcons\\GridIndicatorCornerIcons-icon-BRright"
+	Grid.options.args.GridIndicator.args.GridIndicatorCornerIcons.args.iconTLcornerleft.icon  = "Interface\\AddOns\\GridIndicatorCornerIcons\\GridIndicatorCornerIcons-icon-TLleft"
+	Grid.options.args.GridIndicator.args.GridIndicatorCornerIcons.args.iconTLcornerright.icon = "Interface\\AddOns\\GridIndicatorCornerIcons\\GridIndicatorCornerIcons-icon-TLright"
+	Grid.options.args.GridIndicator.args.GridIndicatorCornerIcons.args.iconTRcornerleft.icon  = "Interface\\AddOns\\GridIndicatorCornerIcons\\GridIndicatorCornerIcons-icon-TRleft"
+	Grid.options.args.GridIndicator.args.GridIndicatorCornerIcons.args.iconTRcornerright.icon = "Interface\\AddOns\\GridIndicatorCornerIcons\\GridIndicatorCornerIcons-icon-TRright"
+	Grid.options.args.GridIndicator.args.GridIndicatorCornerIcons.args.iconBLcornerleft.icon  = "Interface\\AddOns\\GridIndicatorCornerIcons\\GridIndicatorCornerIcons-icon-BLleft"
+	Grid.options.args.GridIndicator.args.GridIndicatorCornerIcons.args.iconBLcornerright.icon = "Interface\\AddOns\\GridIndicatorCornerIcons\\GridIndicatorCornerIcons-icon-BLright"
+	Grid.options.args.GridIndicator.args.GridIndicatorCornerIcons.args.iconBRcornerleft.icon  = "Interface\\AddOns\\GridIndicatorCornerIcons\\GridIndicatorCornerIcons-icon-BRleft"
+	Grid.options.args.GridIndicator.args.GridIndicatorCornerIcons.args.iconBRcornerright.icon = "Interface\\AddOns\\GridIndicatorCornerIcons\\GridIndicatorCornerIcons-icon-BRright"
 
-	Grid.options.args.Indicators.args.iconTLcornerleft = nil
-	Grid.options.args.Indicators.args.iconTLcornerright = nil
-	Grid.options.args.Indicators.args.iconTRcornerleft = nil
-	Grid.options.args.Indicators.args.iconTRcornerright = nil
-	Grid.options.args.Indicators.args.iconBLcornerleft = nil
-	Grid.options.args.Indicators.args.iconBLcornerright = nil
-	Grid.options.args.Indicators.args.iconBRcornerleft = nil
-	Grid.options.args.Indicators.args.iconBRcornerright = nil
+	Grid.options.args.GridIndicator.args.iconTLcornerleft = nil
+	Grid.options.args.GridIndicator.args.iconTLcornerright = nil
+	Grid.options.args.GridIndicator.args.iconTRcornerleft = nil
+	Grid.options.args.GridIndicator.args.iconTRcornerright = nil
+	Grid.options.args.GridIndicator.args.iconBLcornerleft = nil
+	Grid.options.args.GridIndicator.args.iconBLcornerright = nil
+	Grid.options.args.GridIndicator.args.iconBRcornerleft = nil
+	Grid.options.args.GridIndicator.args.iconBRcornerright = nil
 end
 
 function GridIndicatorCornerIcons:GridIndicatorCornerIconsConfig(frame)

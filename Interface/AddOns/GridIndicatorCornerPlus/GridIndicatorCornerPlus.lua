@@ -150,84 +150,84 @@ function GridIndicatorCornerPlus:DisableConfigMode()
 end
 
 function GridIndicatorCornerPlus:CleanOptionsMenu()
-	if not Grid.options.args["Indicators"].args.cornerPlusTLtopright then return end
+	if not Grid.options.args["GridIndicator"].args.cornerPlusTLtopright then return end
 	if not GridIndicatorCornerPlus:IsEnabled() then return end
 
-	Grid.options.args.Indicators.args.cornerPlusTL = {
+	Grid.options.args.GridIndicator.args.cornerPlusTL = {
 		type = "group",
 		icon = "Interface\\AddOns\\GridIndicatorCornerPlus\\GridIndicatorCornerPlus-icon-TL",
 		name = L["Top Left Corner Plus"],
 		desc = L["Options for Top Left Corner Plus indicators."],
 		order = 9.1,
 		args = {
-			["cornerPlusTLtopright"]    = Grid.options.args.Indicators.args.cornerPlusTLtopright,
-			["cornerPlusTLbottomleft"]  = Grid.options.args.Indicators.args.cornerPlusTLbottomleft,
-			["cornerPlusTLbottomright"] = Grid.options.args.Indicators.args.cornerPlusTLbottomright
+			["cornerPlusTLtopright"]    = Grid.options.args.GridIndicator.args.cornerPlusTLtopright,
+			["cornerPlusTLbottomleft"]  = Grid.options.args.GridIndicator.args.cornerPlusTLbottomleft,
+			["cornerPlusTLbottomright"] = Grid.options.args.GridIndicator.args.cornerPlusTLbottomright
 		}
 	}
-	Grid.options.args.Indicators.args.cornerPlusTL.args.cornerPlusTLtopright.icon = "Interface\\AddOns\\GridIndicatorCornerPlus\\GridIndicatorCornerPlus-icon-TL-TR"
-	Grid.options.args.Indicators.args.cornerPlusTL.args.cornerPlusTLbottomleft.icon = "Interface\\AddOns\\GridIndicatorCornerPlus\\GridIndicatorCornerPlus-icon-TL-BL"
-	Grid.options.args.Indicators.args.cornerPlusTL.args.cornerPlusTLbottomright.icon = "Interface\\AddOns\\GridIndicatorCornerPlus\\GridIndicatorCornerPlus-icon-TL-BR"
-	Grid.options.args.Indicators.args.cornerPlusTLtopright = nil
-	Grid.options.args.Indicators.args.cornerPlusTLbottomleft = nil
-	Grid.options.args.Indicators.args.cornerPlusTLbottomright = nil
+	Grid.options.args.GridIndicator.args.cornerPlusTL.args.cornerPlusTLtopright.icon = "Interface\\AddOns\\GridIndicatorCornerPlus\\GridIndicatorCornerPlus-icon-TL-TR"
+	Grid.options.args.GridIndicator.args.cornerPlusTL.args.cornerPlusTLbottomleft.icon = "Interface\\AddOns\\GridIndicatorCornerPlus\\GridIndicatorCornerPlus-icon-TL-BL"
+	Grid.options.args.GridIndicator.args.cornerPlusTL.args.cornerPlusTLbottomright.icon = "Interface\\AddOns\\GridIndicatorCornerPlus\\GridIndicatorCornerPlus-icon-TL-BR"
+	Grid.options.args.GridIndicator.args.cornerPlusTLtopright = nil
+	Grid.options.args.GridIndicator.args.cornerPlusTLbottomleft = nil
+	Grid.options.args.GridIndicator.args.cornerPlusTLbottomright = nil
 
-	Grid.options.args.Indicators.args.cornerPlusTR = {
+	Grid.options.args.GridIndicator.args.cornerPlusTR = {
 		type = "group",
 		icon = "Interface\\AddOns\\GridIndicatorCornerPlus\\GridIndicatorCornerPlus-icon-TR",
 		name = L["Top Right Corner Plus"],
 		desc = L["Options for Top Right Corner Plus indicators."],
 		order = 10.1,
 		args = {
-			["cornerPlusTRtopleft"]     = Grid.options.args.Indicators.args.cornerPlusTRtopleft,
-			["cornerPlusTRbottomleft"]  = Grid.options.args.Indicators.args.cornerPlusTRbottomleft,
-			["cornerPlusTRbottomright"] = Grid.options.args.Indicators.args.cornerPlusTRbottomright
+			["cornerPlusTRtopleft"]     = Grid.options.args.GridIndicator.args.cornerPlusTRtopleft,
+			["cornerPlusTRbottomleft"]  = Grid.options.args.GridIndicator.args.cornerPlusTRbottomleft,
+			["cornerPlusTRbottomright"] = Grid.options.args.GridIndicator.args.cornerPlusTRbottomright
 		}
 	}
-	Grid.options.args.Indicators.args.cornerPlusTR.args.cornerPlusTRtopleft.icon = "Interface\\AddOns\\GridIndicatorCornerPlus\\GridIndicatorCornerPlus-icon-TR-TL"
-	Grid.options.args.Indicators.args.cornerPlusTR.args.cornerPlusTRbottomleft.icon = "Interface\\AddOns\\GridIndicatorCornerPlus\\GridIndicatorCornerPlus-icon-TR-BL"
-	Grid.options.args.Indicators.args.cornerPlusTR.args.cornerPlusTRbottomright.icon = "Interface\\AddOns\\GridIndicatorCornerPlus\\GridIndicatorCornerPlus-icon-TR-BR"
-	Grid.options.args.Indicators.args.cornerPlusTRtopleft = nil
-	Grid.options.args.Indicators.args.cornerPlusTRbottomleft = nil
-	Grid.options.args.Indicators.args.cornerPlusTRbottomright = nil
+	Grid.options.args.GridIndicator.args.cornerPlusTR.args.cornerPlusTRtopleft.icon = "Interface\\AddOns\\GridIndicatorCornerPlus\\GridIndicatorCornerPlus-icon-TR-TL"
+	Grid.options.args.GridIndicator.args.cornerPlusTR.args.cornerPlusTRbottomleft.icon = "Interface\\AddOns\\GridIndicatorCornerPlus\\GridIndicatorCornerPlus-icon-TR-BL"
+	Grid.options.args.GridIndicator.args.cornerPlusTR.args.cornerPlusTRbottomright.icon = "Interface\\AddOns\\GridIndicatorCornerPlus\\GridIndicatorCornerPlus-icon-TR-BR"
+	Grid.options.args.GridIndicator.args.cornerPlusTRtopleft = nil
+	Grid.options.args.GridIndicator.args.cornerPlusTRbottomleft = nil
+	Grid.options.args.GridIndicator.args.cornerPlusTRbottomright = nil
 
-	Grid.options.args.Indicators.args.cornerPlusBL = {
+	Grid.options.args.GridIndicator.args.cornerPlusBL = {
 		type = "group",
 		icon = "Interface\\AddOns\\GridIndicatorCornerPlus\\GridIndicatorCornerPlus-icon-BL",
 		name = L["Bottom Left Corner Plus"],
 		desc = L["Options for Bottom Left Corner Plus indicators."],
 		order = 11.1,
 		args = {
-			["cornerPlusBLtopleft"]     = Grid.options.args.Indicators.args.cornerPlusBLtopleft,
-			["cornerPlusBLtopright"]    = Grid.options.args.Indicators.args.cornerPlusBLtopright,
-			["cornerPlusBLbottomright"] = Grid.options.args.Indicators.args.cornerPlusBLbottomright
+			["cornerPlusBLtopleft"]     = Grid.options.args.GridIndicator.args.cornerPlusBLtopleft,
+			["cornerPlusBLtopright"]    = Grid.options.args.GridIndicator.args.cornerPlusBLtopright,
+			["cornerPlusBLbottomright"] = Grid.options.args.GridIndicator.args.cornerPlusBLbottomright
 		}
 	}
-	Grid.options.args.Indicators.args.cornerPlusBL.args.cornerPlusBLtopleft.icon = "Interface\\AddOns\\GridIndicatorCornerPlus\\GridIndicatorCornerPlus-icon-BL-TL"
-	Grid.options.args.Indicators.args.cornerPlusBL.args.cornerPlusBLtopright.icon = "Interface\\AddOns\\GridIndicatorCornerPlus\\GridIndicatorCornerPlus-icon-BL-TR"
-	Grid.options.args.Indicators.args.cornerPlusBL.args.cornerPlusBLbottomright.icon = "Interface\\AddOns\\GridIndicatorCornerPlus\\GridIndicatorCornerPlus-icon-BL-BR"
-	Grid.options.args.Indicators.args.cornerPlusBLtopleft = nil
-	Grid.options.args.Indicators.args.cornerPlusBLtopright = nil
-	Grid.options.args.Indicators.args.cornerPlusBLbottomright = nil
+	Grid.options.args.GridIndicator.args.cornerPlusBL.args.cornerPlusBLtopleft.icon = "Interface\\AddOns\\GridIndicatorCornerPlus\\GridIndicatorCornerPlus-icon-BL-TL"
+	Grid.options.args.GridIndicator.args.cornerPlusBL.args.cornerPlusBLtopright.icon = "Interface\\AddOns\\GridIndicatorCornerPlus\\GridIndicatorCornerPlus-icon-BL-TR"
+	Grid.options.args.GridIndicator.args.cornerPlusBL.args.cornerPlusBLbottomright.icon = "Interface\\AddOns\\GridIndicatorCornerPlus\\GridIndicatorCornerPlus-icon-BL-BR"
+	Grid.options.args.GridIndicator.args.cornerPlusBLtopleft = nil
+	Grid.options.args.GridIndicator.args.cornerPlusBLtopright = nil
+	Grid.options.args.GridIndicator.args.cornerPlusBLbottomright = nil
 
-	Grid.options.args.Indicators.args.cornerPlusBR = {
+	Grid.options.args.GridIndicator.args.cornerPlusBR = {
 		type = "group",
 		icon = "Interface\\AddOns\\GridIndicatorCornerPlus\\GridIndicatorCornerPlus-icon-BR",
 		name = L["Bottom Right Corner Plus"],
 		desc = L["Options for Bottom Right Corner Plus indicators."],
 		order = 12.1,
 		args = {
-			["cornerPlusBRtopleft"]    = Grid.options.args.Indicators.args.cornerPlusBRtopleft,
-			["cornerPlusBRtopright"]   = Grid.options.args.Indicators.args.cornerPlusBRtopright,
-			["cornerPlusBRbottomleft"] = Grid.options.args.Indicators.args.cornerPlusBRbottomleft
+			["cornerPlusBRtopleft"]    = Grid.options.args.GridIndicator.args.cornerPlusBRtopleft,
+			["cornerPlusBRtopright"]   = Grid.options.args.GridIndicator.args.cornerPlusBRtopright,
+			["cornerPlusBRbottomleft"] = Grid.options.args.GridIndicator.args.cornerPlusBRbottomleft
 		}
 	}
-	Grid.options.args.Indicators.args.cornerPlusBR.args.cornerPlusBRtopleft.icon = "Interface\\AddOns\\GridIndicatorCornerPlus\\GridIndicatorCornerPlus-icon-BR-TL"
-	Grid.options.args.Indicators.args.cornerPlusBR.args.cornerPlusBRtopright.icon = "Interface\\AddOns\\GridIndicatorCornerPlus\\GridIndicatorCornerPlus-icon-BR-TR"
-	Grid.options.args.Indicators.args.cornerPlusBR.args.cornerPlusBRbottomleft.icon = "Interface\\AddOns\\GridIndicatorCornerPlus\\GridIndicatorCornerPlus-icon-BR-BL"
-	Grid.options.args.Indicators.args.cornerPlusBRtopleft = nil
-	Grid.options.args.Indicators.args.cornerPlusBRtopright = nil
-	Grid.options.args.Indicators.args.cornerPlusBRbottomleft = nil
+	Grid.options.args.GridIndicator.args.cornerPlusBR.args.cornerPlusBRtopleft.icon = "Interface\\AddOns\\GridIndicatorCornerPlus\\GridIndicatorCornerPlus-icon-BR-TL"
+	Grid.options.args.GridIndicator.args.cornerPlusBR.args.cornerPlusBRtopright.icon = "Interface\\AddOns\\GridIndicatorCornerPlus\\GridIndicatorCornerPlus-icon-BR-TR"
+	Grid.options.args.GridIndicator.args.cornerPlusBR.args.cornerPlusBRbottomleft.icon = "Interface\\AddOns\\GridIndicatorCornerPlus\\GridIndicatorCornerPlus-icon-BR-BL"
+	Grid.options.args.GridIndicator.args.cornerPlusBRtopleft = nil
+	Grid.options.args.GridIndicator.args.cornerPlusBRtopright = nil
+	Grid.options.args.GridIndicator.args.cornerPlusBRbottomleft = nil
 end
 
 function GridIndicatorCornerPlus:GridIndicatorCornerPlusConfig(frame)
