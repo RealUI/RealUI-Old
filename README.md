@@ -7,6 +7,7 @@ The following addons have been modified to suit RealUI and should not be updated
 
   - Aurora
   - BugSack
+  - cargBags_Nivaya
   - EasyMail
   - GridManaBars
   - SharedMedia + SharedMedia_MyMedia
