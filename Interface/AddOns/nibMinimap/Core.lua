@@ -90,7 +90,6 @@ local MinimapNewBorder
 local InfoShown = {
 	coords = false,
 	dungeondifficulty = false,
-	mail = false,
 }
 local pois = {}
 nibMinimap.pois = pois
@@ -141,7 +140,7 @@ local function ZoomMinimapOut()
 end
 
 -- Timer
-local RefreshMap, RefreshMail, RefreshZoom
+local RefreshMap, RefreshZoom
 local RefreshTimer = CreateFrame("FRAME")
 RefreshTimer.elapsed = 5
 RefreshTimer:Hide()
@@ -158,13 +157,6 @@ RefreshTimer:SetScript("OnUpdate", function(s, e)
 			end
 			
 			RefreshMap = false
-		end
-		
-		-- Mail
-		if RefreshMail then
-			nibMinimap:MailUpdate()
-			
-			RefreshMail = false
 		end
 		
 		-- Zoom
@@ -301,18 +293,6 @@ function nibMinimap:UpdateInfoPosition()
 			MMFrames.info.dungeondifficulty:Hide()
 		end
 		
-		-- Mail
-		if InfoShown.mail then
-			MMFrames.info.mail:ClearAllPoints()
-			MMFrames.info.mail:SetPoint(point, "Minimap", rpoint, xofs, yofs)
-			MMFrames.info.mail.text:SetFont(font, db.information.font.size / scale, db.information.font.outline)
-			MMFrames.info.mail:Show()
-			yofs = yofs + yadj
-			numText = numText + 1
-		else
-			MMFrames.info.mail:Hide()
-		end
-		
 		-- Dungeon Finder Queue
 		if InfoShown.queue then
 			MMFrames.info.queue:ClearAllPoints()
@@ -368,7 +348,6 @@ function nibMinimap:UpdateInfoPosition()
 		MMFrames.info.location:Hide()
 		MMFrames.info.coords:Hide()
 		MMFrames.info.dungeondifficulty:Hide()
-		MMFrames.info.mail:Hide()
 		MMFrames.info.queue:Hide()
 		MMFrames.info.RFqueue:Hide()
 		MMFrames.info.Squeue:Hide()
@@ -930,46 +909,6 @@ function nibMinimap:InstanceDifficultyOnEvent(event, ...)
 end
 
 
----- Mail ----
-
-function nibMinimap:MailUpdate()
-	local oldmailshown = InfoShown.mail
-	if HasNewMail() then
-		InfoShown.mail = true
-		MMFrames.info.mail:EnableMouse(true)
-		MMFrames.info.mail:SetScript("OnEnter", function(self)
-			MinimapMailFrameUpdate()
-			
-			local send1, send2, send3 = GetLatestThreeSenders()
-			local toolText
-
-			GameTooltip:SetOwner(MMFrames.info.mail, "ANCHOR_CURSOR")
-			if (send1 or send2 or send3) then
-				GameTooltip:AddLine(HAVE_MAIL_FROM)
-			else
-				GameTooltip:AddLine(HAVE_MAIL)
-			end
-
-			if send1 then GameTooltip:AddLine(strform("|cffffffff%s|r", send1)) end
-			if send2 then GameTooltip:AddLine(strform("|cffffffff%s|r", send2)) end
-			if send3 then GameTooltip:AddLine(strform("|cffffffff%s|r", send3)) end
-
-			GameTooltip:Show()
-		end)
-		MMFrames.info.mail:SetScript("OnLeave", function()
-			if GameTooltip:IsShown() then GameTooltip:Hide() end
-		end)
-		MMFrames.info.mail.text:SetText(NEW .. " " .. MAIL_LABEL)
-		MMFrames.info.mail:SetWidth(MMFrames.info.mail.text:GetStringWidth() + 12)
-	else
-		InfoShown.mail = false
-		MMFrames.info.mail:SetScript("OnEnter", nil)
-		MMFrames.info.mail:SetScript("OnLeave", nil)
-	end
-	if not UpdateProcessing then self:UpdateInfoPosition() end
-end
-
-
 ---- Coordinates ----
 local coords_int = 0.5
 function nibMinimap:CoordsUpdate()
@@ -1301,7 +1240,6 @@ function nibMinimap:PLAYER_ENTERING_WORLD()
 	GameTimeFrame.Show = function() end
 	
 	-- Update specific information
-	self:MailUpdate()
 	self:DungeonDifficultyUpdate()
 	
 	-- Update Minimap position and visible state
@@ -1313,7 +1251,6 @@ function nibMinimap:PLAYER_ENTERING_WORLD()
 	
 	-- Timer
 	RefreshMap = true
-	RefreshMail = true
 	RefreshZoom = true
 	RefreshTimer:Show()
 end
@@ -1382,12 +1319,6 @@ function nibMinimap:RegEvents()
 	self:RegisterEvent("LFG_PROPOSAL_SHOW", "GetLFGQueue")
 	self:RegisterEvent("LFG_QUEUE_STATUS_UPDATE", "GetLFGQueue")
 	self:ScheduleRepeatingTimer("QueueTimeFrequentCheck", 1)
-	
-	-- Mail
-	self:RegisterEvent("UPDATE_PENDING_MAIL", "MailUpdate")
-	self:RegisterEvent("MAIL_CLOSED", "MailUpdate")
-	self:RegisterEvent("MAIL_SHOW", "MailUpdate")
-	self:RegisterEvent("MAIL_INBOX_UPDATE", "MailUpdate")
 	
 	-- POI
 	self:RegisterEvent("QUEST_POI_UPDATE", "POIUpdate")
@@ -1544,7 +1475,6 @@ local function CreateFrames()
 		GameTooltip:Hide()
 	end)
 	MMFrames.info.coords = NewInfoFrame("nibMinimap_Coords", Minimap)
-	MMFrames.info.mail = NewInfoFrame("nibMinimap_Mail", Minimap)
 	MMFrames.info.dungeondifficulty = NewInfoFrame("nibMinimap_DungeonDifficulty", Minimap)	
 	MMFrames.info.queue = NewInfoFrame("nibMinimap_Queue", Minimap)	
 	MMFrames.info.RFqueue = NewInfoFrame("nibMinimap_RFQueue", Minimap)	

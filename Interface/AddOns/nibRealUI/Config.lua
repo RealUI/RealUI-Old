@@ -57,17 +57,6 @@ local function GetOptions()
 				name = "Misc Features",
 				order = 10,
 			},
-			currencytip = {
-				type = "toggle",
-				name = "Currency Tip",
-				desc = "Tracks currency across characters.",
-				get = function() return nibRealUI:GetModuleEnabled("CurrencyTip") end,
-				set = function(info, value) 
-					nibRealUI:SetModuleEnabled("CurrencyTip", value)
-					nibRealUI:ReloadUIDialog()
-				end,
-				order = 20,
-			},
 			dragemall = {
 				type = "toggle",
 				name = "Draggable Windows",
@@ -77,7 +66,7 @@ local function GetOptions()
 					nibRealUI:SetModuleEnabled("DragEmAll", value)
 					nibRealUI:ReloadUIDialog()
 				end,
-				order = 30,
+				order = 20,
 			},
 			itemquality = {
 				type = "toggle",
@@ -88,7 +77,7 @@ local function GetOptions()
 					nibRealUI:SetModuleEnabled("ItemQuality", value)
 					nibRealUI:ReloadUIDialog()
 				end,
-				order = 40,
+				order = 30,
 			},
 		},
 	}

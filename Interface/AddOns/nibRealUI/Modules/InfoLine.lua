@@ -94,6 +94,7 @@ local PlayerStatusValToStr = {
 
 local Elements = {
 	start = 		{L["Start"]},
+	mail =			{MAIL_LABEL},
 	guild = 		{ACHIEVEMENTS_GUILD_TAB},
 	friends = 		{QUICKBUTTON_NAME_FRIENDS},
 	durability = 	{DURABILITY},
@@ -2800,6 +2801,19 @@ local function PC_Update(self, short)
 	end
 end
 
+---- Mail
+local function Mail_Update(self)
+	if HasNewMail() then
+		self.hasMail = true
+		self.hidden = false
+		UpdateElementWidth(self)
+	else
+		self.hasMail = false
+		self.hidden = true
+		UpdateElementWidth(self, true)
+	end
+end
+
 ---- Clock
 local function Clock_StopPulse()
 	if not(db.elements.clock) then return end
@@ -3018,6 +3032,24 @@ function InfoLine:OnEnter(self)
 		GameTooltip:Show()
 			
 		self.icon:SetVertexColor(unpack(HighlightColorVals))
+	elseif self.tag == "mail" and self.hasMail then
+		MinimapMailFrameUpdate()
+		
+		local send1, send2, send3 = GetLatestThreeSenders()
+		local toolText
+
+		GameTooltip:SetOwner(self, "ANCHOR_TOP"..self.side, 0, 2)
+		if (send1 or send2 or send3) then
+			GameTooltip:AddLine(strform("|cff%s%s|r", TextColorTTHeader, HAVE_MAIL_FROM))
+		else
+			GameTooltip:AddLine(strform("|cff%s%s|r", TextColorTTHeader, HAVE_MAIL))
+		end
+
+		if send1 then GameTooltip:AddLine(strform("|cff%s%s|r", TextColorWhite, send1)) end
+		if send2 then GameTooltip:AddLine(strform("|cff%s%s|r", TextColorWhite, send2)) end
+		if send3 then GameTooltip:AddLine(strform("|cff%s%s|r", TextColorWhite, send3)) end
+
+		GameTooltip:Show()
 		
 	elseif self.tag == "guild" then
 		if self.hasguild then
@@ -3130,6 +3162,7 @@ function InfoLine:UpdatePositions()
 	local Frames = {
 		left = {
 			{ILFrames.start,		db.elements.start},
+			{ILFrames.mail,			db.elements.mail},
 			{ILFrames.guild,		db.elements.guild},
 			{ILFrames.friends,		db.elements.friends},
 			{ILFrames.durability,	db.elements.durability},
@@ -3317,6 +3350,34 @@ function InfoLine:CreateFrames()
 	-- start Button
 	ILFrames.start = CreateNewElement("LEFT", 1, Icons[ndbc.resolution].start, "start")
 	ILFrames.start.tag = "start"
+	
+	-- -- Mail
+	ILFrames.mail = CreateNewElement("LEFT", 1, Icons[ndbc.resolution].mail)
+	ILFrames.mail.tag = "mail"
+	ILFrames.mail.hasMail = false
+	ILFrames.mail:RegisterEvent("PLAYER_ENTERING_WORLD")
+	ILFrames.mail:RegisterEvent("UPDATE_PENDING_MAIL")
+	ILFrames.mail:RegisterEvent("MAIL_CLOSED")
+	ILFrames.mail:RegisterEvent("MAIL_SHOW")
+	ILFrames.mail:RegisterEvent("MAIL_INBOX_UPDATE")
+	ILFrames.mail:SetScript("OnEvent", function(self, event)
+		if not db.elements.mail then return end
+		if event == "PLAYER_ENTERING_WORLD" then
+			self.needrefreshed = true
+		end
+		Mail_Update(self)
+	end)
+	ILFrames.mail.elapsed = 0
+	ILFrames.mail:SetScript("OnUpdate", function(self, elapsed)
+		if self.needrefreshed then
+			self.elapsed = self.elapsed + elapsed
+			if self.elapsed >= 5 then
+				self.needrefreshed = false
+				self.elapsed = 0
+				Mail_Update(self)
+			end
+		end
+	end)
 	
 	-- -- Guild
 	ILFrames.guild = CreateNewElement("LEFT", 3, Icons[ndbc.resolution].guild)
@@ -3743,6 +3804,7 @@ function InfoLine:OnInitialize()
 			},
 			elements = {
 				start = true,
+				mail = true,
 				guild = true,
 				friends = true,
 				durability = true,

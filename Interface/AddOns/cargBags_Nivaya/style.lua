@@ -3,6 +3,10 @@ local cargBags = ns.cargBags
 
 local L = cBnivL
 
+local Fonts = {
+	[1] = {"Interface\\AddOns\\cargBags_Nivaya\\media\\pixel.ttf", 8, "Outlinemonochrome"},
+	[2] = {"Interface\\AddOns\\cargBags_Nivaya\\media\\pixel_hr.ttf", 8, "Outlinemonochrome"},
+}
 ------------------------------------------
 -- MyContainer specific
 ------------------------------------------
@@ -49,6 +53,28 @@ do
     QuickSort = function(tbl) table.sort(tbl, func) end
 end
 
+local SkinButton = function(btn)
+	if Aurora then
+		local F, C = unpack(Aurora)
+		local _,class = UnitClass("player")
+		F.Reskin(btn)
+		
+		-- Button Highlight
+		btn.highlight = CreateFrame("Frame", nil, btn)
+		btn.highlight:SetPoint("CENTER", btn, "CENTER", 0, 0)
+		btn.highlight:SetWidth(btn:GetWidth())
+		btn.highlight:SetHeight(btn:GetHeight())
+		btn.highlight:SetBackdrop({
+			bgFile = "Interface\\Buttons\\WHITE8x8", 
+			edgeFile = "Interface\\Buttons\\WHITE8x8", 
+			tile = false, tileSize = 0, edgeSize = 1, 
+			insets = { left = 1, right = 1, top = 1, bottom = 1	}
+		})
+		btn.highlight:SetBackdropColor(0,0,0,0)
+		btn.highlight:SetBackdropBorderColor(C.classcolours[class].r, C.classcolours[class].g, C.classcolours[class].b)
+	end
+end
+
 function MyContainer:OnContentsChanged()
 
 	local col, row = 0, 0
@@ -76,7 +102,7 @@ function MyContainer:OnContentsChanged()
         local button = v[3]
 		button:ClearAllPoints()
       
-        local xPos = col * (38+2)
+        local xPos = col * (38+2) + 1
         local yPos = (-1 * row * (38+2)) - yPosOffs
 
         button:SetPoint("TOPLEFT", self, "TOPLEFT", xPos, yPos)
@@ -90,7 +116,7 @@ function MyContainer:OnContentsChanged()
     end
 
     if cBnivCfg.CompressEmpty then
-        local xPos = col * (38+2)
+        local xPos = col * (38+2) + 1
         local yPos = (-1 * row * (38+2)) - yPosOffs
 
         local tDrop = self.DropTarget
@@ -248,11 +274,20 @@ local GetFirstFreeSlot = function(bagtype)
 end
 
 function MyContainer:OnCreate(name, settings)
+	local pixelFont = Fonts[1]
+	
     settings = settings or {}
     self.Settings = settings
 
     local tBag, tBank = (name == "cBniv_Bag"), (name == "cBniv_Bank")
     local tBankBags = string.find(name, "Bank")
+	
+	local numSlotsBag = {GetNumFreeSlots("bag")}
+	local numSlotsBank = {GetNumFreeSlots("bank")}
+	
+	local usedSlotsBag = numSlotsBag[2] - numSlotsBag[1]
+	local usedSlotsBank = numSlotsBank[2] - numSlotsBank[1]
+
 	self:EnableMouse(true)
     
 	self.UpdateDimensions = UpdateDimensions
@@ -264,7 +299,11 @@ function MyContainer:OnCreate(name, settings)
         SetFrameMovable(self, cBnivCfg.Unlocked) 
     end
 
-    self.Columns = (tBank and not cBnivCfg.FilterBank) and 14 or 8
+	if tBank or tBankBags then
+		self.Columns = (usedSlotsBank > 112) and 20 or 16
+	else
+		self.Columns = (usedSlotsBag > 56) and 12 or 8
+	end
 	self.ContainerHeight = 0
 	self:UpdateDimensions()
 	self:SetWidth((38+2)*self.Columns)
@@ -294,13 +333,13 @@ function MyContainer:OnCreate(name, settings)
 
 	-- Caption and close button
 	local caption = background:CreateFontString(background, "OVERLAY", nil)
-	caption:SetFont("Interface\\AddOns\\cargBags_Nivaya\\media\\pixel.ttf", 8, 'Outlinemonochrome')
+	caption:SetFont(unpack(pixelFont))
 	if(caption) then
 		local t = L.bagCaptions[self.name] or (tBankBags and strsub(self.name, 5))
 		if not t then t = self.name end
         if self.Name == "cBniv_ItemSets" then t=ItemSetCaption..t end
 		caption:SetText(t)
-		caption:SetPoint("TOPLEFT", 10, -10)
+		caption:SetPoint("TOPLEFT", 10, -10.5)
 		self.Caption = caption
         
         if tBag or tBank then
@@ -386,10 +425,10 @@ function MyContainer:OnCreate(name, settings)
         self.BagBar = bagButtons
 		
 		-- We don't need the bag bar every time, so let's create a toggle button for them to show
-        self.bagToggle = createTextButton("Bags", self, 40, 15)
+        self.bagToggle = createTextButton("Bags", self, 40, 17)
 		self.text = self:CreateFontString(nil, "OVERLAY", nil)
-	    self.text:SetPoint("CENTER", self.bagToggle, 2, 0)
-	    self.text:SetFont("Interface\\AddOns\\cargBags_Nivaya\\media\\pixel.ttf", 8, "Outlinemonochrome")
+	    self.text:SetPoint("CENTER", self.bagToggle, 2, 0.5)
+	    self.text:SetFont(unpack(pixelFont))
 	    self.text:SetText("Bags")
 		self.text:SetJustifyH("CENTER")
         self.bagToggle:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", -2, 2)
@@ -397,23 +436,35 @@ function MyContainer:OnCreate(name, settings)
 		if(self.BagBar:IsShown()) then self.BagBar:Hide() else self.BagBar:Show() end
 			self:UpdateDimensions()
 		end)
+		SkinButton(self.bagToggle)
 
 		-- Button to reset new items:
         if tBag and cBnivCfg.NewItems then
-            local resetBtn = createTextButton("Reset New", self, 75, 15)
+            local resetBtn = createTextButton("Reset New", self, 75, 17)
 			self.text = self:CreateFontString(nil, "OVERLAY", nil)
-	        self.text:SetPoint("CENTER", resetBtn, 2, 0)
-	        self.text:SetFont("Interface\\AddOns\\cargBags_Nivaya\\media\\pixel.ttf", 8, "Outlinemonochrome")
+	        self.text:SetPoint("CENTER", resetBtn, 2, 0.5)
+	        self.text:SetFont(unpack(pixelFont))
 	        self.text:SetText("Reset New")
 		    self.text:SetJustifyH("CENTER")
             resetBtn:SetPoint("TOPRIGHT", self.bagToggle, "TOPLEFT", -5, 0)
             resetBtn:SetScript("OnClick", function() resetNewItems(self) end)
+			SkinButton(resetBtn)
         end
     end
 
     -- Item drop target
     if (tBag or tBank) then
         self.DropTarget = CreateFrame("Button", nil, self, "ItemButtonTemplate")
+		--self.DropTarget.bg = self.DropTarget:CreateTexture(nil, "ARTWORK")
+		self.DropTarget.bg = CreateFrame("Frame", nil, self)
+		self.DropTarget.bg:SetAllPoints(self.DropTarget)
+		self.DropTarget.bg:SetBackdrop({
+			bgFile = "Interface\\ChatFrame\\ChatFrameBackground",
+			edgeFile = "Interface\\Buttons\\WHITE8x8",
+			tile = false, tileSize = 16, edgeSize = 1,
+		})
+		self.DropTarget.bg:SetBackdropColor(1, 1, 1, 0.1)
+		self.DropTarget.bg:SetBackdropBorderColor(0, 0, 0, 1)
         self.DropTarget:SetWidth(37)
         self.DropTarget:SetHeight(37)
         
@@ -455,13 +506,15 @@ function MyContainer:OnCreate(name, settings)
         search.highlightFunction = function(button, match) button:SetAlpha(match and 1 or 0.1) end
         
         local caption = background:CreateFontString(infoFrame, "OVERLAY", nil)
-		caption:SetFont("Interface\\AddOns\\cargBags_Nivaya\\media\\pixel.ttf", 8, 'Outlinemonochrome')
+		caption:SetFont(unpack(pixelFont))
 		caption:SetText(L.Search)
-		caption:SetPoint("BOTTOMLEFT", infoFrame, 0, 11)
+		caption:SetPoint("BOTTOMLEFT", infoFrame, 0, 11.5)
         
         -- The money display
-        --local money = self:SpawnPlugin("TagDisplay", "[money]", self)
-        --money:SetPoint("BOTTOMLEFT", 2, 2)
+        local money = self:SpawnPlugin("TagDisplay", "[money]", self)
+        money:SetPoint("TOPRIGHT", self, -28, -2.5)
+		money:SetJustifyH("RIGHT")
+		money:SetFont(unpack(pixelFont))
     end
     
 	self:SetScale(cBnivCfg.scale)

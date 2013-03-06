@@ -63,7 +63,7 @@ local function AddTooltipInfo(tooltip, currency, includePlayer)
 			local r, g, b
 			local class = realmDB[name].class
 			if class then
-				r, g, b = unpack(classColor[class])
+				r, g, b = unpack(nibRealUI:GetClassColor(class, true))
 			else
 				r, g, b = 0.5, 0.5, 0.5
 			end
@@ -78,19 +78,6 @@ end
 ------------------------------------------------------------------------
 
 function CurrencyTip:SetUpHooks()
-	for k, v in pairs(CUSTOM_CLASS_COLORS or RAID_CLASS_COLORS) do
-		classColor[k] = { v.r, v.g, v.b }
-	end
-	if CUSTOM_CLASS_COLORS then
-		CUSTOM_CLASS_COLORS:RegisterCallback(function()
-			for k, v in pairs(CUSTOM_CLASS_COLORS) do
-				classColor[k][1] = v.r
-				classColor[k][2] = v.g
-				classColor[k][3] = v.b
-			end
-		end)
-	end
-	
 	hooksecurefunc("BackpackTokenFrame_Update", UpdateData)
 	hooksecurefunc("TokenFrame_Update", UpdateData)
 
@@ -121,9 +108,9 @@ function CurrencyTip:SetUpHooks()
 end
 
 function CurrencyTip:SetUpChar()
-	local realm   = GetRealmName()
-	local faction = UnitFactionGroup("player")
-	local player  = UnitName("player")
+	local realm   = nibRealUI.realm
+	local faction = nibRealUI.faction
+	local player  = nibRealUI.name
 
 	for k,v in pairs(DB[realm]) do
 		if k ~= "Alliance" and k ~= "Horde" then
@@ -137,7 +124,7 @@ function CurrencyTip:SetUpChar()
 	charDB = realmDB[player]
 
 	local now = time()
-	charDB.class = select(2, UnitClass("player"))
+	charDB.class = nibRealUI.class
 	charDB.lastSeen = now
 
 	local cutoff = now - (60 * 60 * 24 * 30)

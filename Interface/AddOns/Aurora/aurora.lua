@@ -43,7 +43,7 @@ C.defaults = {
 	["bags"] = true,
 	["chatBubbles"] = false,
 	["enableFont"] = true,
-	["gradientAlpha"] = {"VERTICAL", .4, .4, .4, .4, .4, .4, .4, .4},
+	["gradientAlpha"] = {"VERTICAL", .3, .3, .3, .3, .3, .3, .3, .3},
 	["loot"] = true,
 	["useCustomColour"] = false,
 		["customColour"] = {r = 1, g = 1, b = 1},

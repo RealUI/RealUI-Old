@@ -1,0 +1,22 @@
+tag 1.5.2
+586f37d0fbd5d8418aedb2188d20ccd232ef68c3
+Hendrik Leppkes <h.leppkes@gmail.com>
+2013-03-06 16:56:25 +0100
+
+Tag as 1.5.2
+
+
+--------------------
+
+Hendrik Leppkes:
+	- Update TOC for 5.2
+	- Fix the player arrow scaling
+	- Add FogClear mapping for Krasarang_terrain1
+	- Bump .toc
+	- Remove WorldMapButton_OnUpdate hook, Blizzard fixed the bug this was trying to fix.
+	- Move initializing of the Quest Blob dropdown into the maps OnShow
+	This can possibly help to avoid load-time tainting.
+	- Don't hide map background in micro dungeons
+	- Fix world map button hook
+	- Add missing fogclear data for the hidden cliffs in the veiled stair zone.
+	- Update Scarlet Halls/Monastery and Scholomance map ids and add new MoP BGs

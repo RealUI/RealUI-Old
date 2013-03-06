@@ -1,4 +1,6 @@
 Hendrik Leppkes:
+	- Update TOC for 5.2
+	- Fix the player arrow scaling
 	- Add FogClear mapping for Krasarang_terrain1
 	- Bump .toc
 	- Remove WorldMapButton_OnUpdate hook, Blizzard fixed the bug this was trying to fix.
