@@ -28,7 +28,7 @@ Installation Procedure
   2. Copy the "Interface" folder into your "World of Warcraft" folder
 
 
-### Step 4: In Game ###
+### Step 3: In Game ###
 
   1. Once you've logged in, the Installation procedure will begin.
 
