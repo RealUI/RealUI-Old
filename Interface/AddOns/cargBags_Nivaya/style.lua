@@ -102,7 +102,7 @@ function MyContainer:OnContentsChanged()
         local button = v[3]
 		button:ClearAllPoints()
       
-        local xPos = col * (38+2) + 1
+        local xPos = col * (38+2) + 2
         local yPos = (-1 * row * (38+2)) - yPosOffs
 
         button:SetPoint("TOPLEFT", self, "TOPLEFT", xPos, yPos)
@@ -116,7 +116,7 @@ function MyContainer:OnContentsChanged()
     end
 
     if cBnivCfg.CompressEmpty then
-        local xPos = col * (38+2) + 1
+        local xPos = col * (38+2) + 2
         local yPos = (-1 * row * (38+2)) - yPosOffs
 
         local tDrop = self.DropTarget
@@ -164,6 +164,127 @@ end
     end
 end]]--
 
+-- Restack Items
+local ContainerID = { bags = { 0 }, bank = { -1 }, guild = { 42 } }
+for i = 1, NUM_BAG_SLOTS do table.insert(ContainerID.bags, i) end
+for i = NUM_BAG_SLOTS + 1, NUM_BAG_SLOTS + NUM_BANKBAGSLOTS do table.insert(ContainerID.bank, i) end
+
+-- yielding function; items will get locked and we have to wait
+local f = CreateFrame("Frame")
+local function coYield(loc, bag, slot, count)
+	local elapsed = 0
+	f:SetScript("OnUpdate", function(_, update)
+		elapsed = elapsed + update
+		if type(restacker) == "thread" and coroutine.status(restacker) == "suspended" and elapsed > 0.1 then
+			local locked = true
+			locked = select(3, GetContainerItemInfo(bag, slot))
+			if not locked then coroutine.resume(restacker) end
+			elapsed = 0
+		end
+	end)
+	coroutine.yield()
+end
+
+local restackItems = function(self)
+	local tBag, tBank = (self.name == "cBniv_Bag"), (self.name == "cBniv_Bank")
+	local loc = tBank and "bank" or "bags"
+	
+	if type(restacker) ~= "thread" or coroutine.status(restacker) == "dead" then
+		restacker = coroutine.create(function()
+			tabswap = 0
+			local changed = true
+			while changed do
+				changed = false
+				for _, bag in ipairs(ContainerID[loc]) do
+					if changed then break end
+					for slot = 1, (GetContainerNumSlots(bag)) do
+						while true do
+							local locked = select(3, GetContainerItemInfo(bag, slot))
+							if locked then coYield(loc, bag, slot) else break end
+						end
+						local item = GetContainerItemLink(bag, slot)
+						if item then
+							local itemid = tonumber(item:match("item:(%d+)"))
+							local stack = select(8, GetItemInfo(itemid))
+							local count = select(2, GetContainerItemInfo(bag, slot))
+
+							-- do "special" things with "special" items by moving them into "special" bags
+							if select(9, GetItemInfo(itemid)) ~= "INVTYPE_BAG" then
+								local bagType = (bag ~= 0 and bag ~= -1) and GetItemFamily(GetInventoryItemLink("player", ContainerIDToInventoryID(bag))) or 0								
+								for _, sbag in ipairs(ContainerID[loc]) do
+									if sbag > 0 and GetContainerNumFreeSlots(sbag) > 0 then
+										local sbagID = ContainerIDToInventoryID(sbag)
+										local sbagType = GetItemFamily(GetInventoryItemLink("player", sbagID))
+										local itemType = GetItemFamily(item)
+
+										if sbagType > 0 and sbagType == itemType and bagType == 0 then
+											PickupContainerItem(bag, slot)
+											PutItemInBag(sbagID)
+											coYield(loc, bag, slot)
+											break
+										end
+									end
+								end	
+							end
+							if count < stack then
+								-- found a partial stack
+								local locked, found, done, pbag, pslot
+								while true do
+									-- search through bags backwards for another partial stack with a matching itemid
+									for i = #ContainerID[loc], 1, -1 do
+										local _bag = ContainerID[loc][i]
+										if found or done then break end
+										local _slots = GetContainerNumSlots(_bag)
+										for _slot = _slots, 1, -1 do
+											if not (_bag == bag and _slot == slot) then
+												local _item = GetContainerItemLink(_bag, _slot)
+												if _item then
+													local _itemid = tonumber(_item:match("item:(%d+):"))
+													if _itemid == itemid then
+														local _stack = select(8, GetItemInfo(_itemid))
+														local _count = select(2, GetContainerItemInfo(_bag, _slot))
+														if _count < _stack then found, pbag, pslot = true, _bag, _slot; break end
+													end
+												end
+											else done = true; break end
+										end
+									end
+									locked = found and select(3, GetContainerItemInfo(pbag, pslot)) or false
+									if locked then coYield(loc, pbag, pslot) else break end
+								end
+
+								if found then
+									ClearCursor()
+
+									-- if second partial stack is inside a special bag, move the original stack into it
+									local bagType = (bag ~= 0 and bag ~= -1) and GetItemFamily(GetInventoryItemLink("player", ContainerIDToInventoryID(bag))) or 0
+									local pbagType = (pbag ~= 0 and pbag ~= -1) and GetItemFamily(GetInventoryItemLink("player", ContainerIDToInventoryID(pbag))) or 0
+									if pbagType > 0 and bagType == 0 then
+										PickupContainerItem(bag, slot)
+										PickupContainerItem(pbag, pslot)
+									else
+										PickupContainerItem(pbag, pslot)
+										PickupContainerItem(bag, slot)
+									end
+									
+									ClearCursor()
+									
+									changed = true
+									break
+								end
+							end
+						end
+					end
+				end
+			end
+			-- turn off yielding function
+			f:SetScript("OnUpdate", nil)
+		end)
+		coroutine.resume(restacker)
+	end	
+end
+
+-- Reset New
 local resetNewItems = function(self)
 	cB_KnownItems = {}
 	for i = 0,4 do
@@ -309,7 +430,7 @@ function MyContainer:OnCreate(name, settings)
 	end
 	self.ContainerHeight = 0
 	self:UpdateDimensions()
-	self:SetWidth((38+2)*self.Columns)
+	self:SetWidth((38+2)*self.Columns+1)
 
 	-- The frame background
     local tBankCustom = (tBankBags and not cBnivCfg.BankBlack)
@@ -334,7 +455,7 @@ function MyContainer:OnCreate(name, settings)
 	background:SetPoint("TOPLEFT", -6, 6)
 	background:SetPoint("BOTTOMRIGHT", 6, -6)
 
-	-- Caption and close button
+	-- Caption, close button
 	local caption = background:CreateFontString(background, "OVERLAY", nil)
 	caption:SetFont(unpack(pixelFont))
 	if(caption) then
@@ -347,7 +468,7 @@ function MyContainer:OnCreate(name, settings)
         
         if tBag or tBank then
             local close = CreateFrame("Button", nil, self, "UIPanelCloseButton")
-            close:SetPoint("TOPRIGHT", 6, 6)	
+            close:SetPoint("TOPRIGHT", 7, 6)	
             close:SetScript("OnClick", function(self) if cbNivaya:AtBank() then CloseBankFrame() else CloseAllBags() end end)
         end
 	end
@@ -443,16 +564,50 @@ function MyContainer:OnCreate(name, settings)
 
 		-- Button to reset new items:
         if tBag and cBnivCfg.NewItems then
-            local resetBtn = createTextButton("Reset New", self, 75, 17)
+            self.resetBtn = createTextButton("Reset New", self, 75, 17)
 			self.text = self:CreateFontString(nil, "OVERLAY", nil)
-	        self.text:SetPoint("CENTER", resetBtn, 2, 0.5)
+	        self.text:SetPoint("CENTER", self.resetBtn, 2, 0.5)
 	        self.text:SetFont(unpack(pixelFont))
 	        self.text:SetText("Reset New")
 		    self.text:SetJustifyH("CENTER")
-            resetBtn:SetPoint("TOPRIGHT", self.bagToggle, "TOPLEFT", -5, 0)
-            resetBtn:SetScript("OnClick", function() resetNewItems(self) end)
-			SkinButton(resetBtn)
+            self.resetBtn:SetPoint("TOPRIGHT", self.bagToggle, "TOPLEFT", -5, 0)
+            self.resetBtn:SetScript("OnClick", function() resetNewItems(self) end)
+			SkinButton(self.resetBtn)
         end
+		
+		-- Button to restack items:
+        if cBnivCfg.Restack then
+            self.restackBtn = createTextButton("Restack", self, 62, 17)
+			self.text = self:CreateFontString(nil, "OVERLAY", nil)
+	        self.text:SetPoint("CENTER",  self.restackBtn, 2, 0.5)
+	        self.text:SetFont(unpack(pixelFont))
+	        self.text:SetText("Restack")
+		    self.text:SetJustifyH("CENTER")
+			if self.resetBtn then
+				self.restackBtn:SetPoint("TOPRIGHT", self.resetBtn, "TOPLEFT", -5, 0)
+			else
+				self.restackBtn:SetPoint("TOPRIGHT", self.bagToggle, "TOPLEFT", -5, 0)
+			end
+             self.restackBtn:SetScript("OnClick", function() restackItems(self) end)
+			SkinButton(self.restackBtn)
+        end
+		
+		-- Button to show /cbniv options:
+        local optionsBtn = createTextButton("Options", self, 17, 17)
+		self.text = self:CreateFontString(nil, "OVERLAY", nil)
+		self.text:SetPoint("CENTER", optionsBtn, 1, 0.5)
+		self.text:SetFont(unpack(pixelFont))
+		self.text:SetText("C")
+		self.text:SetJustifyH("LEFT")
+		if self.restackBtn then
+			optionsBtn:SetPoint("TOPRIGHT", self.restackBtn, "TOPLEFT", -5, 0)
+		elseif self.resetBtn then
+			optionsBtn:SetPoint("TOPRIGHT", self.resetBtn, "TOPLEFT", -5, 0)
+		else
+			optionsBtn:SetPoint("TOPRIGHT", self.bagToggle, "TOPLEFT", -5, 0)
+		end
+		optionsBtn:SetScript("OnClick", function() SlashCmdList.CBNIV("") end)
+		SkinButton(optionsBtn)
     end
 
     -- Item drop target
@@ -500,7 +655,7 @@ function MyContainer:OnCreate(name, settings)
     if tBag then
         local infoFrame = CreateFrame("Button", nil, self)
         infoFrame:SetPoint("BOTTOMLEFT", 5, -6)
-        infoFrame:SetPoint("BOTTOMRIGHT", -130, -6)
+        infoFrame:SetPoint("BOTTOMRIGHT", -218, -6)
         infoFrame:SetHeight(32)
 
         -- Search bar

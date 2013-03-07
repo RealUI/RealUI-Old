@@ -18,6 +18,7 @@ cB_CustomBags = {}
 -- Those are default values only, change them ingame via "/cbniv":
 local optDefaults = {
                     NewItems = true,
+					Restack = true,
                     TradeGoods = true,
                     Armor = true,
                     CoolStuff = false,
@@ -68,22 +69,6 @@ function cargBags_Nivaya:ADDON_LOADED(event, addon)
 	cB_filterEnabled["ItemSets"] = cBnivCfg.ItemSets
     cBniv.BankCustomBags = cBnivCfg.BankCustomBags
     cBniv.BagPos = true
-    
-    -- TODO: remove everything between this and "TODO end" after a while!
-    -- neccessary for upgrading from r36 or older:
-    local tTable = {}
-    for i,v in ipairs(cB_CustomBags) do
-        local n = v.name or v
-        tTable[i] = { name = n, col = v.col or 0, prio = v.prio or 1 }
-    end
-
-    cB_CustomBags = {}
-    for i,v in ipairs(tTable) do 
-        cB_CustomBags[i] = { name = v.name, col = v.col, prio = v.prio } 
-    end
-
-    cBnivCfg.AmmoAlwaysHidden = nil
-    -- TODO end --
 
     -----------------
     -- Frame Spawns
