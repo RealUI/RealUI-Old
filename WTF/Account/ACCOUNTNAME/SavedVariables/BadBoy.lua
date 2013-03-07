@@ -1,3 +1,0 @@
-
-BADBOY_POPUP = nil
-BADBOY_SILENT = nil

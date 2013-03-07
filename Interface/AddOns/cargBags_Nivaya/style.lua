@@ -205,7 +205,9 @@ local UpdateDimensions = function(self)
 		height = height + 16	-- additional info display space
 	end
 	if self.bagToggle then
-		height = height + 24
+		local tBag = (self.name == "cBniv_Bag")
+		local extraHeight = tBag and 12 or 0
+		height = height + 24 + extraHeight
 	end
 	if self.Caption then	    -- Space for captions
 		height = height + 20
@@ -278,6 +280,7 @@ function MyContainer:OnCreate(name, settings)
 	
     settings = settings or {}
     self.Settings = settings
+	self.name = name
 
     local tBag, tBank = (name == "cBniv_Bag"), (name == "cBniv_Bank")
     local tBankBags = string.find(name, "Bank")
@@ -313,7 +316,7 @@ function MyContainer:OnCreate(name, settings)
 	local color_rb = 0.05
 	local color_gb = tBankCustom and .4 or 0.05
 	local color_bb = tBankCustom and .6 or 0.05
-	local alpha_fb = .8
+	local alpha_fb = .85
 
 	-- The frame background
 	local background = CreateFrame("Frame", nil, self)
@@ -339,12 +342,12 @@ function MyContainer:OnCreate(name, settings)
 		if not t then t = self.name end
         if self.Name == "cBniv_ItemSets" then t=ItemSetCaption..t end
 		caption:SetText(t)
-		caption:SetPoint("TOPLEFT", 10, -10.5)
+		caption:SetPoint("TOPLEFT", 11, -10.5)
 		self.Caption = caption
         
         if tBag or tBank then
             local close = CreateFrame("Button", nil, self, "UIPanelCloseButton")
-            close:SetPoint("TOPRIGHT", 5, 8)	
+            close:SetPoint("TOPRIGHT", 6, 6)	
             close:SetScript("OnClick", function(self) if cbNivaya:AtBank() then CloseBankFrame() else CloseAllBags() end end)
         end
 	end
@@ -509,10 +512,17 @@ function MyContainer:OnCreate(name, settings)
 		caption:SetFont(unpack(pixelFont))
 		caption:SetText(L.Search)
 		caption:SetPoint("BOTTOMLEFT", infoFrame, 0, 11.5)
+		
+		-- Hint
+		local hint = background:CreateFontString(nil, "OVERLAY", nil)
+	    hint:SetPoint("BOTTOMLEFT", infoFrame, 0, 32.5)
+	    hint:SetFont(unpack(pixelFont))
+		hint:SetTextColor(1, 1, 1, 0.4)
+	    hint:SetText("Alt + Right Click an item to assign category")
         
         -- The money display
         local money = self:SpawnPlugin("TagDisplay", "[money]", self)
-        money:SetPoint("TOPRIGHT", self, -28, -2.5)
+        money:SetPoint("TOPRIGHT", self, -28, -4.5)
 		money:SetJustifyH("RIGHT")
 		money:SetFont(unpack(pixelFont))
     end

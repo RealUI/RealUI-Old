@@ -1,4 +1,0 @@
-
-DXEIconDB = {
-	["hide"] = true,
-}
