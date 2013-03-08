@@ -10,6 +10,7 @@ local plugin = ldb:NewDataObject(addonName, {
 	text = "0",
 	icon = "Interface\\AddOns\\BugSack\\Media\\icon",
 })
+local icon
 
 local BugGrabber = BugGrabber
 
@@ -33,6 +34,12 @@ hooksecurefunc(addon, "UpdateDisplay", function()
 	local count = #addon:GetErrors(BugGrabber:GetSessionId())
 	plugin.text = count
 	plugin.icon = count == 0 and "Interface\\AddOns\\BugSack\\Media\\icon" or "Interface\\AddOns\\BugSack\\Media\\icon_red"
+	if not icon then return end
+	if count == 0 then
+		icon:Hide(addonName)
+	else
+		icon:Show(addonName)
+	end
 end)
 
 do
@@ -56,10 +63,11 @@ end
 
 local f = CreateFrame("Frame")
 f:SetScript("OnEvent", function()
-	local icon = LibStub("LibDBIcon-1.0", true)
+	icon = LibStub("LibDBIcon-1.0", true)
 	if not icon then return end
 	if not BugSackLDBIconDB then BugSackLDBIconDB = {} end
 	icon:Register(addonName, plugin, BugSackLDBIconDB)
+	icon:Hide(addonName)
 end)
 f:RegisterEvent("PLAYER_LOGIN")
 

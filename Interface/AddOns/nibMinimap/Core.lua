@@ -1,6 +1,7 @@
 local nibMinimap = LibStub("AceAddon-3.0"):NewAddon("nibMinimap", "AceConsole-3.0", "AceEvent-3.0", "AceBucket-3.0", "AceTimer-3.0")
 local LSM = LibStub("LibSharedMedia-3.0")
 local Astrolabe = DongleStub("Astrolabe-1.0")
+
 local db
 _G["nibMinimap"] = nibMinimap
 local CRFM
@@ -10,6 +11,8 @@ local strform = _G.string.format
 BINDING_HEADER_NIBMINIMAP = "nibMinimap"
 BINDING_NAME_NIBMINIMAPTOGGLE = "Toggle Minimap"
 BINDING_NAME_NIBMINIMAPFARM = "Toggle Farm Mode"
+
+local Font1, Font2 = CreateFont("nibMinimap1"), CreateFont("nibMinimap2")
 
 local defaults = {
 	profile = {
@@ -242,7 +245,14 @@ function nibMinimap:UpdateInfoPosition()
 	local ymulti
 	local iHeight = (db.information.font.size + db.information.font.gap) / scale
 	
-	local font = RetrieveFont(db.information.font.name)
+	if RealUIFontTiny and RealUIFontLarge then
+		Font1:SetFont(RealUIFontTiny[1], RealUIFontTiny[2] / scale, RealUIFontTiny[3])
+		Font2:SetFont(RealUIFontLarge[1], RealUIFontLarge[2] / scale, RealUIFontLarge[3])
+	else
+		local font = RetrieveFont(db.information.font.name)
+		Font1:SetFont(font, db.information.font.size / scale, db.information.font.outline)
+		Font2:SetFont(font, db.information.font.size / scale, db.information.font.outline)
+	end
 	local numText = 0
 	
 	if Minimap:IsVisible() and (ExpandedState == 0) then
@@ -265,18 +275,18 @@ function nibMinimap:UpdateInfoPosition()
 		-- Location
 		MMFrames.info.location:ClearAllPoints()
 		MMFrames.info.location:SetPoint(point, "Minimap", rpoint, xofs, yofs)
-		MMFrames.info.location.text:SetFont(font, db.information.font.size / scale, db.information.font.outline)
+		MMFrames.info.location.text:SetFontObject("nibMinimap2")
 		MMFrames.info.location:Show()
 		yofs = yofs + yadj
 		
 		-- Coordinates
 		if InfoShown.coords then
 			MMFrames.info.coords:ClearAllPoints()
-			MMFrames.info.coords:SetPoint(point, "Minimap", rpoint, xofs, yofs)
-			MMFrames.info.coords.text:SetFont(font, db.information.font.size / scale, db.information.font.outline)
+			MMFrames.info.coords:SetPoint("BOTTOMLEFT", "Minimap", "BOTTOMLEFT", 0, 0)
+			MMFrames.info.coords.text:SetFontObject("nibMinimap1")
+			MMFrames.info.coords.text:SetJustifyH("LEFT")
+			
 			MMFrames.info.coords:Show()
-			yofs = yofs + yadj
-			numText = numText + 1
 		else
 			MMFrames.info.coords:Hide()
 		end
@@ -285,7 +295,7 @@ function nibMinimap:UpdateInfoPosition()
 		if InfoShown.dungeondifficulty and not(InfoShown.coords) then
 			MMFrames.info.dungeondifficulty:ClearAllPoints()
 			MMFrames.info.dungeondifficulty:SetPoint(point, "Minimap", rpoint, xofs, yofs)
-			MMFrames.info.dungeondifficulty.text:SetFont(font, db.information.font.size / scale, db.information.font.outline)
+			MMFrames.info.dungeondifficulty.text:SetFontObject("nibMinimap2")
 			MMFrames.info.dungeondifficulty:Show()
 			yofs = yofs + yadj
 			numText = numText + 1
@@ -297,7 +307,7 @@ function nibMinimap:UpdateInfoPosition()
 		if InfoShown.queue then
 			MMFrames.info.queue:ClearAllPoints()
 			MMFrames.info.queue:SetPoint(point, "Minimap", rpoint, xofs, yofs)
-			MMFrames.info.queue.text:SetFont(font, db.information.font.size / scale, db.information.font.outline)
+			MMFrames.info.queue.text:SetFontObject("nibMinimap2")
 			MMFrames.info.queue:Show()
 			yofs = yofs + yadj
 			numText = numText + 1
@@ -309,7 +319,7 @@ function nibMinimap:UpdateInfoPosition()
 		if InfoShown.RFqueue then
 			MMFrames.info.RFqueue:ClearAllPoints()
 			MMFrames.info.RFqueue:SetPoint(point, "Minimap", rpoint, xofs, yofs)
-			MMFrames.info.RFqueue.text:SetFont(font, db.information.font.size / scale, db.information.font.outline)
+			MMFrames.info.RFqueue.text:SetFontObject("nibMinimap2")
 			MMFrames.info.RFqueue:Show()
 			yofs = yofs + yadj
 			numText = numText + 1
@@ -321,7 +331,7 @@ function nibMinimap:UpdateInfoPosition()
 		if InfoShown.Squeue then
 			MMFrames.info.Squeue:ClearAllPoints()
 			MMFrames.info.Squeue:SetPoint(point, "Minimap", rpoint, xofs, yofs)
-			MMFrames.info.Squeue.text:SetFont(font, db.information.font.size / scale, db.information.font.outline)
+			MMFrames.info.Squeue.text:SetFontObject("nibMinimap2")
 			MMFrames.info.Squeue:Show()
 			yofs = yofs + yadj
 			numText = numText + 1
@@ -920,8 +930,8 @@ function nibMinimap:CoordsUpdate()
 			coords_int = coords_int - elapsed
 			if (coords_int <= 0) then
 				local X, Y = GetPlayerMapPosition("Player")
-				MMFrames.info.coords.text:SetText(strform("%.1f, %.1f", X*100, Y*100))
-				MMFrames.info.coords:SetWidth(MMFrames.info.coords.text:GetStringWidth() + 12)
+				MMFrames.info.coords.text:SetText(strform("%.1f  %.1f", X*100, Y*100))
+				MMFrames.info.coords:SetWidth(MMFrames.info.coords.text:GetStringWidth())
 				coords_int = 0.5
 			end
 		end)
@@ -1372,16 +1382,26 @@ end
 -- Update Frame fonts
 function nibMinimap:UpdateFonts()
 	-- Retrieve Font variables
-	local font = RetrieveFont(db.information.font.name)
+	local FontSize
+	if RealUIFontTiny and RealUIFontLarge then
+		Font1:SetFont(RealUIFontTiny[1], RealUIFontTiny[2], RealUIFontTiny[3])
+		Font2:SetFont(RealUIFontLarge[1], RealUIFontLarge[2], RealUIFontLarge[3])
+		FontSize = RealUIFontLarge[2]
+	else
+		local font = RetrieveFont(db.information.font.name)
+		Font1:SetFont(font, db.information.font.size, db.information.font.outline)
+		Font2:SetFont(font, db.information.font.size, db.information.font.outline)
+		FontSize = db.information.font.size
+	end
 	
 	-- Set Info font
 	local fs	
 	for k,v in pairs(MMFrames.info) do
 		fs = MMFrames.info[k].text
 		fs:SetPoint("LEFT", MMFrames.info[k], "LEFT", 0.5, 0.5)
-		fs:SetFont(font, db.information.font.size, db.information.font.outline)
+		fs:SetFontObject("nibMinimap2")
 		fs:SetJustifyH("LEFT")
-		MMFrames.info[k]:SetHeight(db.information.font.size)
+		MMFrames.info[k]:SetHeight(FontSize)
 	end
 end
 
@@ -1475,6 +1495,7 @@ local function CreateFrames()
 		GameTooltip:Hide()
 	end)
 	MMFrames.info.coords = NewInfoFrame("nibMinimap_Coords", Minimap)
+	MMFrames.info.coords:SetAlpha(0.75)
 	MMFrames.info.dungeondifficulty = NewInfoFrame("nibMinimap_DungeonDifficulty", Minimap)	
 	MMFrames.info.queue = NewInfoFrame("nibMinimap_Queue", Minimap)	
 	MMFrames.info.RFqueue = NewInfoFrame("nibMinimap_RFQueue", Minimap)	

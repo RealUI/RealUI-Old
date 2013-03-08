@@ -4,6 +4,7 @@
 ## Notes: Minimap for RealUI.
 ## Version: 7
 ## SavedVariables: nibMinimapDB
+## OptionalDeps: nibRealUI
 ## Dependencies: nibLibs
 
 Core.lua
