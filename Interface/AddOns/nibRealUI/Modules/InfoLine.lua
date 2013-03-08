@@ -83,8 +83,6 @@ local TextColorOrange1
 local TextColorOrange2
 local TextColorBlue1
 
-local resSizeExtra
-
 local ClassLookup
 
 local PlayerStatusValToStr = {
@@ -282,6 +280,74 @@ local function GetOptions()
 									InfoLine:UpdatePositions()
 								end,
 								order = 10,
+							},
+							tablets = {
+								type = "group",
+								inline = true,
+								name = "Tablet Font Sizes",
+								order = 20,
+								args = {
+									headersize = {
+										type = "input",
+										name = "Header",
+										width = "half",
+										get = function(info) return tostring(db.text.tablets.headersize) end,
+										set = function(info, value)
+											value = nibRealUI:ValidateOffset(value)
+											db.text.tablets.headersize = value
+											InfoLine:Refresh()
+										end,
+										order = 10,
+									},
+									columnsize = {
+										type = "input",
+										name = "Column Titles",
+										width = "half",
+										get = function(info) return tostring(db.text.tablets.columnsize) end,
+										set = function(info, value)
+											value = nibRealUI:ValidateOffset(value)
+											db.text.tablets.columnsize = value
+											InfoLine:Refresh()
+										end,
+										order = 20,
+									},
+									normalsize = {
+										type = "input",
+										name = "Normal",
+										width = "half",
+										get = function(info) return tostring(db.text.tablets.normalsize) end,
+										set = function(info, value)
+											value = nibRealUI:ValidateOffset(value)
+											db.text.tablets.normalsize = value
+											InfoLine:Refresh()
+										end,
+										order = 30,
+									},
+									hintsize = {
+										type = "input",
+										name = "Hint",
+										width = "half",
+										get = function(info) return tostring(db.text.tablets.hintsize) end,
+										set = function(info, value)
+											value = nibRealUI:ValidateOffset(value)
+											db.text.tablets.hintsize = value
+											InfoLine:Refresh()
+										end,
+										order = 40,
+									},
+									highresextrasize = {
+										type = "input",
+										name = "High-Res Extra",
+										width = "half",
+										get = function(info) return tostring(db.text.tablets.highresextrasize) end,
+										set = function(info, value)
+											value = nibRealUI:ValidateOffset(value)
+											db.text.tablets.highresextrasize = value
+											InfoLine:Refresh()
+										end,
+										order = 50,
+									},
+								},
 							},
 						},
 					},
@@ -1048,9 +1114,8 @@ local FactionList = {nibRealUI.faction, nibRealUI:OtherFaction(nibRealUI.faction
 local function Currency_UpdateTablet()
 	if not CurrencyTabletData then return end
 	
+	local resExtraSize = (ndbc.resolution == 2) and db.text.tablets.highresextrasize or 0
 	local FactionList = {nibRealUI.faction, nibRealUI:OtherFaction(nibRealUI.faction)}
-	resSizeExtra = db.resolution[ndbc.resolution].tabfontsize
-	
 	local HasMaxLvl, OnlyMe = false, true
 	
 	-- Get max col widths
@@ -1066,14 +1131,14 @@ local function Currency_UpdateTablet()
 					for kn, vn in pairs(CurrencyTabletData[realm][vf]) do
 						if vn[2] == MAX_PLAYER_LEVEL then HasMaxLvl = true end
 						TotalGold = TotalGold + vn[3]
-						MaxWidth[3] = max(MaxWidth[3], GetTextWidth(convertMoney(vn[3]), 11 + resSizeExtra))
+						MaxWidth[3] = max(MaxWidth[3], GetTextWidth(convertMoney(vn[3]), db.text.tablets.normalsize + resExtraSize))
 						for i = 4, 9 do
-							MaxWidth[i] = max(MaxWidth[i], GetTextWidth(vn[i], 11 + resSizeExtra))
+							MaxWidth[i] = max(MaxWidth[i], GetTextWidth(vn[i], db.text.tablets.normalsize + resExtraSize))
 						end
 					end
 				end
 			end
-			MaxWidth[3] = max(MaxWidth[3], GetTextWidth(convertMoney(TotalGold), 11 + resSizeExtra))
+			MaxWidth[3] = max(MaxWidth[3], GetTextWidth(convertMoney(TotalGold), db.text.tablets.normalsize + resExtraSize))
 		end
 	end
 	MaxWidth[2] = 20
@@ -1091,7 +1156,7 @@ local function Currency_UpdateTablet()
 			if kr > 1 then
 				AddBlankTabLine(RealmSection[realm].cat, 4)
 			end
-			RealmSection[realm].cat:AddLine("text", realm, "size", 13 + resSizeExtra, "textR", 1, "textG", 1, "textB", 1)
+			RealmSection[realm].cat:AddLine("text", realm, "size", db.text.tablets.headersize + resExtraSize, "textR", 1, "textG", 1, "textB", 1)
 			AddBlankTabLine(RealmSection[realm].cat, 2)
 
 			-- Characters
@@ -1106,7 +1171,7 @@ local function Currency_UpdateTablet()
 				L["Updated"]
 			}
 			RealmSection[realm].charCat = Tablets.currency:AddCategory("columns", #charCols)
-			local charHeader = MakeTabletHeader(charCols, 10 + resSizeExtra, 12, {"LEFT", "RIGHT", "RIGHT", "RIGHT", "RIGHT", "RIGHT", "RIGHT", "RIGHT"})
+			local charHeader = MakeTabletHeader(charCols, db.text.tablets.columnsize + resExtraSize, 12, {"LEFT", "RIGHT", "RIGHT", "RIGHT", "RIGHT", "RIGHT", "RIGHT", "RIGHT"})
 			RealmSection[realm].charCat:AddLine(charHeader)
 			AddBlankTabLine(RealmSection[realm].charCat, 1)
 			
@@ -1134,7 +1199,7 @@ local function Currency_UpdateTablet()
 								line["text"] = vn[i]
 								line["justify"] = "LEFT"
 								line["func"] = function() Currency_TabletClickFunc(realm, vf, vn[9]) end
-								line["size"] = 11 + resSizeExtra
+								line["size"] = db.text.tablets.normalsize + resExtraSize
 								line["customwidth"] = MaxWidth[9]
 							elseif i == 2 or i == 8 then
 								line["text"..i] = vn[i]
@@ -1178,24 +1243,24 @@ local function Currency_UpdateTablet()
 									line["indentation"] = 12
 									line["text"] = ""
 									line["justify"] = "LEFT"
-									line["size"] = 10 + resSizeExtra
+									line["size"] = db.text.tablets.columnsize + resExtraSize
 									line["customwidth"] = MaxWidth[9]
 								elseif i == 2 or i == 8 then
 									line["text"..i] = ""
 									line["justify"..i] = "RIGHT"
-									line["size"..i] = 10 + resSizeExtra
+									line["size"..i] = db.text.tablets.columnsize + resExtraSize
 									line["customwidth"..i] = MaxWidth[i]
 									line["indentation"..i] = 12
 								elseif i == 3 then
 									line["text"..i] = Currency_GetDifference(CurrencyTabletDataStart[3], CurrencyTabletDataCurrent[3], true)
 									line["justify"..i] = "RIGHT"
-									line["size"..i] = 10 + resSizeExtra
+									line["size"..i] = db.text.tablets.columnsize + resExtraSize
 									line["customwidth"..i] = MaxWidth[3]
 									line["indentation"..i] = 12
 								else
 									line["text"..i] = Currency_GetDifference(CurrencyTabletDataStart[i + 6], CurrencyTabletDataCurrent[i + 6], false)
 									line["justify"..i] = "RIGHT"
-									line["size"..i] = 10 + resSizeExtra
+									line["size"..i] = db.text.tablets.columnsize + resExtraSize
 									line["customwidth"..i] = MaxWidth[i]
 									line["indentation"..i] = 12
 								end
@@ -1214,6 +1279,7 @@ local function Currency_UpdateTablet()
 					"text3", convertMoney(TotalGold),
 					"justify3", "RIGHT",
 					"customwidth3", MaxWidth[3],
+					"size3", db.text.tablets.columnsize + resExtraSize,
 					"indentation3", 12
 				)
 				AddBlankTabLine(RealmSection[realm].charCat, 4)
@@ -1245,7 +1311,7 @@ local function Currency_UpdateTablet()
 		AddBlankTabLine(hintCat, 2)
 		hintCat:AddLine(
 			"text", L["Note: Weekly caps will reset upon loading currency data"].."\n  "..L["on a character whose weekly caps have reset."],
-			"size", 9 + resSizeExtra,
+			"size", db.text.tablets.hintsize + resExtraSize,
 			"textR", 0.7,
 			"textG", 0.7,
 			"textB", 0.7,
@@ -1640,8 +1706,9 @@ end
 
 local FriendsCat
 local function Friends_UpdateTablet()
+	local resExtraSize = (ndbc.resolution == 2) and db.text.tablets.highresextrasize or 0
+	
 	if ( FriendsOnline > 0 and FriendsTabletData ) then
-		resSizeExtra = db.resolution[ndbc.resolution].tabfontsize
 		local Cols, lineHeader
 		
 		-- Title
@@ -1653,7 +1720,7 @@ local function Friends_UpdateTablet()
 			GAME
 		}
 		FriendsCat = Tablets.friends:AddCategory("columns", #Cols)
-		lineHeader = MakeTabletHeader(Cols, 10 + resSizeExtra, 0, {"LEFT", "RIGHT", "LEFT", "LEFT", "LEFT"})
+		lineHeader = MakeTabletHeader(Cols, db.text.tablets.columnsize + resExtraSize, 0, {"LEFT", "RIGHT", "LEFT", "LEFT", "LEFT"})
 		FriendsCat:AddLine(lineHeader)
 		AddBlankTabLine(FriendsCat)
 		
@@ -1665,7 +1732,7 @@ local function Friends_UpdateTablet()
 					line["text"] = val[i]
 					line["justify"] = "LEFT"
 					line["func"] = function() Friends_TabletClickFunc(val[6],val[8],val[9]) end
-					line["size"] = 11 + resSizeExtra
+					line["size"] = db.text.tablets.normalsize + resExtraSize
 				elseif i == 2 then	-- Level
 					line["text"..i] = val[2]
 					line["justify"..i] = "RIGHT"
@@ -1673,21 +1740,21 @@ local function Friends_UpdateTablet()
 					line["text"..i.."R"] = uLevelColor.r
 					line["text"..i.."G"] = uLevelColor.g
 					line["text"..i.."B"] = uLevelColor.b
-					line["size"..i] = 11 + resSizeExtra
+					line["size"..i] = db.text.tablets.normalsize + resExtraSize
 				else	-- The rest
 					line["text"..i] = val[i]
 					line["justify"..i] = "LEFT"
 					line["text"..i.."R"] = 0.8
 					line["text"..i.."G"] = 0.8
 					line["text"..i.."B"] = 0.8
-					line["size"..i] = 11 + resSizeExtra
+					line["size"..i] = db.text.tablets.normalsize + resExtraSize
 				end
 			end
 			FriendsCat:AddLine(line)
 		end
 		
 		-- Hint
-		Tablets.friends:SetHint(L["<Click> to whisper, <Alt+Click> to invite."])
+		Tablets.friends:SetHint(L["<Click> to whisper, <Alt+Click> to invite."], db.text.tablets.hintsize + resExtraSize)
 	end
 end
 
@@ -1909,28 +1976,29 @@ end
 
 local GuildSection = {}
 local function Guild_UpdateTablet()
+	local resExtraSize = (ndbc.resolution == 2) and db.text.tablets.highresextrasize or 0
+	
 	if ( IsInGuild() and GuildOnline > 0 ) then
-		resSizeExtra = db.resolution[ndbc.resolution].tabfontsize
 		local Cols, lineHeader
 		wipe(GuildSection)
 		
 		-- Guild Name
 		local gname, _, _ = GetGuildInfo("player")
 		GuildSection.headerCat = Tablets.guild:AddCategory()
-		GuildSection.headerCat:AddLine("text", gname, "size", 13 + resSizeExtra, "textR", db.colors.ttheader[1], "textG", db.colors.ttheader[2], "textB", db.colors.ttheader[3])
+		GuildSection.headerCat:AddLine("text", gname, "size", db.text.tablets.headersize + resExtraSize, "textR", db.colors.ttheader[1], "textG", db.colors.ttheader[2], "textB", db.colors.ttheader[3])
 		GuildSection.headerCat:AddLine("isLine", true, "text", "")
 		
 		-- Guild Level
-		GuildSection.headerCat:AddLine("text", (GetGuildFactionGroup() == 0) and strform(GUILD_LEVEL_AND_FACTION, GetGuildLevel(), FACTION_HORDE) or strform(GUILD_LEVEL_AND_FACTION, GetGuildLevel(), FACTION_ALLIANCE), "size", 10 + resSizeExtra, "textR", 0.7, "textG", 0.7, "textB", 0.7)
+		GuildSection.headerCat:AddLine("text", (GetGuildFactionGroup() == 0) and strform(GUILD_LEVEL_AND_FACTION, GetGuildLevel(), FACTION_HORDE) or strform(GUILD_LEVEL_AND_FACTION, GetGuildLevel(), FACTION_ALLIANCE), "size", db.text.tablets.columnsize + resExtraSize, "textR", 0.7, "textG", 0.7, "textB", 0.7)
 		
 		-- Reputation
-		GuildSection.headerCat:AddLine("text", GetText("FACTION_STANDING_LABEL"..GetGuildFactionInfo(), UnitSex("player")), "size", 11 + resSizeExtra, "textR", 0.7, "textG", 0.7, "textB", 0.7)
+		GuildSection.headerCat:AddLine("text", GetText("FACTION_STANDING_LABEL"..GetGuildFactionInfo(), UnitSex("player")), "size", db.text.tablets.normalsize + resExtraSize, "textR", 0.7, "textG", 0.7, "textB", 0.7)
 		AddBlankTabLine(GuildSection.headerCat, 5)
 		
 		-- GMOTD
 		local gmotd = GetGuildRosterMOTD()
 		if gmotd ~= "" then
-			GuildSection.headerCat:AddLine("text", gmotd, "wrap", true, "textR", 1, "textG", 1, "textB", 1, "func", function() Guild_GMOTDClickFunc(gmotd) end)
+			GuildSection.headerCat:AddLine("text", gmotd, "wrap", true, "size", db.text.tablets.normalsize + resExtraSize, "textR", 1, "textG", 1, "textB", 1, "func", function() Guild_GMOTDClickFunc(gmotd) end)
 			AddBlankTabLine(GuildSection.headerCat, 5)
 		end
 		AddBlankTabLine(GuildSection.headerCat)
@@ -1948,7 +2016,7 @@ local function Guild_UpdateTablet()
 		end
 		
 		GuildSection.guildCat = Tablets.guild:AddCategory("columns", #Cols)
-		lineHeader = MakeTabletHeader(Cols, 10 + resSizeExtra, 0, {"LEFT", "RIGHT", "LEFT", "LEFT", "LEFT", "LEFT"})
+		lineHeader = MakeTabletHeader(Cols, db.text.tablets.columnsize + resExtraSize, 0, {"LEFT", "RIGHT", "LEFT", "LEFT", "LEFT", "LEFT"})
 		GuildSection.guildCat:AddLine(lineHeader)
 		AddBlankTabLine(GuildSection.guildCat)
 		
@@ -1972,7 +2040,7 @@ local function Guild_UpdateTablet()
 					line["text"] = val[i]
 					line["justify"] = "LEFT"
 					line["func"] = function() Guild_TabletClickFunc(val[7]) end
-					line["size"] = 11 + resSizeExtra
+					line["size"] = db.text.tablets.normalsize + resExtraSize
 				elseif i == 2 then	-- Level
 					line["text"..i] = val[i]
 					line["justify"..i] = "RIGHT"
@@ -1980,21 +2048,21 @@ local function Guild_UpdateTablet()
 					line["text"..i.."R"] = uLevelColor.r
 					line["text"..i.."G"] = uLevelColor.g
 					line["text"..i.."B"] = uLevelColor.b
-					line["size"..i] = 11 + resSizeExtra
+					line["size"..i] = db.text.tablets.normalsize + resExtraSize
 				else	-- The rest
 					line["text"..i] = val[i]
 					line["justify"..i] = "LEFT"
 					line["text"..i.."R"] = normColor[1]
 					line["text"..i.."G"] = normColor[2]
 					line["text"..i.."B"] = normColor[3]
-					line["size"..i] = 11 + resSizeExtra
+					line["size"..i] = db.text.tablets.normalsize + resExtraSize
 				end
 			end
 			GuildSection.guildCat:AddLine(line)
 		end
 		
 		-- Hint
-		Tablets.guild:SetHint(L["<Click> to whisper, <Alt+Click> to invite."])
+		Tablets.guild:SetHint(L["<Click> to whisper, <Alt+Click> to invite."], db.text.tablets.hintsize + resExtraSize)
 	end
 end
 
@@ -2224,7 +2292,7 @@ local function SpecGearClickFunc(self, index, equipName)
 end
 
 local function SpecAddEquipListToCat(self, cat)
-	resSizeExtra = db.resolution[ndbc.resolution].tabfontsize
+	local resExtraSize = (ndbc.resolution == 2) and db.text.tablets.highresextrasize or 0
 	local numSpecGroups = GetNumSpecGroups()
 	
 	-- Sets
@@ -2236,8 +2304,8 @@ local function SpecAddEquipListToCat(self, cat)
 			wipe(line)
 			for i = 1, 4 do
 				if i == 1 then
-					line["text"] = strform("|T%s:%d:%d:%d:%d|t %s", SpecEquipList[k].icon, 11 + resSizeExtra, 11 + resSizeExtra, 0, 0, SpecEquipList[k].name)
-					line["size"] = 11 + resSizeExtra
+					line["text"] = strform("|T%s:%d:%d:%d:%d|t %s", SpecEquipList[k].icon, db.text.tablets.normalsize + resExtraSize, db.text.tablets.normalsize + resExtraSize, 0, 0, SpecEquipList[k].name)
+					line["size"] = db.text.tablets.normalsize + resExtraSize
 					line["justify"] = "LEFT"
 					line["textR"] = 0.9
 					line["textG"] = 0.9
@@ -2249,14 +2317,14 @@ local function SpecAddEquipListToCat(self, cat)
 					line["customwidth"] = 110
 				elseif i == 2 then
 					line["text"..i] = PRIMARY
-					line["size"..i] = 11 + resSizeExtra
+					line["size"..i] = db.text.tablets.normalsize + resExtraSize
 					line["justify"..i] = "LEFT"
 					line["text"..i.."R"] = (dbc.specgear.primary == k) and db.colors.orange2[1] or 0.3
 					line["text"..i.."G"] = (dbc.specgear.primary == k) and db.colors.orange2[2] or 0.3
 					line["text"..i.."B"] = (dbc.specgear.primary == k) and db.colors.orange2[3] or 0.3
 				elseif (i == 3) and (numSpecGroups > 1) then
 					line["text"..i] = SECONDARY
-					line["size"..i] = 11 + resSizeExtra
+					line["size"..i] = db.text.tablets.normalsize + resExtraSize
 					line["justify"..i] = "LEFT"
 					line["text"..i.."R"] = (dbc.specgear.secondary == k) and db.colors.orange2[1] or 0.3
 					line["text"..i.."G"] = (dbc.specgear.secondary == k) and db.colors.orange2[2] or 0.3
@@ -2271,8 +2339,6 @@ end
 
 local TalentInfo = {}
 local function SpecAddTalentGroupLineToCat(self, cat, talentGroup)
-	resSizeExtra = db.resolution[ndbc.resolution].tabfontsize
-	
 	local ActiveGroupColor = db.colors.orange2
 	local InactiveColor = db.colors.disabled
 	local ActiveSpecColor = db.colors.blue1
@@ -2283,13 +2349,15 @@ local function SpecAddTalentGroupLineToCat(self, cat, talentGroup)
 	local defaultSpecTexture = "Interface\\Icons\\Ability_Marksmanship"
 	local line = {}
 	
+	local resExtraSize = (ndbc.resolution == 2) and db.text.tablets.highresextrasize or 0
+	
 	for i = 1, 2 do
 		local GroupColor = (activeSpecGroup == talentGroup) and ActiveGroupColor or InactiveColor
 		local SpecColor = (activeSpecGroup == talentGroup) and ActiveSpecColor or InactiveColor
 		if i == 1 then
 			line["text"] = talentGroup == 1 and PRIMARY or SECONDARY
 			line["justify"] = "LEFT"
-			line["size"] = 11 + resSizeExtra
+			line["size"] = db.text.tablets.normalsize + resExtraSize
 			line["textR"] = GroupColor[1]
 			line["textG"] = GroupColor[2]
 			line["textB"] = GroupColor[3]
@@ -2305,7 +2373,7 @@ local function SpecAddTalentGroupLineToCat(self, cat, talentGroup)
 			else
 				id, name, description, icon = nil, NONE, nil, defaultSpecTexture
 			end
-			line["text"..i] = strform("|T%s:%d:%d:%d:%d|t %s", icon, 11 + resSizeExtra, 11 + resSizeExtra, 0, 0, name)
+			line["text"..i] = strform("|T%s:%d:%d:%d:%d|t %s", icon, db.text.tablets.normalsize + resExtraSize, db.text.tablets.normalsize + resExtraSize, 0, 0, name)
 			line["justify"..i] = "LEFT"
 			line["text"..i.."R"] = SpecColor[1]
 			line["text"..i.."G"] = SpecColor[2]
@@ -2318,7 +2386,7 @@ end
 
 local SpecSection = {}
 local function Spec_UpdateTablet(self)
-	resSizeExtra = db.resolution[ndbc.resolution].tabfontsize
+	local resExtraSize = (ndbc.resolution == 2) and db.text.tablets.highresextrasize or 0
 	local Cols, lineHeader
 	
 	local numSpecGroups = GetNumSpecGroups()
@@ -2329,7 +2397,7 @@ local function Spec_UpdateTablet(self)
 		-- Spec Category
 		SpecSection["specs"] = {}
 		SpecSection["specs"].cat = Tablets.spec:AddCategory()
-		SpecSection["specs"].cat:AddLine("text", SPECIALIZATION, "size", 13 + resSizeExtra, "textR", 1, "textG", 1, "textB", 1)
+		SpecSection["specs"].cat:AddLine("text", SPECIALIZATION, "size", db.text.tablets.headersize + resExtraSize, "textR", 1, "textG", 1, "textB", 1)
 		
 		-- Spec Cat
 		SpecSection["specs"].talentCat = Tablets.spec:AddCategory("columns", 2)
@@ -2351,7 +2419,7 @@ local function Spec_UpdateTablet(self)
 		-- Equipment Category
 		SpecSection["equipment"] = {}
 		SpecSection["equipment"].cat = Tablets.spec:AddCategory()
-		SpecSection["equipment"].cat:AddLine("text", EQUIPMENT_MANAGER, "size", 13 + resSizeExtra, "textR", 1, "textG", 1, "textB", 1)
+		SpecSection["equipment"].cat:AddLine("text", EQUIPMENT_MANAGER, "size", db.text.tablets.headersize + resExtraSize, "textR", 1, "textG", 1, "textB", 1)
 		AddBlankTabLine(SpecSection["equipment"].cat, 2)
 		
 		-- Equipment Cat
@@ -2363,11 +2431,11 @@ local function Spec_UpdateTablet(self)
 	
 	-- Hint
 	if (numSpecGroups > 1) and (numEquipSets > 0) then
-		Tablets.spec:SetHint(L["<Click> to change talent specs."].."\n"..L["<Equip Click> to equip."].."\n"..L["<Equip Ctl+Click> to assign to "]..PRIMARY..".\n"..L["<Equip Alt+Click> to assign to "]..SECONDARY..".\n"..L["<Equip Shift+Click> to unassign."])
+		Tablets.spec:SetHint(L["<Click> to change talent specs."].."\n"..L["<Equip Click> to equip."].."\n"..L["<Equip Ctl+Click> to assign to "]..PRIMARY..".\n"..L["<Equip Alt+Click> to assign to "]..SECONDARY..".\n"..L["<Equip Shift+Click> to unassign."], db.text.tablets.hintsize + resExtraSize)
 	elseif numSpecGroups > 1 then
-		Tablets.spec:SetHint(L["<Click> to change talent specs."])
+		Tablets.spec:SetHint(L["<Click> to change talent specs."], db.text.tablets.hintsize + resExtraSize)
 	elseif numEquipSets > 0 then
-		Tablets.spec:SetHint(L["<Equip Click> to equip."].."\n"..L["<Equip Ctl+Click> to assign to "]..PRIMARY.."\n"..L["<Equip Shift+Click> to unassign."])
+		Tablets.spec:SetHint(L["<Equip Click> to equip."].."\n"..L["<Equip Ctl+Click> to assign to "]..PRIMARY.."\n"..L["<Equip Shift+Click> to unassign."], db.text.tablets.hintsize + resExtraSize)
 	end
 end
 
@@ -2407,8 +2475,6 @@ local function Spec_OnEnter(self)
 end
 
 local function Spec_Update(self)
-	resSizeExtra = db.resolution[ndbc.resolution].tabfontsize
-	
 	-- Talent Info
 	wipe(TalentInfo)
 	local numSpecGroups = GetNumSpecGroups()
@@ -2488,14 +2554,14 @@ local SysStats = {
 
 local SysSection = {}
 local function PC_UpdateTablet()
-	resSizeExtra = db.resolution[ndbc.resolution].tabfontsize
+	local resExtraSize = (ndbc.resolution == 2) and db.text.tablets.highresextrasize or 0
 	local Cols, lineHeader
 	wipe(SysSection)
 	
 	-- Network Category
 	SysSection["network"] = {}
 	SysSection["network"].cat = Tablets.pc:AddCategory()
-	SysSection["network"].cat:AddLine("text", NETWORK_LABEL, "size", 13 + resSizeExtra, "textR", 1, "textG", 1, "textB", 1)
+	SysSection["network"].cat:AddLine("text", NETWORK_LABEL, "size", db.text.tablets.headersize + resExtraSize, "textR", 1, "textG", 1, "textB", 1)
 	AddBlankTabLine(SysSection["network"].cat, 2)
 	
 	-- Lines
@@ -2507,7 +2573,7 @@ local function PC_UpdateTablet()
 		L["Avg"],
 	}
 	SysSection["network"].lineCat = Tablets.pc:AddCategory("columns", #Cols)
-	lineHeader = MakeTabletHeader(Cols, 10 + resSizeExtra, 12, {"LEFT", "RIGHT", "RIGHT", "RIGHT", "RIGHT"})
+	lineHeader = MakeTabletHeader(Cols, db.text.tablets.columnsize + resExtraSize, 12, {"LEFT", "RIGHT", "RIGHT", "RIGHT", "RIGHT"})
 	SysSection["network"].lineCat:AddLine(lineHeader)
 	AddBlankTabLine(SysSection["network"].lineCat, 1)
 	
@@ -2524,7 +2590,7 @@ local function PC_UpdateTablet()
 			if i == 1 then
 				line["text"] = strform("|cffe5e5e5%s|r |cff808080(%s)|r", NetworkLines[l][1], NetworkLines[l][2])
 				line["justify"] = "LEFT"
-				line["size"] = 11 + resSizeExtra
+				line["size"] = db.text.tablets.normalsize + resExtraSize
 				line["indentation"] = 12.5
 				line["customwidth"] = 90
 			elseif i == 2 then
@@ -2568,7 +2634,7 @@ local function PC_UpdateTablet()
 	-- Computer Category
 	SysSection["computer"] = {}
 	SysSection["computer"].cat = Tablets.pc:AddCategory()
-	SysSection["computer"].cat:AddLine("text", SYSTEMOPTIONS_MENU, "size", 13 + resSizeExtra, "textR", 1, "textG", 1, "textB", 1)
+	SysSection["computer"].cat:AddLine("text", SYSTEMOPTIONS_MENU, "size", db.text.tablets.headersize + resExtraSize, "textR", 1, "textG", 1, "textB", 1)
 	AddBlankTabLine(SysSection["computer"].cat, 2)
 	
 	-- Lines
@@ -2580,7 +2646,7 @@ local function PC_UpdateTablet()
 		L["Avg"],
 	}
 	SysSection["computer"].lineCat = Tablets.pc:AddCategory("columns", #Cols)
-	lineHeader = MakeTabletHeader(Cols, 10 + resSizeExtra, 12, {"LEFT", "RIGHT", "RIGHT", "RIGHT", "RIGHT"})
+	lineHeader = MakeTabletHeader(Cols, db.text.tablets.columnsize + resExtraSize, 12, {"LEFT", "RIGHT", "RIGHT", "RIGHT", "RIGHT"})
 	SysSection["computer"].lineCat:AddLine(lineHeader)
 	AddBlankTabLine(SysSection["computer"].lineCat, 1)
 	
@@ -2593,7 +2659,7 @@ local function PC_UpdateTablet()
 			if i == 1 then
 				line["text"] = strform("|cffe5e5e5%s|r", ComputerLines[l][1])
 				line["justify"] = "LEFT"
-				line["size"] = 11 + resSizeExtra
+				line["size"] = db.text.tablets.normalsize + resExtraSize
 				line["indentation"] = 12.5
 				line["customwidth"] = 90
 			elseif i == 2 then
@@ -3780,6 +3846,13 @@ function InfoLine:OnInitialize()
 			},
 			text = {
 				yoffset = 0.5,
+				tablets = {
+					headersize = 13,
+					columnsize = 10,
+					normalsize = 11,
+					hintsize = 11,
+					highresextrasize = 1,
+				},
 			},
 			colors = {
 				normal = {1, 1, 1},
@@ -3819,11 +3892,9 @@ function InfoLine:OnInitialize()
 			},
 			resolution = {
 				[1] = {
-					tabfontsize = 0,
 					layouttipsize = {width = 186, height = 65},
 				},
 				[2] = {
-					tabfontsize = 1,
 					layouttipsize = {width = 200, height = 68},
 				},
 			},

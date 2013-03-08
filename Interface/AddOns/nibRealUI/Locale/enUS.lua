@@ -9,17 +9,6 @@ L["Layout will change after you leave combat."] = "Layout will change after you 
 -- Installation
 L["INSTALL"] = "INSTALL"	-- Note: Install Button isn't very wide, so string should be kept short
 
-L["Your"] = "Your"
-L["WTF folder"] = "WTF folder"
-L["is missing addon settings."] = "is missing addon settings."
-L["Exit WoW and visit"] = "Exit WoW and visit"
-L["for Installation"] = "for Installation"
-L["Troubleshooting."] = "Troubleshooting."
-
-L["WTF Folder integrity check"] = "WTF folder integrity check"
-L["OK!"] = "OK!"
-L["FAILED!"] = "FAILED!"
-
 L["RealUI Mini Patch"] = "RealUI Mini Patch"
 L["RealUI's settings have been updated."] = "RealUI's settings have been updated."
 

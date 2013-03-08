@@ -74,6 +74,9 @@ local FrameList = {
 		achievementalert = {
 			name = "Achievement Alert",
 		},
+		bonusroll = {
+			name = "Bonus Roll Window",
+		},
 	},
 	hide = {
 		durabilityframe = {
@@ -1023,9 +1026,7 @@ local function Hook_Grid()
 	
 	hooksecurefunc(gridframe, "StopMovingOrSizing", function()
 		if nibRealUI:GetModuleEnabled(MODNAME) and db.addons.grid.move then
-			-- func = RealUI_FrameMover_OpenAddonSettings,
-			-- arg1 = "grid",
-			
+			print("|cff00ffffRealUI: |r|cffffff40RealUI is controlling the position of Grid. To change this behaviour: |cffffffff/realui > Frame Mover > AddOns > Grid|r")
 			FrameMover:MoveAddons()
 		end
 	end)	
@@ -1038,12 +1039,27 @@ local function Hook_Omen()
 	
 	hooksecurefunc(omenframe, "StopMovingOrSizing", function()
 		if nibRealUI:GetModuleEnabled(MODNAME) and db.addons.omen.move then
-			-- func = RealUI_FrameMover_OpenAddonSettings,
-			-- arg1 = "omen",
-			
+			print("|cff00ffffRealUI: |r|cffffff40RealUI is controlling the position of Omen. To change this behaviour: |cffffffff/realui > Frame Mover > AddOns > Omen|r")
 			FrameMover:MoveIndividualFrameGroup(FrameList.addons.omen.frames, db.addons.omen.frames)
 		end
 	end)	
+end
+
+-- Bonus Roll
+local BonusRollMoving = false
+local function PositionBonusRoll(self)
+	if BonusRollMoving then return end
+	BonusRollMoving = true
+	self:ClearAllPoints()
+	self:SetPoint("CENTER", UIParent, "CENTER", 0, -100)
+	BonusRollMoving = false
+end
+
+local function Hook_BonusRoll()
+	if db.uiframes.bonusroll.move then
+		hooksecurefunc(BonusRollFrame, "SetPoint", PositionBonusRoll)
+		hooksecurefunc(BonusRollFrame, "Show", PositionBonusRoll)
+	end
 end
 
 -- Achievement Alert
@@ -1137,6 +1153,7 @@ function FrameMover:PLAYER_ENTERING_WORLD()
 		Hook_Raven()
 		Hook_VSI()
 		Hook_AchieveAlert()
+		Hook_BonusRoll()
 		
 		self:MoveUIFrames()
 		self:MoveAddons()
@@ -1201,6 +1218,9 @@ function FrameMover:OnInitialize()
 				},
 				achievementalert = {
 					move = false,
+				},
+				bonusroll = {
+					move = true,
 				},
 				zonetext = {
 					frames = {

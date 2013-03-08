@@ -465,5 +465,20 @@ function nibRealUI:MiniPatch(ver)
 				IceCoreRealUIDB["profiles"]["RealUI-HR"]["modules"]["zCT-War-TasteBlood"]["buffToTrack"] = "56636"
 			end
 		end
+	elseif ver == "73r16" then
+		if IsAddOnLoaded("nibIceHUD") and IceCoreRealUIDB then
+			if IceCoreRealUIDB["profiles"]["RealUI"]["modules"]["zCT-War-Enrage"] then
+				IceCoreRealUIDB["profiles"]["RealUI"]["modules"]["zCT-War-Enrage"]["buffToTrack"] = "12880"
+			end
+			if IceCoreRealUIDB["profiles"]["RealUI-HR"]["modules"]["zCT-War-Enrage"] then
+				IceCoreRealUIDB["profiles"]["RealUI-HR"]["modules"]["zCT-War-Enrage"]["buffToTrack"] = "12880"
+			end
+			if IceCoreRealUIDB["profiles"]["RealUI"]["modules"]["zCT-War-Enrage2"] then
+				IceCoreRealUIDB["profiles"]["RealUI"]["modules"]["zCT-War-Enrage2"]["buffToTrack"] = "12880"
+			end
+			if IceCoreRealUIDB["profiles"]["RealUI-HR"]["modules"]["zCT-War-Enrage2"] then
+				IceCoreRealUIDB["profiles"]["RealUI-HR"]["modules"]["zCT-War-Enrage2"]["buffToTrack"] = "12880"
+			end
+		end
 	end
 end
