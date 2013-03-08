@@ -16,6 +16,7 @@ xsi:schemaLocation="http://www.blizzard.com/wow/ui/
 	
 	<!-- Features -->
 	<Script file="Modules\ActionBarExtras.lua"/>
+	<Script file="Modules\AlertFrameMove.lua"/>
 	<Script file="Modules\AltPowerBar.lua"/>
 	<!-- <Script file="Modules\AuraWatch.lua"/> -->
 	<Script file="Modules\Chat.lua"/>

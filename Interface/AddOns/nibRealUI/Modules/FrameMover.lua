@@ -71,12 +71,6 @@ local FrameList = {
 			name = "Alternate Power Bar",
 			frames = {[1] = {name = "PlayerPowerBarAlt"},},
 		},
-		achievementalert = {
-			name = "Achievement Alert",
-		},
-		bonusroll = {
-			name = "Bonus Roll Window",
-		},
 	},
 	hide = {
 		durabilityframe = {
@@ -1045,75 +1039,6 @@ local function Hook_Omen()
 	end)	
 end
 
--- Bonus Roll
-local BonusRollMoving = false
-local function PositionBonusRoll(self)
-	if BonusRollMoving then return end
-	BonusRollMoving = true
-	self:ClearAllPoints()
-	self:SetPoint("CENTER", UIParent, "CENTER", 0, -100)
-	BonusRollMoving = false
-end
-
-local function Hook_BonusRoll()
-	if db.uiframes.bonusroll.move then
-		hooksecurefunc(BonusRollFrame, "SetPoint", PositionBonusRoll)
-		hooksecurefunc(BonusRollFrame, "Show", PositionBonusRoll)
-	end
-end
-
--- Achievement Alert
-local function MoveAlertFrame()
-	local AF1, AF2, AFD, AFG = AchievementAlertFrame1, AchievementAlertFrame2, DungeonCompletionAlertFrame1, GuildChallengeAlertFrame
-	
-	if AF1 then 
-		AF1:ClearAllPoints()
-		AF1:SetPoint("TOP", UIParent, "TOP", 0, -50)
-	
-		if AF2 then
-			AF2:ClearAllPoints()
-			AF2:SetPoint("TOP", AF1, "BOTTOM", 0, -10)
-		end
-	end
-	
-	if AFD:IsShown() then
-		if AFG then
-			AFG:ClearAllPoints()
-			AFG:SetPoint("TOP", AFD, "BOTTOM", 0, -10)
-		end
-		for i = MAX_ACHIEVEMENT_ALERTS, 1, -1 do
-			local CAF = _G["AchievementAlertFrame"..i]
-			if ( CAF and CAF:IsShown() ) then
-				AFD:ClearAllPoints()
-				AFD:SetPoint("TOP", CAF, "BOTTOM", 0, -10)
-				
-				return
-			end
-		end
-		AFD:ClearAllPoints()
-		AFD:SetPoint("TOP", UIParent, "TOP", 0, -50)
-		return
-	end
-	
-	if AFG:IsShown() then
-		for i = MAX_ACHIEVEMENT_ALERTS, 1, -1 do
-			local CAF = _G["AchievementAlertFrame"..i]
-			if ( CAF and CAF:IsShown() ) then
-				GuildChallengeAlertFrame:SetPoint("TOP", CAF, "BOTTOM", 0, -10)
-				return
-			end
-		end
-		AFG:ClearAllPoints()
-		AFG:SetPoint("TOP", UIParent, "TOP", 0, -50)
-	end
-end
-
-local function Hook_AchieveAlert()
-	if db.uiframes.achievementalert.move then
-		hooksecurefunc("AlertFrame_FixAnchors", MoveAlertFrame);
-	end
-end
-
 ----
 local LockdownTimer = CreateFrame("Frame")
 LockdownTimer.Elapsed = 0
@@ -1152,8 +1077,6 @@ function FrameMover:PLAYER_ENTERING_WORLD()
 		Hook_Grid()
 		Hook_Raven()
 		Hook_VSI()
-		Hook_AchieveAlert()
-		Hook_BonusRoll()
 		
 		self:MoveUIFrames()
 		self:MoveAddons()
@@ -1214,12 +1137,6 @@ function FrameMover:OnInitialize()
 			},
 			uiframes = {
 				["**"] = {
-					move = true,
-				},
-				achievementalert = {
-					move = false,
-				},
-				bonusroll = {
 					move = true,
 				},
 				zonetext = {
