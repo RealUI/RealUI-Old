@@ -86,6 +86,7 @@ local Textures = {
 	Config = [[Interface\Addons\nibMinimap\Media\Config]],
 	Tracking = [[Interface\Addons\nibMinimap\Media\Tracking]],
 	Farm = [[Interface\Addons\nibMinimap\Media\Farm]],
+	ZoneIndicator = [[Interface\Addons\nibMinimap\Media\ZoneIndicator]],
 }
 
 local MMFrames = nibMinimap.Frames
@@ -272,12 +273,8 @@ function nibMinimap:UpdateInfoPosition()
 		yadj = iHeight * ymulti
 		--print("yadj: "..yadj)
 		
-		-- Location
-		MMFrames.info.location:ClearAllPoints()
-		MMFrames.info.location:SetPoint(point, "Minimap", rpoint, xofs, yofs)
-		MMFrames.info.location.text:SetFontObject("nibMinimap2")
-		MMFrames.info.location:Show()
-		yofs = yofs + yadj
+		-- Zone Indicator
+		MMFrames.info.zoneIndicator:Show()
 		
 		-- Coordinates
 		if InfoShown.coords then
@@ -355,12 +352,12 @@ function nibMinimap:UpdateInfoPosition()
 			end)
 		end
 	else
-		MMFrames.info.location:Hide()
 		MMFrames.info.coords:Hide()
 		MMFrames.info.dungeondifficulty:Hide()
 		MMFrames.info.queue:Hide()
 		MMFrames.info.RFqueue:Hide()
 		MMFrames.info.Squeue:Hide()
+		MMFrames.info.zoneIndicator:Hide()
 		numText = 1
 	end
 end
@@ -1202,7 +1199,7 @@ end
 ------------
 
 function nibMinimap:ZoneChange()
-	local r, g, b = 1, 1, 1
+	local r, g, b = 0.5, 0.5, 0.5
 	local pvpType = GetZonePVPInfo()
 	if pvpType == "sanctuary" then
 		r, g, b = 0.41, 0.8, 0.94
@@ -1218,16 +1215,7 @@ function nibMinimap:ZoneChange()
 		r, g, b = 1, 0, 0
 	end
 	
-	local oldName = GetMinimapZoneText()
-	local zName = (strlen(oldName) > 22) and gsub(oldName, "%s?(.[\128-\191]*)%S+%s", "%1.") or oldName
-	if strlen(zName) > 22 then
-		zName = strsub(zName, 1, 20)..".."
-	end
-	
-	MMFrames.info.location.text:SetText(zName)
-	MMFrames.info.location.text:SetTextColor(r, g, b)
-	MMFrames.info.location:SetWidth(MMFrames.info.location.text:GetWidth() + 4)
-	
+	MMFrames.info.zoneIndicator.bg:SetVertexColor(r, g, b)
 	RefreshMap = true
 end
 
@@ -1398,10 +1386,12 @@ function nibMinimap:UpdateFonts()
 	local fs	
 	for k,v in pairs(MMFrames.info) do
 		fs = MMFrames.info[k].text
-		fs:SetPoint("LEFT", MMFrames.info[k], "LEFT", 0.5, 0.5)
-		fs:SetFontObject("nibMinimap2")
-		fs:SetJustifyH("LEFT")
-		MMFrames.info[k]:SetHeight(FontSize)
+		if fs then
+			fs:SetPoint("LEFT", MMFrames.info[k], "LEFT", 0.5, 0.5)
+			fs:SetFontObject("nibMinimap2")
+			fs:SetJustifyH("LEFT")
+			MMFrames.info[k]:SetHeight(FontSize)
+		end
 	end
 end
 
@@ -1485,21 +1475,25 @@ local function CreateFrames()
 	MMFrames.farm:SetScript("OnMouseDown", Farm_OnMouseDown)
 	
 	-- Info
-	MMFrames.info.location = NewInfoFrame("nibMinimap_Location", Minimap)
-	MMFrames.info.location:SetScript("OnEnter", function(self)
-		GameTooltip:SetOwner(self, "ANCHOR_CURSOR")
-		GameTooltip:AddLine(oldName, nil, nil, nil, 1)
-		GameTooltip:Show()
-	end)
-	MMFrames.info.location:SetScript("OnLeave", function(self)
-		GameTooltip:Hide()
-	end)
 	MMFrames.info.coords = NewInfoFrame("nibMinimap_Coords", Minimap)
 	MMFrames.info.coords:SetAlpha(0.75)
 	MMFrames.info.dungeondifficulty = NewInfoFrame("nibMinimap_DungeonDifficulty", Minimap)	
 	MMFrames.info.queue = NewInfoFrame("nibMinimap_Queue", Minimap)	
 	MMFrames.info.RFqueue = NewInfoFrame("nibMinimap_RFQueue", Minimap)	
 	MMFrames.info.Squeue = NewInfoFrame("nibMinimap_SQueue", Minimap)	
+	
+	MMFrames.info.zoneIndicator = CreateFrame("Frame", "nibMinimap_Zone", Minimap)
+	MMFrames.info.zoneIndicator:SetHeight(16)
+	MMFrames.info.zoneIndicator:SetWidth(16)
+	MMFrames.info.zoneIndicator:SetFrameStrata("MEDIUM")
+	MMFrames.info.zoneIndicator:SetFrameLevel(5)
+	MMFrames.info.zoneIndicator:ClearAllPoints()
+	MMFrames.info.zoneIndicator:SetPoint("BOTTOMRIGHT", "Minimap", "BOTTOMRIGHT", 1, -1)
+	
+	MMFrames.info.zoneIndicator.bg = MMFrames.info.zoneIndicator:CreateTexture(nil, "BACKGROUND")
+	MMFrames.info.zoneIndicator.bg:SetTexture(Textures.ZoneIndicator)
+	MMFrames.info.zoneIndicator.bg:SetVertexColor(0.5, 0.5, 0.5)
+	MMFrames.info.zoneIndicator.bg:SetAllPoints(MMFrames.info.zoneIndicator)
 	
 	-- Update Fonts
 	nibMinimap:UpdateFonts()
