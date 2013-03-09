@@ -103,7 +103,7 @@ function WorldMarker:UpdateVisibility()
 		-- Mod needs refreshing
 		WorldMarker:RefreshMod()
 	else
-		if ( (GetNumGroupMembers() > 0) and (IsPartyLeader() or IsRaidLeader() or IsRaidOfficer()) and nibRealUI:GetModuleEnabled(MODNAME) ) then
+		if ( (GetNumGroupMembers() > 0) and UnitIsGroupLeader("player") and nibRealUI:GetModuleEnabled(MODNAME) ) then
 			-- Viable to use World Markers
 			if ( not WMF.Parent:IsShown() and not InCombatLockdown() ) then
 				-- Show only if out of combat

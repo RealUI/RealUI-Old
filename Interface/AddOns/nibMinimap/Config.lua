@@ -367,6 +367,17 @@ local function GetOptions()
 					childGroups = "tab",
 					order = 50,
 					args = {
+						location = {
+							type = "toggle",
+							name = "Location Name",
+							desc = "Show the name of your current location underneath the Minimap.",
+							get = function(info) return db.information.location end,
+							set = function(info, value) 
+								db.information.location = value
+								nibMinimap:UpdateInfoPosition()
+							end,
+							order = 10,
+						},
 						font = {
 							name = "Font",
 							type = "group",

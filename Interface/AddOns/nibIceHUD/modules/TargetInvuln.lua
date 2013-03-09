@@ -346,7 +346,7 @@ function TargetInvuln.prototype:UpdateTargetBuffs(event, unit, isUpdate)
 
 		if (duration ~= nil and duration >= 0) then
 			self:UpdateBar(duration ~= 0 and remaining / duration or 0, "CC:" .. self.buffList[name])
-			self:SetBottomText2(strform("%d", ceil(remaining)))
+			self:SetBottomText2(strform("%.1f", remaining))
 		else
 			self:UpdateBar(0, "CC:" .. self.buffList[name])
 			self:SetBottomText2("")

@@ -424,9 +424,11 @@ function MyContainer:OnCreate(name, settings)
     end
 
 	if tBank or tBankBags then
-		self.Columns = (usedSlotsBank > 112) and 20 or 16
+		-- self.Columns = (usedSlotsBank > 112) and 12 or 10
+		self.Columns = 10
 	else
-		self.Columns = (usedSlotsBag > 56) and 12 or 8
+		-- self.Columns = (usedSlotsBag > 56) and 10 or 8
+		self.Columns = 8
 	end
 	self.ContainerHeight = 0
 	self:UpdateDimensions()

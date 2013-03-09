@@ -403,12 +403,12 @@ local UnitHealthVal = {
 }
 
 ---- MISC FUNCTIONS ----
-local function UnitIsPvPFriend(Unit, UFUnit)
+local function UnitIsPvPPlayer(Unit, UFUnit)
 	if UnitIsPVP(Unit) then
 		if (Unit == PLAYER_ID) and (UFUnit == PLAYER_ID) then
 			return true
 		elseif (Unit == TARGET_ID) and UnitExists(TARGET_ID) then
-			if UnitIsPlayer(TARGET_ID) and UnitIsFriend(PLAYER_ID, TARGET_ID) then
+			if UnitIsPlayer(TARGET_ID) then
 				return true
 			end
 		end
@@ -1160,7 +1160,7 @@ function Overlay:UpdateUnitInfo(UnitID)
 		end
 		UF[UnitID].healthtext.text:SetText(InfoText)
 	end
-	if not UnitIsPvPFriend(TARGET_ID, TARGET_ID) then
+	if not UnitIsPvPPlayer(TARGET_ID, TARGET_ID) then
 		UF[UnitID].endboxtext.text:SetText(uClassification)
 	end
 end
@@ -1173,7 +1173,7 @@ function Overlay:UpdateUnitBackgroundColor(UnitID)
 	
 	local newColorID = ""
 	if UnitIsPVP(Unit) then
-		if UnitIsPvPFriend(Unit, UFUnit) then
+		if UnitIsPvPPlayer(Unit, UFUnit) then
 			UF[UFUnit].endboxtext.text:SetText(ClassificationShort["pvp"])
 			bgColor = {0, 0, 0}
 			newColorID = "black"
@@ -1188,9 +1188,9 @@ function Overlay:UpdateUnitBackgroundColor(UnitID)
 		bgColor = StatusColors.tapped
 		newColorID = "tapped"
 	else
-		if UnitIsPvPFriend(Unit, UFUnit) then
-			UF[UFUnit].endboxtext.text:SetText("")
-		end
+		-- if UnitIsPvPPlayer(Unit, UFUnit) then
+			-- UF[UFUnit].endboxtext.text:SetText("")
+		-- end
 		bgColor = {0, 0, 0}
 		newColorID = "black"
 	end

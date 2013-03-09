@@ -59,6 +59,7 @@ local defaults = {
 		},
 		information = {
 			position = {x = -1, y = 0},
+			location = false,
 			font = {
 				name = "Pixel1",
 				size = 8,
@@ -276,6 +277,17 @@ function nibMinimap:UpdateInfoPosition()
 		-- Zone Indicator
 		MMFrames.info.zoneIndicator:Show()
 		
+		-- Location
+		if db.information.location then
+			MMFrames.info.location:ClearAllPoints()
+			MMFrames.info.location:SetPoint(point, "Minimap", rpoint, xofs, yofs)
+			MMFrames.info.location.text:SetFontObject("nibMinimap2")
+			MMFrames.info.location:Show()
+			yofs = yofs + yadj
+		else
+			MMFrames.info.location:Hide()
+		end
+		
 		-- Coordinates
 		if InfoShown.coords then
 			MMFrames.info.coords:ClearAllPoints()
@@ -352,6 +364,7 @@ function nibMinimap:UpdateInfoPosition()
 			end)
 		end
 	else
+		MMFrames.info.location:Hide()
 		MMFrames.info.coords:Hide()
 		MMFrames.info.dungeondifficulty:Hide()
 		MMFrames.info.queue:Hide()
@@ -1216,6 +1229,17 @@ function nibMinimap:ZoneChange()
 	end
 	
 	MMFrames.info.zoneIndicator.bg:SetVertexColor(r, g, b)
+	
+	local oldName = GetMinimapZoneText()
+	local zName = (strlen(oldName) > 22) and gsub(oldName, "%s?(.[\128-\191]*)%S+%s", "%1.") or oldName
+	if strlen(zName) > 22 then
+		zName = strsub(zName, 1, 20)..".."
+	end
+	
+	MMFrames.info.location.text:SetText(zName)
+	MMFrames.info.location.text:SetTextColor(r, g, b)
+	MMFrames.info.location:SetWidth(MMFrames.info.location.text:GetWidth() + 4)
+	
 	RefreshMap = true
 end
 
@@ -1475,6 +1499,7 @@ local function CreateFrames()
 	MMFrames.farm:SetScript("OnMouseDown", Farm_OnMouseDown)
 	
 	-- Info
+	MMFrames.info.location = NewInfoFrame("nibMinimap_Location", Minimap)
 	MMFrames.info.coords = NewInfoFrame("nibMinimap_Coords", Minimap)
 	MMFrames.info.coords:SetAlpha(0.75)
 	MMFrames.info.dungeondifficulty = NewInfoFrame("nibMinimap_DungeonDifficulty", Minimap)	
@@ -1482,6 +1507,7 @@ local function CreateFrames()
 	MMFrames.info.RFqueue = NewInfoFrame("nibMinimap_RFQueue", Minimap)	
 	MMFrames.info.Squeue = NewInfoFrame("nibMinimap_SQueue", Minimap)	
 	
+	-- Zone Indicator
 	MMFrames.info.zoneIndicator = CreateFrame("Frame", "nibMinimap_Zone", Minimap)
 	MMFrames.info.zoneIndicator:SetHeight(16)
 	MMFrames.info.zoneIndicator:SetWidth(16)

@@ -369,8 +369,8 @@ local channelingTicks = {
 	[GetSpellInfo(740)] = 4,	-- Tranquility
 	-- Mage
 	[GetSpellInfo(5143)] = 5,	-- Arcane Missiles
-	[GetSpellInfo(10)] = 5,		-- Blizzard
-	[GetSpellInfo(12051)] = 4,	-- Evocation
+	[GetSpellInfo(10)] = 8,		-- Blizzard
+	[GetSpellInfo(12051)] = 3,	-- Evocation
 	-- Priest
 	[GetSpellInfo(64843)] = 4,	-- Divine Hymn
 	[GetSpellInfo(64901)] = 4,	-- Hymn of Hope
@@ -378,11 +378,12 @@ local channelingTicks = {
 	[GetSpellInfo(32000)] = 5,	-- Mind Sear
 	[GetSpellInfo(47540)] = 2,	-- Penance
 	-- Warlock
-	[GetSpellInfo(1120)] = 5,	-- Drain Soul
-	[GetSpellInfo(689)] = 3,	-- Drain Life
-	[GetSpellInfo(755)] = 3,	-- Health Funnel
-	[GetSpellInfo(4629)] = 4,	-- Rain of Fire
-	--[GetSpellInfo(79268)] = 3,	-- Soul Harvest
+	[GetSpellInfo(1120)] = 6,	-- Drain Soul
+	[GetSpellInfo(689)] = 6,	-- Drain Life
+	[GetSpellInfo(755)] = 6,	-- Health Funnel
+	[GetSpellInfo(4629)] = 6,	-- Rain of Fire
+	[GetSpellInfo(103103)] = 6,	-- Malefic Grasp
+	[GetSpellInfo(108371)] = 6,	-- Harvest Life
 }
 
 function CastBar.prototype:getChannelingTicks(spell)
