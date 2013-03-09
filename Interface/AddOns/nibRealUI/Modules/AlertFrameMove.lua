@@ -49,20 +49,10 @@ local AFPosition, AFAnchor, AFYOffset = "TOP", "BOTTOM", -10
 local IsMoving = false;
 
 local function PostAlertMove(screenQuadrant)
-	local _, y = AlertFrameMover:GetCenter()
-	local screenHeight = UIParent:GetTop()
-	if y > (screenHeight / 2) then
-		AFPosition = 'TOP'
-		AFAnchor = 'BOTTOM'
-		AFYOffset = -10
-		AlertFrameMover:SetText(AlertFrameMover.textString..' (Grow Down)')
-	else
-		AFPosition = 'BOTTOM'
-		AFAnchor = 'TOP'
-		AFYOffset = 10
-		AlertFrameMover:SetText(AlertFrameMover.textString..' (Grow Up)')
-	end
-
+	AFPosition = "TOP"
+	AFAnchor = "BOTTOM"
+	AFYOffset = -10
+	
 	AlertFrame:ClearAllPoints()
 	AlertFrame:SetAllPoints(AlertFrameHolder)
 

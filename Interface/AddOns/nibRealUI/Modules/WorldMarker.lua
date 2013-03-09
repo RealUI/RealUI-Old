@@ -10,15 +10,15 @@ local LoggedIn = false
 local WMF = {}
 
 local ButtonWidthExpanded = 20
-local ButtonWidthCollapsed = 3
+local ButtonWidthCollapsed = 4
 
 local MarkerColors = {
-	[1] = {0.2 * 0.8, 	0.2 * 0.8,		1 * 0.8},
-	[2] = {0.2 * 0.8, 	0.9 * 0.8,		0.2 * 0.8},
-	[3] = {1 * 0.8, 	0.2 * 0.8,		1 * 0.8},
-	[4] = {1 * 0.8, 	0.2 * 0.8,		0.2 * 0.8},
-	[5] = {1 * 0.8, 	1 * 0.8,		0.2 * 0.8},
-	[6] = {0.3 * 0.8,	0.3 * 0.8,		0.3 * 0.8},
+	[1] = {0.2, 	0.2,		1,		0.8},
+	[2] = {0.2, 	0.9,		0.2,	0.8},
+	[3] = {1, 		0.2,		1,		0.8},
+	[4] = {1, 		0.2,		0.2,	0.8},
+	[5] = {1, 		1,			0.2,	0.8},
+	[6] = {0.3,		0.3,		0.3,	0.8},
 }
 
 -- Options
@@ -103,7 +103,7 @@ function WorldMarker:UpdateVisibility()
 		-- Mod needs refreshing
 		WorldMarker:RefreshMod()
 	else
-		-- if ( (GetNumGroupMembers() > 0) and (IsPartyLeader() or IsRaidLeader() or IsRaidOfficer()) and nibRealUI:GetModuleEnabled(MODNAME) ) then
+		if ( (GetNumGroupMembers() > 0) and (IsPartyLeader() or IsRaidLeader() or IsRaidOfficer()) and nibRealUI:GetModuleEnabled(MODNAME) ) then
 		if 1 == 1 then
 			-- Viable to use World Markers
 			if ( not WMF.Parent:IsShown() and not InCombatLockdown() ) then
