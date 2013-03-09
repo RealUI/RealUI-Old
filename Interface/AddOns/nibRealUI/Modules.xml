@@ -31,6 +31,7 @@ xsi:schemaLocation="http://www.blizzard.com/wow/ui/
 	<Script file="Modules\Tooltip.lua"/>
 	<Script file="Modules\WatchFrameAdv.lua"/>
 	<Script file="Modules\Whisper.lua"/>
+	<Script file="Modules\WorldMarker.lua"/>
 	
 	<!-- Extras -->
 	<Script file="Modules\EJMapButtons.lua"/>

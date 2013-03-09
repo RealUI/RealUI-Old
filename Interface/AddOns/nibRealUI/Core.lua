@@ -70,6 +70,21 @@ local defaults = {
 	},
 }
 
+function FindSpellID(SpellName)
+	print("|cffffff20 SpellID tracking active. When |r|cffffffff"..SpellName.."|r|cffffff20 next activates, the SpellID will be printed in the chat window.|r")
+	local f = CreateFrame("FRAME")
+	f:RegisterEvent("UNIT_AURA")
+	f:SetScript("OnEvent", function(self, event, ...)
+		if ... == "player" then
+			local spellID = select(11, UnitAura("player", SpellName))
+			if spellID then
+				print(SpellName..": #", spellID); 
+				f:UnregisterEvent("UNIT_AURA")
+			end
+		end
+	end)
+end
+
 -- Frame work
 function nibRealUI:CreateBD(frame, alpha)
 	frame:SetBackdrop({
@@ -90,6 +105,19 @@ function nibRealUI:CreateBG(frame)
 	bg:SetPoint("BOTTOMRIGHT", frame, 1, -1)
 	bg:SetTexture(nibRealUI.media.textures.plain)
 	bg:SetVertexColor(0, 0, 0)
+
+	return bg
+end
+
+function nibRealUI:CreateInnerBG(frame)
+	local f = frame
+	if frame:GetObjectType() == "Texture" then f = frame:GetParent() end
+
+	local bg = f:CreateTexture(nil, "BACKGROUND")
+	bg:SetPoint("TOPLEFT", frame, 1, -1)
+	bg:SetPoint("BOTTOMRIGHT", frame, -1, 1)
+	bg:SetTexture(nibRealUI.media.textures.plain)
+	bg:SetVertexColor(0, 0, 0, 0)
 
 	return bg
 end

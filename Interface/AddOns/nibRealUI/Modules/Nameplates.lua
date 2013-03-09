@@ -1,15 +1,14 @@
-
-local nibRealUI = LibStub("AceAddon-3.0"):GetAddon("nibRealUI");
+local nibRealUI = LibStub("AceAddon-3.0"):GetAddon("nibRealUI")
 local LSM = LibStub("LibSharedMedia-3.0")
 local db, ndbc
 
-local MODNAME = "Nameplates";
-local Nameplates = nibRealUI:NewModule(MODNAME, "AceEvent-3.0");
+local MODNAME = "Nameplates"
+local Nameplates = nibRealUI:NewModule(MODNAME, "AceEvent-3.0")
 
 local LoggedIn = false
 
 -- Options
-local options;
+local options
 local function GetOptions()
 	if not options then options = {
 		type = "group",
@@ -68,9 +67,9 @@ local function GetOptions()
 				},
 			},
 		},
-	};
+	}
 	end
-	return options;
+	return options
 end
 
 local usNamePlates = 0.1
@@ -376,7 +375,7 @@ function Nameplates:PLAYER_LOGIN()
 end
 
 function Nameplates:OnInitialize()
-	self.db = nibRealUI.db:RegisterNamespace(MODNAME);
+	self.db = nibRealUI.db:RegisterNamespace(MODNAME)
 	self.db:RegisterDefaults({
 		profile = {
 			general = {
@@ -404,12 +403,12 @@ function Nameplates:OnInitialize()
 				},
 			}
 		},
-	});
-	db = self.db.profile;
+	})
+	db = self.db.profile
 	ndbc = nibRealUI.db.char
 	
-	self:SetEnabledState(nibRealUI:GetModuleEnabled(MODNAME));
-	nibRealUI:RegisterPlainOptions(MODNAME, GetOptions);
+	self:SetEnabledState(nibRealUI:GetModuleEnabled(MODNAME))
+	nibRealUI:RegisterPlainOptions(MODNAME, GetOptions)
 end
 
 function Nameplates:OnEnable()
