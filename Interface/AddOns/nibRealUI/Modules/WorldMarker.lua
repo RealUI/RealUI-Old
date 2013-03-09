@@ -104,6 +104,7 @@ function WorldMarker:UpdateVisibility()
 		WorldMarker:RefreshMod()
 	else
 		if ( (GetNumGroupMembers() > 0) and UnitIsGroupLeader("player") and nibRealUI:GetModuleEnabled(MODNAME) ) then
+		-- if 1 == 1 then
 			-- Viable to use World Markers
 			if ( not WMF.Parent:IsShown() and not InCombatLockdown() ) then
 				-- Show only if out of combat
@@ -178,7 +179,7 @@ end
 local function CreateButton(id)
 	local frame = CreateFrame("Button", "RealUI_WorldMarker_Button"..tostring(id), WMF.Parent, "SecureActionButtonTemplate")
 	
-	-- frame:SetAttribute("type", "macro")
+	frame:SetAttribute("type", "macro")
 	frame:SetScript("OnEnter", function(self) ButtonOnEnter(id) end)
 	frame:SetScript("OnLeave", function(self) ButtonOnLeave(id) end)
 	
