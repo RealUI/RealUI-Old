@@ -6,7 +6,7 @@ local db, dbc, dbg
 local nibRealUI_Version = {
 	[1] = 7,
 	[2] = 3,
-	[3] = 17,
+	[3] = 18,
 }
 
 -- Default Options
@@ -96,15 +96,15 @@ function nibRealUI:CreateBD(frame, alpha)
 	frame:SetBackdropBorderColor(0, 0, 0)
 end
 
-function nibRealUI:CreateBG(frame)
+function nibRealUI:CreateBG(frame, alpha)
 	local f = frame
 	if frame:GetObjectType() == "Texture" then f = frame:GetParent() end
 
 	local bg = f:CreateTexture(nil, "BACKGROUND")
-	bg:SetPoint("TOPLEFT", frame, -1, 1)
-	bg:SetPoint("BOTTOMRIGHT", frame, 1, -1)
+	bg:SetPoint("TOPLEFT", f, -1, 1)
+	bg:SetPoint("BOTTOMRIGHT", f, 1, -1)
 	bg:SetTexture(nibRealUI.media.textures.plain)
-	bg:SetVertexColor(0, 0, 0)
+	bg:SetVertexColor(0, 0, 0, alpha or 1)
 
 	return bg
 end

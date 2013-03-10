@@ -19,12 +19,16 @@ function nibRealUI:MiniPatch(ver)
 				IceCoreRealUIDB["profiles"]["RealUI"]["modules"]["zCT-Dru-Sunfire"]["textVerticalOffset"] = 14
 			end
 		end
+		
+		
 	elseif ver == "73r5" then
 		if IsAddOnLoaded("nibRealUI") and nibRealUIDB then
 			if nibRealUIDB["namespaces"]["FrameMover"]["profiles"]["RealUI"]["uiframes"]["achievementalert"] then
 				nibRealUIDB["namespaces"]["FrameMover"]["profiles"]["RealUI"]["uiframes"]["achievementalert"]["move"] = false
 			end
 		end
+		
+		
 	elseif ver == "73r6" then
 		if IsAddOnLoaded("nibIceHUD") and IceCoreRealUIDB then
 			if IceCoreRealUIDB["profiles"]["RealUI"]["modules"] then
@@ -160,6 +164,8 @@ function nibRealUI:MiniPatch(ver)
 				}
 			end
 		end
+		
+		
 	elseif ver == "73r9" then
 		if IsAddOnLoaded("nibPointDisplay_RealUI") and nibPointDisplayRUIDB then
 			if nibPointDisplayRUIDB["profiles"]["RealUI"]["ROGUE"]["types"]["dp"]["bars"]["bg"] then
@@ -261,6 +267,8 @@ function nibRealUI:MiniPatch(ver)
 				}
 			end
 		end
+		
+		
 	elseif ver == "73r10" then
 		if IsAddOnLoaded("nibPointDisplay_RealUI") and nibPointDisplayRUIDB then
 			if nibPointDisplayRUIDB["profiles"]["RealUI-HR"]["ROGUE"]["types"]["dp"] then
@@ -284,6 +292,8 @@ function nibRealUI:MiniPatch(ver)
 				IceCoreRealUIDB["profiles"]["RealUI-HR"]["modules"]["BurningEmbersBar"]["alwaysFullAlpha"] = true
 			end
 		end
+		
+		
 	elseif ver == "73r11" then
 		if IsAddOnLoaded("nibPointDisplay_RealUI") and nibPointDisplayRUIDB then
 			if nibPointDisplayRUIDB["profiles"]["RealUI"]["ROGUE"]["types"] then
@@ -422,8 +432,12 @@ function nibRealUI:MiniPatch(ver)
 				}
 			end
 		end
+		
+		
 	elseif ver == "73r12" then
 		-- See r13
+		
+		
 	elseif ver == "73r13" then
 		if IsAddOnLoaded("Masque") and MasqueDB then
 			if MasqueDB["profiles"]["RealUI"]["Groups"]["Masque"] then
@@ -465,6 +479,8 @@ function nibRealUI:MiniPatch(ver)
 				IceCoreRealUIDB["profiles"]["RealUI-HR"]["modules"]["zCT-War-TasteBlood"]["buffToTrack"] = "56636"
 			end
 		end
+		
+		
 	elseif ver == "73r16" then
 		if IsAddOnLoaded("nibIceHUD") and IceCoreRealUIDB then
 			if IceCoreRealUIDB["profiles"]["RealUI"]["modules"]["zCT-War-Enrage"] then
@@ -480,5 +496,118 @@ function nibRealUI:MiniPatch(ver)
 				IceCoreRealUIDB["profiles"]["RealUI-HR"]["modules"]["zCT-War-Enrage2"]["buffToTrack"] = "12880"
 			end
 		end
+		
+		
+	elseif ver == "73r18" then
+		if IsAddOnLoaded("nibPointDisplay_RealUI") and nibPointDisplayRUIDB then
+			if nibPointDisplayRUIDB["profiles"]["RealUI"]["DRUID"]["types"]["wm"] then
+				nibPointDisplayRUIDB["profiles"]["RealUI"]["DRUID"]["types"]["wm"]["position"] = {
+					["y"] = -69,
+					["x"] = -76,
+				}
+			end
+			if nibPointDisplayRUIDB["profiles"]["RealUI-HR"]["DRUID"]["types"]["wm"] then
+				nibPointDisplayRUIDB["profiles"]["RealUI-HR"]["DRUID"]["types"]["wm"]["position"] = {
+					["y"] = -69,
+					["x"] = -96,
+				}
+			end
+			if nibPointDisplayRUIDB["profiles"]["RealUI"]["MONK"]["types"]["chi"] then
+				nibPointDisplayRUIDB["profiles"]["RealUI"]["MONK"]["types"]["chi"]["position"] = {
+					["y"] = -39,
+					["x"] = -63,
+				}
+			end
+			if nibPointDisplayRUIDB["profiles"]["RealUI-HR"]["MONK"]["types"]["chi"] then
+				nibPointDisplayRUIDB["profiles"]["RealUI-HR"]["MONK"]["types"]["chi"]["position"] = {
+					["y"] = -37,
+					["x"] = -68,
+				}
+			end
+		end
+		if IsAddOnLoaded("nibIceHUD") and IceCoreRealUIDB then
+			if IceCoreRealUIDB["profiles"]["RealUI"]["modules"]["zCT-Dru-Harmony"] then
+				IceCoreRealUIDB["profiles"]["RealUI"]["modules"]["zCT-Dru-Harmony"]["buffToTrack"] = "100977"
+				IceCoreRealUIDB["profiles"]["RealUI"]["modules"]["zCT-Dru-Harmony"]["textHorizontalOffset"] = 16
+				IceCoreRealUIDB["profiles"]["RealUI"]["modules"]["zCT-Dru-Harmony"]["textVerticalOffset"] = 4
+			end
+			if IceCoreRealUIDB["profiles"]["RealUI-HR"]["modules"]["zCT-Dru-Harmony"] then
+				IceCoreRealUIDB["profiles"]["RealUI-HR"]["modules"]["zCT-Dru-Harmony"]["buffToTrack"] = "100977"
+				IceCoreRealUIDB["profiles"]["RealUI"]["modules"]["zCT-Dru-Harmony"]["textHorizontalOffset"] = 19
+				IceCoreRealUIDB["profiles"]["RealUI"]["modules"]["zCT-Dru-Harmony"]["textVerticalOffset"] = 5
+			end
+			if IceCoreRealUIDB["profiles"]["RealUI"]["modules"] then
+				IceCoreRealUIDB["profiles"]["RealUI"]["modules"]["WildMushrooms"] = {
+					["lockUpperTextAlpha"] = true,
+					["barVerticalOffset"] = 33,
+					["forceJustifyText"] = "LEFT",
+					["textVerticalOffset"] = 12,
+					["scale"] = 0.745,
+					["myTagVersion"] = 3,
+					["widthModifier"] = -22,
+					["barHorizontalOffset"] = 5,
+				}
+				IceCoreRealUIDB["profiles"]["RealUI"]["modules"]["Stagger"] = {
+					["scale"] = 0.715,
+					["textVerticalOffset"] = 25,
+					["myTagVersion"] = 3,
+					["textHorizontalOffset"] = 3,
+					["widthModifier"] = -28,
+					["forceJustifyText"] = "LEFT",
+					["barVerticalOffset"] = 39,
+					["barHorizontalOffset"] = 13,
+				}
+			end
+			if IceCoreRealUIDB["profiles"]["RealUI-HR"]["modules"] then
+				IceCoreRealUIDB["profiles"]["RealUI-HR"]["modules"]["WildMushrooms"] = {
+					["scale"] = 0.745,
+					["lockUpperTextAlpha"] = true,
+					["textVerticalOffset"] = 15,
+					["myTagVersion"] = 3,
+					["textHorizontalOffset"] = -2,
+					["barHorizontalOffset"] = 5,
+					["forceJustifyText"] = "LEFT",
+					["barVerticalOffset"] = 33,
+					["widthModifier"] = -22,
+				}
+				IceCoreRealUIDB["profiles"]["RealUI-HR"]["modules"]["Stagger"] = {
+					["barVerticalOffset"] = 39,
+					["widthModifier"] = -28,
+					["scale"] = 0.715,
+					["textVerticalOffset"] = 24,
+					["forceJustifyText"] = "LEFT",
+					["myTagVersion"] = 3,
+					["textHorizontalOffset"] = 3,
+					["barHorizontalOffset"] = 13,
+				}
+			end
+			if IceCoreRealUIDB["profiles"]["RealUI"]["modules"]["zCT-Mon-Shuffle"] then
+				IceCoreRealUIDB["profiles"]["RealUI"]["modules"]["zCT-Mon-Shuffle"]["barColor"] = {
+					["a"] = 1,
+					["r"] = 0.8627450980392157,
+					["g"] = 0.4313725490196079,
+					["b"] = 0,
+				}
+			end
+			if IceCoreRealUIDB["profiles"]["RealUI-HR"]["modules"]["zCT-Mon-Shuffle"] then
+				IceCoreRealUIDB["profiles"]["RealUI-HR"]["modules"]["zCT-Mon-Shuffle"]["barColor"] = {
+					["a"] = 1,
+					["r"] = 0.8627450980392157,
+					["g"] = 0.4313725490196079,
+					["b"] = 0,
+				}
+			end
+		end
+		if IsAddOnLoaded("Raven") and RavenDB then
+			if RavenDB["profiles"]["RealUI"]["BarGroups"]["PlayerBuffs"] then
+				RavenDB["profiles"]["RealUI"]["BarGroups"]["PlayerBuffs"]["filterTimeLeft"] = 67
+				RavenDB["profiles"]["RealUI"]["BarGroups"]["PlayerBuffs"]["filterDuration"] = 67
+			end
+			if RavenDB["profiles"]["RealUI-HR"]["BarGroups"]["PlayerBuffs"] then
+				RavenDB["profiles"]["RealUI-HR"]["BarGroups"]["PlayerBuffs"]["filterTimeLeft"] = 67
+				RavenDB["profiles"]["RealUI-HR"]["BarGroups"]["PlayerBuffs"]["filterDuration"] = 67
+			end
+		end
+		
 	end
 end

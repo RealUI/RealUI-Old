@@ -370,10 +370,10 @@ local StatusColors = {
 }
 
 local HealthColors = {
-	normal = {0.8, 0, 0},
-	hostile = {0.8, 0, 0},
-	neutral = {0.7, 0.7, 0},
-	friendly = {0, 0.7, 0},
+	normal = {0.7, 0.1, 0.1},
+	hostile = {0.7, 0.1, 0.1},
+	neutral = {0.7, 0.7, 0.1},
+	friendly = {0.1, 0.7, 0.25},
 }
 
 local PowerColors = {}

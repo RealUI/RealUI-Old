@@ -15,12 +15,25 @@ local ExtrasOptions = {
 local MiscOptions = {
 	settings = nil,
 }
+-- Skins
+local SkinsOptions = {
+	settings = nil,
+}
 -- RealUI Core
 local CoreOptions = {
 	settings = nil,
 }
 
 local CloneProfileNewName = ""
+
+-- Re-install RealUI
+local function ReInstall()
+	nibRealUI.db = {}
+	
+	-- Run Install Procedure
+	nibRealUI:CloseOptions()
+	nibRealUI:InstallProcedure()
+end
 
 -- Re-initialize Character
 local function ResetChar()
@@ -83,6 +96,32 @@ local function GetOptions()
 	}
 	end
 	
+	-- Skins
+	if not SkinsOptions.settings then SkinsOptions.settings = {
+		name = "Skins",
+		desc = "Toggle skinning of UI frames.",
+		type = "group",
+		args = {
+			header = {
+				type = "header",
+				name = "Skins",
+				order = 10,
+			},
+			timertrackers = {
+				type = "toggle",
+				name = "Timer Trackers",
+				desc = "The timers display top-center for BGs, Arenas, etc.",
+				get = function() return nibRealUI:GetModuleEnabled("TimerTrackers") end,
+				set = function(info, value) 
+					nibRealUI:SetModuleEnabled("TimerTrackers", value)
+					nibRealUI:ReloadUIDialog()
+				end,
+				order = 20,
+			},
+		},
+	}
+	end
+	
 	-- Core
 	if not CoreOptions.settings then CoreOptions.settings = {
 		name = "RealUI Core",
@@ -105,11 +144,17 @@ local function GetOptions()
 				name = " ",
 				order = 30,
 			},
+			reinstall = {
+				type = "execute",
+				name = "Reset RealUI",
+				func = ReInstall,
+				order = 40,
+			},
 			character = {
 				type = "group",
 				name = "Character",
 				inline = true,
-				order = 40,
+				order = 50,
 				args = {
 					resetchar = {
 						type = "execute",
@@ -246,6 +291,9 @@ function nibRealUI:SetUpOptions()
 	
 	Options.settings.args.misc = MiscOptions.settings
 	Options.settings.args.misc.order = 9850
+	
+	Options.settings.args.skins = SkinsOptions.settings
+	Options.settings.args.skins.order = 9860
 	
 	Options.settings.args.core = CoreOptions.settings
 	Options.settings.args.core.order = 9950

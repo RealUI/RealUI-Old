@@ -38,5 +38,7 @@ modules\DemonicFury.lua
 modules\BurningEmbers.lua
 modules\Vengeance.lua
 modules\WeakenedBlows.lua
+modules\WildMushrooms.lua
+modules\Stagger.lua
 modules\TargetCC.lua
 modules\TargetInvuln.lua
