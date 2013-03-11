@@ -207,7 +207,7 @@ function cbNivaya:CreateAnchors()
 
     CreateAnchorInfo(cB_Bags.main, cB_Bags.bagItemSets, "Left")
     CreateAnchorInfo(cB_Bags.bagItemSets, cB_Bags.armor, "Top")
-	CreateAnchorInfo(cB_Bags.bagJunk, cB_Bags.battlepet, "Top")
+	CreateAnchorInfo(cB_Bags.armor, cB_Bags.battlepet, "Top")
     CreateAnchorInfo(cB_Bags.battlepet, cB_Bags.bagStuff, "Top")
 	
     CreateAnchorInfo(cB_Bags.main, cB_Bags.tradegoods, "Top")

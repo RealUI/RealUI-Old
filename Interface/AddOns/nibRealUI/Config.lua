@@ -28,11 +28,7 @@ local CloneProfileNewName = ""
 
 -- Re-install RealUI
 local function ReInstall()
-	nibRealUI.db = {}
-	
-	-- Run Install Procedure
-	nibRealUI:CloseOptions()
-	nibRealUI:InstallProcedure()
+	nibRealUI.db:ResetDB("RealUI")
 end
 
 -- Re-initialize Character

@@ -609,5 +609,399 @@ function nibRealUI:MiniPatch(ver)
 			end
 		end
 		
+	elseif ver == "73r19" then
+		if IsAddOnLoaded("Raven") and RavenDB then
+			if RavenDB["global"]["SpellLists"] then
+				RavenDB["global"]["SpellLists"]["ClassBuffs"] = {
+					["#121153"] = true,
+					["#121471"] = true,
+					["#13877"] = true,
+					["#108208"] = true,
+				}
+			end
+			if RavenDB["global"]["SpellLists"]["PlayerExclusions"] then
+				RavenDB["global"]["SpellLists"]["PlayerExclusions"]["#121153"] = true
+				RavenDB["global"]["SpellLists"]["PlayerExclusions"]["#121471"] = true
+				RavenDB["global"]["SpellLists"]["PlayerExclusions"]["#108208"] = true
+			end
+			if RavenDB["global"]["SpellLists"]["TargetExclusions"] then
+				RavenDB["global"]["SpellLists"]["TargetExclusions"]["#91023"] = true
+			end
+			if RavenDB["global"]["Settings"] then
+				RavenDB["global"]["Settings"]["WeaponEnchants"] = {
+					["backdropFill"] = {
+						["a"] = 1,
+						["r"] = 1,
+						["g"] = 1,
+						["b"] = 1,
+					},
+					["pointH"] = 14.99997265772085,
+					["showNoDuration"] = true,
+					["pointYT"] = 0.4857143463059572,
+					["borderColor"] = {
+						["a"] = 1,
+						["r"] = 1,
+						["g"] = 1,
+						["b"] = 1,
+					},
+					["pointX"] = 0.5,
+					["pointW"] = 168.9999885429524,
+					["pointXR"] = 0.3994047706772935,
+					["backdropColor"] = {
+						["a"] = 1,
+						["r"] = 1,
+						["g"] = 1,
+						["b"] = 1,
+					},
+					["pointY"] = 0.4999999657259233,
+				}
+			end
+			if RavenDB["profiles"]["RealUI"]["BarGroups"] then
+				RavenDB["profiles"]["RealUI"]["BarGroups"]["ClassBuffs"] = {
+					["timeAlign"] = "LEFT",
+					["spacingX"] = -9,
+					["barHeight"] = 5,
+					["configuration"] = 10,
+					["showNoDuration"] = true,
+					["backdropFill"] = {
+						["a"] = 1,
+						["r"] = 1,
+						["g"] = 1,
+						["b"] = 1,
+					},
+					["hideLabel"] = true,
+					["borderColor"] = {
+						["a"] = 1,
+						["r"] = 1,
+						["g"] = 1,
+						["b"] = 1,
+					},
+					["iconAlign"] = "RIGHT",
+					["filterCooldownTable"] = "ClassBuffs",
+					["pointX"] = 0.446428589789684,
+					["timeFormat"] = 23,
+					["showBuff"] = true,
+					["name"] = "ClassBuffs",
+					["anchorY"] = -18,
+					["backdropColor"] = {
+						["a"] = 1,
+						["r"] = 1,
+						["g"] = 1,
+						["b"] = 1,
+					},
+					["showClasses"] = {
+						["DEATHKNIGHT"] = true,
+						["WARRIOR"] = true,
+						["PALADIN"] = true,
+						["MAGE"] = true,
+						["PRIEST"] = true,
+						["WARLOCK"] = true,
+						["SHAMAN"] = true,
+						["DRUID"] = true,
+						["MONK"] = true,
+						["HUNTER"] = true,
+					},
+					["spacingY"] = -9,
+					["filterBuff"] = false,
+					["hideSpark"] = false,
+					["filterBuffTable"] = "ClassBuffs",
+					["pointH"] = 36.99996014634375,
+					["iconSize"] = 37,
+					["iconOffset"] = 8,
+					["filterBuffSpells"] = true,
+					["anchorFrame"] = "RealUI_Positioners_CenterAuras",
+					["detectBuffs"] = true,
+					["auto"] = true,
+					["pointXR"] = 0.5315475900268606,
+					["pointW"] = 37.00001862648837,
+					["parentFrame"] = "oUF_RealUIPlayer_Overlay",
+					["pointY"] = 0.4466666918009897,
+					["timeInset"] = 16,
+					["barWidth"] = 20,
+					["showResting"] = false,
+					["hideBar"] = true,
+					["pointYT"] = 0.5180952516008563,
+					["anchorPoint"] = "BOTTOMLEFT",
+					["bars"] = {
+					},
+					["timeOffset"] = 14,
+					["iconInset"] = -15,
+				}
+				RavenDB["profiles"]["RealUI"]["BarGroups"]["WeaponEnchants"] = {
+					["backdropColor"] = {
+						["a"] = 1,
+						["r"] = 1,
+						["g"] = 1,
+						["b"] = 1,
+					},
+					["showNoDuration"] = true,
+					["backdropFill"] = {
+						["a"] = 1,
+						["r"] = 1,
+						["g"] = 1,
+						["b"] = 1,
+					},
+					["pointXR"] = 0.5470238191123905,
+					["pointH"] = 14.99997265772085,
+					["showClasses"] = {
+						["DEATHKNIGHT"] = true,
+						["WARRIOR"] = true,
+						["PALADIN"] = true,
+						["MAGE"] = true,
+						["PRIEST"] = true,
+						["WARLOCK"] = true,
+						["HUNTER"] = true,
+						["DRUID"] = true,
+						["MONK"] = true,
+						["SHAMAN"] = true,
+					},
+					["auto"] = false,
+					["merged"] = true,
+					["pointX"] = 0.352380951564903,
+					["timeFormat"] = 23,
+					["pointY"] = 0.9304761320470502,
+					["name"] = "WeaponEnchants",
+					["mergeInto"] = "ClassBuffs",
+					["pointW"] = 168.9999885429524,
+					["bars"] = {
+						{
+							["barLabel"] = "Lethal Poison Missing",
+							["uniqueID"] = "031113-135214-0",
+							["enableBar"] = true,
+							["sorder"] = 1,
+							["action"] = "Lethal Poison Missing",
+							["barType"] = "Notification",
+						}, -- [1]
+						{
+							["barLabel"] = "Non-Lethal Poison Missing",
+							["uniqueID"] = "031113-135214-1",
+							["enableBar"] = true,
+							["sorder"] = 2,
+							["action"] = "Non-Lethal Poison Missing",
+							["barType"] = "Notification",
+						}, -- [2]
+					},
+					["borderColor"] = {
+						["a"] = 1,
+						["r"] = 1,
+						["g"] = 1,
+						["b"] = 1,
+					},
+					["pointYT"] = 0.05523817998483021,
+				}
+			end
+			if RavenDB["profiles"]["RealUI-HR"]["BarGroups"] then
+				RavenDB["profiles"]["RealUI-HR"]["BarGroups"]["ClassBuffs"] = {
+					["timeAlign"] = "LEFT",
+					["spacingX"] = -9,
+					["barHeight"] = 5,
+					["configuration"] = 10,
+					["showNoDuration"] = true,
+					["backdropFill"] = {
+						["a"] = 1,
+						["r"] = 1,
+						["g"] = 1,
+						["b"] = 1,
+					},
+					["hideLabel"] = true,
+					["borderColor"] = {
+						["a"] = 1,
+						["r"] = 1,
+						["g"] = 1,
+						["b"] = 1,
+					},
+					["iconAlign"] = "RIGHT",
+					["filterCooldownTable"] = "ClassBuffs",
+					["pointX"] = 0.446428589789684,
+					["timeFormat"] = 23,
+					["showBuff"] = true,
+					["name"] = "ClassBuffs",
+					["anchorY"] = -18,
+					["backdropColor"] = {
+						["a"] = 1,
+						["r"] = 1,
+						["g"] = 1,
+						["b"] = 1,
+					},
+					["showClasses"] = {
+						["DEATHKNIGHT"] = true,
+						["WARRIOR"] = true,
+						["PALADIN"] = true,
+						["MAGE"] = true,
+						["PRIEST"] = true,
+						["WARLOCK"] = true,
+						["SHAMAN"] = true,
+						["DRUID"] = true,
+						["MONK"] = true,
+						["HUNTER"] = true,
+					},
+					["spacingY"] = -9,
+					["filterBuff"] = false,
+					["hideSpark"] = false,
+					["filterBuffTable"] = "ClassBuffs",
+					["pointH"] = 36.99996014634375,
+					["iconSize"] = 37,
+					["iconOffset"] = 8,
+					["filterBuffSpells"] = true,
+					["anchorFrame"] = "RealUI_Positioners_CenterAuras",
+					["detectBuffs"] = true,
+					["auto"] = true,
+					["pointXR"] = 0.5315475900268606,
+					["pointW"] = 37.00001862648837,
+					["parentFrame"] = "oUF_RealUIPlayer_Overlay",
+					["pointY"] = 0.4466666918009897,
+					["timeInset"] = 16,
+					["barWidth"] = 20,
+					["showResting"] = false,
+					["hideBar"] = true,
+					["pointYT"] = 0.5180952516008563,
+					["anchorPoint"] = "BOTTOMLEFT",
+					["bars"] = {
+					},
+					["timeOffset"] = 14,
+					["iconInset"] = -15,
+				}
+				RavenDB["profiles"]["RealUI-HR"]["BarGroups"]["WeaponEnchants"] = {
+					["backdropFill"] = {
+						["a"] = 1,
+						["b"] = 1,
+						["g"] = 1,
+						["r"] = 1,
+					},
+					["pointH"] = 14.99997265772085,
+					["mergeInto"] = "ClassBuffs",
+					["showNoDuration"] = true,
+					["name"] = "WeaponEnchants",
+					["auto"] = false,
+					["pointYT"] = 0.05523817998483021,
+					["merged"] = true,
+					["borderColor"] = {
+						["a"] = 1,
+						["b"] = 1,
+						["g"] = 1,
+						["r"] = 1,
+					},
+					["pointX"] = 0.352380951564903,
+					["pointW"] = 168.9999885429524,
+					["showClasses"] = {
+						["DEATHKNIGHT"] = true,
+						["WARRIOR"] = true,
+						["PALADIN"] = true,
+						["MAGE"] = true,
+						["PRIEST"] = true,
+						["WARLOCK"] = true,
+						["HUNTER"] = true,
+						["DRUID"] = true,
+						["MONK"] = true,
+						["SHAMAN"] = true,
+					},
+					["pointXR"] = 0.5470238191123905,
+					["timeFormat"] = 23,
+					["backdropColor"] = {
+						["a"] = 1,
+						["b"] = 1,
+						["g"] = 1,
+						["r"] = 1,
+					},
+					["bars"] = {
+						{
+							["barLabel"] = "Lethal Poison Missing",
+							["uniqueID"] = "031113-135214-0",
+							["enableBar"] = true,
+							["sorder"] = 1,
+							["action"] = "Lethal Poison Missing",
+							["barType"] = "Notification",
+						}, -- [1]
+						{
+							["barLabel"] = "Non-Lethal Poison Missing",
+							["uniqueID"] = "031113-135214-1",
+							["enableBar"] = true,
+							["sorder"] = 2,
+							["action"] = "Non-Lethal Poison Missing",
+							["barType"] = "Notification",
+						}, -- [2]
+					},
+					["pointY"] = 0.9304761320470502,
+				}
+			end
+			if RavenDB["profiles"]["RealUI"]["Conditions"] then
+				RavenDB["profiles"]["RealUI"]["Conditions"]["ROGUE"] = {
+					["Lethal Poison Missing"] = {
+						["associatedSpell"] = "#2823",
+						["tests"] = {
+							["Player Status"] = {
+								["inInstance"] = true,
+								["isMounted"] = 0,
+								["inGroup"] = true,
+								["inBattleground"] = true,
+								["checkLevel"] = true,
+								["inArena"] = true,
+								["inCombat"] = 0,
+							},
+						},
+					},
+					["Non-Lethal Poison Missing"] = {
+						["associatedSpell"] = "#5761",
+						["tests"] = {
+							["Player Status"] = {
+								["inInstance"] = true,
+								["isMounted"] = 0,
+								["inGroup"] = true,
+								["checkLevel"] = true,
+								["inArena"] = true,
+								["inBattleground"] = true,
+							},
+						},
+					},
+				}
+			end
+			if RavenDB["profiles"]["RealUI-HR"]["Conditions"] then
+				RavenDB["profiles"]["RealUI-HR"]["Conditions"]["ROGUE"] = {
+					["Lethal Poison Missing"] = {
+						["associatedSpell"] = "#2823",
+						["tests"] = {
+							["Player Status"] = {
+								["inInstance"] = true,
+								["isMounted"] = 0,
+								["inGroup"] = true,
+								["inBattleground"] = true,
+								["checkLevel"] = true,
+								["inArena"] = true,
+								["inCombat"] = 0,
+							},
+						},
+					},
+					["Non-Lethal Poison Missing"] = {
+						["associatedSpell"] = "#5761",
+						["tests"] = {
+							["Player Status"] = {
+								["inInstance"] = true,
+								["isMounted"] = 0,
+								["inGroup"] = true,
+								["checkLevel"] = true,
+								["inArena"] = true,
+								["inBattleground"] = true,
+							},
+						},
+					},
+				}
+			end
+		end
+		
+		if IsAddOnLoaded("nibIceHUD") and IceCoreRealUIDB then
+			if IceCoreRealUIDB["profiles"]["RealUI"]["modules"]["zCT-Rog-Hemorrhage(G)"] then
+				IceCoreRealUIDB["profiles"]["RealUI"]["modules"]["zCT-Rog-Hemorrhage(G)"] = nil
+			end
+			if IceCoreRealUIDB["profiles"]["RealUI-HR"]["modules"]["zCT-Rog-Hemorrhage(G)"] then
+				IceCoreRealUIDB["profiles"]["RealUI-HR"]["modules"]["zCT-Rog-Hemorrhage(G)"] = nil
+			end
+			if IceCoreRealUIDB["profiles"]["RealUI"]["modules"]["zCT-Rog-FindWeakness"] then
+				IceCoreRealUIDB["profiles"]["RealUI"]["modules"]["zCT-Rog-FindWeakness"]["buffToTrack"] = "91023"
+			end
+			if IceCoreRealUIDB["profiles"]["RealUI-HR"]["modules"]["zCT-Rog-FindWeakness"] then
+				IceCoreRealUIDB["profiles"]["RealUI-HR"]["modules"]["zCT-Rog-FindWeakness"]["buffToTrack"] = "91023"
+			end
+		end
+		
 	end
 end

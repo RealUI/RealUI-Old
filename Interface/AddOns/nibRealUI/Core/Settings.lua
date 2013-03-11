@@ -11,7 +11,7 @@ local nibRealUICharacter_defaults = {
 
 -- Minipatch list. These get flagged on a PrimaryInstall as not being required.
 local MiniPatchMajorVer = "73"
-local table_MiniPatches = {1, 5, 6, 9, 10, 11, 12, 13, 16, 18}
+local table_MiniPatches = {1, 5, 6, 9, 10, 11, 12, 13, 16, 18, 19}
 
 local IWTextures = {
 	Logo = [[Interface\AddOns\nibRealUI\Media\Logo.tga]],
@@ -262,6 +262,7 @@ local function MiniPatchInstallation()
 				if v == "73r13" then NP[13] = false end
 				if v == "73r16" then NP[16] = false end
 				if v == "73r18" then NP[18] = false end
+				if v == "73r19" then NP[19] = false end
 			end
 		end
 		
@@ -280,6 +281,7 @@ local function MiniPatchInstallation()
 		if NP[13] then tinsert(toPatch, "73r13") end
 		if NP[16] then tinsert(toPatch, "73r16") end
 		if NP[18] then tinsert(toPatch, "73r18") end
+		if NP[19] then tinsert(toPatch, "73r19") end
 		
 		for k,v in ipairs(toPatch) do
 			if v then

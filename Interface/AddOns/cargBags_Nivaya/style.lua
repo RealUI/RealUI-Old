@@ -327,7 +327,7 @@ local UpdateDimensions = function(self)
 	end
 	if self.bagToggle then
 		local tBag = (self.name == "cBniv_Bag")
-		local extraHeight = tBag and 12 or 0
+		local extraHeight = (tBag and self.hintShown) and 12 or 0
 		height = height + 24 + extraHeight
 	end
 	if self.Caption then	    -- Space for captions
@@ -559,7 +559,15 @@ function MyContainer:OnCreate(name, settings)
 		self.text:SetJustifyH("CENTER")
         self.bagToggle:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", -2, 2)
         self.bagToggle:SetScript("OnClick", function()
-		if(self.BagBar:IsShown()) then self.BagBar:Hide() else self.BagBar:Show() end
+			if(self.BagBar:IsShown()) then 
+				self.BagBar:Hide()
+				if self.hint then self.hint:Show() end
+				self.hintShown = true
+			else
+				self.BagBar:Show()
+				if self.hint then self.hint:Hide() end
+				self.hintShown = false
+			end
 			self:UpdateDimensions()
 		end)
 		SkinButton(self.bagToggle)
@@ -608,7 +616,10 @@ function MyContainer:OnCreate(name, settings)
 		else
 			optionsBtn:SetPoint("TOPRIGHT", self.bagToggle, "TOPLEFT", -5, 0)
 		end
-		optionsBtn:SetScript("OnClick", function() SlashCmdList.CBNIV("") end)
+		optionsBtn:SetScript("OnClick", function() 
+			SlashCmdList.CBNIV("")
+			print("Usage: /cbniv |cffffff00command|r")
+		end)
 		SkinButton(optionsBtn)
     end
 
@@ -671,11 +682,12 @@ function MyContainer:OnCreate(name, settings)
 		caption:SetPoint("BOTTOMLEFT", infoFrame, 0, 11.5)
 		
 		-- Hint
-		local hint = background:CreateFontString(nil, "OVERLAY", nil)
-	    hint:SetPoint("BOTTOMLEFT", infoFrame, 0, 32.5)
-	    hint:SetFont(unpack(pixelFont))
-		hint:SetTextColor(1, 1, 1, 0.4)
-	    hint:SetText("Alt + Right Click an item to assign category")
+		self.hint = background:CreateFontString(nil, "OVERLAY", nil)
+	    self.hint:SetPoint("BOTTOMLEFT", infoFrame, 0, 32.5)
+	    self.hint:SetFont(unpack(pixelFont))
+		self.hint:SetTextColor(1, 1, 1, 0.4)
+	    self.hint:SetText("Alt + Right Click an item to assign category")
+		self.hintShown = true
         
         -- The money display
         local money = self:SpawnPlugin("TagDisplay", "[money]", self)

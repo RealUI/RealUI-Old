@@ -57,6 +57,19 @@ end
 
 local dropdown = CreateFrame('Frame', name .. 'DropDown', UIParent, 'UIDropDownMenuTemplate')
 
+local function DisplayPetDismissPopUp()
+	StaticPopupDialogs["RUIPETDISMISSHELP"] = {
+		text = "Blizzard has "..ACTION_SPELL_AURA_REMOVED.." the ability to |cffffff20"..PET_ACTION_DISMISS.." "..PET_TYPE_PET.."|r via Custom "..UNITFRAME_LABEL..".\n\nPlease drag the |cffffff20"..PET_ACTION_DISMISS.." "..PET_TYPE_PET.."|r ability to your |cffffff20"..ACTIONBAR_LABEL.."|r from the |cffffff20"..SPELLBOOK.."|r.",
+		button1 = OKAY,
+		OnAccept = function() return end,
+		timeout = 0,
+		whileDead = true,
+		hideOnEscape = true,
+		notClosableByLogout = false,
+	}
+	StaticPopup_Show("RUIPETDISMISSHELP")
+end
+
 local function DisplayFocusPopUp()
 	StaticPopupDialogs["RUIFOCUSHELP"] = {
 		text = "Use Shift+Click to set focus.",
@@ -75,8 +88,13 @@ hooksecurefunc("UnitPopup_OnClick",function(self)
 	if button == "SET_FOCUS" or button == "CLEAR_FOCUS" then
 		if StaticPopup1 then
 			StaticPopup1:Hide()
-			DisplayFocusPopUp()
 		end
+		DisplayFocusPopUp()
+	elseif button == "PET_DISMISS" then
+		if StaticPopup1 then
+			StaticPopup1:Hide()
+		end
+		DisplayPetDismissPopUp()
 	end
 end)
 

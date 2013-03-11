@@ -249,11 +249,47 @@ local function GetOptions()
 						inline = true,
 						order = 10,
 						args = {
+							xleft = {
+								type = "input",
+								name = "X Left",
+								width = "half",
+								order = 10,
+								get = function(info) return tostring(db.position.xleft) end,
+								set = function(info, value)
+									value = nibRealUI:ValidateOffset(value)
+									db.position.xleft = value
+									InfoLine:UpdatePositions()
+								end,
+							},
+							xright = {
+								type = "input",
+								name = "X Right",
+								width = "half",
+								order = 20,
+								get = function(info) return tostring(db.position.xright) end,
+								set = function(info, value)
+									value = nibRealUI:ValidateOffset(value)
+									db.position.xright = value
+									InfoLine:UpdatePositions()
+								end,
+							},
+							y = {
+								type = "input",
+								name = "Y",
+								width = "half",
+								order = 30,
+								get = function(info) return tostring(db.position.y) end,
+								set = function(info, value)
+									value = nibRealUI:ValidateOffset(value)
+									db.position.y = value
+									InfoLine:UpdatePositions()
+								end,
+							},
 							xgap = {
 								type = "input",
 								name = "Padding",
 								width = "half",
-								order = 30,
+								order = 40,
 								get = function(info) return tostring(db.position.xgap) end,
 								set = function(info, value)
 									value = nibRealUI:ValidateOffset(value)
@@ -675,15 +711,17 @@ local function RetrieveGameTime(...)
 		-- 12 hour clock
 		if hour >= 12 then 
 			serAMPM = "PM"
-			hour = hour - 12
+			if hour > 12 then
+				hour = hour - 12
+			end
 		else
 			serAMPM = "AM"
 			if hour == 0 then hour = 12 end
 		end
-		serTime = strform("%s:%s %s", hour, min, serAMPM)
+		serTime = strform("%d:%s %s", hour, min, serAMPM)
 	else
 		serAMPM = ""
-		serTime = strform("%s:%s", hour, min)
+		serTime = strform("%d:%s", hour, min)
 	end
 	
 	return serTime, serAMPM
@@ -2959,8 +2997,9 @@ local function Clock_Update(self, ...)
 end
 
 local function Clock_OnEnter(self)
-	local locTime = date("%H:%M")
-	local serTime = RetrieveGameTime()
+	local locTime = db.other.clock.hr24 and date("%H:%M") or strform("%d%s", strsub(date("%I:%M %p"), 1, 2), strsub(date("%I:%M %p"), 3))
+	
+	local serTime = RetrieveGameTime(not db.other.clock.hr24)
 	local caltext = date("%b %d (%a)")
 
 	local _, _, _, _, WGTime = GetWorldPVPAreaInfo(1)
@@ -3249,8 +3288,8 @@ function InfoLine:UpdatePositions()
 	
 	-- Parent
 	ILFrames.parent:ClearAllPoints()
-	ILFrames.parent:SetPoint("BOTTOMLEFT", UIParent, "BOTTOMLEFT",  0, 0)
-	ILFrames.parent:SetPoint("BOTTOMRIGHT", UIParent, "BOTTOMRIGHT",  0, 0)
+	ILFrames.parent:SetPoint("BOTTOMLEFT", UIParent, "BOTTOMLEFT",  db.position.xleft, db.position.y)
+	ILFrames.parent:SetPoint("BOTTOMRIGHT", UIParent, "BOTTOMRIGHT",  db.position.xright, db.position.y)
 	ILFrames.parent:SetHeight(EHeight)
 	
 	---- Left
@@ -3841,6 +3880,9 @@ function InfoLine:OnInitialize()
 		},
 		profile = {
 			position = {
+				xleft = 0,
+				xright = 0,
+				y = 0,
 				xgap = 8,
 				yoff = 6,
 			},
