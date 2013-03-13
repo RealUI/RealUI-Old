@@ -924,6 +924,9 @@ function nibRealUI:MiniPatch(ver)
 					["pointY"] = 0.9304761320470502,
 				}
 			end
+			if not RavenDB["profiles"]["RealUI"]["Conditions"] then
+				RavenDB["profiles"]["RealUI"]["Conditions"] = {}
+			end
 			if RavenDB["profiles"]["RealUI"]["Conditions"] then
 				RavenDB["profiles"]["RealUI"]["Conditions"]["ROGUE"] = {
 					["Lethal Poison Missing"] = {
@@ -954,6 +957,9 @@ function nibRealUI:MiniPatch(ver)
 						},
 					},
 				}
+			end
+			if not RavenDB["profiles"]["RealUI-HR"]["Conditions"] then
+				RavenDB["profiles"]["RealUI-HR"]["Conditions"] = {}
 			end
 			if RavenDB["profiles"]["RealUI-HR"]["Conditions"] then
 				RavenDB["profiles"]["RealUI-HR"]["Conditions"]["ROGUE"] = {
@@ -1003,5 +1009,182 @@ function nibRealUI:MiniPatch(ver)
 			end
 		end
 		
+	elseif ver == "73r20" then
+		if IsAddOnLoaded("Raven") and RavenDB then
+			if not RavenDB["profiles"]["RealUI"]["Conditions"] then
+				RavenDB["profiles"]["RealUI"]["Conditions"] = {}
+			end
+			if RavenDB["profiles"]["RealUI"]["Conditions"] then
+				RavenDB["profiles"]["RealUI"]["Conditions"]["ROGUE"] = {
+					["Lethal Poison Missing"] = {
+						["associatedSpell"] = "#2823",
+						["tests"] = {
+							["Player Status"] = {
+								["inInstance"] = true,
+								["isMounted"] = 0,
+								["inGroup"] = true,
+								["inBattleground"] = true,
+								["checkLevel"] = true,
+								["inArena"] = true,
+								["inCombat"] = 0,
+							},
+						},
+					},
+					["Non-Lethal Poison Missing"] = {
+						["associatedSpell"] = "#5761",
+						["tests"] = {
+							["Player Status"] = {
+								["inInstance"] = true,
+								["isMounted"] = 0,
+								["inGroup"] = true,
+								["checkLevel"] = true,
+								["inArena"] = true,
+								["inBattleground"] = true,
+							},
+						},
+					},
+				}
+			end
+			if not RavenDB["profiles"]["RealUI-HR"]["Conditions"] then
+				RavenDB["profiles"]["RealUI-HR"]["Conditions"] = {}
+			end
+			if RavenDB["profiles"]["RealUI-HR"]["Conditions"] then
+				RavenDB["profiles"]["RealUI-HR"]["Conditions"]["ROGUE"] = {
+					["Lethal Poison Missing"] = {
+						["associatedSpell"] = "#2823",
+						["tests"] = {
+							["Player Status"] = {
+								["inInstance"] = true,
+								["isMounted"] = 0,
+								["inGroup"] = true,
+								["inBattleground"] = true,
+								["checkLevel"] = true,
+								["inArena"] = true,
+								["inCombat"] = 0,
+							},
+						},
+					},
+					["Non-Lethal Poison Missing"] = {
+						["associatedSpell"] = "#5761",
+						["tests"] = {
+							["Player Status"] = {
+								["inInstance"] = true,
+								["isMounted"] = 0,
+								["inGroup"] = true,
+								["checkLevel"] = true,
+								["inArena"] = true,
+								["inBattleground"] = true,
+							},
+						},
+					},
+				}
+			end
+		end
+	
+	elseif ver == "73r21" then
+		if IsAddOnLoaded("nibPointDisplay_RealUI") and nibPointDisplayRUIDB then
+			if nibPointDisplayRUIDB["profiles"]["RealUI"]["MONK"]["types"] then
+				nibPointDisplayRUIDB["profiles"]["RealUI"]["MONK"]["types"]["eb"] = {
+					["bars"] = {
+						["surround"] = {
+							["texture"] = "Round_Small_Surround",
+						},
+						["bg"] = {
+							["full"] = {
+								["texture"] = "Round_Small_BG",
+							},
+							["empty"] = {
+								["texture"] = "Round_Small_BG",
+							},
+						},
+						["position"] = {
+							["gap"] = -3,
+						},
+					},
+					["position"] = {
+						["y"] = -65,
+						["x"] = -57,
+					},
+				}
+			end
+			if nibPointDisplayRUIDB["profiles"]["RealUI-HR"]["MONK"]["types"] then
+				nibPointDisplayRUIDB["profiles"]["RealUI-HR"]["MONK"]["types"]["eb"] = {
+					["position"] = {
+						["y"] = -65,
+						["x"] = -73,
+					},
+					["bars"] = {
+						["surround"] = {
+							["texture"] = "Round_Small_Surround",
+						},
+						["bg"] = {
+							["full"] = {
+								["texture"] = "Round_Small_BG",
+							},
+							["empty"] = {
+								["texture"] = "Round_Small_BG",
+							},
+						},
+					},
+				}
+			end		
+			if nibPointDisplayRUIDB["profiles"]["RealUI"]["MONK"]["types"]["sz"] then
+				nibPointDisplayRUIDB["profiles"]["RealUI"]["MONK"]["types"]["sz"]["position"] = {
+					["y"] = -25,
+					["x"] = -77,
+				}
+			end
+			if nibPointDisplayRUIDB["profiles"]["RealUI"]["MONK"]["types"]["vm"] then
+				nibPointDisplayRUIDB["profiles"]["RealUI"]["MONK"]["types"]["vm"]["position"] = {
+					["y"] = -52,
+					["x"] = -58,
+				}
+			end
+			if nibPointDisplayRUIDB["profiles"]["RealUI"]["MONK"]["types"]["chi"] then
+				nibPointDisplayRUIDB["profiles"]["RealUI"]["MONK"]["types"]["chi"]["position"] = {
+					["y"] = -39,
+					["x"] = -57,
+				}
+			end
+			if nibPointDisplayRUIDB["profiles"]["RealUI-HR"]["MONK"]["types"]["sz"] then
+				nibPointDisplayRUIDB["profiles"]["RealUI-HR"]["MONK"]["types"]["sz"]["position"] = {
+					["y"] = -22,
+					["x"] = -96,
+				}
+			end
+			if nibPointDisplayRUIDB["profiles"]["RealUI-HR"]["MONK"]["types"]["vm"] then
+				nibPointDisplayRUIDB["profiles"]["RealUI-HR"]["MONK"]["types"]["vm"]["position"] = {
+					["y"] = -52,
+					["x"] = -77,
+				}
+			end
+			if nibPointDisplayRUIDB["profiles"]["RealUI-HR"]["MONK"]["types"]["chi"] then
+				nibPointDisplayRUIDB["profiles"]["RealUI-HR"]["MONK"]["types"]["chi"]["position"] = {
+					["y"] = -37,
+					["x"] = -69,
+				}
+			end
+		end
+		if IsAddOnLoaded("Raven") and RavenDB then
+			if RavenDB["global"]["SpellLists"]["PlayerDebuffExclusions"] then
+				RavenDB["global"]["SpellLists"]["PlayerDebuffExclusions"]["#124273"] = true
+				RavenDB["global"]["SpellLists"]["PlayerDebuffExclusions"]["#124274"] = true
+				RavenDB["global"]["SpellLists"]["PlayerDebuffExclusions"]["#124275"] = true
+			end
+		end
+		if IsAddOnLoaded("MikScrollingBattleText") and MSBTProfiles_SavedVars then
+			if MSBTProfiles_SavedVars["profiles"]["Default"]["triggers"] then
+				MSBTProfiles_SavedVars["profiles"]["Default"]["triggers"]["MSBT_TRIGGER_ELUSIVE_BREW"] = {["disabled"] = true}
+				MSBTProfiles_SavedVars["profiles"]["Default"]["triggers"]["MSBT_TRIGGER_VITAL_MISTS"] = {["disabled"] = true}
+			end
+			if MSBTProfiles_SavedVars["profiles"]["RealUI"]["triggers"] then
+				MSBTProfiles_SavedVars["profiles"]["RealUI"]["triggers"]["MSBT_TRIGGER_ELUSIVE_BREW"] = {["disabled"] = true}
+				MSBTProfiles_SavedVars["profiles"]["RealUI"]["triggers"]["MSBT_TRIGGER_VITAL_MISTS"] = {["disabled"] = true}
+			end
+			if MSBTProfiles_SavedVars["profiles"]["RealUI-HR"]["triggers"] then
+				MSBTProfiles_SavedVars["profiles"]["RealUI-HR"]["triggers"]["MSBT_TRIGGER_ELUSIVE_BREW"] = {["disabled"] = true}
+				MSBTProfiles_SavedVars["profiles"]["RealUI-HR"]["triggers"]["MSBT_TRIGGER_VITAL_MISTS"] = {["disabled"] = true}
+			end
+		end
 	end
 end

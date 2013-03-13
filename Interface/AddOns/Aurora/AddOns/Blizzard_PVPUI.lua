@@ -33,6 +33,7 @@ C.modules["Blizzard_PVPUI"] = function()
 
 		bu.Background:SetAllPoints()
 		bu.Background:SetTexture(r, g, b, .2)
+		bu.Background:Hide()
 
 		icon:SetTexCoord(.08, .92, .08, .92)
 		icon:SetPoint("LEFT", bu, "LEFT")
@@ -99,6 +100,30 @@ C.modules["Blizzard_PVPUI"] = function()
 
 	BonusFrame.CallToArmsButton:SetPoint("TOP", BonusFrame.RandomBGButton, "BOTTOM", 0, -1)
 	BonusFrame.WorldPVP2Button:SetPoint("TOP", BonusFrame.WorldPVP1Button, "BOTTOM", 0, -1)
+
+	BonusFrame.BattlegroundReward1.Amount:SetPoint("RIGHT", BonusFrame.BattlegroundReward1.Icon, "LEFT", -2, 0)
+	BonusFrame.BattlegroundReward1.Icon:SetTexCoord(.08, .92, .08, .92)
+	BonusFrame.BattlegroundReward1.Icon:SetSize(16, 16)
+	F.CreateBG(BonusFrame.BattlegroundReward1.Icon)
+	BonusFrame.BattlegroundReward2.Amount:SetPoint("RIGHT", BonusFrame.BattlegroundReward2.Icon, "LEFT", -2, 0)
+	BonusFrame.BattlegroundReward2.Icon:SetTexCoord(.08, .92, .08, .92)
+	BonusFrame.BattlegroundReward2.Icon:SetSize(16, 16)
+	F.CreateBG(BonusFrame.BattlegroundReward2.Icon)
+
+	hooksecurefunc("HonorFrameBonusFrame_Update", function()
+		local canQueue, bgName, battleGroundID, hasWon, winHonorAmount, winConquestAmount = GetHolidayBGInfo()
+		local rewardIndex = 0
+		if winConquestAmount and winConquestAmount > 0 then
+			rewardIndex = rewardIndex + 1
+			local frame = HonorFrame.BonusFrame["BattlegroundReward"..rewardIndex]
+			frame.Icon:SetTexture("Interface\\Icons\\PVPCurrency-Conquest-"..englishFaction)
+		end
+		if winHonorAmount and winHonorAmount > 0 then
+			rewardIndex = rewardIndex + 1
+			local frame = HonorFrame.BonusFrame["BattlegroundReward"..rewardIndex]
+			frame.Icon:SetTexture("Interface\\Icons\\PVPCurrency-Honor-"..englishFaction)
+		end
+	end)
 
 	-- Honor frame specific
 
@@ -291,6 +316,7 @@ C.modules["Blizzard_PVPUI"] = function()
 
 		bu.Background:SetTexture(r, g, b, .2)
 		bu.Background:SetAllPoints()
+		bu.Background:Hide()
 
 		F.Reskin(bu, true)
 	end

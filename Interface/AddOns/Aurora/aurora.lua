@@ -39,11 +39,11 @@ C.media = {
 }
 
 C.defaults = {
-	["alpha"] = 0.65,
+	["alpha"] = 0.7,
 	["bags"] = true,
 	["chatBubbles"] = false,
 	["enableFont"] = true,
-	["gradientAlpha"] = {"VERTICAL", .3, .3, .3, .3, .3, .3, .3, .3},
+	["gradientAlpha"] = {"VERTICAL", 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3},
 	["loot"] = true,
 	["useCustomColour"] = false,
 		["customColour"] = {r = 1, g = 1, b = 1},
@@ -1240,6 +1240,9 @@ Skin:SetScript("OnEvent", function(self, event, addon)
 		LFDQueueFrameRandomScrollFrameScrollBackgroundTopLeft:Hide()
 		LFDQueueFrameRandomScrollFrameScrollBackgroundBottomRight:Hide()
 
+		-- this fixes right border of second reward being cut off
+		LFDQueueFrameRandomScrollFrame:SetWidth(LFDQueueFrameRandomScrollFrame:GetWidth()+1)
+
 		hooksecurefunc("LFDQueueFrameRandom_UpdateFrame", function()
 			for i = 1, LFD_MAX_REWARDS do
 				local button = _G["LFDQueueFrameRandomScrollFrameChildFrameItem"..i]
@@ -1282,24 +1285,15 @@ Skin:SetScript("OnEvent", function(self, event, addon)
 			button.enableButton:GetCheckedTexture():SetDesaturated(true)
 		end)
 
-		for i = 1, NUM_LFR_CHOICE_BUTTONS do
-			local bu = _G["LFRQueueFrameSpecificListButton"..i].enableButton
-			F.ReskinCheck(bu)
-			bu.SetNormalTexture = F.dummy
-			bu.SetPushedTexture = F.dummy
+		local bonusValor = LFDQueueFrameRandomScrollFrameChildFrameBonusValor
+		bonusValor.Border:Hide()
+		bonusValor.Icon:SetTexCoord(.08, .92, .08, .92)
+		bonusValor.Icon:SetPoint("CENTER", bonusValor.Border, -3, 0)
+		bonusValor.Icon:SetSize(24, 24)
+		bonusValor.BonusText:SetPoint("LEFT", bonusValor.Border, "RIGHT", -5, -1)
+		F.CreateBG(bonusValor.Icon)
 
-			F.ReskinExpandOrCollapse(_G["LFRQueueFrameSpecificListButton"..i].expandOrCollapseButton)
-		end
-
-		hooksecurefunc("LFRQueueFrameSpecificListButton_SetDungeon", function(button, dungeonID)
-			if LFGCollapseList[dungeonID] then
-				button.expandOrCollapseButton.plus:Show()
-			else
-				button.expandOrCollapseButton.plus:Hide()
-			end
-
-			button.enableButton:GetCheckedTexture():SetDesaturated(true)
-		end)
+		F.Reskin(LFDQueueFrameRandomScrollFrameChildFrame.bonusRepFrame.ChooseButton)
 
 		-- Raid Finder
 
@@ -1379,7 +1373,16 @@ Skin:SetScript("OnEvent", function(self, event, addon)
 			end
 		end)
 
+		local bonusValor = ScenarioQueueFrameRandomScrollFrameChildFrameBonusValor
+		bonusValor.Border:Hide()
+		bonusValor.Icon:SetTexCoord(.08, .92, .08, .92)
+		bonusValor.Icon:SetPoint("CENTER", bonusValor.Border, -3, 0)
+		bonusValor.Icon:SetSize(24, 24)
+		bonusValor.BonusText:SetPoint("LEFT", bonusValor.Border, "RIGHT", -5, -1)
+		F.CreateBG(bonusValor.Icon)
+
 		F.Reskin(ScenarioQueueFrameFindGroupButton)
+		F.Reskin(ScenarioQueueFrameRandomScrollFrameChildFrame.bonusRepFrame.ChooseButton)
 		F.ReskinDropDown(ScenarioQueueFrameTypeDropDown)
 		F.ReskinScroll(ScenarioQueueFrameRandomScrollFrameScrollBar)
 
@@ -1411,6 +1414,25 @@ Skin:SetScript("OnEvent", function(self, event, addon)
 			F.CreateSD(tab, 5, 0, 0, 0, 1, 1)
 			select(2, tab:GetRegions()):SetTexCoord(.08, .92, .08, .92)
 		end
+
+		for i = 1, NUM_LFR_CHOICE_BUTTONS do
+			local bu = _G["LFRQueueFrameSpecificListButton"..i].enableButton
+			F.ReskinCheck(bu)
+			bu.SetNormalTexture = F.dummy
+			bu.SetPushedTexture = F.dummy
+
+			F.ReskinExpandOrCollapse(_G["LFRQueueFrameSpecificListButton"..i].expandOrCollapseButton)
+		end
+
+		hooksecurefunc("LFRQueueFrameSpecificListButton_SetDungeon", function(button, dungeonID)
+			if LFGCollapseList[dungeonID] then
+				button.expandOrCollapseButton.plus:Show()
+			else
+				button.expandOrCollapseButton.plus:Hide()
+			end
+
+			button.enableButton:GetCheckedTexture():SetDesaturated(true)
+		end)
 
 		-- Spellbook frame
 
@@ -1614,8 +1636,10 @@ Skin:SetScript("OnEvent", function(self, event, addon)
 		for i = 1, BUYBACK_ITEMS_PER_PAGE do
 			local button = _G["MerchantItem"..i]
 			local bu = _G["MerchantItem"..i.."ItemButton"]
-			local ic = _G["MerchantItem"..i.."ItemButtonIconTexture"]
 			local mo = _G["MerchantItem"..i.."MoneyFrame"]
+			local ic = bu.icon
+
+			bu:SetHighlightTexture("")
 
 			_G["MerchantItem"..i.."SlotTexture"]:Hide()
 			_G["MerchantItem"..i.."NameFrame"]:Hide()
@@ -1752,14 +1776,6 @@ Skin:SetScript("OnEvent", function(self, event, addon)
 
 		FriendsFrameIcon:Hide()
 
-		F.ReskinPortraitFrame(FriendsFrame, true)
-		F.Reskin(FriendsFrameAddFriendButton)
-		F.Reskin(FriendsFrameSendMessageButton)
-		F.Reskin(FriendsFrameIgnorePlayerButton)
-		F.Reskin(FriendsFrameUnsquelchButton)
-		F.Reskin(FriendsFrameMutePlayerButton)
-		F.ReskinDropDown(FriendsFrameStatusDropDown)
-
 		for i = 1, FRIENDS_TO_DISPLAY do
 			local bu = _G["FriendsFrameFriendsScrollFrameButton"..i]
 			local ic = bu.gameIcon
@@ -1808,6 +1824,9 @@ Skin:SetScript("OnEvent", function(self, event, addon)
 		SoRBg:SetPoint("BOTTOMRIGHT", 1, -1)
 		F.CreateBD(SoRBg, 0)
 
+		F.CreateBD(FriendsFrameBattlenetFrame.UnavailableInfoFrame)
+		FriendsFrameBattlenetFrame.UnavailableInfoFrame:SetPoint("TOPLEFT", FriendsFrame, "TOPRIGHT", 1, -18)
+
 		FriendsFrameBattlenetFrame:GetRegions():Hide()
 		F.CreateBD(FriendsFrameBattlenetFrame, .25)
 
@@ -1841,6 +1860,14 @@ Skin:SetScript("OnEvent", function(self, event, addon)
 		whoBg:SetPoint("BOTTOMRIGHT", -1, 1)
 		whoBg:SetFrameLevel(WhoFrameEditBoxInset:GetFrameLevel()-1)
 		F.CreateBD(whoBg, .25)
+
+		F.ReskinPortraitFrame(FriendsFrame, true)
+		F.Reskin(FriendsFrameAddFriendButton)
+		F.Reskin(FriendsFrameSendMessageButton)
+		F.Reskin(FriendsFrameIgnorePlayerButton)
+		F.Reskin(FriendsFrameUnsquelchButton)
+		F.Reskin(FriendsFrameMutePlayerButton)
+		F.ReskinDropDown(FriendsFrameStatusDropDown)
 
 		-- Battletag invite frame
 
@@ -2532,16 +2559,21 @@ Skin:SetScript("OnEvent", function(self, event, addon)
 		DungeonCompletionAlertFrame1.glow.Show = F.dummy
 
 		hooksecurefunc("DungeonCompletionAlertFrame_ShowAlert", function()
-			for i = 1, 3 do
-				local bu = _G["DungeonCompletionAlertFrame1Reward"..i]
-				if bu and not bu.reskinned then
-					_G["DungeonCompletionAlertFrame1Reward"..i.."Border"]:Hide()
+			local bu = DungeonCompletionAlertFrame1Reward1
+			local index = 1
+
+			while bu do
+				if not bu.styled then
+					_G["DungeonCompletionAlertFrame1Reward"..index.."Border"]:Hide()
 
 					bu.texture:SetTexCoord(.08, .92, .08, .92)
 					F.CreateBG(bu.texture)
 
-					bu.rekinned = true
+					bu.styled = true
 				end
+
+				index = index + 1
+				bu = _G["DungeonCompletionAlertFrame1Reward"..index]
 			end
 		end)
 
@@ -2597,9 +2629,9 @@ Skin:SetScript("OnEvent", function(self, event, addon)
 					frame.bg:SetFrameLevel(frame:GetFrameLevel()-1)
 					F.CreateBD(frame.bg)
 
-					--frame:HookScript("OnEnter", fixBg)
-					--frame:HookScript("OnShow", fixBg)
-					--frame.animIn:HookScript("OnFinished", fixBg)
+					frame:HookScript("OnEnter", fixBg)
+					frame:HookScript("OnShow", fixBg)
+					frame.animIn:HookScript("OnFinished", fixBg)
 
 					F.CreateBG(ScenarioAlertFrame1DungeonTexture)
 					ScenarioAlertFrame1DungeonTexture:SetDrawLayer("OVERLAY")
@@ -2614,6 +2646,25 @@ Skin:SetScript("OnEvent", function(self, event, addon)
 				ScenarioAlertFrame1GlowFrame.Show = F.dummy
 
 				ScenarioAlertFrame1DungeonTexture:SetTexCoord(.08, .92, .08, .92)
+			end
+		end)
+
+		hooksecurefunc("ScenarioAlertFrame_ShowAlert", function()
+			local bu = ScenarioAlertFrame1Reward1
+			local index = 1
+
+			while bu do
+				if not bu.styled then
+					_G["ScenarioAlertFrame1Reward"..index.."Border"]:Hide()
+
+					bu.texture:SetTexCoord(.08, .92, .08, .92)
+					F.CreateBG(bu.texture)
+
+					bu.styled = true
+				end
+
+				index = index + 1
+				bu = _G["ScenarioAlertFrame1Reward"..index]
 			end
 		end)
 

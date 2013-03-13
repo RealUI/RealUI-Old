@@ -297,7 +297,8 @@ end
 -- Tab update
 function Chat:UpdateTabs(SimpleUpdate)
 	local chat, tab, flash
-	for i = 1, NUM_CHAT_WINDOWS do
+	local maxTabs = ChatFrame11Tab and 11 or NUM_CHAT_WINDOWS
+	for i = 1, maxTabs do
 		chat = _G["ChatFrame"..i]
 		tab = _G["ChatFrame"..i.."Tab"]
 		flash = _G["ChatFrame"..i.."TabFlash"]
@@ -412,6 +413,12 @@ function Chat:PLAYER_ENTERING_WORLD()
 	end
 end
 
+function Chat:PET_BATTLE_OPENING_START()
+	if db.tabs.enabled then
+		Chat:UpdateTabs(false)
+	end
+end
+
 function Chat:PLAYER_LOGIN()
 	UClass = select(2, UnitClass("player"))
 	UClassColors = nibRealUI:GetClassColor(UClass)
@@ -461,4 +468,5 @@ function Chat:OnEnable()
 	self:RegisterEvent("PLAYER_LOGIN")
 	self:RegisterEvent("VARIABLES_LOADED")
 	self:RegisterEvent("PLAYER_ENTERING_WORLD")
+	self:RegisterEvent("PET_BATTLE_OPENING_START")
 end

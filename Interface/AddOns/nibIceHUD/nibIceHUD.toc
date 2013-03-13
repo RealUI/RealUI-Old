@@ -3,7 +3,7 @@
 ## Name: nibIceHUD
 ## Title: |cffaaaaaanib|rIceHUD
 ## Notes: IceHUD, now with 75% less fat
-## Version: 7.3 r7
+## Version: 7.3
 ## SavedVariables: IceCoreRealUIDB
 ## Dependencies: nibLibs
 

@@ -8,72 +8,16 @@ StaggerBar.prototype.barUpdateColor = "Stagger"
 local tostring = tostring
 local floor = math.floor
 local min = math.min
+local strform = string.format
 
 local playerName = ""
 local LightID = 124275
 local ModerateID = 124274
 local HeavyID = 124273
 local StaggerID = 124255
+local staggerNames = {"", "", ""}
 
 local MinLevel = 10
-
-function StaggerBar.prototype:init()
-	StaggerBar.super.prototype.init(self, "Stagger", "player")
-
-	self:SetDefaultColor("Stagger", 220, 200, 30)
-	self.bTreatEmptyAsFull = false
-end
-
-function StaggerBar.prototype:Redraw()
-	StaggerBar.super.prototype.Redraw(self)
-	self:MyOnUpdate()
-end
-
-function StaggerBar.prototype:GetOptions()
-	local opts = StaggerBar.super.prototype.GetOptions(self)
-	opts.reverse.hidden = true
-	return opts
-end
-
-function StaggerBar.prototype:GetDefaultSettings()
-	local defaults =  StaggerBar.super.prototype.GetDefaultSettings(self)
-
-	defaults.textVisible.lower = false
-	defaults.offset = 2
-	defaults.enabled = true
-	defaults.textVerticalOffset = 0
-	defaults.textHorizontalOffset = 0
-	defaults.lockUpperTextAlpha = true
-	defaults.bHideMarkerSettings = true
-	defaults.showAsPercentOfMax = true
-	defaults.bAllowExpand = false
-	defaults.upperText = "St"
-
-	return defaults
-end
-
-function StaggerBar.prototype:Enable(core)
-	StaggerBar.super.prototype.Enable(self, core)
-
-	playerName = UnitName("player")
-	
-	self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
-	self:RegisterEvent("PLAYER_ENTERING_WORLD")
-	self:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED")
-
-	self:UpdateShown()
-end
-
-function StaggerBar.prototype:Disable(core)
-	StaggerBar.super.prototype.Disable(self, core)
-end
-
-function StaggerBar.prototype:CreateFrame()
-	StaggerBar.super.prototype.CreateFrame(self)
-
-	self:UpdateShown()
-	self:UpdateAlpha()
-end
 
 local function ReadableNumber(num, places)
     local ret
@@ -90,6 +34,126 @@ local function ReadableNumber(num, places)
     return ret
 end
 
+function StaggerBar.prototype:init()
+	StaggerBar.super.prototype.init(self, "Stagger", "player")
+
+	self:SetDefaultColor("Stagger1", 200, 180, 20)
+	self:SetDefaultColor("Stagger2", 200, 90, 10)
+	self:SetDefaultColor("Stagger3", 200, 0, 0)
+	self:SetDefaultColor("StaggerTime", 255, 255, 255)
+	
+	self.bTreatEmptyAsFull = false
+end
+
+function StaggerBar.prototype:Redraw()
+	StaggerBar.super.prototype.Redraw(self)
+	self:MyOnUpdate()
+end
+
+function StaggerBar.prototype:GetDefaultSettings()
+	local defaults =  StaggerBar.super.prototype.GetDefaultSettings(self)
+
+	defaults.textVisible.lower = false
+	defaults.offset = 2
+	defaults.enabled = true
+	defaults.textVerticalOffset = 0
+	defaults.textHorizontalOffset = 0
+	defaults.lockUpperTextAlpha = true
+	defaults.bHideMarkerSettings = true
+	defaults.showAsPercentOfMax = true
+	defaults.bAllowExpand = false
+	defaults.upperText = "St"
+	defaults.maxPercent = 20
+	defaults.timerAlpha = 0.3
+
+	return defaults
+end
+
+function StaggerBar.prototype:GetOptions()
+	local opts = StaggerBar.super.prototype.GetOptions(self)
+	opts.reverse.hidden = true
+	
+	opts["maxPercent"] =
+	{
+		type = "range",
+		name = "Max Percent",
+		desc = "Maximum percentage of your maximum health for the Stagger bar to represent. I.e, if set to 20%, the bar will be full when the Stagger damage over time effect is dealing 20% of your maximum health per second.",
+		min = 0,
+		max = 50,
+		step = 1,
+		get = function()
+			return self.moduleSettings.maxPercent
+		end,
+		set = function(info, v)
+			self.moduleSettings.maxPercent = v
+			self:Redraw()
+		end,
+		disabled = function()
+			return not self.moduleSettings.enabled
+		end
+	}
+	opts["timerAlpha"] =
+	{
+		type = "range",
+		name = "Timer bar alpha",
+		desc = "What alpha value to use for the bar that displays how long until Stagger wears off.",
+		min = 0,
+		max = 100,
+		step = 5,
+		get = function()
+			return self.moduleSettings.timerAlpha * 100
+		end,
+		set = function(info, v)
+			self.moduleSettings.timerAlpha = v / 100
+			self:Redraw()
+		end,
+		disabled = function()
+			return not self.moduleSettings.enabled
+		end
+	}
+	
+	return opts
+end
+
+function StaggerBar.prototype:Enable(core)
+	StaggerBar.super.prototype.Enable(self, core)
+
+	playerName = UnitName("player")
+	staggerNames[1] = GetSpellInfo(LightID)
+	staggerNames[2] = GetSpellInfo(ModerateID)
+	staggerNames[3] = GetSpellInfo(HeavyID)
+	
+	self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
+	self:RegisterEvent("PLAYER_ENTERING_WORLD")
+	self:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED")
+
+	self:UpdateShown()
+end
+
+function StaggerBar.prototype:Disable(core)
+	StaggerBar.super.prototype.Disable(self, core)
+end
+
+function StaggerBar.prototype:CreateFrame()
+	StaggerBar.super.prototype.CreateFrame(self)
+	self:CreateTimerBar()
+
+	self:UpdateShown()
+	self:UpdateAlpha()
+end
+
+function StaggerBar.prototype:CreateTimerBar()
+	self.timerFrame = self:BarFactory(self.timerFrame, "MEDIUM","ARTWORK")
+
+	self.CurrScale = 0
+
+	self.timerFrame.bar:SetVertexColor(self:GetColor("StaggerTime", self.moduleSettings.timerAlpha))
+	self.timerFrame.bar:SetHeight(0)
+
+	self:UpdateBar(1, "undef")
+	self:UpdateTimerFrame()
+end
+
 function StaggerBar.prototype:UpdateShown()
 	if ( (GetSpecialization() == 1) and not(UnitInVehicle("player")) and (UnitLevel("player") >= MinLevel) ) then
 		self:Show(true)
@@ -101,26 +165,31 @@ end
 function StaggerBar.prototype:PLAYER_ENTERING_WORLD()
 	self.guid = UnitGUID("player");
 	self:UpdateStaggerBar()
+	-- self:UpdateTimerFrame()
 end
 
 function StaggerBar.prototype:ACTIVE_TALENT_GROUP_CHANGED()
 	self:UpdateStaggerBar()
+	-- self:UpdateTimerFrame()
 end
 
 function StaggerBar.prototype:GetDebuffInfo()
 	local amount = 0
 	local duration = 0
+	local staggerLevel = 1
 	for i = 1, 40 do
 		local debuffID = select(11, UnitDebuff(playerName, i))
 		if debuffID == LightID or debuffID == ModerateID or debuffID == HeavyID then
 			local spellName = select(1, UnitDebuff(playerName, i))
 			duration = select(6, UnitAura(playerName, spellName, "", "HARMFUL"))
 			amount = select(15, UnitAura(playerName, spellName, "", "HARMFUL"))
+			staggerLevel = (debuffID == LightID) and 1 or (debuffID == ModerateID) and 2 or 3
 			break
 		end
 	end
 	self.amount = amount or 0
 	self.duration = duration or 0
+	self.staggerLevel = staggerLevel or 1
 end
 
 function StaggerBar.prototype:COMBAT_LOG_EVENT_UNFILTERED(_, timestamp, event, hideCaster, sourceGUID, sourceName, sourceFlags, sourceFlags2, destGUID, destName, destFlags, destFlags2, spellID)
@@ -140,31 +209,80 @@ end
 function StaggerBar.prototype:UpdateStaggerBar()
 	self:GetDebuffInfo()
 	
-	local health = UnitHealth("player")
+	-- local health = UnitHealth("player")
 	local maxHealth = UnitHealthMax("player")
-	local percent = min(self.amount / maxHealth * 100, 100)
-	-- if Compounded
-		-- if Current Health
-			-- percent = math.min((amount * duration) / health * 100, 100);
-		-- else
-			-- percent = math.min((amount * duration) / maxHealth * 100, 100);
-		-- end
-	-- else
-		-- if Current Health
-			-- percent = math.min(amount / health * 100, 100);
-		-- else
-			-- percent = math.min(amount / maxHealth * 100, 100);
-		-- end
-	-- end
+	local percent = (self.amount / maxHealth) * 100
+	local percentText = percent >= 10 and floor(percent) or strform("%.1f", percent)
+	local scale = nibIceHUD:Clamp((self.amount / maxHealth) * (100 / self.moduleSettings.maxPercent), 0, 1)
 	
 	if self.amount > 0 and self.duration <= 10 then
-		self:UpdateBar(percent or 0, "Stagger")
-		self:SetBottomText1(self.moduleSettings.upperText .. " " .. tostring(floor(percent * 100)) .. "%")
+		-- self.timerFrame.bar:SetVertexColor(self:GetColor("StaggerTime", self.moduleSettings.timerAlpha))
+		self:UpdateBar(scale or 0, "Stagger"..self.staggerLevel)
+		self:SetBottomText1(self.moduleSettings.upperText .. " " .. ReadableNumber(self.amount, 1) .. " (" .. percentText .. "%)")
 		self:UpdateShown()
+		self:UpdateTimerFrame()
 	else
-		self:UpdateBar(0, "Stagger")
+		self:UpdateBar(0, "Stagger1")
 		self:SetBottomText1("")
 		self:Show(false)
+	end
+end
+
+------------
+local StaggerDuration, StaggerEndTime = 0, 0
+function StaggerBar.prototype:GetDebuffDuration(unitName, buffName)
+	local name, _, _, _, _, duration, endTime = UnitDebuff(unitName, buffName)
+	if name then
+		return duration, endTime - GetTime()
+	end
+	return nil, nil
+end
+
+function StaggerBar.prototype:MyOnUpdate()
+	StaggerBar.super.prototype.MyOnUpdate(self)
+	if self.bUpdateTimer then
+		self:UpdateTimerFrame(nil, "player", true)
+	end
+end
+
+function StaggerBar.prototype:UpdateTimerFrame(event, unit, fromUpdate)
+	if unit and unit ~= "player" then
+		return
+	end
+	local now = GetTime()
+	local remaining = nil
+	if not fromUpdate then
+		for i = 1, 3 do
+			StaggerDuration, remaining = self:GetDebuffDuration("player", staggerNames[i])
+			if remaining then break end
+		end
+		if not remaining then
+			StaggerEndTime = 0
+		else
+			StaggerEndTime = remaining + now
+		end
+	end
+
+	if StaggerEndTime and (StaggerEndTime >= now) then
+		if not fromUpdate then
+			self.bUpdateTimer = true
+		end
+		
+		if not(remaining) and (StaggerEndTime and (StaggerEndTime >= now)) then
+			remaining = StaggerEndTime - now
+		end
+		
+		if remaining then
+			self:SetBarCoord(self.timerFrame, nibIceHUD:Clamp(remaining / 10, 0, 1))
+			self.timerFrame:Show()
+		else
+			self:SetBarCoord(self.timerFrame, 0)
+			self.timerFrame:Hide()
+		end
+	else
+		self:SetBarCoord(self.timerFrame, 0)
+		self.timerFrame:Hide()
+		self.bUpdateTimer = false
 	end
 end
 

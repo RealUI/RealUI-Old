@@ -403,6 +403,19 @@ local UnitHealthVal = {
 }
 
 ---- MISC FUNCTIONS ----
+local function UnitIsNotPvPPlayer(Unit, UFUnit)
+	if not UnitIsPVP(Unit) then
+		if (Unit == PLAYER_ID) and (UFUnit == PLAYER_ID) then
+			return true
+		elseif (Unit == TARGET_ID) and UnitExists(TARGET_ID) then
+			if UnitIsPlayer(TARGET_ID) then
+				return true
+			end
+		end
+	end
+	return false
+end
+
 local function UnitIsPvPPlayer(Unit, UFUnit)
 	if UnitIsPVP(Unit) then
 		if (Unit == PLAYER_ID) and (UFUnit == PLAYER_ID) then
@@ -1184,15 +1197,17 @@ function Overlay:UpdateUnitBackgroundColor(UnitID)
 			bgColor = StatusColors.pvpenemy
 			newColorID = "pvpenemy"
 		end
-	elseif (UnitIsTapped(Unit) and not(UnitIsTappedByPlayer(Unit))) then
-		bgColor = StatusColors.tapped
-		newColorID = "tapped"
 	else
-		-- if UnitIsPvPPlayer(Unit, UFUnit) then
-			-- UF[UFUnit].endboxtext.text:SetText("")
-		-- end
-		bgColor = {0, 0, 0}
-		newColorID = "black"
+		if (UnitIsTapped(Unit) and not(UnitIsTappedByPlayer(Unit))) then
+			bgColor = StatusColors.tapped
+			newColorID = "tapped"
+		else
+			bgColor = {0, 0, 0}
+			newColorID = "black"
+		end
+		if UnitIsNotPvPPlayer(Unit, UFUnit) then
+			UF[UFUnit].endboxtext.text:SetText("")
+		end
 	end
 	
 	if (UF[UFUnit].backgroundColorID ~= newColorID) then
@@ -2368,6 +2383,7 @@ function Overlay:StatusEvent(event, ...)
 		-- Update Status of unit
 		self:UpdateStatus(UnitID)
 		self:UpdateUnitBackgroundColor(UnitID)
+		self:UpdateUnitInfo(UnitID)
 		-- Target/Focus hostility change
 		if (event == "UNIT_FACTION") then
 			self:UpdateUnitHealthBarInfo(UnitID, true)

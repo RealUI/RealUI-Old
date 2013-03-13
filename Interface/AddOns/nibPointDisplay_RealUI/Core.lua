@@ -1,6 +1,9 @@
 local nibPointDisplay_RealUI = LibStub("AceAddon-3.0"):NewAddon("nibPointDisplay_RealUI", "AceConsole-3.0", "AceEvent-3.0", "AceBucket-3.0")
 local media = LibStub("LibSharedMedia-3.0")
 local db
+
+local floor = math.floor
+
 nibPointDisplay_RealUI.Types = {
 	["GENERAL"] = {
 		name = "General",
@@ -44,6 +47,7 @@ nibPointDisplay_RealUI.Types = {
 			[1] = {name = "Chi", id = "chi", barcount = 5},
 			[2] = {name = "Serpents Zeal", id = "sz", barcount = 2},
 			[3] = {name = "Vital Mists", id = "vm", barcount = 5},
+			[4] = {name = "Elusive Brew", id = "eb", barcount = 5},
 		},
 	},
 	["PALADIN"] = {
@@ -183,6 +187,7 @@ local SpellInfo = {
 	["ff"] = nil,
 	["sz"] = nil,
 	["vm"] = nil,
+	["eb"] = nil,
 	["eva"] = nil,
 	["deva"] = nil,
 	["ser"] = nil,
@@ -205,6 +210,7 @@ local BG = {}
 -- Points
 local Points = {}
 local PointsChanged = {}
+local EBPoints = 0	-- Elusive Brew
 
 local HolyPowerBG, HolyPowerSurround
 local SoulShardBG
@@ -356,6 +362,11 @@ end
 
 -- Update Point Bars
 local PBTex = {}
+local ebColors = {
+	[1] = {1, 1, 1},
+	[2] = {1, 1, 0},
+	[0] = {1, 0, 0}
+}
 local function SetPointBarTextures(shown, ic, it, tid, i)
 	if tid == "hp" and db[ic].types[tid].bars.custom then
 		PBTex.empty = HolyPowerBG[i]
@@ -373,12 +384,24 @@ local function SetPointBarTextures(shown, ic, it, tid, i)
 		Frames[ic][tid].bars[i].bg:SetTexture(PBTex.full)
 		
 		-- Colors
-		if Points[tid] < Types[ic].points[it].barcount then
-			Frames[ic][tid].bars[i].bg:SetVertexColor(db[ic].types[tid].bars.bg.full.color.r, db[ic].types[tid].bars.bg.full.color.g, db[ic].types[tid].bars.bg.full.color.b, db[ic].types[tid].bars.bg.full.color.a)
+		if tid == "eb" then	-- Elusive Brew stack coloring
+			local ebColor
+			for ebi = 1, 5 do
+				Frames[ic][tid].bars[ebi].bg:SetVertexColor(ebColors[0][1], ebColors[0][2], ebColors[0][3], 1)
+			end
+			if i == Points["eb"] then
+				ebColor = ebColors[(EBPoints % 3)]
+				Frames[ic][tid].bars[i].bg:SetVertexColor(ebColor[1], ebColor[2], ebColor[3], 1)
+			end
 		else
-			Frames[ic][tid].bars[i].bg:SetVertexColor(db[ic].types[tid].bars.bg.full.maxcolor.r, db[ic].types[tid].bars.bg.full.maxcolor.g, db[ic].types[tid].bars.bg.full.maxcolor.b, db[ic].types[tid].bars.bg.full.maxcolor.a)
+			if Points[tid] < Types[ic].points[it].barcount then
+				Frames[ic][tid].bars[i].bg:SetVertexColor(db[ic].types[tid].bars.bg.full.color.r, db[ic].types[tid].bars.bg.full.color.g, db[ic].types[tid].bars.bg.full.color.b, db[ic].types[tid].bars.bg.full.color.a)
+			else
+				Frames[ic][tid].bars[i].bg:SetVertexColor(db[ic].types[tid].bars.bg.full.maxcolor.r, db[ic].types[tid].bars.bg.full.maxcolor.g, db[ic].types[tid].bars.bg.full.maxcolor.b, db[ic].types[tid].bars.bg.full.maxcolor.a)
+			end
 		end
 		Frames[ic][tid].bars[i].surround:SetVertexColor(db[ic].types[tid].bars.surround.color.r, db[ic].types[tid].bars.surround.color.g, db[ic].types[tid].bars.surround.color.b, db[ic].types[tid].bars.surround.color.a)
+		
 	-- Empty Bar
 	else
 		-- BG
@@ -530,6 +553,9 @@ function nibPointDisplay_RealUI:GetPoints(CurClass, CurType)
 			NewPoints = GetBuffCount(SpellInfo[CurType], "player")
 		elseif CurType == "vm" then
 			NewPoints = GetBuffCount(SpellInfo[CurType], "player")
+		elseif CurType == "eb" then
+			EBPoints = GetBuffCount(SpellInfo[CurType], "player")
+			NewPoints = ceil(EBPoints / 3)
 		end
 	-- Priest
 	elseif CurClass == "PALADIN" then
@@ -646,9 +672,10 @@ function nibPointDisplay_RealUI:UpdatePoints(...)
 			local tid = Types[ic].points[it].id
 			if ( db[ic].types[tid].enabled and not db[ic].types[tid].configmode.enabled ) then
 				-- Retrieve new point count
-				local OldPoints = Points[tid]
+				local OldPoints = (tid == "eb") and EBPoints or Points[tid]
 				nibPointDisplay_RealUI:GetPoints(ic, tid)
-				if Points[tid] ~= OldPoints then
+				local NewPoints = (tid == "eb") and EBPoints or Points[tid]
+				if NewPoints ~= OldPoints then
 					-- Points have changed, flag for updating
 					HasChanged = true
 					PointsChanged[tid] = true
@@ -973,6 +1000,7 @@ function nibPointDisplay_RealUI:PLAYER_LOGIN()
 	-- Monk
 	SpellInfo["sz"] = GetSpellInfo(127722)		-- Serpents Zeal
 	SpellInfo["vm"] = GetSpellInfo(118674)		-- Vital Mists
+	SpellInfo["eb"] = GetSpellInfo(128939)		-- Elusive Brew
 	-- Priest
 	SpellInfo["eva"] = GetSpellInfo(81661)		-- Evangelism
 	SpellInfo["so"] = GetSpellInfo(77487)		-- Shadow Orb

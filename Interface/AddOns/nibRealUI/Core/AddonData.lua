@@ -8172,102 +8172,11 @@ MSBTProfiles_SavedVars = {
 			["critFontName"] = "pixel_lr_large",
 			["stickyCritsDisabled"] = true,
 			["animationSpeed"] = 70,
-			["triggers"] = {
-				["MSBT_TRIGGER_LOW_HEALTH"] = {
-					["mainEvents"] = "UNIT_HEALTH{unitID;;eq;;player;;threshold;;lt;;25}",
-					["iconSkill"] = "3273",
-					["disabled"] = true,
-					["soundFile"] = "Omen: Aoogah!",
-				},
-				["Custom2"] = {
-					["message"] = "New Trigger",
-					["alwaysSticky"] = true,
-				},
-				["MSBT_TRIGGER_LOCK_AND_LOAD"] = {
-					["disabled"] = true,
-				},
-				["MSBT_TRIGGER_TIDAL_WAVES"] = {
-					["disabled"] = true,
-				},
-				["Custom1"] = {
-					["message"] = "New Trigger",
-					["alwaysSticky"] = true,
-				},
-				["MSBT_TRIGGER_MAELSTROM_WEAPON"] = {
-					["disabled"] = true,
-				},
-				["MSBT_TRIGGER_NIGHTFALL"] = {
-					["disabled"] = true,
-				},
-				["MSBT_TRIGGER_SWORD_AND_BOARD"] = {
-					["disabled"] = true,
-				},
-				["MSBT_TRIGGER_LAVA_SURGE"] = {
-					["disabled"] = true,
-				},
-				["MSBT_TRIGGER_SUDDEN_DEATH"] = {
-					["disabled"] = true,
-				},
-				["MSBT_TRIGGER_SHADOW_ORB"] = {
-					["disabled"] = true,
-				},
-				["MSBT_TRIGGER_BLOODSURGE"] = {
-					["disabled"] = true,
-				},
-				["MSBT_TRIGGER_SHOOTING_STARS"] = {
-					["disabled"] = true,
-				},
-				["MSBT_TRIGGER_LOW_PET_HEALTH"] = {
-					["disabled"] = true,
-				},
-				["MSBT_TRIGGER_MOLTEN_CORE"] = {
-					["disabled"] = true,
-				},
-				["MSBT_TRIGGER_ECLIPSE_SOLAR"] = {
-					["disabled"] = true,
-				},
-				["MSBT_TRIGGER_BRAIN_FREEZE"] = {
-					["disabled"] = true,
-				},
-				["MSBT_TRIGGER_RIME"] = {
-					["disabled"] = true,
-				},
-				["MSBT_TRIGGER_SHADOW_INFUSION"] = {
-					["disabled"] = true,
-				},
-				["MSBT_TRIGGER_CLEARCASTING"] = {
-					["disabled"] = true,
-				},
-				["MSBT_TRIGGER_THE_ART_OF_WAR"] = {
-					["disabled"] = true,
-				},
-				["MSBT_TRIGGER_ECLIPSE_LUNAR"] = {
-					["disabled"] = true,
-				},
-				["MSBT_TRIGGER_IMPACT"] = {
-					["disabled"] = true,
-				},
-				["MSBT_TRIGGER_HOT_STREAK"] = {
-					["disabled"] = true,
-				},
-				["MSBT_TRIGGER_KILLING_MACHINE"] = {
-					["disabled"] = true,
-				},
-				["MSBT_TRIGGER_VICTORY_RUSH"] = {
-					["disabled"] = true,
-				},
-				["MSBT_TRIGGER_LOW_MANA"] = {
-					["mainEvents"] = "UNIT_MANA{unitID;;eq;;player;;threshold;;lt;;25}",
-					["disabled"] = true,
-				},
-				["MSBT_TRIGGER_TASTE_FOR_BLOOD"] = {
-					["disabled"] = true,
-				},
-			},
+			["normalFontSize"] = 8,
 			["textShadowingDisabled"] = true,
 			["creationVersion"] = "5.4.78",
 			["critFontSize"] = 8,
-			["normalOutlineIndex"] = 5,
+			["critOutlineIndex"] = 5,
 			["events"] = {
 				["NOTIFICATION_PC_KILLING_BLOW"] = {
 					["disabled"] = true,
@@ -8302,16 +8211,16 @@ MSBTProfiles_SavedVars = {
 				["NOTIFICATION_MONSTER_EMOTE"] = {
 					["disabled"] = true,
 				},
-				["NOTIFICATION_ITEM_BUFF"] = {
+				["NOTIFICATION_REP_GAIN"] = {
 					["disabled"] = true,
 				},
 				["NOTIFICATION_POWER_GAIN"] = {
 					["disabled"] = true,
 				},
-				["NOTIFICATION_BUFF"] = {
+				["NOTIFICATION_PET_COOLDOWN"] = {
 					["disabled"] = true,
 				},
-				["NOTIFICATION_BUFF_STACK"] = {
+				["NOTIFICATION_HONOR_GAIN"] = {
 					["disabled"] = true,
 				},
 				["NOTIFICATION_CP_FULL"] = {
@@ -8321,7 +8230,7 @@ MSBTProfiles_SavedVars = {
 					["alwaysSticky"] = false,
 					["disabled"] = true,
 				},
-				["NOTIFICATION_BUFF_FADE"] = {
+				["NOTIFICATION_COOLDOWN"] = {
 					["disabled"] = true,
 				},
 				["NOTIFICATION_HOLY_POWER_CHANGE"] = {
@@ -8330,16 +8239,16 @@ MSBTProfiles_SavedVars = {
 				["NOTIFICATION_CP_GAIN"] = {
 					["disabled"] = true,
 				},
-				["NOTIFICATION_COOLDOWN"] = {
+				["NOTIFICATION_BUFF_FADE"] = {
 					["disabled"] = true,
 				},
-				["NOTIFICATION_HONOR_GAIN"] = {
+				["NOTIFICATION_BUFF_STACK"] = {
 					["disabled"] = true,
 				},
-				["NOTIFICATION_PET_COOLDOWN"] = {
+				["NOTIFICATION_BUFF"] = {
 					["disabled"] = true,
 				},
-				["NOTIFICATION_REP_GAIN"] = {
+				["NOTIFICATION_ITEM_BUFF"] = {
 					["disabled"] = true,
 				},
 			},
@@ -8362,11 +8271,11 @@ MSBTProfiles_SavedVars = {
 					["critFontSize"] = 16,
 					["scrollHeight"] = 100,
 					["offsetX"] = -150,
-					["stickyAnimationStyle"] = "Static",
-					["stickyDirection"] = "Up",
-					["offsetY"] = 60,
-					["scrollWidth"] = 300,
 					["normalFontSize"] = 16,
+					["scrollWidth"] = 300,
+					["offsetY"] = 60,
+					["stickyDirection"] = "Up",
+					["stickyAnimationStyle"] = "Static",
 				},
 				["Static"] = {
 					["disabled"] = true,
@@ -8386,19 +8295,240 @@ MSBTProfiles_SavedVars = {
 				},
 			},
 			["normalFontName"] = "pixel_lr_small",
-			["critOutlineIndex"] = 5,
-			["normalFontSize"] = 8,
+			["normalOutlineIndex"] = 5,
+			["triggers"] = {
+				["MSBT_TRIGGER_LOW_HEALTH"] = {
+					["iconSkill"] = "3273",
+					["soundFile"] = "Omen: Aoogah!",
+					["disabled"] = true,
+					["mainEvents"] = "UNIT_HEALTH{unitID;;eq;;player;;threshold;;lt;;25}",
+				},
+				["Custom2"] = {
+					["message"] = "New Trigger",
+					["alwaysSticky"] = true,
+				},
+				["MSBT_TRIGGER_LOCK_AND_LOAD"] = {
+					["disabled"] = true,
+				},
+				["MSBT_TRIGGER_TIDAL_WAVES"] = {
+					["disabled"] = true,
+				},
+				["Custom1"] = {
+					["message"] = "New Trigger",
+					["alwaysSticky"] = true,
+				},
+				["MSBT_TRIGGER_MAELSTROM_WEAPON"] = {
+					["disabled"] = true,
+				},
+				["MSBT_TRIGGER_NIGHTFALL"] = {
+					["disabled"] = true,
+				},
+				["MSBT_TRIGGER_SWORD_AND_BOARD"] = {
+					["disabled"] = true,
+				},
+				["MSBT_TRIGGER_LAVA_SURGE"] = {
+					["disabled"] = true,
+				},
+				["MSBT_TRIGGER_SUDDEN_DEATH"] = {
+					["disabled"] = true,
+				},
+				["MSBT_TRIGGER_SHADOW_ORB"] = {
+					["disabled"] = true,
+				},
+				["MSBT_TRIGGER_LOW_PET_HEALTH"] = {
+					["disabled"] = true,
+				},
+				["MSBT_TRIGGER_SHOOTING_STARS"] = {
+					["disabled"] = true,
+				},
+				["MSBT_TRIGGER_BLOODSURGE"] = {
+					["disabled"] = true,
+				},
+				["MSBT_TRIGGER_MOLTEN_CORE"] = {
+					["disabled"] = true,
+				},
+				["MSBT_TRIGGER_ECLIPSE_SOLAR"] = {
+					["disabled"] = true,
+				},
+				["MSBT_TRIGGER_LOW_MANA"] = {
+					["mainEvents"] = "UNIT_MANA{unitID;;eq;;player;;threshold;;lt;;25}",
+					["disabled"] = true,
+				},
+				["MSBT_TRIGGER_RIME"] = {
+					["disabled"] = true,
+				},
+				["MSBT_TRIGGER_SHADOW_INFUSION"] = {
+					["disabled"] = true,
+				},
+				["MSBT_TRIGGER_CLEARCASTING"] = {
+					["disabled"] = true,
+				},
+				["MSBT_TRIGGER_VICTORY_RUSH"] = {
+					["disabled"] = true,
+				},
+				["MSBT_TRIGGER_KILLING_MACHINE"] = {
+					["disabled"] = true,
+				},
+				["MSBT_TRIGGER_HOT_STREAK"] = {
+					["disabled"] = true,
+				},
+				["MSBT_TRIGGER_IMPACT"] = {
+					["disabled"] = true,
+				},
+				["MSBT_TRIGGER_ECLIPSE_LUNAR"] = {
+					["disabled"] = true,
+				},
+				["MSBT_TRIGGER_THE_ART_OF_WAR"] = {
+					["disabled"] = true,
+				},
+				["MSBT_TRIGGER_BRAIN_FREEZE"] = {
+					["disabled"] = true,
+				},
+				["MSBT_TRIGGER_TASTE_FOR_BLOOD"] = {
+					["disabled"] = true,
+				},
+				["MSBT_TRIGGER_ELUSIVE_BREW"] = {
+					["disabled"] = true,
+				},
+				["MSBT_TRIGGER_VITAL_MISTS"] = {
+					["disabled"] = true,
+				},
+			},
 		},
 		["Default"] = {
 			["critFontName"] = "pixel_lr_large",
 			["stickyCritsDisabled"] = true,
 			["animationSpeed"] = 70,
+			["normalFontSize"] = 8,
+			["textShadowingDisabled"] = true,
+			["creationVersion"] = "5.4.78",
+			["critFontSize"] = 8,
+			["critOutlineIndex"] = 5,
+			["events"] = {
+				["NOTIFICATION_PC_KILLING_BLOW"] = {
+					["disabled"] = true,
+				},
+				["NOTIFICATION_MONEY"] = {
+					["disabled"] = true,
+				},
+				["NOTIFICATION_ITEM_BUFF_FADE"] = {
+					["disabled"] = true,
+				},
+				["NOTIFICATION_REP_LOSS"] = {
+					["disabled"] = true,
+				},
+				["NOTIFICATION_SKILL_GAIN"] = {
+					["disabled"] = true,
+				},
+				["NOTIFICATION_LOOT"] = {
+					["disabled"] = true,
+				},
+				["NOTIFICATION_SOUL_SHARD_CREATED"] = {
+					["alwaysSticky"] = false,
+				},
+				["INCOMING_HEAL_CRIT"] = {
+					["fontSize"] = false,
+				},
+				["NOTIFICATION_POWER_LOSS"] = {
+					["disabled"] = true,
+				},
+				["NOTIFICATION_HOLY_POWER_FULL"] = {
+					["disabled"] = true,
+				},
+				["NOTIFICATION_MONSTER_EMOTE"] = {
+					["disabled"] = true,
+				},
+				["NOTIFICATION_REP_GAIN"] = {
+					["disabled"] = true,
+				},
+				["NOTIFICATION_POWER_GAIN"] = {
+					["disabled"] = true,
+				},
+				["NOTIFICATION_PET_COOLDOWN"] = {
+					["disabled"] = true,
+				},
+				["NOTIFICATION_HONOR_GAIN"] = {
+					["disabled"] = true,
+				},
+				["NOTIFICATION_CP_FULL"] = {
+					["disabled"] = true,
+				},
+				["NOTIFICATION_EXTRA_ATTACK"] = {
+					["alwaysSticky"] = false,
+					["disabled"] = true,
+				},
+				["NOTIFICATION_COOLDOWN"] = {
+					["disabled"] = true,
+				},
+				["NOTIFICATION_HOLY_POWER_CHANGE"] = {
+					["disabled"] = true,
+				},
+				["NOTIFICATION_CP_GAIN"] = {
+					["disabled"] = true,
+				},
+				["NOTIFICATION_BUFF_FADE"] = {
+					["disabled"] = true,
+				},
+				["NOTIFICATION_BUFF_STACK"] = {
+					["disabled"] = true,
+				},
+				["NOTIFICATION_BUFF"] = {
+					["disabled"] = true,
+				},
+				["NOTIFICATION_ITEM_BUFF"] = {
+					["disabled"] = true,
+				},
+			},
+			["hideFullOverheals"] = true,
+			["scrollAreas"] = {
+				["Outgoing"] = {
+					["direction"] = "Up",
+					["stickyBehavior"] = "MSBT_NORMAL",
+					["stickyDirection"] = "Up",
+					["scrollHeight"] = 150,
+					["offsetX"] = 166,
+					["scrollWidth"] = 130,
+					["behavior"] = "MSBT_NORMAL",
+					["offsetY"] = 10,
+					["animationStyle"] = "Straight",
+					["stickyAnimationStyle"] = "Static",
+				},
+				["Notification"] = {
+					["direction"] = "Up",
+					["stickyDirection"] = "Up",
+					["scrollWidth"] = 300,
+					["offsetX"] = -150,
+					["normalFontSize"] = 16,
+					["critFontSize"] = 16,
+					["offsetY"] = 60,
+					["scrollHeight"] = 100,
+					["stickyAnimationStyle"] = "Static",
+				},
+				["Static"] = {
+					["disabled"] = true,
+					["offsetY"] = -65,
+				},
+				["Incoming"] = {
+					["direction"] = "Up",
+					["behavior"] = "MSBT_NORMAL",
+					["stickyDirection"] = "Up",
+					["scrollHeight"] = 150,
+					["offsetX"] = -296,
+					["stickyBehavior"] = "MSBT_NORMAL",
+					["scrollWidth"] = 130,
+					["offsetY"] = 10,
+					["animationStyle"] = "Straight",
+					["stickyAnimationStyle"] = "Static",
+				},
+			},
+			["normalFontName"] = "pixel_lr_small",
+			["normalOutlineIndex"] = 5,
 			["triggers"] = {
 				["MSBT_TRIGGER_LOW_HEALTH"] = {
-					["mainEvents"] = "UNIT_HEALTH{unitID;;eq;;player;;threshold;;lt;;25}",
 					["iconSkill"] = "3273",
-					["disabled"] = true,
 					["soundFile"] = "Omen: Aoogah!",
+					["disabled"] = true,
+					["mainEvents"] = "UNIT_HEALTH{unitID;;eq;;player;;threshold;;lt;;25}",
 				},
 				["Custom2"] = {
 					["message"] = "New Trigger",
@@ -8432,13 +8562,13 @@ MSBTProfiles_SavedVars = {
 				["MSBT_TRIGGER_SHADOW_ORB"] = {
 					["disabled"] = true,
 				},
-				["MSBT_TRIGGER_BLOODSURGE"] = {
+				["MSBT_TRIGGER_LOW_PET_HEALTH"] = {
 					["disabled"] = true,
 				},
 				["MSBT_TRIGGER_SHOOTING_STARS"] = {
 					["disabled"] = true,
 				},
-				["MSBT_TRIGGER_LOW_PET_HEALTH"] = {
+				["MSBT_TRIGGER_BLOODSURGE"] = {
 					["disabled"] = true,
 				},
 				["MSBT_TRIGGER_MOLTEN_CORE"] = {
@@ -8447,7 +8577,8 @@ MSBTProfiles_SavedVars = {
 				["MSBT_TRIGGER_ECLIPSE_SOLAR"] = {
 					["disabled"] = true,
 				},
-				["MSBT_TRIGGER_BRAIN_FREEZE"] = {
+				["MSBT_TRIGGER_LOW_MANA"] = {
+					["mainEvents"] = "UNIT_MANA{unitID;;eq;;player;;threshold;;lt;;25}",
 					["disabled"] = true,
 				},
 				["MSBT_TRIGGER_RIME"] = {
@@ -8459,10 +8590,115 @@ MSBTProfiles_SavedVars = {
 				["MSBT_TRIGGER_CLEARCASTING"] = {
 					["disabled"] = true,
 				},
-				["MSBT_TRIGGER_THE_ART_OF_WAR"] = {
+				["MSBT_TRIGGER_VICTORY_RUSH"] = {
+					["disabled"] = true,
+				},
+				["MSBT_TRIGGER_KILLING_MACHINE"] = {
+					["disabled"] = true,
+				},
+				["MSBT_TRIGGER_HOT_STREAK"] = {
+					["disabled"] = true,
+				},
+				["MSBT_TRIGGER_IMPACT"] = {
 					["disabled"] = true,
 				},
 				["MSBT_TRIGGER_ECLIPSE_LUNAR"] = {
+					["disabled"] = true,
+				},
+				["MSBT_TRIGGER_THE_ART_OF_WAR"] = {
+					["disabled"] = true,
+				},
+				["MSBT_TRIGGER_BRAIN_FREEZE"] = {
+					["disabled"] = true,
+				},
+				["MSBT_TRIGGER_TASTE_FOR_BLOOD"] = {
+					["disabled"] = true,
+				},
+				["MSBT_TRIGGER_ELUSIVE_BREW"] = {
+					["disabled"] = true,
+				},
+				["MSBT_TRIGGER_VITAL_MISTS"] = {
+					["disabled"] = true,
+				},
+			},
+		},
+		["RealUI-HR"] = {
+			["critFontName"] = "pixel_hr_large",
+			["stickyCritsDisabled"] = true,
+			["animationSpeed"] = 70,
+			["triggers"] = {
+				["MSBT_TRIGGER_LOW_HEALTH"] = {
+					["mainEvents"] = "UNIT_HEALTH{unitID;;eq;;player;;threshold;;lt;;25}",
+					["iconSkill"] = "3273",
+					["disabled"] = true,
+					["soundFile"] = "Omen: Aoogah!",
+				},
+				["Custom2"] = {
+					["message"] = "New Trigger",
+					["alwaysSticky"] = true,
+				},
+				["MSBT_TRIGGER_LOCK_AND_LOAD"] = {
+					["disabled"] = true,
+				},
+				["MSBT_TRIGGER_TIDAL_WAVES"] = {
+					["disabled"] = true,
+				},
+				["Custom1"] = {
+					["message"] = "New Trigger",
+					["alwaysSticky"] = true,
+				},
+				["MSBT_TRIGGER_MAELSTROM_WEAPON"] = {
+					["disabled"] = true,
+				},
+				["MSBT_TRIGGER_ELUSIVE_BREW"] = {
+					["disabled"] = true,
+				},
+				["MSBT_TRIGGER_VITAL_MISTS"] = {
+					["disabled"] = true,
+				},
+				["MSBT_TRIGGER_NIGHTFALL"] = {
+					["disabled"] = true,
+				},
+				["MSBT_TRIGGER_SWORD_AND_BOARD"] = {
+					["disabled"] = true,
+				},
+				["MSBT_TRIGGER_LAVA_SURGE"] = {
+					["disabled"] = true,
+				},
+				["MSBT_TRIGGER_SUDDEN_DEATH"] = {
+					["disabled"] = true,
+				},
+				["MSBT_TRIGGER_BRAIN_FREEZE"] = {
+					["disabled"] = true,
+				},
+				["MSBT_TRIGGER_SHADOW_ORB"] = {
+					["disabled"] = true,
+				},
+				["MSBT_TRIGGER_THE_ART_OF_WAR"] = {
+					["disabled"] = true,
+				},
+				["MSBT_TRIGGER_SHOOTING_STARS"] = {
+					["disabled"] = true,
+				},
+				["MSBT_TRIGGER_BLOODSURGE"] = {
+					["disabled"] = true,
+				},
+				["MSBT_TRIGGER_MOLTEN_CORE"] = {
+					["disabled"] = true,
+				},
+				["MSBT_TRIGGER_ECLIPSE_SOLAR"] = {
+					["disabled"] = true,
+				},
+				["MSBT_TRIGGER_ECLIPSE_LUNAR"] = {
+					["disabled"] = true,
+				},
+				["MSBT_TRIGGER_VICTORY_RUSH"] = {
+					["disabled"] = true,
+				},
+				["MSBT_TRIGGER_SHADOW_INFUSION"] = {
+					["disabled"] = true,
+				},
+				["MSBT_TRIGGER_CLEARCASTING"] = {
 					["disabled"] = true,
 				},
 				["MSBT_TRIGGER_IMPACT"] = {
@@ -8474,7 +8710,10 @@ MSBTProfiles_SavedVars = {
 				["MSBT_TRIGGER_KILLING_MACHINE"] = {
 					["disabled"] = true,
 				},
-				["MSBT_TRIGGER_VICTORY_RUSH"] = {
+				["MSBT_TRIGGER_RIME"] = {
+					["disabled"] = true,
+				},
+				["MSBT_TRIGGER_LOW_PET_HEALTH"] = {
 					["disabled"] = true,
 				},
 				["MSBT_TRIGGER_LOW_MANA"] = {
@@ -8493,7 +8732,7 @@ MSBTProfiles_SavedVars = {
 				["NOTIFICATION_PC_KILLING_BLOW"] = {
 					["disabled"] = true,
 				},
-				["NOTIFICATION_MONEY"] = {
+				["NOTIFICATION_HONOR_GAIN"] = {
 					["disabled"] = true,
 				},
 				["NOTIFICATION_ITEM_BUFF_FADE"] = {
@@ -8502,7 +8741,7 @@ MSBTProfiles_SavedVars = {
 				["NOTIFICATION_REP_LOSS"] = {
 					["disabled"] = true,
 				},
-				["NOTIFICATION_SKILL_GAIN"] = {
+				["NOTIFICATION_PET_COOLDOWN"] = {
 					["disabled"] = true,
 				},
 				["NOTIFICATION_LOOT"] = {
@@ -8554,143 +8793,13 @@ MSBTProfiles_SavedVars = {
 				["NOTIFICATION_COOLDOWN"] = {
 					["disabled"] = true,
 				},
-				["NOTIFICATION_HONOR_GAIN"] = {
-					["disabled"] = true,
-				},
-				["NOTIFICATION_PET_COOLDOWN"] = {
-					["disabled"] = true,
-				},
-				["NOTIFICATION_REP_GAIN"] = {
-					["disabled"] = true,
-				},
-			},
-			["hideFullOverheals"] = true,
-			["scrollAreas"] = {
-				["Outgoing"] = {
-					["direction"] = "Up",
-					["stickyBehavior"] = "MSBT_NORMAL",
-					["stickyDirection"] = "Up",
-					["scrollHeight"] = 150,
-					["offsetX"] = 166,
-					["scrollWidth"] = 130,
-					["behavior"] = "MSBT_NORMAL",
-					["offsetY"] = 10,
-					["animationStyle"] = "Straight",
-					["stickyAnimationStyle"] = "Static",
-				},
-				["Notification"] = {
-					["direction"] = "Up",
-					["stickyDirection"] = "Up",
-					["scrollWidth"] = 300,
-					["offsetX"] = -150,
-					["stickyAnimationStyle"] = "Static",
-					["scrollHeight"] = 100,
-					["offsetY"] = 60,
-					["critFontSize"] = 16,
-					["normalFontSize"] = 16,
-				},
-				["Static"] = {
-					["disabled"] = true,
-					["offsetY"] = -65,
-				},
-				["Incoming"] = {
-					["direction"] = "Up",
-					["behavior"] = "MSBT_NORMAL",
-					["stickyDirection"] = "Up",
-					["scrollHeight"] = 150,
-					["offsetX"] = -296,
-					["stickyBehavior"] = "MSBT_NORMAL",
-					["scrollWidth"] = 130,
-					["offsetY"] = 10,
-					["animationStyle"] = "Straight",
-					["stickyAnimationStyle"] = "Static",
-				},
-			},
-			["normalFontName"] = "pixel_lr_small",
-			["critOutlineIndex"] = 5,
-			["normalFontSize"] = 8,
-		},
-		["RealUI-HR"] = {
-			["critFontName"] = "pixel_hr_large",
-			["stickyCritsDisabled"] = true,
-			["animationSpeed"] = 70,
-			["normalFontSize"] = 8,
-			["textShadowingDisabled"] = true,
-			["creationVersion"] = "5.4.78",
-			["critFontSize"] = 8,
-			["critOutlineIndex"] = 5,
-			["events"] = {
-				["NOTIFICATION_PC_KILLING_BLOW"] = {
-					["disabled"] = true,
-				},
-				["NOTIFICATION_HONOR_GAIN"] = {
-					["disabled"] = true,
-				},
-				["NOTIFICATION_ITEM_BUFF_FADE"] = {
-					["disabled"] = true,
-				},
-				["NOTIFICATION_REP_LOSS"] = {
-					["disabled"] = true,
-				},
-				["NOTIFICATION_PET_COOLDOWN"] = {
-					["disabled"] = true,
-				},
-				["NOTIFICATION_LOOT"] = {
-					["disabled"] = true,
-				},
-				["NOTIFICATION_SOUL_SHARD_CREATED"] = {
-					["alwaysSticky"] = false,
-				},
-				["INCOMING_HEAL_CRIT"] = {
-					["fontSize"] = false,
-				},
-				["NOTIFICATION_POWER_LOSS"] = {
-					["disabled"] = true,
-				},
-				["NOTIFICATION_HOLY_POWER_FULL"] = {
-					["disabled"] = true,
-				},
-				["NOTIFICATION_MONSTER_EMOTE"] = {
-					["disabled"] = true,
-				},
-				["NOTIFICATION_REP_GAIN"] = {
-					["disabled"] = true,
-				},
-				["NOTIFICATION_POWER_GAIN"] = {
+				["NOTIFICATION_MONEY"] = {
 					["disabled"] = true,
 				},
 				["NOTIFICATION_SKILL_GAIN"] = {
 					["disabled"] = true,
 				},
-				["NOTIFICATION_MONEY"] = {
-					["disabled"] = true,
-				},
-				["NOTIFICATION_BUFF_STACK"] = {
-					["disabled"] = true,
-				},
-				["NOTIFICATION_EXTRA_ATTACK"] = {
-					["alwaysSticky"] = false,
-					["disabled"] = true,
-				},
-				["NOTIFICATION_COOLDOWN"] = {
-					["disabled"] = true,
-				},
-				["NOTIFICATION_HOLY_POWER_CHANGE"] = {
-					["disabled"] = true,
-				},
-				["NOTIFICATION_CP_GAIN"] = {
-					["disabled"] = true,
-				},
-				["NOTIFICATION_BUFF_FADE"] = {
-					["disabled"] = true,
-				},
-				["NOTIFICATION_CP_FULL"] = {
-					["disabled"] = true,
-				},
-				["NOTIFICATION_BUFF"] = {
-					["disabled"] = true,
-				},
-				["NOTIFICATION_ITEM_BUFF"] = {
+				["NOTIFICATION_REP_GAIN"] = {
 					["disabled"] = true,
 				},
 			},
@@ -8729,107 +8838,16 @@ MSBTProfiles_SavedVars = {
 					["critFontSize"] = 16,
 					["scrollWidth"] = 300,
 					["offsetX"] = -150,
-					["normalFontSize"] = 16,
-					["scrollHeight"] = 100,
-					["offsetY"] = 60,
-					["stickyDirection"] = "Up",
 					["stickyAnimationStyle"] = "Static",
+					["stickyDirection"] = "Up",
+					["offsetY"] = 60,
+					["scrollHeight"] = 100,
+					["normalFontSize"] = 16,
 				},
 			},
 			["normalFontName"] = "pixel_hr_small",
-			["normalOutlineIndex"] = 5,
-			["triggers"] = {
-				["MSBT_TRIGGER_LOW_HEALTH"] = {
-					["soundFile"] = "Omen: Aoogah!",
-					["iconSkill"] = "3273",
-					["mainEvents"] = "UNIT_HEALTH{unitID;;eq;;player;;threshold;;lt;;25}",
-					["disabled"] = true,
-				},
-				["Custom2"] = {
-					["message"] = "New Trigger",
-					["alwaysSticky"] = true,
-				},
-				["MSBT_TRIGGER_LOCK_AND_LOAD"] = {
-					["disabled"] = true,
-				},
-				["MSBT_TRIGGER_TIDAL_WAVES"] = {
-					["disabled"] = true,
-				},
-				["Custom1"] = {
-					["message"] = "New Trigger",
-					["alwaysSticky"] = true,
-				},
-				["MSBT_TRIGGER_MAELSTROM_WEAPON"] = {
-					["disabled"] = true,
-				},
-				["MSBT_TRIGGER_NIGHTFALL"] = {
-					["disabled"] = true,
-				},
-				["MSBT_TRIGGER_SWORD_AND_BOARD"] = {
-					["disabled"] = true,
-				},
-				["MSBT_TRIGGER_LAVA_SURGE"] = {
-					["disabled"] = true,
-				},
-				["MSBT_TRIGGER_SUDDEN_DEATH"] = {
-					["disabled"] = true,
-				},
-				["MSBT_TRIGGER_SHADOW_ORB"] = {
-					["disabled"] = true,
-				},
-				["MSBT_TRIGGER_BLOODSURGE"] = {
-					["disabled"] = true,
-				},
-				["MSBT_TRIGGER_SHOOTING_STARS"] = {
-					["disabled"] = true,
-				},
-				["MSBT_TRIGGER_LOW_PET_HEALTH"] = {
-					["disabled"] = true,
-				},
-				["MSBT_TRIGGER_MOLTEN_CORE"] = {
-					["disabled"] = true,
-				},
-				["MSBT_TRIGGER_ECLIPSE_SOLAR"] = {
-					["disabled"] = true,
-				},
-				["MSBT_TRIGGER_LOW_MANA"] = {
-					["mainEvents"] = "UNIT_MANA{unitID;;eq;;player;;threshold;;lt;;25}",
-					["disabled"] = true,
-				},
-				["MSBT_TRIGGER_RIME"] = {
-					["disabled"] = true,
-				},
-				["MSBT_TRIGGER_SHADOW_INFUSION"] = {
-					["disabled"] = true,
-				},
-				["MSBT_TRIGGER_CLEARCASTING"] = {
-					["disabled"] = true,
-				},
-				["MSBT_TRIGGER_VICTORY_RUSH"] = {
-					["disabled"] = true,
-				},
-				["MSBT_TRIGGER_KILLING_MACHINE"] = {
-					["disabled"] = true,
-				},
-				["MSBT_TRIGGER_HOT_STREAK"] = {
-					["disabled"] = true,
-				},
-				["MSBT_TRIGGER_IMPACT"] = {
-					["disabled"] = true,
-				},
-				["MSBT_TRIGGER_ECLIPSE_LUNAR"] = {
-					["disabled"] = true,
-				},
-				["MSBT_TRIGGER_THE_ART_OF_WAR"] = {
-					["disabled"] = true,
-				},
-				["MSBT_TRIGGER_BRAIN_FREEZE"] = {
-					["disabled"] = true,
-				},
-				["MSBT_TRIGGER_TASTE_FOR_BLOOD"] = {
-					["disabled"] = true,
-				},
-			},
+			["critOutlineIndex"] = 5,
+			["normalFontSize"] = 8,
 		},
 	},
 }
@@ -8839,6 +8857,8 @@ MSBT_SavedMedia = {
 	["sounds"] = {
 	},
 }
+
+
 
 
 
@@ -17776,18 +17796,6 @@ nibPointDisplayRUIDB = {
 			["GENERAL"] = {
 				["types"] = {
 					["cp"] = {
-						["general"] = {
-							["direction"] = {
-								["reverse"] = true,
-							},
-							["hidein"] = {
-								["vehicle"] = false,
-							},
-						},
-						["position"] = {
-							["y"] = -37,
-							["x"] = 56,
-						},
 						["bars"] = {
 							["bg"] = {
 								["full"] = {
@@ -17797,16 +17805,66 @@ nibPointDisplayRUIDB = {
 								},
 							},
 						},
+						["general"] = {
+							["hidein"] = {
+								["vehicle"] = false,
+							},
+							["direction"] = {
+								["reverse"] = true,
+							},
+						},
+						["position"] = {
+							["y"] = -37,
+							["x"] = 56,
+						},
 					},
 				},
 			},
 			["WARRIOR"] = {
 				["types"] = {
 					["mc"] = {
+						["bars"] = {
+							["bg"] = {
+								["full"] = {
+									["color"] = {
+										["b"] = 0.1215686274509804,
+										["g"] = 0.5333333333333333,
+										["r"] = 0.807843137254902,
+									},
+									["maxcolor"] = {
+										["g"] = 0.6627450980392157,
+										["b"] = 0.1490196078431373,
+									},
+								},
+							},
+						},
 						["position"] = {
 							["y"] = -31,
 							["x"] = -60,
 						},
+					},
+					["ts"] = {
+						["bars"] = {
+							["bg"] = {
+								["full"] = {
+									["color"] = {
+										["b"] = 0.8,
+										["g"] = 0.6627450980392157,
+										["r"] = 0.2784313725490196,
+									},
+									["maxcolor"] = {
+										["g"] = 0.8352941176470589,
+										["r"] = 0.3725490196078432,
+									},
+								},
+							},
+						},
+						["position"] = {
+							["y"] = -47,
+							["x"] = -60,
+						},
+					},
+					["tb"] = {
 						["bars"] = {
 							["bg"] = {
 								["full"] = {
@@ -17821,27 +17879,13 @@ nibPointDisplayRUIDB = {
 									},
 								},
 							},
-						},
-					},
-					["ts"] = {
-						["position"] = {
-							["y"] = -47,
-							["x"] = -60,
-						},
-						["bars"] = {
-							["bg"] = {
-								["full"] = {
-									["color"] = {
-										["r"] = 0.2784313725490196,
-										["g"] = 0.6627450980392157,
-										["b"] = 0.8,
-									},
-									["maxcolor"] = {
-										["g"] = 0.8352941176470589,
-										["r"] = 0.3725490196078432,
-									},
-								},
+							["position"] = {
+								["gap"] = -3,
 							},
+						},
+						["position"] = {
+							["y"] = -31,
+							["x"] = -48,
 						},
 					},
 					["sa"] = {
@@ -17855,42 +17899,15 @@ nibPointDisplayRUIDB = {
 							["x"] = 76,
 						},
 					},
-					["tb"] = {
-						["position"] = {
-							["y"] = -31,
-							["x"] = -48,
-						},
-						["bars"] = {
-							["position"] = {
-								["gap"] = -3,
-							},
-							["bg"] = {
-								["full"] = {
-									["color"] = {
-										["b"] = 0.1215686274509804,
-										["g"] = 0.5333333333333333,
-										["r"] = 0.807843137254902,
-									},
-									["maxcolor"] = {
-										["g"] = 0.6627450980392157,
-										["b"] = 0.1490196078431373,
-									},
-								},
-							},
-						},
-					},
 				},
 			},
 			["PALADIN"] = {
 				["types"] = {
 					["hp"] = {
-						["position"] = {
-							["y"] = -114,
-						},
 						["bars"] = {
-							["custom"] = true,
-							["position"] = {
-								["gap"] = -64,
+							["size"] = {
+								["height"] = 64,
+								["width"] = 64,
 							},
 							["bg"] = {
 								["full"] = {
@@ -17903,34 +17920,27 @@ nibPointDisplayRUIDB = {
 									},
 								},
 							},
-							["size"] = {
-								["height"] = 64,
-								["width"] = 64,
+							["custom"] = true,
+							["position"] = {
+								["gap"] = -64,
 							},
+						},
+						["position"] = {
+							["y"] = -114,
 						},
 					},
 				},
 			},
 			["MAGE"] = {
 				["types"] = {
-					["ab"] = {
-						["position"] = {
-							["y"] = -37,
-							["x"] = -79,
-						},
-					},
 					["ff"] = {
-						["position"] = {
-							["y"] = -37,
-							["x"] = -93,
-						},
 						["bars"] = {
 							["bg"] = {
 								["full"] = {
 									["color"] = {
-										["b"] = 0.7803921568627451,
-										["g"] = 0.615686274509804,
 										["r"] = 0,
+										["g"] = 0.615686274509804,
+										["b"] = 0.7803921568627451,
 									},
 									["maxcolor"] = {
 										["g"] = 0.788235294117647,
@@ -17939,16 +17949,22 @@ nibPointDisplayRUIDB = {
 								},
 							},
 						},
+						["position"] = {
+							["y"] = -37,
+							["x"] = -93,
+						},
+					},
+					["ab"] = {
+						["position"] = {
+							["y"] = -37,
+							["x"] = -79,
+						},
 					},
 				},
 			},
 			["PRIEST"] = {
 				["types"] = {
 					["ms"] = {
-						["position"] = {
-							["y"] = -69,
-							["x"] = -71,
-						},
 						["bars"] = {
 							["surround"] = {
 								["texture"] = "Round_Small_Surround",
@@ -17957,9 +17973,9 @@ nibPointDisplayRUIDB = {
 								["full"] = {
 									["color"] = {
 										["a"] = 0.8100000023841858,
-										["b"] = 0.7058823529411764,
-										["g"] = 0.1411764705882353,
 										["r"] = 0.2078431372549019,
+										["g"] = 0.1411764705882353,
+										["b"] = 0.7058823529411764,
 									},
 									["maxcolor"] = {
 										["g"] = 0.2,
@@ -17972,27 +17988,31 @@ nibPointDisplayRUIDB = {
 								},
 							},
 						},
+						["position"] = {
+							["y"] = -69,
+							["x"] = -71,
+						},
 					},
 					["deva"] = {
-						["position"] = {
-							["y"] = -37,
-							["x"] = -54,
-						},
 						["bars"] = {
 							["bg"] = {
 								["full"] = {
 									["color"] = {
-										["r"] = 0.5098039215686274,
-										["g"] = 0.5137254901960784,
 										["b"] = 0.7254901960784314,
+										["g"] = 0.5137254901960784,
+										["r"] = 0.5098039215686274,
 									},
 									["maxcolor"] = {
-										["r"] = 0.6470588235294118,
-										["g"] = 0.6470588235294118,
 										["b"] = 0.9215686274509803,
+										["g"] = 0.6470588235294118,
+										["r"] = 0.6470588235294118,
 									},
 								},
 							},
+						},
+						["position"] = {
+							["y"] = -37,
+							["x"] = -54,
 						},
 					},
 					["eva"] = {
@@ -18002,39 +18022,35 @@ nibPointDisplayRUIDB = {
 						},
 					},
 					["so"] = {
-						["position"] = {
-							["y"] = -53,
-							["x"] = -67,
-						},
 						["bars"] = {
 							["bg"] = {
 								["full"] = {
 									["color"] = {
-										["r"] = 0.4156862745098039,
-										["g"] = 0.3254901960784314,
 										["b"] = 0.7215686274509804,
+										["g"] = 0.3254901960784314,
+										["r"] = 0.4156862745098039,
 									},
 									["maxcolor"] = {
-										["r"] = 0.5333333333333333,
-										["g"] = 0.4156862745098039,
 										["b"] = 0.9215686274509803,
+										["g"] = 0.4156862745098039,
+										["r"] = 0.5333333333333333,
 									},
 								},
 							},
 						},
+						["position"] = {
+							["y"] = -53,
+							["x"] = -67,
+						},
 					},
 					["ser"] = {
-						["position"] = {
-							["y"] = -38,
-							["x"] = -100,
-						},
 						["bars"] = {
 							["bg"] = {
 								["full"] = {
 									["color"] = {
-										["b"] = 0.7568627450980392,
-										["g"] = 0.611764705882353,
 										["r"] = 0,
+										["g"] = 0.611764705882353,
+										["b"] = 0.7568627450980392,
 									},
 									["maxcolor"] = {
 										["g"] = 0.807843137254902,
@@ -18043,70 +18059,47 @@ nibPointDisplayRUIDB = {
 								},
 								["empty"] = {
 									["color"] = {
-										["r"] = 0.1411764705882353,
-										["g"] = 0.1411764705882353,
 										["b"] = 0.1411764705882353,
+										["g"] = 0.1411764705882353,
+										["r"] = 0.1411764705882353,
 									},
 								},
 							},
+						},
+						["position"] = {
+							["y"] = -38,
+							["x"] = -100,
 						},
 					},
 				},
 			},
-			["SHAMAN"] = {
+			["DEATHKNIGHT"] = {
 				["types"] = {
-					["tw"] = {
-						["position"] = {
-							["y"] = -37,
-							["x"] = -101,
-						},
+					["si"] = {
 						["bars"] = {
 							["bg"] = {
 								["full"] = {
 									["color"] = {
-										["r"] = 0.1254901960784314,
-										["g"] = 0.6470588235294118,
-										["b"] = 0.796078431372549,
+										["b"] = 0.8,
+										["g"] = 0.4862745098039216,
+										["r"] = 0.4627450980392157,
 									},
 									["maxcolor"] = {
-										["g"] = 0.7843137254901961,
-										["r"] = 0.05098039215686274,
+										["g"] = 0.6274509803921569,
+										["r"] = 0.6,
 									},
 								},
 							},
 						},
-					},
-					["ls"] = {
 						["position"] = {
 							["y"] = -37,
-							["x"] = -73,
+							["x"] = -82,
 						},
 					},
-					["ws"] = {
-						["position"] = {
-							["y"] = -53,
-							["x"] = -93,
-						},
-						["bars"] = {
-							["bg"] = {
-								["full"] = {
-									["color"] = {
-										["r"] = 0.1607843137254902,
-										["g"] = 0.4313725490196079,
-										["b"] = 0.8117647058823529,
-									},
-									["maxcolor"] = {
-										["g"] = 0.5333333333333333,
-										["r"] = 0.2,
-									},
-								},
-							},
-						},
-					},
-					["mw"] = {
+					["bs"] = {
 						["position"] = {
 							["y"] = -37,
-							["x"] = -80,
+							["x"] = -70,
 						},
 					},
 				},
@@ -18117,37 +18110,30 @@ nibPointDisplayRUIDB = {
 						["configmode"] = {
 							["count"] = 4,
 						},
-						["general"] = {
-							["smarthide"] = true,
-						},
-						["position"] = {
-							["y"] = -38,
-							["x"] = -70,
-						},
 						["bars"] = {
 							["surround"] = {
 								["color"] = {
-									["b"] = 1,
-									["g"] = 1,
 									["r"] = 1,
+									["g"] = 1,
+									["b"] = 1,
 								},
 								["texture"] = "Soul_Shard_Surround",
 							},
-							["position"] = {
-								["gap"] = -14,
+							["size"] = {
+								["width"] = 32,
 							},
 							["bg"] = {
 								["full"] = {
 									["color"] = {
 										["a"] = 1,
-										["b"] = 0.04705882352941176,
-										["g"] = 0.1686274509803922,
 										["r"] = 0.9137254901960784,
+										["g"] = 0.1686274509803922,
+										["b"] = 0.04705882352941176,
 									},
 									["maxcolor"] = {
-										["b"] = 0.04705882352941176,
-										["g"] = 0.1686274509803922,
 										["r"] = 0.9137254901960784,
+										["g"] = 0.1686274509803922,
+										["b"] = 0.04705882352941176,
 									},
 									["texture"] = "Soul_Shard_BG",
 								},
@@ -18155,24 +18141,27 @@ nibPointDisplayRUIDB = {
 									["texture"] = "Soul_Shard_BG",
 								},
 							},
-							["size"] = {
-								["width"] = 32,
+							["position"] = {
+								["gap"] = -14,
 							},
+						},
+						["general"] = {
+							["smarthide"] = true,
+						},
+						["position"] = {
+							["y"] = -38,
+							["x"] = -70,
 						},
 					},
 					["mco"] = {
-						["position"] = {
-							["y"] = -55,
-							["x"] = -80,
-						},
 						["bars"] = {
 							["bg"] = {
 								["full"] = {
 									["color"] = {
 										["a"] = 0.800000011920929,
-										["b"] = 0.1215686274509804,
-										["g"] = 0.5372549019607843,
 										["r"] = 0.8431372549019608,
+										["g"] = 0.5372549019607843,
+										["b"] = 0.1215686274509804,
 									},
 									["maxcolor"] = {
 										["a"] = 0.800000011920929,
@@ -18182,34 +18171,37 @@ nibPointDisplayRUIDB = {
 								},
 							},
 						},
+						["position"] = {
+							["y"] = -55,
+							["x"] = -80,
+						},
 					},
 					["ss"] = {
-						["general"] = {
-							["smarthide"] = true,
-						},
-						["position"] = {
-							["y"] = -38,
-							["x"] = -70,
+						["combatfader"] = {
+							["enabled"] = true,
+							["opacity"] = {
+								["outofcombat"] = 0,
+							},
 						},
 						["bars"] = {
 							["surround"] = {
 								["color"] = {
-									["b"] = 1,
-									["g"] = 1,
 									["r"] = 1,
+									["g"] = 1,
+									["b"] = 1,
 								},
 								["texture"] = "Soul_Shard_Surround",
 							},
-							["position"] = {
-								["gap"] = -14,
+							["size"] = {
+								["width"] = 32,
 							},
 							["bg"] = {
 								["full"] = {
 									["color"] = {
 										["a"] = 1,
-										["b"] = 0.8274509803921568,
-										["g"] = 0.3803921568627451,
 										["r"] = 0.5294117647058824,
+										["g"] = 0.3803921568627451,
+										["b"] = 0.8274509803921568,
 									},
 									["maxcolor"] = {
 										["g"] = 0.4509803921568628,
@@ -18221,15 +18213,16 @@ nibPointDisplayRUIDB = {
 									["texture"] = "Soul_Shard_BG",
 								},
 							},
-							["size"] = {
-								["width"] = 32,
+							["position"] = {
+								["gap"] = -14,
 							},
 						},
-						["combatfader"] = {
-							["enabled"] = true,
-							["opacity"] = {
-								["outofcombat"] = 0,
-							},
+						["general"] = {
+							["smarthide"] = true,
+						},
+						["position"] = {
+							["y"] = -38,
+							["x"] = -70,
 						},
 					},
 				},
@@ -18240,6 +18233,23 @@ nibPointDisplayRUIDB = {
 						["enabled"] = false,
 					},
 					["dp"] = {
+						["bars"] = {
+							["bg"] = {
+								["full"] = {
+									["color"] = {
+										["a"] = 1,
+										["r"] = 0.8627450980392157,
+										["g"] = 0,
+										["b"] = 0,
+									},
+									["maxcolor"] = {
+										["r"] = 0.9882352941176471,
+										["g"] = 0,
+										["b"] = 0,
+									},
+								},
+							},
+						},
 						["general"] = {
 							["direction"] = {
 								["reverse"] = true,
@@ -18252,39 +18262,15 @@ nibPointDisplayRUIDB = {
 								["level"] = 4,
 							},
 						},
-						["bars"] = {
-							["bg"] = {
-								["full"] = {
-									["color"] = {
-										["a"] = 1,
-										["b"] = 0,
-										["g"] = 0,
-										["r"] = 0.8627450980392157,
-									},
-									["maxcolor"] = {
-										["b"] = 0,
-										["g"] = 0,
-										["r"] = 0.9882352941176471,
-									},
-								},
-							},
-						},
 					},
 				},
 			},
 			["HUNTER"] = {
 				["types"] = {
 					["fe"] = {
-						["position"] = {
-							["y"] = -53,
-							["x"] = -81,
-						},
 						["bars"] = {
 							["surround"] = {
 								["texture"] = "Round_Small_Surround",
-							},
-							["position"] = {
-								["gap"] = -3,
 							},
 							["bg"] = {
 								["full"] = {
@@ -18294,6 +18280,13 @@ nibPointDisplayRUIDB = {
 									["texture"] = "Round_Small_BG",
 								},
 							},
+							["position"] = {
+								["gap"] = -3,
+							},
+						},
+						["position"] = {
+							["y"] = -53,
+							["x"] = -81,
 						},
 					},
 					["rsa"] = {
@@ -18306,7 +18299,43 @@ nibPointDisplayRUIDB = {
 			},
 			["DRUID"] = {
 				["types"] = {
+					["wm"] = {
+						["bars"] = {
+							["bg"] = {
+								["full"] = {
+									["color"] = {
+										["r"] = 0.7568627450980392,
+										["g"] = 0.6,
+										["b"] = 0.1882352941176471,
+									},
+									["maxcolor"] = {
+										["g"] = 0.792156862745098,
+										["b"] = 0.2509803921568627,
+									},
+								},
+							},
+						},
+						["position"] = {
+							["y"] = -69,
+							["x"] = -76,
+						},
+					},
 					["lac"] = {
+						["bars"] = {
+							["bg"] = {
+								["full"] = {
+									["color"] = {
+										["b"] = 0,
+										["g"] = 0.3058823529411765,
+										["r"] = 0.7843137254901961,
+									},
+									["maxcolor"] = {
+										["g"] = 0.3882352941176471,
+										["b"] = 0,
+									},
+								},
+							},
+						},
 						["general"] = {
 							["direction"] = {
 								["reverse"] = true,
@@ -18316,55 +18345,15 @@ nibPointDisplayRUIDB = {
 							["y"] = -52,
 							["x"] = 70,
 						},
-						["bars"] = {
-							["bg"] = {
-								["full"] = {
-									["color"] = {
-										["r"] = 0.7843137254901961,
-										["g"] = 0.3058823529411765,
-										["b"] = 0,
-									},
-									["maxcolor"] = {
-										["g"] = 0.3882352941176471,
-										["b"] = 0,
-									},
-								},
-							},
-						},
-					},
-					["wm"] = {
-						["position"] = {
-							["y"] = -69,
-							["x"] = -76,
-						},
-						["bars"] = {
-							["bg"] = {
-								["full"] = {
-									["color"] = {
-										["b"] = 0.1882352941176471,
-										["g"] = 0.6,
-										["r"] = 0.7568627450980392,
-									},
-									["maxcolor"] = {
-										["g"] = 0.792156862745098,
-										["b"] = 0.2509803921568627,
-									},
-								},
-							},
-						},
 					},
 					["al"] = {
-						["position"] = {
-							["y"] = -84,
-							["x"] = -71,
-						},
 						["bars"] = {
 							["bg"] = {
 								["full"] = {
 									["color"] = {
-										["b"] = 0.7490196078431373,
-										["g"] = 0.4588235294117647,
 										["r"] = 0.6823529411764706,
+										["g"] = 0.4588235294117647,
+										["b"] = 0.7490196078431373,
 									},
 									["maxcolor"] = {
 										["g"] = 0.6,
@@ -18373,19 +18362,19 @@ nibPointDisplayRUIDB = {
 								},
 							},
 						},
+						["position"] = {
+							["y"] = -84,
+							["x"] = -71,
+						},
 					},
 					["lus"] = {
-						["position"] = {
-							["y"] = -54,
-							["x"] = -78,
-						},
 						["bars"] = {
 							["bg"] = {
 								["full"] = {
 									["color"] = {
-										["b"] = 0.8352941176470589,
-										["g"] = 0.4156862745098039,
 										["r"] = 0.3764705882352941,
+										["g"] = 0.4156862745098039,
+										["b"] = 0.8352941176470589,
 									},
 									["maxcolor"] = {
 										["g"] = 0.4980392156862745,
@@ -18394,92 +18383,111 @@ nibPointDisplayRUIDB = {
 								},
 							},
 						},
+						["position"] = {
+							["y"] = -54,
+							["x"] = -78,
+						},
 					},
 				},
 			},
 			["MONK"] = {
 				["types"] = {
-					["tp"] = {
-						["position"] = {
-							["y"] = -52,
-							["x"] = -66,
-						},
+					["sz"] = {
 						["bars"] = {
 							["surround"] = {
 								["texture"] = "Round_Small_Surround",
+							},
+							["bg"] = {
+								["full"] = {
+									["color"] = {
+										["a"] = 0.8200000077486038,
+										["b"] = 0.4588235294117647,
+										["r"] = 0.3490196078431372,
+									},
+									["maxcolor"] = {
+										["b"] = 0.4588235294117647,
+										["r"] = 0.3490196078431372,
+									},
+									["texture"] = "Round_Small_BG",
+								},
+								["empty"] = {
+									["texture"] = "Round_Small_BG",
+								},
+							},
+						},
+						["position"] = {
+							["y"] = -25,
+							["x"] = -77,
+						},
+					},
+					["tp"] = {
+						["bars"] = {
+							["surround"] = {
+								["texture"] = "Round_Small_Surround",
+							},
+							["bg"] = {
+								["full"] = {
+									["color"] = {
+										["a"] = 0.8200000077486038,
+										["b"] = 0.4588235294117647,
+										["r"] = 0.3490196078431372,
+									},
+									["maxcolor"] = {
+										["b"] = 0.4588235294117647,
+										["r"] = 0.3490196078431372,
+									},
+									["texture"] = "Round_Small_BG",
+								},
+								["empty"] = {
+									["texture"] = "Round_Small_BG",
+								},
 							},
 							["position"] = {
 								["gap"] = -3,
 							},
-							["bg"] = {
-								["full"] = {
-									["color"] = {
-										["a"] = 0.8200000077486038,
-										["r"] = 0.3490196078431372,
-										["b"] = 0.4588235294117647,
-									},
-									["maxcolor"] = {
-										["r"] = 0.3490196078431372,
-										["b"] = 0.4588235294117647,
-									},
-									["texture"] = "Round_Small_BG",
-								},
-								["empty"] = {
-									["texture"] = "Round_Small_BG",
-								},
-							},
+						},
+						["position"] = {
+							["y"] = -52,
+							["x"] = -66,
 						},
 					},
-					["sz"] = {
-						["position"] = {
-							["y"] = -25,
-							["x"] = -85,
-						},
+					["eb"] = {
 						["bars"] = {
 							["surround"] = {
 								["texture"] = "Round_Small_Surround",
 							},
 							["bg"] = {
 								["full"] = {
-									["color"] = {
-										["a"] = 0.8200000077486038,
-										["r"] = 0.3490196078431372,
-										["b"] = 0.4588235294117647,
-									},
-									["maxcolor"] = {
-										["r"] = 0.3490196078431372,
-										["b"] = 0.4588235294117647,
-									},
 									["texture"] = "Round_Small_BG",
 								},
 								["empty"] = {
 									["texture"] = "Round_Small_BG",
 								},
 							},
+							["position"] = {
+								["gap"] = -3,
+							},
+						},
+						["position"] = {
+							["y"] = -65,
+							["x"] = -57,
 						},
 					},
 					["vm"] = {
-						["position"] = {
-							["y"] = -52,
-							["x"] = -66,
-						},
 						["bars"] = {
 							["surround"] = {
 								["texture"] = "Round_Small_Surround",
-							},
-							["position"] = {
-								["gap"] = -3,
 							},
 							["bg"] = {
 								["full"] = {
 									["color"] = {
 										["a"] = 0.8100000023841858,
-										["r"] = 0.1490196078431373,
 										["b"] = 0.7098039215686275,
+										["r"] = 0.1490196078431373,
 									},
 									["maxcolor"] = {
-										["r"] = 0.1490196078431373,
 										["b"] = 0.7098039215686275,
+										["r"] = 0.1490196078431373,
 									},
 									["texture"] = "Round_Small_BG",
 								},
@@ -18487,64 +18495,95 @@ nibPointDisplayRUIDB = {
 									["texture"] = "Round_Small_BG",
 								},
 							},
+							["position"] = {
+								["gap"] = -3,
+							},
 						},
-						["configmode"] = {
-							["count"] = 5,
+						["position"] = {
+							["y"] = -52,
+							["x"] = -58,
 						},
 					},
 					["chi"] = {
-						["position"] = {
-							["y"] = -39,
-							["x"] = -63,
+						["configmode"] = {
+							["count"] = 5,
 						},
 						["bars"] = {
 							["bg"] = {
 								["full"] = {
 									["color"] = {
 										["a"] = 0.8100000023841858,
-										["r"] = 0.9882352941176471,
 										["b"] = 0.6980392156862745,
+										["r"] = 0.9882352941176471,
 									},
 									["maxcolor"] = {
-										["r"] = 0.9882352941176471,
 										["b"] = 0.6980392156862745,
+										["r"] = 0.9882352941176471,
 									},
 								},
 							},
 						},
-						["configmode"] = {
-							["count"] = 5,
+						["position"] = {
+							["y"] = -39,
+							["x"] = -57,
 						},
 					},
 				},
 			},
-			["DEATHKNIGHT"] = {
+			["SHAMAN"] = {
 				["types"] = {
-					["si"] = {
-						["position"] = {
-							["y"] = -37,
-							["x"] = -82,
-						},
+					["tw"] = {
 						["bars"] = {
 							["bg"] = {
 								["full"] = {
 									["color"] = {
-										["r"] = 0.4627450980392157,
-										["g"] = 0.4862745098039216,
-										["b"] = 0.8,
+										["b"] = 0.796078431372549,
+										["g"] = 0.6470588235294118,
+										["r"] = 0.1254901960784314,
 									},
 									["maxcolor"] = {
-										["g"] = 0.6274509803921569,
-										["r"] = 0.6,
+										["g"] = 0.7843137254901961,
+										["r"] = 0.05098039215686274,
 									},
 								},
 							},
 						},
-					},
-					["bs"] = {
 						["position"] = {
 							["y"] = -37,
-							["x"] = -70,
+							["x"] = -101,
+						},
+					},
+					["ls"] = {
+						["position"] = {
+							["y"] = -37,
+							["x"] = -73,
+						},
+					},
+					["ws"] = {
+						["bars"] = {
+							["bg"] = {
+								["full"] = {
+									["color"] = {
+										["b"] = 0.8117647058823529,
+										["g"] = 0.4313725490196079,
+										["r"] = 0.1607843137254902,
+									},
+									["maxcolor"] = {
+										["g"] = 0.5333333333333333,
+										["r"] = 0.2,
+									},
+								},
+							},
+						},
+						["position"] = {
+							["y"] = -53,
+							["x"] = -93,
+						},
+					},
+					["mw"] = {
+						["position"] = {
+							["y"] = -37,
+							["x"] = -80,
 						},
 					},
 				},
@@ -18556,6 +18595,18 @@ nibPointDisplayRUIDB = {
 			["GENERAL"] = {
 				["types"] = {
 					["cp"] = {
+						["general"] = {
+							["hidein"] = {
+								["vehicle"] = false,
+							},
+							["direction"] = {
+								["reverse"] = true,
+							},
+						},
+						["position"] = {
+							["y"] = -37,
+							["x"] = 76,
+						},
 						["bars"] = {
 							["bg"] = {
 								["full"] = {
@@ -18565,25 +18616,62 @@ nibPointDisplayRUIDB = {
 								},
 							},
 						},
-						["general"] = {
-							["direction"] = {
-								["reverse"] = true,
-							},
-							["hidein"] = {
-								["vehicle"] = false,
-							},
-						},
-						["position"] = {
-							["y"] = -37,
-							["x"] = 76,
-						},
 					},
 				},
 			},
 			["WARRIOR"] = {
 				["types"] = {
 					["mc"] = {
+						["position"] = {
+							["y"] = -31,
+							["x"] = -80,
+						},
 						["bars"] = {
+							["bg"] = {
+								["full"] = {
+									["color"] = {
+										["b"] = 0.1215686274509804,
+										["g"] = 0.5333333333333333,
+										["r"] = 0.807843137254902,
+									},
+									["maxcolor"] = {
+										["g"] = 0.6627450980392157,
+										["b"] = 0.1490196078431373,
+									},
+								},
+							},
+						},
+					},
+					["ts"] = {
+						["position"] = {
+							["y"] = -47,
+							["x"] = -80,
+						},
+						["bars"] = {
+							["bg"] = {
+								["full"] = {
+									["color"] = {
+										["b"] = 0.8,
+										["g"] = 0.6627450980392157,
+										["r"] = 0.2784313725490196,
+									},
+									["maxcolor"] = {
+										["g"] = 0.8352941176470589,
+										["r"] = 0.3725490196078432,
+									},
+								},
+							},
+						},
+					},
+					["tb"] = {
+						["position"] = {
+							["y"] = -31,
+							["x"] = -68,
+						},
+						["bars"] = {
+							["position"] = {
+								["gap"] = -3,
+							},
 							["bg"] = {
 								["full"] = {
 									["color"] = {
@@ -18597,31 +18685,6 @@ nibPointDisplayRUIDB = {
 									},
 								},
 							},
-						},
-						["position"] = {
-							["y"] = -31,
-							["x"] = -80,
-						},
-					},
-					["ts"] = {
-						["bars"] = {
-							["bg"] = {
-								["full"] = {
-									["color"] = {
-										["r"] = 0.2784313725490196,
-										["g"] = 0.6627450980392157,
-										["b"] = 0.8,
-									},
-									["maxcolor"] = {
-										["g"] = 0.8352941176470589,
-										["r"] = 0.3725490196078432,
-									},
-								},
-							},
-						},
-						["position"] = {
-							["y"] = -47,
-							["x"] = -80,
 						},
 					},
 					["sa"] = {
@@ -18635,39 +18698,18 @@ nibPointDisplayRUIDB = {
 							["x"] = 96,
 						},
 					},
-					["tb"] = {
-						["bars"] = {
-							["bg"] = {
-								["full"] = {
-									["color"] = {
-										["b"] = 0.1215686274509804,
-										["g"] = 0.5333333333333333,
-										["r"] = 0.807843137254902,
-									},
-									["maxcolor"] = {
-										["g"] = 0.6627450980392157,
-										["b"] = 0.1490196078431373,
-									},
-								},
-							},
-							["position"] = {
-								["gap"] = -3,
-							},
-						},
-						["position"] = {
-							["y"] = -31,
-							["x"] = -68,
-						},
-					},
 				},
 			},
 			["PALADIN"] = {
 				["types"] = {
 					["hp"] = {
+						["position"] = {
+							["y"] = -114,
+						},
 						["bars"] = {
-							["size"] = {
-								["height"] = 64,
-								["width"] = 64,
+							["custom"] = true,
+							["position"] = {
+								["gap"] = -64,
 							},
 							["bg"] = {
 								["full"] = {
@@ -18680,27 +18722,34 @@ nibPointDisplayRUIDB = {
 									},
 								},
 							},
-							["custom"] = true,
-							["position"] = {
-								["gap"] = -64,
+							["size"] = {
+								["height"] = 64,
+								["width"] = 64,
 							},
-						},
-						["position"] = {
-							["y"] = -114,
 						},
 					},
 				},
 			},
 			["MAGE"] = {
 				["types"] = {
+					["ab"] = {
+						["position"] = {
+							["y"] = -37,
+							["x"] = -99,
+						},
+					},
 					["ff"] = {
+						["position"] = {
+							["y"] = -37,
+							["x"] = -113,
+						},
 						["bars"] = {
 							["bg"] = {
 								["full"] = {
 									["color"] = {
-										["r"] = 0,
-										["g"] = 0.615686274509804,
 										["b"] = 0.7803921568627451,
+										["g"] = 0.615686274509804,
+										["r"] = 0,
 									},
 									["maxcolor"] = {
 										["g"] = 0.788235294117647,
@@ -18709,64 +18758,54 @@ nibPointDisplayRUIDB = {
 								},
 							},
 						},
-						["position"] = {
-							["y"] = -37,
-							["x"] = -113,
-						},
-					},
-					["ab"] = {
-						["position"] = {
-							["y"] = -37,
-							["x"] = -99,
-						},
 					},
 				},
 			},
 			["PRIEST"] = {
 				["types"] = {
 					["ms"] = {
+						["position"] = {
+							["y"] = -69,
+							["x"] = -91,
+						},
 						["bars"] = {
 							["bg"] = {
 								["full"] = {
 									["color"] = {
 										["a"] = 0.8100000023841858,
-										["r"] = 0.2078431372549019,
-										["g"] = 0.1411764705882353,
 										["b"] = 0.7058823529411764,
+										["g"] = 0.1411764705882353,
+										["r"] = 0.2078431372549019,
 									},
 									["maxcolor"] = {
-										["r"] = 0.2078431372549019,
-										["g"] = 0.1411764705882353,
 										["b"] = 0.7058823529411764,
+										["g"] = 0.1411764705882353,
+										["r"] = 0.2078431372549019,
 									},
 								},
 							},
 						},
-						["position"] = {
-							["y"] = -69,
-							["x"] = -91,
-						},
 					},
 					["deva"] = {
+						["position"] = {
+							["y"] = -37,
+							["x"] = -74,
+						},
 						["bars"] = {
 							["bg"] = {
 								["full"] = {
 									["color"] = {
-										["r"] = 0.5098039215686274,
-										["g"] = 0.5137254901960784,
 										["b"] = 0.7254901960784314,
+										["g"] = 0.5137254901960784,
+										["r"] = 0.5098039215686274,
 									},
 									["maxcolor"] = {
-										["r"] = 0.6470588235294118,
-										["g"] = 0.6470588235294118,
 										["b"] = 0.9215686274509803,
+										["g"] = 0.6470588235294118,
+										["r"] = 0.6470588235294118,
 									},
 								},
 							},
-						},
-						["position"] = {
-							["y"] = -37,
-							["x"] = -74,
 						},
 					},
 					["eva"] = {
@@ -18776,35 +18815,39 @@ nibPointDisplayRUIDB = {
 						},
 					},
 					["so"] = {
-						["bars"] = {
-							["bg"] = {
-								["full"] = {
-									["color"] = {
-										["r"] = 0.4156862745098039,
-										["g"] = 0.3254901960784314,
-										["b"] = 0.7215686274509804,
-									},
-									["maxcolor"] = {
-										["r"] = 0.5333333333333333,
-										["g"] = 0.4156862745098039,
-										["b"] = 0.9215686274509803,
-									},
-								},
-							},
-						},
 						["position"] = {
 							["y"] = -53,
 							["x"] = -87,
 						},
-					},
-					["ser"] = {
 						["bars"] = {
 							["bg"] = {
 								["full"] = {
 									["color"] = {
-										["r"] = 0,
-										["g"] = 0.611764705882353,
+										["b"] = 0.7215686274509804,
+										["g"] = 0.3254901960784314,
+										["r"] = 0.4156862745098039,
+									},
+									["maxcolor"] = {
+										["b"] = 0.9215686274509803,
+										["g"] = 0.4156862745098039,
+										["r"] = 0.5333333333333333,
+									},
+								},
+							},
+						},
+					},
+					["ser"] = {
+						["position"] = {
+							["y"] = -38,
+							["x"] = -120,
+						},
+						["bars"] = {
+							["bg"] = {
+								["full"] = {
+									["color"] = {
 										["b"] = 0.7568627450980392,
+										["g"] = 0.611764705882353,
+										["r"] = 0,
 									},
 									["maxcolor"] = {
 										["g"] = 0.807843137254902,
@@ -18813,74 +18856,43 @@ nibPointDisplayRUIDB = {
 								},
 								["empty"] = {
 									["color"] = {
-										["r"] = 0.1411764705882353,
-										["g"] = 0.1411764705882353,
 										["b"] = 0.1411764705882353,
+										["g"] = 0.1411764705882353,
+										["r"] = 0.1411764705882353,
 									},
 								},
 							},
-						},
-						["position"] = {
-							["y"] = -38,
-							["x"] = -120,
 						},
 					},
 				},
 			},
-			["SHAMAN"] = {
+			["DEATHKNIGHT"] = {
 				["types"] = {
-					["tw"] = {
+					["si"] = {
+						["position"] = {
+							["y"] = -37,
+							["x"] = -102,
+						},
 						["bars"] = {
 							["bg"] = {
 								["full"] = {
 									["color"] = {
-										["r"] = 0.1254901960784314,
-										["g"] = 0.6470588235294118,
-										["b"] = 0.796078431372549,
+										["b"] = 0.8,
+										["g"] = 0.4862745098039216,
+										["r"] = 0.4627450980392157,
 									},
 									["maxcolor"] = {
-										["g"] = 0.7843137254901961,
-										["r"] = 0.05098039215686274,
+										["g"] = 0.6274509803921569,
+										["r"] = 0.6,
 									},
 								},
 							},
 						},
+					},
+					["bs"] = {
 						["position"] = {
 							["y"] = -37,
-							["x"] = -121,
-						},
-					},
-					["ls"] = {
-						["position"] = {
-							["y"] = -37,
-							["x"] = -93,
-						},
-					},
-					["ws"] = {
-						["bars"] = {
-							["bg"] = {
-								["full"] = {
-									["color"] = {
-										["r"] = 0.1607843137254902,
-										["g"] = 0.4313725490196079,
-										["b"] = 0.8117647058823529,
-									},
-									["maxcolor"] = {
-										["g"] = 0.5333333333333333,
-										["r"] = 0.2,
-									},
-								},
-							},
-						},
-						["position"] = {
-							["y"] = -53,
-							["x"] = -113,
-						},
-					},
-					["mw"] = {
-						["position"] = {
-							["y"] = -37,
-							["x"] = -100,
+							["x"] = -90,
 						},
 					},
 				},
@@ -18891,41 +18903,6 @@ nibPointDisplayRUIDB = {
 						["configmode"] = {
 							["count"] = 4,
 						},
-						["bars"] = {
-							["surround"] = {
-								["color"] = {
-									["b"] = 1,
-									["g"] = 1,
-									["r"] = 1,
-								},
-								["texture"] = "Soul_Shard_Surround",
-							},
-							["size"] = {
-								["width"] = 32,
-							},
-							["bg"] = {
-								["full"] = {
-									["color"] = {
-										["a"] = 1,
-										["b"] = 0.04705882352941176,
-										["g"] = 0.1686274509803922,
-										["r"] = 0.9137254901960784,
-									},
-									["maxcolor"] = {
-										["b"] = 0.04705882352941176,
-										["g"] = 0.1686274509803922,
-										["r"] = 0.9137254901960784,
-									},
-									["texture"] = "Soul_Shard_BG",
-								},
-								["empty"] = {
-									["texture"] = "Soul_Shard_BG",
-								},
-							},
-							["position"] = {
-								["gap"] = -14,
-							},
-						},
 						["general"] = {
 							["smarthide"] = true,
 						},
@@ -18933,16 +18910,55 @@ nibPointDisplayRUIDB = {
 							["y"] = -38,
 							["x"] = -90,
 						},
+						["bars"] = {
+							["surround"] = {
+								["color"] = {
+									["r"] = 1,
+									["g"] = 1,
+									["b"] = 1,
+								},
+								["texture"] = "Soul_Shard_Surround",
+							},
+							["position"] = {
+								["gap"] = -14,
+							},
+							["bg"] = {
+								["full"] = {
+									["color"] = {
+										["a"] = 1,
+										["r"] = 0.9137254901960784,
+										["g"] = 0.1686274509803922,
+										["b"] = 0.04705882352941176,
+									},
+									["maxcolor"] = {
+										["r"] = 0.9137254901960784,
+										["g"] = 0.1686274509803922,
+										["b"] = 0.04705882352941176,
+									},
+									["texture"] = "Soul_Shard_BG",
+								},
+								["empty"] = {
+									["texture"] = "Soul_Shard_BG",
+								},
+							},
+							["size"] = {
+								["width"] = 32,
+							},
+						},
 					},
 					["mco"] = {
+						["position"] = {
+							["y"] = -55,
+							["x"] = -100,
+						},
 						["bars"] = {
 							["bg"] = {
 								["full"] = {
 									["color"] = {
 										["a"] = 0.800000011920929,
-										["r"] = 0.8431372549019608,
-										["g"] = 0.5372549019607843,
 										["b"] = 0.1215686274509804,
+										["g"] = 0.5372549019607843,
+										["r"] = 0.8431372549019608,
 									},
 									["maxcolor"] = {
 										["a"] = 0.800000011920929,
@@ -18952,37 +18968,34 @@ nibPointDisplayRUIDB = {
 								},
 							},
 						},
-						["position"] = {
-							["y"] = -55,
-							["x"] = -100,
-						},
 					},
 					["ss"] = {
-						["combatfader"] = {
-							["enabled"] = true,
-							["opacity"] = {
-								["outofcombat"] = 0,
-							},
+						["general"] = {
+							["smarthide"] = true,
+						},
+						["position"] = {
+							["y"] = -38,
+							["x"] = -90,
 						},
 						["bars"] = {
 							["surround"] = {
 								["color"] = {
-									["r"] = 1,
-									["g"] = 1,
 									["b"] = 1,
+									["g"] = 1,
+									["r"] = 1,
 								},
 								["texture"] = "Soul_Shard_Surround",
 							},
-							["size"] = {
-								["width"] = 32,
+							["position"] = {
+								["gap"] = -14,
 							},
 							["bg"] = {
 								["full"] = {
 									["color"] = {
 										["a"] = 1,
-										["r"] = 0.5294117647058824,
-										["g"] = 0.3803921568627451,
 										["b"] = 0.8274509803921568,
+										["g"] = 0.3803921568627451,
+										["r"] = 0.5294117647058824,
 									},
 									["maxcolor"] = {
 										["g"] = 0.4509803921568628,
@@ -18994,16 +19007,15 @@ nibPointDisplayRUIDB = {
 									["texture"] = "Soul_Shard_BG",
 								},
 							},
-							["position"] = {
-								["gap"] = -14,
+							["size"] = {
+								["width"] = 32,
 							},
 						},
-						["general"] = {
-							["smarthide"] = true,
-						},
-						["position"] = {
-							["y"] = -38,
-							["x"] = -90,
+						["combatfader"] = {
+							["enabled"] = true,
+							["opacity"] = {
+								["outofcombat"] = 0,
+							},
 						},
 					},
 				},
@@ -19014,23 +19026,6 @@ nibPointDisplayRUIDB = {
 						["enabled"] = false,
 					},
 					["dp"] = {
-						["bars"] = {
-							["bg"] = {
-								["full"] = {
-									["color"] = {
-										["a"] = 1,
-										["b"] = 0,
-										["g"] = 0,
-										["r"] = 0.8627450980392157,
-									},
-									["maxcolor"] = {
-										["b"] = 0,
-										["g"] = 0,
-										["r"] = 0.9882352941176471,
-									},
-								},
-							},
-						},
 						["general"] = {
 							["direction"] = {
 								["reverse"] = true,
@@ -19043,15 +19038,39 @@ nibPointDisplayRUIDB = {
 								["level"] = 4,
 							},
 						},
+						["bars"] = {
+							["bg"] = {
+								["full"] = {
+									["color"] = {
+										["a"] = 1,
+										["r"] = 0.8627450980392157,
+										["g"] = 0,
+										["b"] = 0,
+									},
+									["maxcolor"] = {
+										["r"] = 0.9882352941176471,
+										["g"] = 0,
+										["b"] = 0,
+									},
+								},
+							},
+						},
 					},
 				},
 			},
 			["HUNTER"] = {
 				["types"] = {
 					["fe"] = {
+						["position"] = {
+							["y"] = -53,
+							["x"] = -101,
+						},
 						["bars"] = {
 							["surround"] = {
 								["texture"] = "Round_Small_Surround",
+							},
+							["position"] = {
+								["gap"] = -3,
 							},
 							["bg"] = {
 								["full"] = {
@@ -19061,13 +19080,6 @@ nibPointDisplayRUIDB = {
 									["texture"] = "Round_Small_BG",
 								},
 							},
-							["position"] = {
-								["gap"] = -3,
-							},
-						},
-						["position"] = {
-							["y"] = -53,
-							["x"] = -101,
 						},
 					},
 					["rsa"] = {
@@ -19080,43 +19092,7 @@ nibPointDisplayRUIDB = {
 			},
 			["DRUID"] = {
 				["types"] = {
-					["wm"] = {
-						["bars"] = {
-							["bg"] = {
-								["full"] = {
-									["color"] = {
-										["r"] = 0.7568627450980392,
-										["g"] = 0.6,
-										["b"] = 0.1882352941176471,
-									},
-									["maxcolor"] = {
-										["g"] = 0.792156862745098,
-										["b"] = 0.2509803921568627,
-									},
-								},
-							},
-						},
-						["position"] = {
-							["y"] = -69,
-							["x"] = -96,
-						},
-					},
 					["lac"] = {
-						["bars"] = {
-							["bg"] = {
-								["full"] = {
-									["color"] = {
-										["r"] = 0.7843137254901961,
-										["g"] = 0.3058823529411765,
-										["b"] = 0,
-									},
-									["maxcolor"] = {
-										["g"] = 0.3882352941176471,
-										["b"] = 0,
-									},
-								},
-							},
-						},
 						["general"] = {
 							["direction"] = {
 								["reverse"] = true,
@@ -19126,15 +19102,55 @@ nibPointDisplayRUIDB = {
 							["y"] = -52,
 							["x"] = 90,
 						},
-					},
-					["al"] = {
 						["bars"] = {
 							["bg"] = {
 								["full"] = {
 									["color"] = {
-										["r"] = 0.6823529411764706,
-										["g"] = 0.4588235294117647,
+										["b"] = 0,
+										["g"] = 0.3058823529411765,
+										["r"] = 0.7843137254901961,
+									},
+									["maxcolor"] = {
+										["g"] = 0.3882352941176471,
+										["b"] = 0,
+									},
+								},
+							},
+						},
+					},
+					["wm"] = {
+						["position"] = {
+							["y"] = -69,
+							["x"] = -96,
+						},
+						["bars"] = {
+							["bg"] = {
+								["full"] = {
+									["color"] = {
+										["b"] = 0.1882352941176471,
+										["g"] = 0.6,
+										["r"] = 0.7568627450980392,
+									},
+									["maxcolor"] = {
+										["g"] = 0.792156862745098,
+										["b"] = 0.2509803921568627,
+									},
+								},
+							},
+						},
+					},
+					["al"] = {
+						["position"] = {
+							["y"] = -84,
+							["x"] = -91,
+						},
+						["bars"] = {
+							["bg"] = {
+								["full"] = {
+									["color"] = {
 										["b"] = 0.7490196078431373,
+										["g"] = 0.4588235294117647,
+										["r"] = 0.6823529411764706,
 									},
 									["maxcolor"] = {
 										["g"] = 0.6,
@@ -19143,19 +19159,19 @@ nibPointDisplayRUIDB = {
 								},
 							},
 						},
-						["position"] = {
-							["y"] = -84,
-							["x"] = -91,
-						},
 					},
 					["lus"] = {
+						["position"] = {
+							["y"] = -54,
+							["x"] = -98,
+						},
 						["bars"] = {
 							["bg"] = {
 								["full"] = {
 									["color"] = {
-										["r"] = 0.3764705882352941,
-										["g"] = 0.4156862745098039,
 										["b"] = 0.8352941176470589,
+										["g"] = 0.4156862745098039,
+										["r"] = 0.3764705882352941,
 									},
 									["maxcolor"] = {
 										["g"] = 0.4980392156862745,
@@ -19164,16 +19180,16 @@ nibPointDisplayRUIDB = {
 								},
 							},
 						},
-						["position"] = {
-							["y"] = -54,
-							["x"] = -98,
-						},
 					},
 				},
 			},
 			["MONK"] = {
 				["types"] = {
-					["tp"] = {
+					["sz"] = {
+						["position"] = {
+							["y"] = -22,
+							["x"] = -96,
+						},
 						["bars"] = {
 							["surround"] = {
 								["texture"] = "Round_Small_Surround",
@@ -19182,12 +19198,12 @@ nibPointDisplayRUIDB = {
 								["full"] = {
 									["color"] = {
 										["a"] = 0.8200000077486038,
-										["r"] = 0.3490196078431372,
 										["b"] = 0.4588235294117647,
+										["r"] = 0.3490196078431372,
 									},
 									["maxcolor"] = {
-										["r"] = 0.3490196078431372,
 										["b"] = 0.4588235294117647,
+										["r"] = 0.3490196078431372,
 									},
 									["texture"] = "Round_Small_BG",
 								},
@@ -19195,30 +19211,30 @@ nibPointDisplayRUIDB = {
 									["texture"] = "Round_Small_BG",
 								},
 							},
-							["position"] = {
-								["gap"] = -3,
-							},
 						},
+					},
+					["tp"] = {
 						["position"] = {
 							["y"] = -52,
 							["x"] = -66,
 						},
-					},
-					["sz"] = {
 						["bars"] = {
 							["surround"] = {
 								["texture"] = "Round_Small_Surround",
+							},
+							["position"] = {
+								["gap"] = -3,
 							},
 							["bg"] = {
 								["full"] = {
 									["color"] = {
 										["a"] = 0.8200000077486038,
-										["r"] = 0.3490196078431372,
 										["b"] = 0.4588235294117647,
+										["r"] = 0.3490196078431372,
 									},
 									["maxcolor"] = {
-										["r"] = 0.3490196078431372,
 										["b"] = 0.4588235294117647,
+										["r"] = 0.3490196078431372,
 									},
 									["texture"] = "Round_Small_BG",
 								},
@@ -19227,29 +19243,48 @@ nibPointDisplayRUIDB = {
 								},
 							},
 						},
-						["position"] = {
-							["y"] = -25,
-							["x"] = -85,
-						},
 					},
-					["vm"] = {
-						["configmode"] = {
-							["count"] = 5,
+					["eb"] = {
+						["position"] = {
+							["y"] = -65,
+							["x"] = -73,
 						},
 						["bars"] = {
 							["surround"] = {
 								["texture"] = "Round_Small_Surround",
+							},
+							["bg"] = {
+								["full"] = {
+									["texture"] = "Round_Small_BG",
+								},
+								["empty"] = {
+									["texture"] = "Round_Small_BG",
+								},
+							},
+						},
+					},
+					["vm"] = {
+						["position"] = {
+							["y"] = -52,
+							["x"] = -77,
+						},
+						["bars"] = {
+							["surround"] = {
+								["texture"] = "Round_Small_Surround",
+							},
+							["position"] = {
+								["gap"] = -3,
 							},
 							["bg"] = {
 								["full"] = {
 									["color"] = {
 										["a"] = 0.8100000023841858,
-										["r"] = 0.1490196078431373,
 										["b"] = 0.7098039215686275,
+										["r"] = 0.1490196078431373,
 									},
 									["maxcolor"] = {
-										["r"] = 0.1490196078431373,
 										["b"] = 0.7098039215686275,
+										["r"] = 0.1490196078431373,
 									},
 									["texture"] = "Round_Small_BG",
 								},
@@ -19257,22 +19292,22 @@ nibPointDisplayRUIDB = {
 									["texture"] = "Round_Small_BG",
 								},
 							},
-							["position"] = {
-								["gap"] = -3,
-							},
 						},
-						["position"] = {
-							["y"] = -52,
-							["x"] = -66,
+						["configmode"] = {
+							["count"] = 5,
 						},
 					},
 					["chi"] = {
-						["configmode"] = {
-							["count"] = 5,
+						["position"] = {
+							["y"] = -37,
+							["x"] = -69,
 						},
 						["bars"] = {
 							["surround"] = {
 								["texture"] = "Round_Larger_Surround",
+							},
+							["position"] = {
+								["gap"] = 1,
 							},
 							["bg"] = {
 								["full"] = {
@@ -19285,44 +19320,67 @@ nibPointDisplayRUIDB = {
 									["texture"] = "Round_Larger_BG",
 								},
 							},
-							["position"] = {
-								["gap"] = 1,
-							},
 						},
-						["position"] = {
-							["y"] = -37,
-							["x"] = -68,
+						["configmode"] = {
+							["count"] = 5,
 						},
 					},
 				},
 			},
-			["DEATHKNIGHT"] = {
+			["SHAMAN"] = {
 				["types"] = {
-					["si"] = {
+					["tw"] = {
+						["position"] = {
+							["y"] = -37,
+							["x"] = -121,
+						},
 						["bars"] = {
 							["bg"] = {
 								["full"] = {
 									["color"] = {
-										["r"] = 0.4627450980392157,
-										["g"] = 0.4862745098039216,
-										["b"] = 0.8,
+										["b"] = 0.796078431372549,
+										["g"] = 0.6470588235294118,
+										["r"] = 0.1254901960784314,
 									},
 									["maxcolor"] = {
-										["g"] = 0.6274509803921569,
-										["r"] = 0.6,
+										["g"] = 0.7843137254901961,
+										["r"] = 0.05098039215686274,
 									},
 								},
 							},
 						},
+					},
+					["ls"] = {
 						["position"] = {
 							["y"] = -37,
-							["x"] = -102,
+							["x"] = -93,
 						},
 					},
-					["bs"] = {
+					["ws"] = {
+						["position"] = {
+							["y"] = -53,
+							["x"] = -113,
+						},
+						["bars"] = {
+							["bg"] = {
+								["full"] = {
+									["color"] = {
+										["b"] = 0.8117647058823529,
+										["g"] = 0.4313725490196079,
+										["r"] = 0.1607843137254902,
+									},
+									["maxcolor"] = {
+										["g"] = 0.5333333333333333,
+										["r"] = 0.2,
+									},
+								},
+							},
+						},
+					},
+					["mw"] = {
 						["position"] = {
 							["y"] = -37,
-							["x"] = -90,
+							["x"] = -100,
 						},
 					},
 				},
@@ -19330,6 +19388,7 @@ nibPointDisplayRUIDB = {
 		},
 	},
 }
+
 
 
 
@@ -19811,6 +19870,9 @@ RavenDB = {
 			},
 			["PlayerDebuffExclusions"] = {
 				["#36032"] = true,
+				["#124273"] = true,
+				["#124274"] = true,
+				["#124275"] = true,
 			},
 			["PlayerExclusions"] = {
 				["#12329"] = true,
