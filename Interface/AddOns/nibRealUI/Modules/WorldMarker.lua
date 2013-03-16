@@ -9,8 +9,8 @@ local LoggedIn = false
 
 local WMF = {}
 
-local ButtonWidthExpanded = 20
-local ButtonWidthCollapsed = 4
+local ButtonWidthExpanded = 18
+local ButtonWidthCollapsed = 3
 
 local MarkerColors = {
 	[1] = {0.2, 	0.2,		1,		0.8},
@@ -103,18 +103,22 @@ function WorldMarker:UpdateVisibility()
 		-- Mod needs refreshing
 		WorldMarker:RefreshMod()
 	else
-		if ( (GetNumGroupMembers() > 0) and UnitIsGroupLeader("player") and nibRealUI:GetModuleEnabled(MODNAME) ) then
-		-- if 1 == 1 then
-			-- Viable to use World Markers
-			if ( not WMF.Parent:IsShown() and not InCombatLockdown() ) then
-				-- Show only if out of combat
-				WMF.Parent:Show()
-			end
+		if InCombatLockdown() then
+			NeedRefreshed = true
 		else
-			-- Not viable to use World Markers
-			if ( WMF.Parent:IsShown() and not InCombatLockdown() ) then
-				-- Hide if out of combat
-				WMF.Parent:Hide()
+			if ( (GetNumGroupMembers() > 0) and (UnitIsGroupLeader("player") or UnitIsGroupAssistant("player")) and nibRealUI:GetModuleEnabled(MODNAME) ) then
+			-- if 1 == 1 then
+				-- Viable to use World Markers
+				if ( not WMF.Parent:IsShown() and not InCombatLockdown() ) then
+					-- Show only if out of combat
+					WMF.Parent:Show()
+				end
+			else
+				-- Not viable to use World Markers
+				if ( WMF.Parent:IsShown() and not InCombatLockdown() ) then
+					-- Hide if out of combat
+					WMF.Parent:Hide()
+				end
 			end
 		end
 	end

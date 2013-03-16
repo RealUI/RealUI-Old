@@ -22429,6 +22429,31 @@ RavenDB = {
 			},
 			["muteSFX"] = true,
 			["Conditions"] = {
+				["ROGUE"] = {
+					["Lethal Poison Missing"] = {
+						["tests"] = {
+							["Player Status"] = {
+								["checkLevel"] = true,
+								["inArena"] = true,
+								["inRaid"] = 0,
+								["inGroup"] = true,
+								["inInstance"] = true,
+								["inBattleground"] = true,
+							},
+						},
+					},
+					["Non-Lethal Poison Missing"] = {
+						["tests"] = {
+							["Player Status"] = {
+								["checkLevel"] = true,
+								["inArena"] = true,
+								["inInstance"] = true,
+								["inGroup"] = true,
+								["inBattleground"] = true,
+							},
+						},
+					},
+				},
 				["PALADIN"] = {
 					["Cleanse (Poison)"] = {
 						["tests"] = {

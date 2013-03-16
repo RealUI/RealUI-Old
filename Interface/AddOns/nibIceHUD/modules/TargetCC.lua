@@ -45,6 +45,8 @@ local StunCCList = {
 	46968,
 	-- Gnaw
 	47481,
+    -- Fists of Fury
+    113656,
 }
 
 local IncapacitateCCList = {
@@ -88,6 +90,8 @@ local IncapacitateCCList = {
 	6358,
 	-- Turn Evil
 	10326,
+    -- Paralysis
+    115078,
 }
 
 local FearCCList = {
@@ -142,6 +146,8 @@ local SilenceCCList = {
 	64058,
 	-- Elemental Disruption (weapon enchant)
 	74208,
+    -- Grapple Weapon
+    117368,
 }
 
 local RootCCList = {

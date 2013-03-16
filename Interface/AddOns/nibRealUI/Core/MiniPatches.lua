@@ -1186,5 +1186,78 @@ function nibRealUI:MiniPatch(ver)
 				MSBTProfiles_SavedVars["profiles"]["RealUI-HR"]["triggers"]["MSBT_TRIGGER_VITAL_MISTS"] = {["disabled"] = true}
 			end
 		end
+		
+	elseif ver == "73r22" then
+		if IsAddOnLoaded("Raven") and RavenDB then
+			if not RavenDB["profiles"]["RealUI"]["Conditions"] then
+				RavenDB["profiles"]["RealUI"]["Conditions"] = {}
+			end
+			if RavenDB["profiles"]["RealUI"]["Conditions"] then
+				RavenDB["profiles"]["RealUI"]["Conditions"]["ROGUE"] = {
+					["Lethal Poison Missing"] = {
+						["associatedSpell"] = "#2823",
+						["tests"] = {
+							["Player Status"] = {
+								["inInstance"] = true,
+								["isMounted"] = 0,
+								["inGroup"] = true,
+								["inBattleground"] = true,
+								["checkLevel"] = true,
+								["inArena"] = true,
+								["inCombat"] = 0,
+							},
+						},
+					},
+					["Non-Lethal Poison Missing"] = {
+						["associatedSpell"] = "#5761",
+						["tests"] = {
+							["Player Status"] = {
+								["inInstance"] = true,
+								["isMounted"] = 0,
+								["inGroup"] = true,
+								["checkLevel"] = true,
+								["inArena"] = true,
+								["inBattleground"] = true,
+							},
+						},
+					},
+				}
+			end
+			if not RavenDB["profiles"]["RealUI-HR"]["Conditions"] then
+				RavenDB["profiles"]["RealUI-HR"]["Conditions"] = {}
+			end
+			if RavenDB["profiles"]["RealUI-HR"]["Conditions"] then
+				RavenDB["profiles"]["RealUI-HR"]["Conditions"]["ROGUE"] = {
+					["Lethal Poison Missing"] = {
+						["associatedSpell"] = "#2823",
+						["tests"] = {
+							["Player Status"] = {
+								["inInstance"] = true,
+								["isMounted"] = 0,
+								["inGroup"] = true,
+								["inBattleground"] = true,
+								["checkLevel"] = true,
+								["inArena"] = true,
+								["inCombat"] = 0,
+							},
+						},
+					},
+					["Non-Lethal Poison Missing"] = {
+						["associatedSpell"] = "#5761",
+						["tests"] = {
+							["Player Status"] = {
+								["inInstance"] = true,
+								["isMounted"] = 0,
+								["inGroup"] = true,
+								["checkLevel"] = true,
+								["inArena"] = true,
+								["inBattleground"] = true,
+							},
+						},
+					},
+				}
+			end
+		end
+		
 	end
 end

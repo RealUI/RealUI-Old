@@ -17,6 +17,7 @@ local bgDuration, bgEndTime
 
 local bgState = 0
 local bgSwingCount = 0
+local bgTimerActive = false
 local lastTargetGUID = nil
 local hasTargetChanged = false
 
@@ -78,6 +79,11 @@ function BanditsGuile.prototype:TargetChanged()
 	
 	if UnitExists("target") then
 		hasTargetChanged = true
+		if not UnitAffectingCombat("player") then
+			-- Reset BG bar if changing targets and out of combat
+			bgState = 0
+			bgSwingCount = 0
+		end
 	end
 	
 	self:UpdateSwingBar()
@@ -245,6 +251,7 @@ function BanditsGuile.prototype:UpdateBanditsGuile(event, unit, fromUpdate)
 
 		local swingText = (bgState < 3) and " (" .. bgSwingCount .. ")"
 		self:SetBottomText1(bgText[bgState] .. " " .. tostring(floor(remaining or 0)) .. ((self.moduleSettings.swingAlpha ~= 0) and swingText or ""))
+		bgTimerActive = true
 	else
 		self:UpdateBar(0, "BanditsGuile1")
 		if self.bIsVisible then
@@ -253,6 +260,7 @@ function BanditsGuile.prototype:UpdateBanditsGuile(event, unit, fromUpdate)
 		if not self.moduleSettings.alwaysFullAlpha then
 			self:Show(false)
 		end
+		bgTimerActive = false
 	end
 end
 
@@ -262,7 +270,7 @@ function BanditsGuile.prototype:UpdateSwingBar(event, unit)
 	end
 	
 	-- player doesn't want to show the percent of max or the alpha is zeroed out, so don't bother with the swing bar
-	if not self.moduleSettings.showAsPercentOfMax or self.moduleSettings.swingAlpha == 0 or (bgSwingCount == 0 and not self:IsVisible()) or (bgState == 3) then
+	if not(self.moduleSettings.showAsPercentOfMax) or (self.moduleSettings.swingAlpha == 0) or (bgSwingCount == 0 and not self:IsVisible()) or (bgState == 3) then
 		self.swingFrame:Hide()
 		return
 	end
