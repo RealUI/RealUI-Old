@@ -350,16 +350,13 @@ function nibMinimap:UpdateInfoPosition()
 		
 		if (IsAddOnLoaded("Blizzard_CompactRaidFrames")) and (mm_point == "TOPLEFT") then
 			numText = numText + 1
-			ofsy = yofs + yadj
 			CRFM = _G["CompactRaidFrameManager"]--:HookScript("OnEvent", function(self)
-				--print("yofs: "..yofs)
 				--print("scale: "..scale)
 				--print("numText: "..numText)
 				--local ofsy = -41.5 - 149.4 * scale
 				nibMinimap:AdjustCRFManager(CRFM, scale, mm_point, numText)
 			--end)
 			hooksecurefunc("CompactRaidFrameManager_Toggle", function(self)
-				--local ofsy = yofs * (14 / abs((db.information.position.y + 11) * ymulti - (5 * scale * ymulti)))
 				nibMinimap:AdjustCRFManager(self, scale, mm_point, numText)
 			end)
 		end
@@ -825,46 +822,36 @@ function nibMinimap:QueueTimeFrequentCheck()
 end
 
 ---- Dungeon Difficulty ----
-local selectedRaidDifficulty
-local allowedRaidDifficulty
 local IS_GUILD_GROUP
 function nibMinimap:DungeonDifficultyUpdate()
 	-- If in a Party/Raid then show Dungeon Difficulty text
 	MMFrames.info.dungeondifficulty.text:SetText("")
-	local _, instanceType, difficulty, _, maxPlayers, playerDifficulty, isDynamicInstance = GetInstanceInfo()
+	local _, instanceType, difficulty, _, maxPlayers = GetInstanceInfo()
 	if (IS_GUILD_GROUP or ((instanceType == "party" or instanceType == "raid") and not (difficulty == 1 and maxPlayers == 5))) then
 		-- Get Dungeon Difficulty
 		local isHeroic = false
-		if (instanceType == "party" and difficulty == 2) then
-			isHeroic = true
-		elseif instanceType == "raid" then
-			if isDynamicInstance then
-				selectedRaidDifficulty = difficulty
-				if selectedRaidDifficulty == 1 then
-					allowedRaidDifficulty = 3
-				elseif selectedRaidDifficulty == 2 then
-					allowedRaidDifficulty = 4
-				elseif selectedRaidDifficulty == 3 then
-					allowedRaidDifficulty = 1
-				elseif selectedRaidDifficulty == 4 then
-					allowedRaidDifficulty = 2
-				elseif (selectedRaidDifficulty == 5 ) then -- Temporary fix. 5 here means LFR and we don't want to allow any other raid difficulty in that case. It's also not heroic (it's a 25 normal). -Should fix in 5.1.0 cleanup.
-					allowedRaidDifficulty = nil;
-					isHeroic = false;
-				end
-				if (allowedRaidDifficulty) then 
-					allowedRaidDifficulty = "RAID_DIFFICULTY"..(allowedRaidDifficulty);
-				end
-			end
-			if difficulty > 2 then
-				isHeroic = true
-			end
+		--[[ difficulty values:
+		0 = None
+		1 = Normal
+		2 = Heroic
+		3 = 10 Player
+		4 = 25 Player
+		5 = 10 Player (Heroic)
+		6 = 25 Player (Heroic)
+		7 = Looking For Raid
+		8 = Challenge Mode
+		9 = 40 Player ]]--
+		if difficulty == 2 or difficulty == 8 then  -- party
+			isHeroic = true;
+		elseif difficulty == 5 or difficulty == 6 then  -- raid
+			isHeroic = true;
+		else
+			isHeroic = false;
 		end
-		
+
 		-- Set Text
-		local DifficultyText = ""
-		if isHeroic then DifficultyText = "+" end
-		DifficultyText = DifficultyText..tostring(maxPlayers)
+		local DifficultyText = tostring(maxPlayers)
+		if isHeroic then DifficultyText = DifficultyText.."+" end
 		if IS_GUILD_GROUP then DifficultyText = DifficultyText.." ("..GUILD..")" end
 		
 		MMFrames.info.dungeondifficulty.text:SetText("D: "..DifficultyText)
@@ -1572,6 +1559,8 @@ local function SetUpMinimapFrame()
 	MiniMapInstanceDifficulty.Show = function() end
 	GuildInstanceDifficulty:Hide()
 	GuildInstanceDifficulty.Show = function() end
+	MiniMapChallengeMode:Hide()
+	MiniMapChallengeMode.Show = function() end
 	
 	MiniMapWorldMapButton:Hide()
 	
