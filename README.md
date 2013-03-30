@@ -5,6 +5,7 @@ Addon Update Exclusions
 -----------------------
 The following addons have been modified to suit RealUI and should not be updated:
 
+  - alDamageMeter
   - Aurora
   - BugSack
   - cargBags_Nivaya
