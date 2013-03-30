@@ -1,4 +1,3 @@
-local L = LibStub("AceLocale-3.0"):GetLocale("nibIceHUD", false)
 local EclipseBar = IceCore_CreateClass(IceBarElement)
 local mass
 
@@ -49,13 +48,9 @@ function EclipseBar.prototype:GetDefaultSettings()
 	defaults.textVisible.lower = false
 	defaults.offset = -1
 	defaults.enabled = true
-	defaults.usesDogTagStrings = false
 	defaults.textVerticalOffset = 13
 	defaults.textHorizontalOffset = 12
-	defaults.shouldAnimate = false
-	defaults.hideAnimationSettings = true
 	defaults.lockUpperTextAlpha = false
-	defaults.bHideMarkerSettings = true
 	defaults.markers[1] = {
 		position = 0,
 		color = {r=1, g=0, b=0, a=1},
@@ -67,11 +62,6 @@ function EclipseBar.prototype:GetDefaultSettings()
 end
 
 function EclipseBar.prototype:Enable(core)
---[[	if self.moduleSettings.rotateBar then
-		self.moduleSettings.rotateBar = false
-		self:ResetRotation()
-	end]]
-
 	EclipseBar.super.prototype.Enable(self, core)
 
 	self:RegisterEvent("UPDATE_SHAPESHIFT_FORM", "UpdateShown")
@@ -128,9 +118,11 @@ end
 
 function EclipseBar.prototype:UpdateShown()
 	local form = GetShapeshiftFormID()
-
+	local Inst, InstType = IsInInstance()
 	if form == MOONKIN_FORM or not form then
-		if ( (GetSpecialization() == 1) and UnitExists("target") and UnitCanAttack("player", "target") and not(UnitIsDeadOrGhost("target")) and not(UnitInVehicle("player")) ) then
+		if ( (GetSpecialization() == 1 and not(UnitInVehicle("player")) ) and 
+			( (Inst and (InstType == "pvp" or InstType == "arena")) or 
+			(UnitExists("target") and UnitCanAttack("player", "target") and not(UnitIsDeadOrGhost("target"))) ) ) then
 			self:Show(true)
 		else
 			self:Show(false)

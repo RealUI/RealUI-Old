@@ -1,4 +1,3 @@
-local L = LibStub("AceLocale-3.0"):GetLocale("nibIceHUD", false)
 local SliceAndDice = IceCore_CreateClass(IceUnitBar)
 
 local nibIceHUD = _G.nibIceHUD
@@ -19,8 +18,6 @@ function SliceAndDice.prototype:init()
 	SliceAndDice.super.prototype.init(self, "SliceAndDice", "player")
 
 	self.moduleSettings = {}
-	self.moduleSettings.desiredLerpTime = 0
-	self.moduleSettings.shouldAnimate = false
 
 	self:SetDefaultColor("SliceAndDice", 0.75, 1, 0.2)
 	self:SetDefaultColor("SliceAndDicePotential", 1, 1, 1)
@@ -69,8 +66,6 @@ function SliceAndDice.prototype:GetDefaultSettings()
 	local settings = SliceAndDice.super.prototype.GetDefaultSettings(self)
 
 	settings["enabled"] = true
-	settings["shouldAnimate"] = false
-	settings["desiredLerpTime"] = nil
 	settings["lowThreshold"] = 0
 	settings["side"] = IceCore.Side.Right
 	settings["offset"] = 6
@@ -80,8 +75,6 @@ function SliceAndDice.prototype:GetDefaultSettings()
 	settings["lockLowerFontAlpha"] = false
 	settings["lowerTextString"] = ""
 	settings["lowerTextVisible"] = false
-	settings["hideAnimationSettings"] = true
-	settings["bAllowExpand"] = true
 
 	return settings
 end
@@ -96,8 +89,8 @@ function SliceAndDice.prototype:GetOptions()
 	opts["showAsPercentOfMax"] =
 	{
 		type = 'toggle',
-		name = L["Show bar as % of maximum"],
-		desc = L["If this is checked, then the SnD buff time shows as a percent of the maximum attainable (taking set bonuses and talents into account). Otherwise, the bar always goes from full to empty when applying SnD no matter the duration."],
+		name = "Show bar as % of maximum",
+		desc = "If this is checked, then the SnD buff time shows as a percent of the maximum attainable (taking set bonuses and talents into account). Otherwise, the bar always goes from full to empty when applying SnD no matter the duration.",
 		get = function()
 			return self.moduleSettings.showAsPercentOfMax
 		end,
@@ -112,8 +105,8 @@ function SliceAndDice.prototype:GetOptions()
 	opts["durationAlpha"] =
 	{
 		type = "range",
-		name = L["Potential SnD time bar alpha"],
-		desc = L["What alpha value to use for the bar that displays how long your SnD will last if you activate it. (This gets multiplied by the bar's current alpha to stay in line with the bar on top of it)"],
+		name = "Potential SnD time bar alpha",
+		desc = "What alpha value to use for the bar that displays how long your SnD will last if you activate it. (This gets multiplied by the bar's current alpha to stay in line with the bar on top of it)",
 		min = 0,
 		max = 100,
 		step = 5,
@@ -152,20 +145,6 @@ function SliceAndDice.prototype:CreateDurationBar()
 	-- force update the bar...if we're in here, then either the UI was just loaded or the player is jacking with the options.
 	-- either way, make sure the duration bar matches accordingly
 	self:UpdateDurationBar()
-end
-
-function SliceAndDice.prototype:RotateHorizontal()
-	SliceAndDice.super.prototype.RotateHorizontal(self)
-
-	self:RotateFrame(self.durationFrame)
-end
-
-function SliceAndDice.prototype:ResetRotation()
-	SliceAndDice.super.prototype.ResetRotation(self)
-
-	if self.durationFrame.anim then
-		self.durationFrame.anim:Stop()
-	end
 end
 
 -- 'Protected' methods --------------------------------------------------------

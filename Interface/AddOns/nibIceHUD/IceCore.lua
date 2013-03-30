@@ -1,4 +1,3 @@
-local L = LibStub("AceLocale-3.0"):GetLocale("nibIceHUD", false)
 local mass
 
 if IsAddOnLoaded("Massive") then
@@ -54,36 +53,40 @@ function IceCore.prototype:SetupDefaults()
 	self.defaults = {
 		profile = {
 			enable = true,
-			gap = 150,
-			verticalPos = -110,
-			horizontalPos = 0,
-			scale = 0.9,
+			gap1 = 114,
+			gap2 = 114,
 
 			alphaooc = 0.3,
-			alphaic = 0.6,
+			alphaic = 0.8,
 			alphaTarget = 0.4,
-			alphaNotFull = 0.4,
+			alphaNotFull = 0.7,
 
-			alphaoocbg = 0.2,
-			alphaicbg = 0.3,
-			alphaTargetbg = 0.25,
-			alphaNotFullbg = 0.25,
+			alphaoocbg = 0.25,
+			alphaicbg = 0.5,
+			alphaTargetbg = 0.4,
+			alphaNotFullbg = 0.4,
 
 			backgroundToggle = false,
 			backgroundColor = {r = 0.5, g = 0.5, b = 0.5},
 			barTexture = "Bar",
 			barPreset = defaultPreset,
-			fontFamily = "Arial Narrow",
-			fontFamilyLarge = "Arial Narrow",
-			fontSize = 8,
-			fontSizeLarge = 16,
-			fontOutline = "MONOCHROMEOUTLINE",
+			
+			fontFamily1 = "pixel_lr_small",
+			fontFamilyLarge1 = "pixel_lr_small",
+			fontSize1 = 8,
+			fontSizeLarge1 = 16,
+			fontOutline1 = "MONOCHROMEOUTLINE",
+			
+			fontFamily2 = "pixel_hr_small",
+			fontFamilyLarge2 = "pixel_lr_small",
+			fontSize2 = 8,
+			fontSizeLarge2 = 16,
+			fontOutline2 = "MONOCHROMEOUTLINE",
+			
 			debug = false,
 
 			barBlendMode = "BLEND",
 			barBgBlendMode = "BLEND",
-
-			updatePeriod = 0.033,
 		},
 		global = {
 			lastRunVersion = 0,
@@ -152,18 +155,8 @@ function IceCore.prototype:Enable(userToggle)
 			newBar = IceCustomBar:new()
 			newBar.elementName = k
 			self:AddNewDynamicModule(newBar, true)
-		elseif self.settings.modules[k].customBarType == "CD" and IceCustomCDBar ~= nil then
-			local newCD
-			newCD = IceCustomCDBar:new()
-			newCD.elementName = k
-			self:AddNewDynamicModule(newCD, true)
 		end
 	end
-
-	if self.settings.updatePeriod == nil then
-		self.settings.updatePeriod = 0.033
-	end
-	self.settings.updatePeriod = nibIceHUD:Clamp(self.settings.updatePeriod, 0, 0.067)
 
 	-- make sure the module options are re-generated. if we switched profiles, we don't want the old elements hanging around
 	if nibIceHUD.optionsLoaded then
@@ -299,13 +292,11 @@ function IceCore.prototype:IsEnabled()
 end
 
 function IceCore.prototype:DrawFrame()
+	local layout = RealUI.db.char.resolution
 	self.nibIceHUDFrame:SetFrameStrata("BACKGROUND")
-	self.nibIceHUDFrame:SetWidth(self.settings.gap)
+	self.nibIceHUDFrame:SetWidth(self.settings["gap"..layout])
 	self.nibIceHUDFrame:SetHeight(20)
-
-	self:SetScale(self.settings.scale)
-
-	self.nibIceHUDFrame:SetPoint("CENTER", self.settings.horizontalPos, self.settings.verticalPos)
+	self.nibIceHUDFrame:SetPoint("CENTER", _G.RealUIPositionersHuD, "CENTER", 0, 0)
 	self.nibIceHUDFrame:Show()
 end
 
@@ -322,20 +313,42 @@ function IceCore.prototype:GetModuleOptions()
 
 	options["aaaClickPlus"] = {
 		type = 'description',
-		fontSize = 'large',
-		name = L["Click the + next to |cffffdc42Module Settings|r to see the available modules that you can tweak.\n\nAlso notice that some modules have a + next to them. This will open up additional settings such as text tweaks and icon tweaks on that module."],
+		fontSize = 'medium',
+		name = "Click the + next to |cffffdc42Module Settings|r to see the available modules that you can tweak.\n\nAlso notice that some modules have a + next to them. This will open up additional settings such as text tweaks and icon tweaks on that module.",
 		order = 1
 	}
-
+	
+	options["ClassAuras"] = {
+		type = 'group',
+		name = "Class Auras",
+		args = {},
+	}
+	for k,v in pairs(RAID_CLASS_COLORS) do
+		options["ClassAuras"].args[k] = {
+			type = 'group',
+			name = k,
+			args = {},
+		}
+	end
 	for i = 1, table.getn(self.elements) do
 		local modName = self.elements[i]:GetElementName()
 		local opt = self.elements[i]:GetOptions()
-		options[modName] =  {
-			type = 'group',
-			desc = L["Module options"],
-			name = modName,
-			args = opt
-		}
+		local class = self.elements[i].moduleSettings.class
+		if class and class ~= "ALL" then
+			options["ClassAuras"].args[class].args[modName] = {
+				type = 'group',
+				desc = "Module options",
+				name = modName,
+				args = opt
+			}
+		else
+			options[modName] =  {
+				type = 'group',
+				desc = "Module options",
+				name = modName,
+				args = opt
+			}
+		end
 	end
 
 	return options
@@ -379,42 +392,13 @@ end
 -- Configuration methods                                                     --
 -------------------------------------------------------------------------------
 
-function IceCore.prototype:GetVerticalPos()
-	return self.settings.verticalPos
+function IceCore.prototype:GetGap(layout)
+	return self.settings["gap"..layout]
 end
-function IceCore.prototype:SetVerticalPos(value)
-	self.settings.verticalPos = value
-	self.nibIceHUDFrame:ClearAllPoints()
-	self.nibIceHUDFrame:SetPoint("CENTER", self.settings.horizontalPos, self.settings.verticalPos)
-end
-
-function IceCore.prototype:GetHorizontalPos()
-	return self.settings.horizontalPos
-end
-function IceCore.prototype:SetHorizontalPos(value)
-	self.settings.horizontalPos = value
-	self.nibIceHUDFrame:ClearAllPoints()
-	self.nibIceHUDFrame:SetPoint("CENTER", self.settings.horizontalPos, self.settings.verticalPos)
-end
-
-
-function IceCore.prototype:GetGap()
-	return self.settings.gap
-end
-function IceCore.prototype:SetGap(value)
-	self.settings.gap = value
-	self.nibIceHUDFrame:SetWidth(self.settings.gap)
+function IceCore.prototype:SetGap(value, layout)
+	self.settings["gap"..layout] = value
+	self.nibIceHUDFrame:SetWidth(self.settings["gap"..layout])
 	self:Redraw()
-end
-
-
-function IceCore.prototype:GetScale()
-	return self.settings.scale
-end
-function IceCore.prototype:SetScale(value)
-	self.settings.scale = value
-
-	self.nibIceHUDFrame:SetScale(value)
 end
 
 
@@ -573,43 +557,43 @@ function IceCore.prototype:ChangePreset(value)
 end
 
 
-function IceCore.prototype:GetFontSizeLarge()
-	return self.settings.fontSizeLarge
+function IceCore.prototype:GetFontSizeLarge(layout)
+	return self.settings["fontSizeLarge"..layout]
 end
-function IceCore.prototype:SetFontSizeLarge(value)
-	self.settings.fontSizeLarge = value
+function IceCore.prototype:SetFontSizeLarge(value, layout)
+	self.settings["fontSizeLarge"..layout] = value
 	self:Redraw()
 end
 
-function IceCore.prototype:GetFontSize()
-	return self.settings.fontSize
+function IceCore.prototype:GetFontSize(layout)
+	return self.settings["fontSize"..layout]
 end
-function IceCore.prototype:SetFontSize(value)
-	self.settings.fontSize = value
+function IceCore.prototype:SetFontSize(value, layout)
+	self.settings["fontSize"..layout] = value
 	self:Redraw()
 end
 
-function IceCore.prototype:GetFontOutline()
-	return self.settings.fontOutline
+function IceCore.prototype:GetFontOutline(layout)
+	return self.settings["fontOutline"..layout]
 end
-function IceCore.prototype:SetFontOutline(value)
-	self.settings.fontOutline = value
+function IceCore.prototype:SetFontOutline(value, layout)
+	self.settings["fontOutline"..layout] = value
 	self:Redraw()
 end
 
-function IceCore.prototype:GetFontFamilyLarge()
-	return self.settings.fontFamilyLarge
+function IceCore.prototype:GetFontFamilyLarge(layout)
+	return self.settings["fontFamilyLarge"..layout]
 end
-function IceCore.prototype:SetFontFamilyLarge(value)
-	self.settings.fontFamilyLarge = value
+function IceCore.prototype:SetFontFamilyLarge(value, layout)
+	self.settings["fontFamilyLarge"..layout] = value
 	self:Redraw()
 end
 
-function IceCore.prototype:GetFontFamily()
-	return self.settings.fontFamily
+function IceCore.prototype:GetFontFamily(layout)
+	return self.settings["fontFamily"..layout]
 end
-function IceCore.prototype:SetFontFamily(value)
-	self.settings.fontFamily = value
+function IceCore.prototype:SetFontFamily(value, layout)
+	self.settings["fontFamily"..layout] = value
 	self:Redraw()
 end
 
@@ -676,14 +660,6 @@ function IceCore.prototype:ConfigModeToggle(bWantConfig)
 	end
 end
 
-function IceCore.prototype:UpdatePeriod()
-	return self.settings.updatePeriod
-end
-
-function IceCore.prototype:SetUpdatePeriod(period)
-	self.settings.updatePeriod = period
-end
-
 -- For elements that want to receive updates even when hidden
 local FastModules = {
 	["CastBar"] = true,
@@ -692,7 +668,7 @@ local FastModules = {
 	["FocusCast"] = true,
 }
 function IceCore.prototype:HandleUpdates()
-	local update_period = self.settings.updatePeriod
+	local update_period = 0.033
 	local elapsed = 1 / GetFramerate()
 	
 	self.update_elapsed = self.update_elapsed + elapsed

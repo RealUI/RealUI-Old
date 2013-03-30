@@ -1,4 +1,3 @@
-local L = LibStub("AceLocale-3.0"):GetLocale("nibIceHUD", false)
 local mass
 
 if IsAddOnLoaded("Massive") then
@@ -19,11 +18,6 @@ IceBarElement.prototype.CurrScale = 1
 IceBarElement.prototype.Markers = {}
 IceBarElement.prototype.IsBarElement = true -- cheating to avoid crawling up the 'super' references looking for this class. see IceCore.lua
 IceBarElement.prototype.bTreatEmptyAsFull = false
-
-local lastMarkerPosConfig = 50
-local lastMarkerColorConfig = {r=1, b=0, g=0, a=1}
-local lastMarkerHeightConfig = 6
-local lastEditMarkerConfig = 1
 
 -- Constructor --
 function IceBarElement.prototype:init(name, ...)
@@ -108,7 +102,7 @@ function IceBarElement.prototype:GetDefaultSettings()
 	settings["lowerText"] = ''
 	settings["textVerticalOffset"] = -1
 	settings["textHorizontalOffset"] = 0
-	settings["myTagVersion"] = 2
+	settings["myTagVersion"] = 3
 	settings["widthModifier"] = 0
 	settings["barVerticalOffset"] = 0
 	settings["barHorizontalOffset"] = 0
@@ -138,14 +132,14 @@ do
 
 		opts["headerLookAndFeel"] = {
 			type = 'header',
-			name = L["Look and Feel"],
+			name = "Look and Feel",
 			order = 29.9
 		}
 		opts["side"] =
 		{
 			type = 'select',
-			name = L["Side"],
-			desc = L["Side of the HUD where the bar appears"],
+			name = "Side",
+			desc = "Side of the HUD where the bar appears",
 			get = function(info)
 				if (self.moduleSettings.side == IceCore.Side.Right) then
 					return 2
@@ -171,8 +165,8 @@ do
 		opts["offset"] =
 		{
 			type = 'range',
-			name = L["Offset"],
-			desc = L["Offset of the bar"],
+			name = "Offset",
+			desc = "Offset of the bar",
 			min = -10,
 			max = 15,
 			step = 1,
@@ -192,8 +186,8 @@ do
 		opts["scale"] =
 		{
 			type = 'range',
-			name = L["Scale"],
-			desc = L["Scale of the bar"],
+			name = "Scale",
+			desc = "Scale of the bar",
 			min = 0.1,
 			max = 2,
 			step = 0.005,
@@ -214,8 +208,8 @@ do
 		opts["reverse"] =
 		{
 			type = 'toggle',
-			name = L["Reverse direction"],
-			desc = L["Controls what it means for the bar to be filled. A normal bar will grow larger as the value grows from 0% to 100%. A reversed bar will shrink as the value grows from 0% to 100%."],
+			name = "Reverse direction",
+			desc = "Controls what it means for the bar to be filled. A normal bar will grow larger as the value grows from 0% to 100%. A reversed bar will shrink as the value grows from 0% to 100%.",
 			get = function()
 				return self.moduleSettings.reverse
 			end,
@@ -233,8 +227,8 @@ do
 		opts["widthModifier"] =
 		{
 			type = 'range',
-			name = L["Bar width modifier"],
-			desc = L["Make this bar wider or thinner than others"],
+			name = "Bar width modifier",
+			desc = "Make this bar wider or thinner than others",
 			min = -80,
 			max = 80,
 			step = 1,
@@ -254,8 +248,8 @@ do
 		opts["barVerticalOffset"] =
 		{
 			type='range',
-			name = L["Bar vertical offset"],
-			desc = L["Adjust the vertical placement of this bar"],
+			name = "Bar vertical offset",
+			desc = "Adjust the vertical placement of this bar",
 			min = -400,
 			max = 600,
 			step = 0.5,
@@ -275,8 +269,8 @@ do
 		opts["barHorizontalAdjust"] =
 		{
 			type='range',
-			name = L["Bar horizontal adjust"],
-			desc = L["This is a per-pixel horizontal adjustment. You should probably use the 'offset' setting above as it is designed to snap bars together. This may be used in the case of a horizontal bar needing to be positioned outside the normal bar locations."],
+			name = "Bar horizontal adjust",
+			desc = "This is a per-pixel horizontal adjustment. You should probably use the 'offset' setting above as it is designed to snap bars together. This may be used in the case of a horizontal bar needing to be positioned outside the normal bar locations.",
 			min = -400,
 			max = 600,
 			step = 1,
@@ -296,15 +290,15 @@ do
 		opts["textSettings"] =
 		{
 			type = 'group',
-			name = "|c"..self.configColor..L["Text Settings"].."|r",
-			desc = L["Settings related to texts"],
+			name = "|c"..self.configColor.."Text Settings".."|r",
+			desc = "Settings related to texts",
 			order = 32,
 			args = {
 
 				lockUpperFontAlpha = {
 					type = "toggle",
-					name = L["Lock Upper Text Alpha"],
-					desc = L["Locks upper text alpha to 100%"],
+					name = "Lock Upper Text Alpha",
+					desc = "Locks upper text alpha to 100%",
 					get = function()
 						return self.moduleSettings.lockUpperTextAlpha
 					end,
@@ -320,8 +314,8 @@ do
 
 				lockLowerFontAlpha = {
 					type = "toggle",
-					name = L["Lock Lower Text Alpha"],
-					desc = L["Locks lower text alpha to 100%"],
+					name = "Lock Lower Text Alpha",
+					desc = "Locks lower text alpha to 100%",
 					get = function()
 						return self.moduleSettings.lockLowerTextAlpha
 					end,
@@ -337,8 +331,8 @@ do
 
 				upperTextVisible = {
 					type = 'toggle',
-					name = L["Upper text visible"],
-					desc = L["Toggle upper text visibility"],
+					name = "Upper text visible",
+					desc = "Toggle upper text visibility",
 					get = function()
 						return self.moduleSettings.textVisible['upper']
 					end,
@@ -354,8 +348,8 @@ do
 
 				lowerTextVisible = {
 					type = 'toggle',
-					name = L["Lower text visible"],
-					desc = L["Toggle lower text visibility"],
+					name = "Lower text visible",
+					desc = "Toggle lower text visibility",
 					get = function()
 						return self.moduleSettings.textVisible['lower']
 					end,
@@ -371,8 +365,8 @@ do
 
 				upperTextString = {
 					type = 'input',
-					name = L["Upper Text"],
-					desc = L["The upper text to display under this bar.\n\nNOTE: this text block does NOT support DogTags.\n\nRemember to press ENTER/Accept after filling out this box or it will not save."],
+					name = "Upper Text",
+					desc = "The upper text to display under this bar.\n\nNOTE: this text block does NOT support DogTags.\n\nRemember to press ENTER/Accept after filling out this box or it will not save.",
 					hidden = true,
 					get = function()
 						return self.moduleSettings.upperText
@@ -390,8 +384,8 @@ do
 
 				lowerTextString = {
 					type = 'input',
-					name = L["Lower Text"],
-					desc = L["The lower text to display under this bar.\n\nNOTE: this text block does NOT support DogTags.\n\nRemember to press ENTER/Accept after filling out this box or it will not save."],
+					name = "Lower Text",
+					desc = "The lower text to display under this bar.\n\nNOTE: this text block does NOT support DogTags.\n\nRemember to press ENTER/Accept after filling out this box or it will not save.",
 					hidden = true,
 					get = function()
 						return self.moduleSettings.lowerText
@@ -409,8 +403,8 @@ do
 
 				forceJustifyText = {
 					type = 'select',
-					name = L["Force Text Justification"],
-					desc = L["This sets the alignment for the text on this bar"],
+					name = "Force Text Justification",
+					desc = "This sets the alignment for the text on this bar",
 					get = function(info)
 						return self.moduleSettings.forceJustifyText
 					end,
@@ -427,8 +421,8 @@ do
 
 				textVerticalOffset = {
 					type = 'range',
-					name = L["Text Vertical Offset"],
-					desc = L["Offset of the text from the bar vertically (negative is farther below)"],
+					name = "Text Vertical Offset",
+					desc = "Offset of the text from the bar vertically (negative is farther below)",
 					min = -450,
 					max = 350,
 					step = 1,
@@ -447,8 +441,8 @@ do
 
 				textHorizontalOffset = {
 					type = 'range',
-					name = L["Text Horizontal Offset"],
-					desc = L["Offset of the text from the bar horizontally"],
+					name = "Text Horizontal Offset",
+					desc = "Offset of the text from the bar horizontally",
 					min = -350,
 					max = 350,
 					step = 1,
@@ -467,148 +461,16 @@ do
 
 				textHeader = {
 					type = 'header',
-					name = L["Upper Text"],
+					name = "Upper Text",
 					order = 12,
 				},
 				textHeader2 = {
 					type = 'header',
-					name = L["Lower Text"],
+					name = "Lower Text",
 					order = 13.999,
 				},
 			}
 		}
-		if not self.moduleSettings.bHideMarkerSettings then
-			opts["markerSettings"] =
-			{
-				type = 'group',
-				name = "|c"..self.configColor..L["Marker Settings"].."|r",
-				desc = L["Create or remove markers at various points along the bar here"],
-				order = 32,
-				args = {
-					markerPos = {
-						type = "range",
-						min = 0,
-						max = 100,
-						step = 1,
-						name = L["Position (percent)"],
-						desc = L["This specifies at what point along the bar this marker should be displayed. Remember to press ENTER when you are done typing.\n\nExample: if you wanted a marker at 40 energy and you have 100 total energy, then this would be 40. If you want it at 40 energy and you have 120 total energy, then this would be 33."],
-						get = function()
-							return lastMarkerPosConfig
-						end,
-						set = function(info, v)
-							lastMarkerPosConfig = math.floor(v)
-						end,
-						disabled = function()
-							return not self.moduleSettings.enabled
-						end,
-						order = 20,
-					},
-					markerColor = {
-						type = "color",
-						name = L["Color"],
-						desc = L["The color this marker should be."],
-						width = "half",
-						get = function()
-							return lastMarkerColorConfig.r, lastMarkerColorConfig.g, lastMarkerColorConfig.b, lastMarkerColorConfig.a
-						end,
-						set = function(info, r, g, b, a)
-							lastMarkerColorConfig = {r=r, g=g, b=b, a=a}
-						end,
-						disabled = function()
-							return not self.moduleSettings.enabled
-						end,
-						order = 30,
-					},
-					markerHeight = {
-						type = "range",
-						min = 1,
-						step = 1,
-						max = self.settings.barHeight,
-						name = L["Height"],
-						desc = L["The height of the marker on the bar."],
-						get = function()
-							return lastMarkerHeightConfig
-						end,
-						set = function(info, v)
-							lastMarkerHeightConfig = v
-						end,
-						disabled = function()
-							return not self.moduleSettings.enabled
-						end,
-						order = 40,
-					},
-					createMarker = {
-						type = "execute",
-						name = L["Create marker"],
-						desc = L["Creates a new marker with the chosen settings."],
-						width = "full",
-						func = function()
-							self:AddNewMarker(lastMarkerPosConfig / 100, lastMarkerColorConfig, lastMarkerHeightConfig)
-						end,
-						disabled = function()
-							return not self.moduleSettings.enabled
-						end,
-						order = 10,
-					},
-					listMarkers = {
-						type = "select",
-						name = L["Edit Marker"],
-						desc = L["Choose a marker to edit. This will place the marker's settings in the fields above here."],
-						values = function()
-							local retval = {}
-							if self.moduleSettings.markers then
-								for i=1, #self.moduleSettings.markers do
-									retval[i] = ((self.moduleSettings.markers[i].position) * 100) .. "%"
-								end
-							end
-							return retval
-						end,
-						get = function(info)
-							return lastEditMarkerConfig
-						end,
-						set = function(info, v)
-							lastEditMarkerConfig = v
-							lastMarkerPosConfig = (self.moduleSettings.markers[v].position) * 100
-							local color = self.moduleSettings.markers[v].color
-							lastMarkerColorConfig = {r=color.r, g=color.g, b=color.b, a=color.a}
-							lastMarkerHeightConfig = self.moduleSettings.markers[v].height
-						end,
-						disabled = function()
-							return not self.moduleSettings.enabled
-						end,
-						order = 50,
-					},
-					editMarker = {
-						type = "execute",
-						name = L["Update"],
-						desc = L["This will update the marker selected in the 'edit marker' box with the values specified."],
-						func = function()
-							if self.moduleSettings.markers and lastEditMarkerConfig <= #self.moduleSettings.markers then
-								self:EditMarker(lastEditMarkerConfig, lastMarkerPosConfig / 100, lastMarkerColorConfig, lastMarkerHeightConfig)
-							end
-						end,
-						disabled = function()
-							return not self.moduleSettings.enabled
-						end,
-						order = 60,
-					},
-					deleteMarker = {
-						type = "execute",
-						name = L["Remove"],
-						desc = L["This will remove the marker selected in the 'edit marker' box. This action is irreversible."],
-						func = function()
-							if self.moduleSettings.markers and lastEditMarkerConfig <= #self.moduleSettings.markers then
-								self:RemoveMarker(lastEditMarkerConfig)
-							end
-						end,
-						disabled = function()
-							return not self.moduleSettings.enabled
-						end,
-						order = 70,
-					},
-				}
-			}
-		end
 		return opts
 	end
 end
@@ -1119,18 +981,6 @@ end
 
 function IceBarElement.prototype:MyOnUpdate()
 	self:SetScale(self.DesiredScale)
-end
-
-function IceBarElement.prototype:ResetRotation()
-	if self.frame.anim then
-		self.frame.anim:Stop()
-	end
-	if self.barFrame.anim then
-		self.barFrame.anim:Stop()
-	end
-	for i=1, #self.Markers do
-		self.Markers[i]:Show()
-	end
 end
 
 function IceBarElement.prototype:NotifyBarOverrideChanged()

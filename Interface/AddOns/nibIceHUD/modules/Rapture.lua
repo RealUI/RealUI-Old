@@ -1,4 +1,3 @@
-local L = LibStub("AceLocale-3.0"):GetLocale("nibIceHUD", false)
 local Rapture = IceCore_CreateClass(IceUnitBar)
 local mass
 
@@ -17,8 +16,6 @@ function Rapture.prototype:init()
 	Rapture.super.prototype.init(self, "Rapture", "player")
 
 	self.moduleSettings = {}
-	self.moduleSettings.desiredLerpTime = 0
-	self.moduleSettings.shouldAnimate = false
 
 	self:SetDefaultColor("Rapture", 1, 1, 1)
 
@@ -50,16 +47,12 @@ function Rapture.prototype:GetDefaultSettings()
 	local settings = Rapture.super.prototype.GetDefaultSettings(self)
 
 	settings["enabled"] = true
-	settings["shouldAnimate"] = false
-	settings["desiredLerpTime"] = nil
-	settings["lowThreshold"] = 0
 	settings["side"] = IceCore.Side.Right
 	settings["offset"] = 6
 	settings["upperText"]="Ra"
 	settings["lockLowerFontAlpha"] = false
 	settings["lowerTextString"] = ""
 	settings["lowerTextVisible"] = false
-	settings["hideAnimationSettings"] = true
 
 	return settings
 end

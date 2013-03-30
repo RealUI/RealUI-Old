@@ -61,6 +61,7 @@ C.modules["Blizzard_GuildBankUI"] = function()
 				_G["GuildBankColumn"..i.."Button"..j]:SetPushedTexture("")
 				_G["GuildBankColumn"..i.."Button"..j.."IconTexture"]:SetTexCoord(.08, .92, .08, .92)
 				_G["GuildBankColumn"..i.."Button"..j.."NormalTexture"]:SetAlpha(0)
+				F.CreateBD(_G["GuildBankColumn"..i.."Button"..j])
 			end
 		end
 

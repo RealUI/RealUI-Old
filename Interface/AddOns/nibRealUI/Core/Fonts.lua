@@ -60,6 +60,11 @@ local function GetOptions()
 				name = "Note2: You will need to reload the UI (/rl) for changes to take effect.",
 				order = 23,
 			},
+			gap1 = {
+				name = " ",
+				type = "description",
+				order = 24,
+			},
 			standard = {
 				name = "Standard",
 				type = "group",
@@ -90,6 +95,11 @@ local function GetOptions()
 						order = 20,
 					},
 				},
+			},
+			gap2 = {
+				name = " ",
+				type = "description",
+				order = 31,
 			},
 			lowres = {
 				name = "Low Res",
@@ -188,6 +198,11 @@ local function GetOptions()
 						},
 					},
 				},
+			},
+			gap3 = {
+				name = " ",
+				type = "description",
+				order = 41,
 			},
 			highres = {
 				name = "High Res",
@@ -298,57 +313,106 @@ function Fonts:UpdateUIFonts2()
 	local resSizeExtra = db.resolution[ndbc.resolution].size
 	local adjSize = db.standard.sizeadjust
 	
+	RaidWarningFrame.slot1:SetFont(font, 20, "OUTLINE")
+	RaidWarningFrame.slot2:SetFont(font, 20, "OUTLINE")
+	RaidBossEmoteFrame.slot1:SetFont(font, 20, "OUTLINE")
+	RaidBossEmoteFrame.slot2:SetFont(font, 20, "OUTLINE")
+	
 	STANDARD_TEXT_FONT = font
 	UNIT_NAME_FONT     = font
 	DAMAGE_TEXT_FONT   = font
 	NAMEPLATE_FONT     = font
 
 	-- Base fonts
-	NumberFont_OutlineThick_Mono_Small:SetFont(font, 12 + resSizeExtra + adjSize, "OUTLINE")
-	NumberFont_Outline_Huge:SetFont(font, 30 + adjSize, "OUTLINE")
-	NumberFont_Outline_Large:SetFont(font, 16 + adjSize, "OUTLINE")
-	NumberFont_Outline_Med:SetFont(font, 14 + adjSize, "OUTLINE")
-	NumberFont_Shadow_Med:SetFont(font, 14 + adjSize)
-	NumberFont_Shadow_Small:SetFont(font, 12 + resSizeExtra + adjSize)
-	QuestFont:SetFont(font, 12 + resSizeExtra + adjSize)
-	QuestFont_Shadow_Small:SetFont(font, 14 + adjSize)
-	QuestFont_Large:SetFont(font, 15 + adjSize)
-	QuestFont_Shadow_Huge:SetFont(font, 17 + adjSize)
-	QuestFont_Super_Huge:SetFont(font, 22 + adjSize)
-	SubSpellFont:SetFont(font, 10 + resSizeExtra + adjSize)
-	FriendsFont_UserText:SetFont(font, 11 + resSizeExtra + adjSize)
+	AchievementFont_Small:SetFont(font, 10 + resSizeExtra + adjSize)
+	AchievementFont_Small:SetShadowColor(0, 0, 0)
+	AchievementFont_Small:SetShadowOffset(1, -1)
+	CoreAbilityFont:SetFont(font, 32)
+	CoreAbilityFont:SetShadowColor(0, 0, 0)
+	CoreAbilityFont:SetShadowOffset(1, -1)
+	DestinyFontHuge:SetFont(font, 32)
+	DestinyFontHuge:SetShadowColor(0, 0, 0)
+	DestinyFontHuge:SetShadowOffset(1, -1)
+	DestinyFontLarge:SetFont(font, 18)
+	DestinyFontLarge:SetShadowColor(0, 0, 0)
+	DestinyFontLarge:SetShadowOffset(1, -1)
+	FriendsFont_Normal:SetFont(font, 11 + resSizeExtra + adjSize)
+	FriendsFont_Small:SetFont(font, 10 + resSizeExtra + adjSize)
+	FriendsFont_Large:SetFont(font, 13)
+	FriendsFont_UserText:SetFont(font, 10 + resSizeExtra + adjSize)
+	GameFont_Gigantic:SetFont(font, 32)
+	GameTooltipHeader:SetFont(font, 13)
+	GameTooltipHeader:SetShadowColor(0, 0, 0)
+	GameTooltipHeader:SetShadowOffset(1, -1)
+	InvoiceFont_Small:SetFont(font, 10 + resSizeExtra + adjSize)
+	InvoiceFont_Small:SetShadowColor(0, 0, 0)
+	InvoiceFont_Small:SetShadowOffset(1, -1)
+	InvoiceFont_Med:SetFont(font, 11 + resSizeExtra + adjSize)
+	InvoiceFont_Med:SetShadowColor(0, 0, 0)
+	InvoiceFont_Med:SetShadowOffset(1, -1)
+	MailFont_Large:SetFont(font, 15)
+	NumberFont_OutlineThick_Mono_Small:SetFont(font, 10 + resSizeExtra + adjSize, "OUTLINE")
+	NumberFont_Outline_Huge:SetFont(font, 30, "OUTLINE")
+	NumberFont_Outline_Large:SetFont(font, 15, "OUTLINE")
+	NumberFont_Outline_Med:SetFont(font, 12, "OUTLINE")
+	NumberFont_Shadow_Med:SetFont(font, 12)
+	NumberFont_Shadow_Small:SetFont(font, 10 + resSizeExtra + adjSize)
+	QuestFont_Shadow_Small:SetFont(font, 10)
+	QuestFont_Large:SetFont(font, 12)
+	QuestFont_Large:SetShadowColor(0, 0, 0)
+	QuestFont_Large:SetShadowOffset(1, -1)
+	QuestFont_Shadow_Huge:SetFont(font, 15)
+	QuestFont_Super_Huge:SetFont(font, 24)
+	QuestFont_Super_Huge:SetShadowColor(0, 0, 0)
+	QuestFont_Super_Huge:SetShadowOffset(1, -1)
+	ReputationDetailFont:SetFont(font, 10 + resSizeExtra + adjSize)
+	SpellFont_Small:SetFont(font, 10 + resSizeExtra + adjSize)
+	SpellFont_Small:SetShadowColor(0, 0, 0)
+	SpellFont_Small:SetShadowOffset(1, -1)
 	SystemFont_InverseShadow_Small:SetFont(font, 10 + resSizeExtra + adjSize)
-	SystemFont_Large:SetFont(font, 15 + adjSize)
-	SystemFont_Huge1:SetFont(font, 18 + adjSize)
+	GameFontNormal:SetFont(font, 11 + resSizeExtra + adjSize)
+	SystemFont_Large:SetFont(font, 15)
+	SystemFont_Large:SetShadowColor(0, 0, 0)
+	SystemFont_Large:SetShadowOffset(1, -1)
+	SystemFont_Huge1:SetFont(font, 20)
+	SystemFont_Huge1:SetShadowColor(0, 0, 0)
+	SystemFont_Huge1:SetShadowOffset(1, -1)
 	SystemFont_Med1:SetFont(font, 11 + resSizeExtra + adjSize)
+	SystemFont_Med1:SetShadowColor(0, 0, 0)
+	SystemFont_Med1:SetShadowOffset(1, -1)
 	SystemFont_Med2:SetFont(font, 12 + resSizeExtra + adjSize)
+	SystemFont_Med2:SetShadowColor(0, 0, 0)
+	SystemFont_Med2:SetShadowOffset(1, -1)
 	SystemFont_Med3:SetFont(font, 13 + resSizeExtra + adjSize)
-	SystemFont_OutlineThick_WTF:SetFont(font, 28 + adjSize, "THICKOUTLINE")
-	SystemFont_OutlineThick_Huge2:SetFont(font, 20 + adjSize, "THICKOUTLINE")
-	SystemFont_OutlineThick_Huge4:SetFont(font, 24 + adjSize, "THICKOUTLINE")
+	SystemFont_Med3:SetShadowColor(0, 0, 0)
+	SystemFont_Med3:SetShadowOffset(1, -1)
+	SystemFont_OutlineThick_WTF:SetFont(font, 32, "THICKOUTLINE")
+	SystemFont_OutlineThick_Huge2:SetFont(font, 22, "THICKOUTLINE")
+	SystemFont_OutlineThick_Huge4:SetFont(font, 26, "THICKOUTLINE")
 	SystemFont_Outline_Small:SetFont(font, 10 + resSizeExtra + adjSize, "OUTLINE")
-	SystemFont_Outline:SetFont(font, 13 + resSizeExtra + adjSize, "OUTLINE")
-	SystemFont_Shadow_Large:SetFont(font, 15 + adjSize)
+	SystemFont_Outline:SetFont(font, 11 + resSizeExtra + adjSize, "OUTLINE")
+	SystemFont_Shadow_Large:SetFont(font, 15)
+	SystemFont_Shadow_Large_Outline:SetFont(font, 15)
 	SystemFont_Shadow_Med1:SetFont(font, 11 + resSizeExtra + adjSize)
+	SystemFont_Shadow_Med1_Outline:SetFont(font, 11 + resSizeExtra + adjSize, "OUTLINE")
 	SystemFont_Shadow_Med2:SetFont(font, 12 + resSizeExtra + adjSize)
 	SystemFont_Shadow_Med3:SetFont(font, 13 + resSizeExtra + adjSize)
-	SystemFont_Shadow_Outline_Huge2:SetFont(font, 20 + adjSize, "OUTLINE")
-	SystemFont_Shadow_Huge1:SetFont(font, 18 + adjSize)
-	SystemFont_Shadow_Huge3:SetFont(font, 23 + adjSize)
+	SystemFont_Shadow_Outline_Huge2:SetFont(font, 22, "OUTLINE")
+	SystemFont_Shadow_Huge1:SetFont(font, 20)
+	SystemFont_Shadow_Huge3:SetFont(font, 25)
 	SystemFont_Shadow_Small:SetFont(font, 10 + resSizeExtra + adjSize)
 	SystemFont_Small:SetFont(font, 10 + resSizeExtra + adjSize)
+	SystemFont_Small:SetShadowColor(0, 0, 0)
+	SystemFont_Small:SetShadowOffset(1, -1)
 	SystemFont_Tiny:SetFont(font, 9 + resSizeExtra + adjSize)
-	SpellFont_Small:SetFont(font, 10 + resSizeExtra + adjSize)
-	Tooltip_Med:SetFont(font, 12 + resSizeExtra + adjSize)
-	Tooltip_Small:SetFont(font, 10 + resSizeExtra + adjSize)
-	CombatTextFont:SetFont(font, 25 + adjSize)
-	MailFont_Large:SetFont(font, 15 + adjSize)
-	InvoiceFont_Small:SetFont(font, 10 + resSizeExtra + adjSize)
-	InvoiceFont_Med:SetFont(font, 12 + resSizeExtra + adjSize)
-	ReputationDetailFont:SetFont(font, 10 + resSizeExtra + adjSize)
-	AchievementFont_Small:SetFont(font, 10 + resSizeExtra + adjSize)
-	GameFont_Gigantic:SetFont(font, 28 + adjSize)
-	ErrorFont:SetFont(font, 13 + resSizeExtra + adjSize, "OUTLINE")
+	SystemFont_Tiny:SetShadowColor(0, 0, 0)
+	SystemFont_Tiny:SetShadowOffset(1, -1)
+	Tooltip_Med:SetFont(font, 11 + resSizeExtra + adjSize)
+	Tooltip_Med:SetShadowColor(0, 0, 0)
+	Tooltip_Med:SetShadowOffset(1, -1)
+	Tooltip_Small:SetFont(font, 9 + resSizeExtra + adjSize)
+	Tooltip_Small:SetShadowColor(0, 0, 0)
+	Tooltip_Small:SetShadowOffset(1, -1)
 end
 
 function Fonts:UpdateUIFonts()
@@ -362,6 +426,11 @@ function Fonts:UpdateUIFonts()
 	RaidBossEmoteFrame.slot1:SetFont(font, 20 + adjSize, "OUTLINE")
 	RaidBossEmoteFrame.slot2:SetFont(font, 20 + adjSize, "OUTLINE")
 
+	STANDARD_TEXT_FONT = font
+	UNIT_NAME_FONT     = font
+	DAMAGE_TEXT_FONT   = font
+	NAMEPLATE_FONT     = font
+	
 	UIErrorsFrame:SetFont(font, 12 + resSizeExtra + adjSize, "OUTLINE")
 	UIErrorsFrame:SetShadowOffset(0, 0)
 
@@ -400,6 +469,7 @@ function Fonts:OnInitialize()
 	nibRealUI.font.pixel2 = nibRealUI:GetFont("large")
 	nibRealUI.font.pixeltiny = {nibRealUI:RetrieveFont(nibRealUI.media.font.pixel.lowres.small[1]), nibRealUI.media.font.pixel.lowres.small[2], nibRealUI.media.font.pixel.lowres.small[3]}
 	nibRealUI.font.pixellarge = {nibRealUI:RetrieveFont(nibRealUI.media.font.pixel.highres.small[1]), nibRealUI.media.font.pixel.highres.small[2], nibRealUI.media.font.pixel.highres.small[3]}
+	
 	RealUIFontTiny = nibRealUI.font.pixeltiny
 	RealUIFontLarge = nibRealUI.font.pixellarge
 	

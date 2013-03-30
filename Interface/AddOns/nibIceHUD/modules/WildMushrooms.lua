@@ -1,4 +1,3 @@
-local L = LibStub("AceLocale-3.0"):GetLocale("nibIceHUD", false)
 local ShroomBar = IceCore_CreateClass(IceUnitBar)
 
 local nibIceHUD = _G.nibIceHUD
@@ -49,9 +48,7 @@ function ShroomBar.prototype:GetDefaultSettings()
 	defaults.textVerticalOffset = 0
 	defaults.textHorizontalOffset = 0
 	defaults.lockUpperTextAlpha = true
-	defaults.bHideMarkerSettings = true
 	defaults.showAsPercentOfMax = true
-	defaults.bAllowExpand = false
 	defaults.upperText = "WM"
 
 	return defaults

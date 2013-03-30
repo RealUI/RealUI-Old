@@ -34,20 +34,20 @@ C.media = {
 	["arrowRight"] = "Interface\\AddOns\\Aurora\\media\\arrow-right-active",
 	["backdrop"] = "Interface\\ChatFrame\\ChatFrameBackground",
 	["checked"] = "Interface\\AddOns\\Aurora\\media\\CheckButtonHilight",
-	["font"] = "Interface\\AddOns\\Aurora\\media\\font.ttf",
+	["font"] = "Interface\\AddOns\\nibRealUI\\Fonts\\standard.ttf",
 	["glow"] = "Interface\\AddOns\\Aurora\\media\\glow",
 }
 
 C.defaults = {
-	["alpha"] = 0.7,
+	["alpha"] = 0.8,
 	["bags"] = true,
 	["chatBubbles"] = false,
-	["enableFont"] = true,
-	["gradientAlpha"] = {"VERTICAL", 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3},
+	["enableFont"] = false,
+	["gradientAlpha"] = {"VERTICAL", 0.02, 0.02, 0.02, 0.7, 0.02, 0.02, 0.02, 0.7},
 	["loot"] = true,
 	["useCustomColour"] = false,
 		["customColour"] = {r = 1, g = 1, b = 1},
-	["map"] = true,
+	["map"] = false,
 	["qualityColour"] = true,
 	["tooltips"] = true,
 }
@@ -72,8 +72,8 @@ F.CreateBD = function(f, a)
 		edgeFile = C.media.backdrop,
 		edgeSize = 1,
 	})
-	f:SetBackdropColor(0, 0, 0, a or alpha)
-	f:SetBackdropBorderColor(0, 0, 0)
+	f:SetBackdropColor(0.025, 0.025, 0.025, a or alpha)
+	f:SetBackdropBorderColor(0.025, 0.025, 0.025)
 	if not a then tinsert(C.frames, f) end
 end
 
@@ -85,7 +85,7 @@ F.CreateBG = function(frame)
 	bg:SetPoint("TOPLEFT", frame, -1, 1)
 	bg:SetPoint("BOTTOMRIGHT", frame, 1, -1)
 	bg:SetTexture(C.media.backdrop)
-	bg:SetVertexColor(0, 0, 0)
+	bg:SetVertexColor(0.025, 0.025, 0.025)
 
 	return bg
 end
@@ -100,7 +100,7 @@ F.CreateSD = function(parent, size, r, g, b, alpha, offset)
 	})
 	sd:SetPoint("TOPLEFT", parent, -sd.size - 1 - sd.offset, sd.size + 1 + sd.offset)
 	sd:SetPoint("BOTTOMRIGHT", parent, sd.size + 1 + sd.offset, -sd.size - 1 - sd.offset)
-	sd:SetBackdropBorderColor(r or 0, g or 0, b or 0)
+	sd:SetBackdropBorderColor(r or 0.025, g or 0.025, b or 0.025)
 	sd:SetAlpha(alpha or 1)
 end
 
@@ -4005,7 +4005,7 @@ Delay:SetScript("OnEvent", function()
 		end
 
 		local getBackdropColor = function()
-			return 0, 0, 0, .85
+			return 0, 0, 0, .8
 		end
 
 		local getBackdropBorderColor = function()
@@ -4020,7 +4020,7 @@ Delay:SetScript("OnEvent", function()
 			bg:SetPoint("BOTTOMRIGHT")
 			bg:SetFrameLevel(t:GetFrameLevel()-1)
 			bg:SetBackdrop(backdrop)
-			bg:SetBackdropColor(0, 0, 0, .85)
+			bg:SetBackdropColor(0, 0, 0, .8)
 			bg:SetBackdropBorderColor(0, 0, 0)
 
 			t.GetBackdrop = getBackdrop

@@ -99,21 +99,26 @@ end
 
 -- Toggle visibility of World Marker frame
 function WorldMarker:UpdateVisibility()
+	-- print("uv", 1)
 	if ( (NeedRefreshed or not FramesCreated) and (not InCombatLockdown()) ) then
 		-- Mod needs refreshing
 		WorldMarker:RefreshMod()
-	else
+		-- print("uv", 2)
+	else	
+		-- print("uv", 3)
 		if InCombatLockdown() then
 			NeedRefreshed = true
 		else
+			-- print("uv", 4)
 			if ( (GetNumGroupMembers() > 0) and (UnitIsGroupLeader("player") or UnitIsGroupAssistant("player")) and nibRealUI:GetModuleEnabled(MODNAME) ) then
-			-- if 1 == 1 then
+				-- print("uv", 5)
 				-- Viable to use World Markers
 				if ( not WMF.Parent:IsShown() and not InCombatLockdown() ) then
 					-- Show only if out of combat
 					WMF.Parent:Show()
 				end
 			else
+				-- print("uv", 6)
 				-- Not viable to use World Markers
 				if ( WMF.Parent:IsShown() and not InCombatLockdown() ) then
 					-- Hide if out of combat
@@ -269,7 +274,7 @@ function WorldMarker:OnInitialize()
 	db = self.db.profile
 	
 	self:SetEnabledState(nibRealUI:GetModuleEnabled(MODNAME))
-	nibRealUI:RegisterExtrasOptions(MODNAME, GetOptions)
+	nibRealUI:RegisterModuleOptions(MODNAME, GetOptions)
 end
 
 function WorldMarker:OnEnable()

@@ -85,7 +85,13 @@ local function GetOptions()
 			elementOpts[ke] = {
 				type = "group",
 				name = db.elements[ke].name,
-				disabled = function() if (IsAddOnLoaded("oUF") and nibRealUI:GetModuleEnabled(MODNAME)) then return false else return true end end,
+				disabled = function() 
+					if ke == "unitframes" then
+						return not(nibRealUI:GetModuleEnabled("UnitFrames") and nibRealUI:GetModuleEnabled(MODNAME))
+					else
+						return not(nibRealUI:GetModuleEnabled(MODNAME))
+					end
+				end,
 				order = elementOrder,
 				args = {
 					header = {
@@ -103,6 +109,11 @@ local function GetOptions()
 						end,
 						order = 20,
 					},
+					gap1 = {
+						name = " ",
+						type = "description",
+						order = 21,
+					},
 					opacity = {
 						type = "group",
 						name = "Opacity",
@@ -110,6 +121,11 @@ local function GetOptions()
 						disabled = function() return not db.elements[ke].enabled end,
 						order = 30,
 						args = {},
+					},
+					gap2 = {
+						name = " ",
+						type = "description",
+						order = 31,
 					},
 					frames = {
 						type = "multiselect",
@@ -415,7 +431,7 @@ function CombatFader:OnInitialize()
 	db = self.db.profile
     
 	self:SetEnabledState(nibRealUI:GetModuleEnabled(MODNAME))
-	nibRealUI:RegisterPlainOptions(MODNAME, GetOptions)
+	nibRealUI:RegisterModuleOptions(MODNAME, GetOptions)
 end
 
 function CombatFader:OnEnable()

@@ -328,7 +328,8 @@ do
 	function grabError(errorMessage)
 		if paused then return end
 		errorMessage = tostring(errorMessage)
-
+		if string.find(errorMessage, "Compact") then return end
+		
 		local looping = errorMessage:find("BugGrabber") and true or nil
 		if looping then
 			print(errorMessage)

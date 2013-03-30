@@ -6,14 +6,14 @@ local Options = {
 	settings = nil,
 	modules = {},
 }
--- Extras
-local ExtrasOptions = {
+local HuDOptions = {
 	settings = nil,
 	modules = {},
 }
--- Misc
-local MiscOptions = {
+-- Modules
+local ModuleOptions = {
 	settings = nil,
+	modules = {},
 }
 -- Skins
 local SkinsOptions = {
@@ -28,6 +28,7 @@ local CloneProfileNewName = ""
 
 -- Re-install RealUI
 local function ReInstall()
+	nibRealUICharacter = nil
 	nibRealUI.db:ResetDB("RealUI")
 end
 
@@ -55,43 +56,6 @@ local function GetOptions()
 		}
 	end
 	
-	-- Misc
-	if not MiscOptions.settings then MiscOptions.settings = {
-		name = "Misc Features",
-		desc = "Miscellaneous Features",
-		type = "group",
-		args = {
-			header = {
-				type = "header",
-				name = "Misc Features",
-				order = 10,
-			},
-			dragemall = {
-				type = "toggle",
-				name = "Draggable Windows",
-				desc = "Allows the dragging of most windows.",
-				get = function() return nibRealUI:GetModuleEnabled("DragEmAll") end,
-				set = function(info, value) 
-					nibRealUI:SetModuleEnabled("DragEmAll", value)
-					nibRealUI:ReloadUIDialog()
-				end,
-				order = 20,
-			},
-			itemquality = {
-				type = "toggle",
-				name = "Item Quality",
-				desc = "Adds colored item borders and durability to the Character window.",
-				get = function() return nibRealUI:GetModuleEnabled("ItemQuality") end,
-				set = function(info, value) 
-					nibRealUI:SetModuleEnabled("ItemQuality", value)
-					nibRealUI:ReloadUIDialog()
-				end,
-				order = 30,
-			},
-		},
-	}
-	end
-	
 	-- Skins
 	if not SkinsOptions.settings then SkinsOptions.settings = {
 		name = "Skins",
@@ -110,6 +74,26 @@ local function GetOptions()
 				get = function() return nibRealUI:GetModuleEnabled("TimerTrackers") end,
 				set = function(info, value) 
 					nibRealUI:SetModuleEnabled("TimerTrackers", value)
+					nibRealUI:ReloadUIDialog()
+				end,
+				order = 20,
+			},
+			map = {
+				type = "toggle",
+				name = "World Map",
+				get = function() return nibRealUI:GetModuleEnabled("Map") end,
+				set = function(info, value) 
+					nibRealUI:SetModuleEnabled("Map", value)
+					nibRealUI:ReloadUIDialog()
+				end,
+				order = 20,
+			},
+			gamemenu = {
+				type = "toggle",
+				name = "Game Menu",
+				get = function() return nibRealUI:GetModuleEnabled("GameMenu") end,
+				set = function(info, value) 
+					nibRealUI:SetModuleEnabled("GameMenu", value)
 					nibRealUI:ReloadUIDialog()
 				end,
 				order = 20,
@@ -146,6 +130,11 @@ local function GetOptions()
 				func = ReInstall,
 				order = 40,
 			},
+			gap1 = {
+				name = " ",
+				type = "description",
+				order = 41,
+			},
 			character = {
 				type = "group",
 				name = "Character",
@@ -170,6 +159,11 @@ local function GetOptions()
 						order = 30,
 					},
 				},
+			},
+			gap2 = {
+				name = " ",
+				type = "description",
+				order = 51,
 			},
 			uiscaler = {
 				type = "group",
@@ -199,17 +193,30 @@ local function GetOptions()
 		Options.settings.args[key] = (type(val) == "function") and val() or val
 	end
 	
-	-- Extras
-	if not ExtrasOptions.settings then ExtrasOptions.settings = {
+	-- HuD
+	if not HuDOptions.settings then HuDOptions.settings = {
 		type = "group",
-		name = "Extras",
-		desc = "Extra features to make life better.",
+		name = "HuD",
+		desc = "Unit Frames, Class Tracking, Combat Information",
 		childGroups = "tree",
 		args = {},
 	}
-	end	
-	for key, val in pairs(ExtrasOptions.modules) do
-		ExtrasOptions.settings.args[key] = (type(val) == "function") and val() or val
+	end
+	for key, val in pairs(HuDOptions.modules) do
+		HuDOptions.settings.args[key] = (type(val) == "function") and val() or val
+	end
+	
+	-- Modules
+	if not ModuleOptions.settings then ModuleOptions.settings = {
+		type = "group",
+		name = "Modules",
+		desc = "RealUI Modules",
+		childGroups = "tree",
+		args = {},
+	}
+	end
+	for key, val in pairs(ModuleOptions.modules) do
+		ModuleOptions.settings.args[key] = (type(val) == "function") and val() or val
 	end
 end
 
@@ -246,9 +253,18 @@ function nibRealUI:CloseOptions()
 	LibStub("AceConfigDialog-3.0"):Close("nibRealUI")
 end
 
-function nibRealUI:OpenOptions()
+function nibRealUI:OpenOptions(...)
 	if not Options.settings then nibRealUI:SetUpOptions() end
-	LibStub("AceConfigDialog-3.0"):Open("nibRealUI")
+	
+	local group1, group2 = ...
+	
+	if group1 and group2 then
+		LibStub("AceConfigDialog-3.0"):Open("nibRealUI", group1, group2)
+	elseif group1 then
+		LibStub("AceConfigDialog-3.0"):Open("nibRealUI", group1)
+	else
+		LibStub("AceConfigDialog-3.0"):Open("nibRealUI")
+	end
 end
 
 function nibRealUI:ChatCommand()
@@ -282,14 +298,14 @@ function nibRealUI:SetUpOptions()
 	-- Fill out Options table
 	GetOptions()
 	
-	Options.settings.args.extras = ExtrasOptions.settings
-	Options.settings.args.extras.order = 9800
+	Options.settings.args.hud = HuDOptions.settings
+	Options.settings.args.hud.order = 9400
 	
-	Options.settings.args.misc = MiscOptions.settings
-	Options.settings.args.misc.order = 9850
+	Options.settings.args.modules = ModuleOptions.settings
+	Options.settings.args.modules.order = 9500
 	
 	Options.settings.args.skins = SkinsOptions.settings
-	Options.settings.args.skins.order = 9860
+	Options.settings.args.skins.order = 9600
 	
 	Options.settings.args.core = CoreOptions.settings
 	Options.settings.args.core.order = 9950
@@ -306,10 +322,10 @@ function nibRealUI:RegisterPlainOptions(name, optionTbl)
 	Options.modules[name] = optionTbl
 end
 
-function nibRealUI:RegisterButtonsOptions(name, optionTbl)
-	ButtonsOptions.modules[name] = optionTbl
+function nibRealUI:RegisterHuDOptions(name, optionTbl)
+	HuDOptions.modules[name] = optionTbl
 end
 
-function nibRealUI:RegisterExtrasOptions(name, optionTbl)
-	ExtrasOptions.modules[name] = optionTbl
+function nibRealUI:RegisterModuleOptions(name, optionTbl)
+	ModuleOptions.modules[name] = optionTbl
 end

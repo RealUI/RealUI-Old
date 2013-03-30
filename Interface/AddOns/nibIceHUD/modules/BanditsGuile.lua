@@ -1,4 +1,3 @@
-local L = LibStub("AceLocale-3.0"):GetLocale("nibIceHUD", false)
 local BanditsGuile = IceCore_CreateClass(IceUnitBar)
 
 local nibIceHUD = _G.nibIceHUD
@@ -28,8 +27,6 @@ function BanditsGuile.prototype:init()
 	BanditsGuile.super.prototype.init(self, "BanditsGuile", "player")
 
 	self.moduleSettings = {}
-	self.moduleSettings.desiredLerpTime = 0
-	self.moduleSettings.shouldAnimate = false
 
 	self:SetDefaultColor("BanditsGuile0", 1, 1, 1)
 	self:SetDefaultColor("BanditsGuile1", 0, 0.8, 0)

@@ -1,14 +1,12 @@
 ## Interface: 50200
 ## Author: Parnic (modified by Nibelheim (MoP update by Gethe)) (originally created by Iceroth)
 ## Name: nibIceHUD
-## Title: |cffaaaaaanib|rIceHUD
-## Notes: IceHUD, now with 75% less fat
-## Version: 7.3
+## Title: |cffffffffReal|r|cffbf3333UI|r |cffffffffHuD|r
+## Notes: Heeavvillly modified IceHUD for use in RealUI
+## Version: 7.4
 ## SavedVariables: IceCoreRealUIDB
-## Dependencies: nibLibs
-
-# Localization
-loc\loc.xml
+## Dependencies: nibRealUI
+## LoadOnDemand: 1
 
 # IceHUD core functionality
 IceCore.lua

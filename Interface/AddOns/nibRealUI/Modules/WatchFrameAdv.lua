@@ -64,9 +64,15 @@ local function GetOptions()
 				end,
 				order = 30,
 			},
+			gap1 = {
+				name = " ",
+				type = "description",
+				order = 31,
+			},
 			sizeposition = {
 				name = "Size/Position",
 				type = "group",
+				inline = true,
 				disabled = function() if nibRealUI:GetModuleEnabled(MODNAME) then return false else return true end end,
 				order = 60,
 				args = {
@@ -90,6 +96,11 @@ local function GetOptions()
 						type = "description",
 						name = "Note: Enabling/Disabling the Size/Position adjustments will require a UI Reload to take full effect.",
 						order = 30,
+					},
+					gap1 = {
+						name = " ",
+						type = "description",
+						order = 31,
 					},
 					offsets = {
 						type = "group",
@@ -137,6 +148,11 @@ local function GetOptions()
 							},
 						},
 					},
+					gap2 = {
+						name = " ",
+						type = "description",
+						order = 41,
+					},
 					anchor = {
 						type = "group",
 						name = "Position",
@@ -182,9 +198,15 @@ local function GetOptions()
 					},
 				},
 			},
+			gap2 = {
+				name = " ",
+				type = "description",
+				order = 61,
+			},
 			hidden = {
 				name = "Automatic Collapse/Hide",
 				type = "group",
+				inline = true,
 				disabled = function() if nibRealUI:GetModuleEnabled(MODNAME) then return false else return true end end,
 				order = 70,
 				args = {
@@ -202,6 +224,11 @@ local function GetOptions()
 							WatchFrameAdv:UpdateCollapseState()
 						end,
 						order = 20,
+					},
+					gap1 = {
+						name = " ",
+						type = "description",
+						order = 21,
 					},
 					collapse = {
 						type = "group",
@@ -251,6 +278,11 @@ local function GetOptions()
 								order = 40,
 							},
 						},
+					},
+					gap2 = {
+						name = " ",
+						type = "description",
+						order = 31,
 					},
 					hide = {
 						type = "group",
@@ -303,8 +335,14 @@ local function GetOptions()
 					},
 				},
 			},
+			gap3 = {
+				name = " ",
+				type = "description",
+				order = 71,
+			},
 			colors = {
 				type = "group",
+				inline = true,
 				name = "Colors",
 				disabled = function() if nibRealUI:GetModuleEnabled(MODNAME) then return false else return true end end,
 				order = 80,
@@ -325,6 +363,11 @@ local function GetOptions()
 						type = "description",
 						name = "Note: Enabling/disabling Colors will require a UI reload for changes to fully take affect (Type: /rl).",
 						order = 20,
+					},
+					gap1 = {
+						name = " ",
+						type = "description",
+						order = 21,
 					},
 					title = {
 						type = "group",
@@ -349,6 +392,11 @@ local function GetOptions()
 								order = 10,
 							},
 						},
+					},
+					gap2 = {
+						name = " ",
+						type = "description",
+						order = 31,
 					},
 					lines = {
 						type = "group",
@@ -503,10 +551,23 @@ function WatchFrameAdv:UpdateFont()
 			local line = _G["WatchFrameLine"..i]
 			if line then
 				line.text:SetFont(unpack(nibRealUI.font.pixel1))
-				line.dash:SetFont(unpack(nibRealUI.font.pixel1))
-				line.text:SetShadowColor(0, 0, 0, 0)
-				line.dash:SetShadowColor(0, 0, 0, 0)
 				line.text:SetSpacing(db.resolution[ndbc.resolution].linespacing)
+				line.text:SetShadowColor(0, 0, 0, 0)
+				
+				line.dash:SetFont(unpack(nibRealUI.font.pixel1))
+				line.dash:SetShadowColor(0, 0, 0, 0)
+				line.dash:SetTextColor(0, 0, 0, 0)
+				
+				line.square = CreateFrame("Frame", nil, line)
+				line.square:SetPoint("TOPRIGHT", line, "TOPLEFT", 8, -6)
+				line.square:SetSize(5, 5)
+				nibRealUI:CreateBD(line.square, 1)
+				line.square:SetBackdropColor(nibRealUI.media.colors.red[1] * 0.9, nibRealUI.media.colors.red[2] * 0.9, nibRealUI.media.colors.red[3] * 0.9)
+				if line.hasdash then
+					line.square:Show()
+				else
+					line.square:Hide()
+				end
 			else
 				nextline = i
 				break
@@ -565,10 +626,26 @@ function WatchFrameAdv:HookWFColors()
 			n = {h = db.colors.lines.normal.header, o = db.colors.lines.normal.objectives},
 			h = {h = db.colors.lines.highlight.header, o = db.colors.lines.highlight.objectives},
 		}
+		local dc = {
+			n = {r = nibRealUI.media.colors.red[1] * 0.9, g = nibRealUI.media.colors.red[2] * 0.9, b = nibRealUI.media.colors.red[3] * 0.9},
+			h = {r = nibRealUI.media.colors.red[1], g = nibRealUI.media.colors.red[2], b = nibRealUI.media.colors.red[3]},
+		}
 
 		-- Hook into SetLine to change color of lines	
 		hooksecurefunc("WatchFrame_SetLine", function(line, anchor, verticalOffset, isHeader, text, dash, hasItem, isComplete)
-			if isHeader then 
+			if dash == 1 then
+				line.hasdash = true
+			else
+				line.hasdash = false
+			end
+			if line.square then
+				if line.hasdash then
+					line.square:Show()
+				else
+					line.square:Hide()
+				end
+			end
+			if isHeader then
 				line.text:SetTextColor(lc.n.h.r, lc.n.h.g, lc.n.h.b)
 			else
 				line.text:SetTextColor(lc.n.o.r, lc.n.o.g, lc.n.o.b)
@@ -591,10 +668,10 @@ function WatchFrameAdv:HookWFColors()
 					else
 						if onEnter then
 							line.text:SetTextColor(lc.h.o.r, lc.h.o.g, lc.h.o.b)
-							line.dash:SetTextColor(lc.h.o.r, lc.h.o.g, lc.h.o.b)
+							if line.square then line.square:SetBackdropColor(dc.h.r, dc.h.g, dc.h.b) end
 						else
 							line.text:SetTextColor(lc.n.o.r, lc.n.o.g, lc.n.o.b)
-							line.dash:SetTextColor(lc.n.o.r, lc.n.o.g, lc.n.o.b)
+							if line.square then line.square:SetBackdropColor(dc.n.r, dc.n.g, dc.n.b) end
 						end
 					end
 				end
@@ -699,7 +776,7 @@ function WatchFrameAdv:OnInitialize()
 	ndbc = nibRealUI.db.char
 	
 	self:SetEnabledState(nibRealUI:GetModuleEnabled(MODNAME))
-	nibRealUI:RegisterPlainOptions(MODNAME, GetOptions)
+	nibRealUI:RegisterModuleOptions(MODNAME, GetOptions)
 	
 	self:RegisterEvent("PLAYER_LOGIN")
 end

@@ -1,0 +1,6 @@
+## Interface: 50200
+## Title: |cffffffffRealUI Libraries|r
+## Author: Nibelheim
+## Notes: Provides libraries for nib addons.
+
+Embeds.xml

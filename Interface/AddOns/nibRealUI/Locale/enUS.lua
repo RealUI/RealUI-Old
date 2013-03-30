@@ -88,11 +88,13 @@ L["Note: Weekly caps will reset upon loading currency data"] = "Note: Weekly cap
 L["on a character whose weekly caps have reset."] = "on a character whose weekly caps have reset."
 L["<Click> to whisper, <Alt+Click> to invite."] = "<Click> to whisper, <Alt+Click> to invite."
 
-L["<Click> to change talent specs."] = "<Click> to change talent specs."
+L["Stat Display"] = "Stat Display"
+L["<Spec Click> to change talent specs."] = "<Spec Click> to change talent specs."
 L["<Equip Click> to equip."] = "<Equip Click> to equip."
 L["<Equip Ctl+Click> to assign to "] = "<Equip Ctl+Click> to assign to "
 L["<Equip Alt+Click> to assign to "] = "<Equip Alt+Click> to assign to "
 L["<Equip Shift+Click> to unassign."] = "<Equip Shift+Click> to unassign."
+L["<Stat Click> to configure."] = "<Stat Click> to configure."
 
 L["<Click> to cycle through equipment sets."] = "<Click> to cycle through equipment sets."
 L["<Click> to show calendar."] = "<Click> to show calendar."
@@ -100,5 +102,17 @@ L["<Shift+Click> to show timer."] = "<Shift+Click> to show timer."
 L["<Click> to change layouts."] = "<Click> to change layouts."
 L["<Alt+Click> to change resolution."] = "<Alt+Click> to change resolution."
 L["<Click> to toggle meters."] = "<Click> to toggle meters."
+
+-- HuD Config
+L["Cannot open HuD Configuration while in combat."] = "Cannot open HuD Configuration while in combat."
+L["Okay"] = "Okay"
+L["Load Defaults"] = "Load Defaults"
+L["Show HuD Elements"] = "Show HuD Elements"
+L["HuD Configuration"] = "HuD Configuration"
+L["Unit Frames"] = "Unit Frames"
+L["Action Bars / Grid"] = "Action Bars / Grid"
+L["Vertical"] = "Vertical"
+L["Horizontal"] = "Horizontal"
+L["Width"] = "Width"
 
 end

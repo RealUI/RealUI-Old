@@ -1,4 +1,3 @@
-local L = LibStub("AceLocale-3.0"):GetLocale("nibIceHUD", false)
 local FocusCast = IceCore_CreateClass(IceCastBar)
 local mass
 
@@ -27,10 +26,7 @@ function FocusCast.prototype:GetDefaultSettings()
 	settings["scale"] = 0.7
 	settings["flashInstants"] = "Never"
 	settings["flashFailures"] = "Never"
-	settings["shouldAnimate"] = false
-	settings["hideAnimationSettings"] = true
 	settings["displayNonInterruptible"] = true
-	settings["enabled"] = false
 	settings["barVerticalOffset"] = 35
 
 	return settings

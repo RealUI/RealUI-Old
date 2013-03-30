@@ -1,4 +1,3 @@
-local L = LibStub("AceLocale-3.0"):GetLocale("nibIceHUD", false)
 local SavageRoar = IceCore_CreateClass(IceUnitBar)
 local mass
 
@@ -24,8 +23,6 @@ function SavageRoar.prototype:init()
 	SavageRoar.super.prototype.init(self, "SavageRoar", "player")
 
 	self.moduleSettings = {}
-	self.moduleSettings.desiredLerpTime = 0
-	self.moduleSettings.shouldAnimate = false
 
 	self:SetDefaultColor("SavageRoar", 0.75, 1, 0.2)
 	self:SetDefaultColor("SavageRoarPotential", 1, 1, 1)
@@ -80,8 +77,6 @@ function SavageRoar.prototype:GetDefaultSettings()
 	local settings = SavageRoar.super.prototype.GetDefaultSettings(self)
 
 	settings["enabled"] = true
-	settings["shouldAnimate"] = false
-	settings["desiredLerpTime"] = nil
 	settings["lowThreshold"] = 0
 	settings["side"] = IceCore.Side.Right
 	settings["offset"] = 6
@@ -91,8 +86,6 @@ function SavageRoar.prototype:GetDefaultSettings()
 	settings["lockLowerFontAlpha"] = false
 	settings["lowerTextString"] = ""
 	settings["lowerTextVisible"] = false
-	settings["hideAnimationSettings"] = true
-	settings["bAllowExpand"] = true
 
 	return settings
 end
@@ -107,7 +100,7 @@ function SavageRoar.prototype:GetOptions()
 	opts["showAsPercentOfMax"] =
 	{
 		type = 'toggle',
-		name = L["Show bar as % of maximum"],
+		name = "Show bar as % of maximum",
 		desc = "If this is checked, then the SR buff time shows as a percent of the maximum attainable (taking set bonuses and talents into account). Otherwise, the bar always goes from full to empty when applying SR no matter the duration.",
 		get = function()
 			return self.moduleSettings.showAsPercentOfMax

@@ -1,4 +1,3 @@
-local L = LibStub("AceLocale-3.0"):GetLocale("nibIceHUD", false)
 local TargetTargetCast = IceCore_CreateClass(IceCastBar)
 TargetTargetCast.prototype.scheduledEvent = nil
 local mass
@@ -27,8 +26,6 @@ function TargetTargetCast.prototype:GetDefaultSettings()
 	settings["offset"] = 13
 	settings["flashInstants"] = "Never"
 	settings["flashFailures"] = "Never"
-	settings["shouldAnimate"] = false
-	settings["hideAnimationSettings"] = true
 	settings["enabled"] = false
 	settings["barVerticalOffset"] = 35
 	settings["scale"] = 0.7
@@ -83,8 +80,8 @@ function TargetTargetCast.prototype:GetOptions()
 
 	opts["selfDisplayMode"] = {
 		type = 'select',
-		name = L["Self Display Mode"],
-		desc = L["What this bar should do whenever the player is the TargetOfTarget"],
+		name = "Self Display Mode",
+		desc = "What this bar should do whenever the player is the TargetOfTarget",
 		get = function(info)
 			return nibIceHUD:GetSelectValue(info, self.moduleSettings.selfDisplayMode)
 		end,

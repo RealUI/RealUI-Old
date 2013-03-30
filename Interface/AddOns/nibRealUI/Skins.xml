@@ -2,5 +2,7 @@
 xsi:schemaLocation="http://www.blizzard.com/wow/ui/
 ..\FrameXML\UI.xsd">
 	<!-- Skins -->
+	<Script file="Skins\GameMenu.lua"/>
+	<Script file="Skins\Map.lua"/>
 	<Script file="Skins\TimerTrackers.lua"/>
 </Ui>

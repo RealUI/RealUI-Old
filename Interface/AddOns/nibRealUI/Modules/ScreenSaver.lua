@@ -1,6 +1,6 @@
 local nibRealUI = LibStub("AceAddon-3.0"):GetAddon("nibRealUI")
 local media = LibStub("LibSharedMedia-3.0")
-local db, ndbc
+local db, ndb, ndbc
 local mass
 
 if IsAddOnLoaded("Massive") then
@@ -58,6 +58,11 @@ local function GetOptions()
 				end,
 				order = 30,
 			},
+			gap1 = {
+				name = " ",
+				type = "description",
+				order = 31,
+			},
 			general = {
 				type = "group",
 				name = "General",
@@ -96,71 +101,35 @@ local function GetOptions()
 					},
 				},
 			},
-			timer = {
+			gap2 = {
+				name = " ",
+				type = "description",
+				order = 41,
+			},
+			panel = {
 				type = "group",
-				name = "Timer",
+				name = "Panel",
 				inline = true,
 				order = 50,
 				args = {
-					enabled = {
-						type = "toggle",
-						name = "Enabled",
-						desc = "Enable/Disable the AFK Timer.",
-						get = function() return db.timer.enabled end,
-						set = function(info, value)
-							db.timer.enabled = value
-							ScreenSaver:AFKEvent()
-						end,
+					opacity = {
+						type = "range",
+						name = "Opacity",
+						min = 0, max = 1, step = 0.05,
+						isPercent = true,
+						get = function(info) return db.panel.opacity end,
+						set = function(info, value) db.panel.opacity = value; ScreenSaver:UpdateFrames() end,
 						order = 10,
 					},
-					position = {
-						name = "Position",
-						type = "group",
-						inline = true,
+					automove = {
+						type = "toggle",
+						name = "Auto Move",
+						desc = "Reposition the Panel up and down the screen once every minute.",
+						get = function() return db.panel.automove end,
+						set = function(info, value)
+							db.panel.automove = value
+						end,
 						order = 20,
-						args = {
-							xoffset = {
-								type = "input",
-								name = "X Offset",
-								width = "half",
-								order = 10,
-								get = function(info) return tostring(db.timer.position.x) end,
-								set = function(info, value)
-									value = nibRealUI:ValidateOffset(value)
-									db.timer.position.x = value
-									ScreenSaver:UpdateFrames()
-								end,
-							},
-							yoffset = {
-								type = "input",
-								name = "Y Offset",
-								width = "half",
-								order = 20,
-								get = function(info) return tostring(db.timer.position.y) end,
-								set = function(info, value)
-									value = nibRealUI:ValidateOffset(value)
-									db.timer.position.y = value
-									ScreenSaver:UpdateFrames()
-								end,
-							},
-							anchor = {
-								type = "select",
-								name = "Anchor",
-								get = function(info) 
-									for k,v in pairs(table_AnchorPoints) do
-										if v == db.timer.position.anchor then return k end
-									end
-								end,
-								set = function(info, value)
-									db.timer.position.anchor = table_AnchorPoints[value]
-									ScreenSaver:UpdateFrames()
-								end,
-								style = "dropdown",
-								width = nil,
-								values = table_AnchorPoints,
-								order = 30,
-							},
-						},
 					},
 				},
 			},
@@ -179,12 +148,13 @@ local IsWarning = false
 local AFKTimer_Elapsed = 0
 local AFKTimer_LastElapsed = 0
 local OpacityLevel = 0
+local AFKLevel = 0
 
 -- Timer
 function ScreenSaver:UpdateAFKTime(elapsed)
 	local Hour = min(floor(elapsed * SecToHour), 99)
 	local Min = mod(elapsed * SecToMin, 60)
-	local Sec = mod(elapsed, 60)
+	local Sec = floor(mod(elapsed, 60))
 	local timeStr = ""
 	
 	if Hour >= 1 then
@@ -197,7 +167,11 @@ function ScreenSaver:UpdateAFKTime(elapsed)
 		timeStr = string.format("%ds", Sec)
 	end
 	
-	SSFrames.Timer.TextTime.text:SetText(timeStr)
+	SSFrames.time:SetText("|cffC0C0C0"..timeStr.."|r")
+	
+	if mod(Sec, 60) == 0 then
+		self:RepositionPanel(true)
+	end
 end
 
 local AFKTimer = CreateFrame("Frame")
@@ -212,33 +186,29 @@ AFKTimer:SetScript("OnUpdate", function(self, elapsed)
 		-- Set BG opacity
 		if AFKTimer_Elapsed > 300 then
 			OpacityLevel = db.general.opacity2
+			AFKLevel = 2
 		else
 			OpacityLevel = db.general.opacity1
+			AFKLevel = 1
 		end
-		if SSFrames.BG:GetAlpha() ~= OpacityLevel then SSFrames.BG:SetAlpha(OpacityLevel) end
+		if not( UnitAffectingCombat("player") and db.general.combatwarning ) then
+			if SSFrames.bg:GetAlpha() ~= OpacityLevel then 
+				UIFrameFadeIn(SSFrames.bg, 0.2, SSFrames.bg:GetAlpha(), OpacityLevel)
+			end
+		end
 		
 		-- Make sure Size is still good
-		SSFrames.BG:SetWidth(UIParent:GetWidth() + 5000)
-		SSFrames.BG:SetHeight(UIParent:GetHeight() + 2000)
-	end
-	
-	if db.timer.enabled then
+		SSFrames.bg:SetWidth(UIParent:GetWidth() + 5000)
+		SSFrames.bg:SetHeight(UIParent:GetHeight() + 2000)
+		SSFrames.panel:SetWidth(UIParent:GetWidth())
+		
 		-- Update AFK Time
 		ScreenSaver:UpdateAFKTime(AFKTimer_Elapsed)
-	end
 	
-	-- Check Auto AFK status
-	if GetCVar("autoClearAFK") ~= "1" then ScreenSaver:AFKEvent() end
-end)
-
--- Show/Hide Timer
-function ScreenSaver:ToggleTimer(val)
-	if val and db.timer.enabled then
-		SSFrames.Timer:Show()
-	else
-		SSFrames.Timer:Hide()
+		-- Check Auto AFK status
+		if GetCVar("autoClearAFK") ~= "1" then ScreenSaver:AFKEvent() end
 	end
-end
+end)
 
 -- Show/Hide Warning
 function ScreenSaver:ToggleWarning(val)
@@ -264,13 +234,45 @@ function ScreenSaver:ToggleOverlay(val)
 		if not IsDark then
 			IsDark = true
 			
-			SSFrames.BG:Show()
+			-- Fade In Screen Saver
+			self:RepositionPanel()
+			UIFrameFadeIn(SSFrames.bg, 0.2, 0, db.general["opacity"..AFKLevel])
+			UIFrameFadeIn(SSFrames.panel, 0.2, 0, 1)
+			AFKTimer:Show()
 		end
 	else
 		if IsDark then
 			IsDark = false
 			
-			SSFrames.BG:Hide()
+			-- Fade Out Screen Saver
+			local function bgHide()
+				SSFrames.bg:Hide()
+			end
+			local bgFadeInfo = {
+				mode = "OUT",
+				timeToFade = 0.2,
+				finishedFunc = bgHide,
+				startAlpha = SSFrames.bg:GetAlpha(),
+			}
+			UIFrameFade(SSFrames.bg, bgFadeInfo)
+			
+			local function panelHide()
+				SSFrames.panel:Hide()
+				if not UnitIsAFK("player") then
+					SSFrames.time:SetText("0s")
+				end
+			end
+			local panelFadeInfo = {
+				mode = "OUT",
+				timeToFade = 0.2,
+				finishedFunc = panelHide,
+			}
+			UIFrameFade(SSFrames.panel, panelFadeInfo)
+			
+			-- Hide Screen Saver if we're not AFK
+			if not UnitIsAFK("player") then
+				AFKTimer:Hide()
+			end
 		end
 	end
 end
@@ -279,31 +281,34 @@ end
 function ScreenSaver:AFKEvent()
 	if GetCVar("autoClearAFK") ~= "1" then
 		-- Disable ScreenSaver if Auto Clear AFK is disabled
-		ScreenSaver:ToggleTimer(false)
 		ScreenSaver:ToggleOverlay(false)
 		ScreenSaver:ToggleWarning(false)
+		AFKLevel = 0
 	elseif UnitIsAFK("player") then
 		-- AFK
 		if not AFKTimer:IsShown() then
 			AFKTimer_Elapsed = 0
 			AFKTimer_LastElapsed = 0
-			SSFrames.BG:SetAlpha(db.general.opacity1)
+			if not( UnitAffectingCombat("player") and db.general.combatwarning ) then
+				UIFrameFadeIn(SSFrames.bg, 0.2, SSFrames.bg:GetAlpha(), db.general.opacity1)
+				UIFrameFadeIn(SSFrames.panel, 0.2, 0, 1)
+			end
 			AFKTimer:Show()
+			AFKLevel = 1
 		end
 		
 		if ( UnitAffectingCombat("player") and db.general.combatwarning ) then
 			-- AFK and In Combat
-			ScreenSaver:ToggleTimer(false)			-- Hide Timer
 			if IsDark then
 				ScreenSaver:ToggleOverlay(false)	-- Hide Screen Saver
 				ScreenSaver:ToggleWarning(true)		-- Activate Warning				
 			end
 		else
 			-- AFK and not In Combat
-			ScreenSaver:ToggleTimer(true)			-- Show Timer
 			if not IsDark then
 				ScreenSaver:ToggleOverlay(true)		-- Show Screen Saver
 				ScreenSaver:ToggleWarning(false)	-- Deactivate Warning
+				AFKLevel = 1
 			end
 		end
 	else
@@ -311,45 +316,31 @@ function ScreenSaver:AFKEvent()
 		AFKTimer_Elapsed = 0
 		AFKTimer_LastElapsed = 0
 		AFKTimer:Hide()
+		AFKLevel = 0
 		
-		ScreenSaver:ToggleTimer(false)		-- Hide Timer
 		ScreenSaver:ToggleOverlay(false)	-- Hide Screen Saver
 		ScreenSaver:ToggleWarning(false)	-- Deactivate Warning
 	end
 end
 
--- Frame Updates
-function ScreenSaver:UpdateFont()
-	SSFrames.Timer.Text1.text:SetFont(unpack(nibRealUI.font.pixel1))
-	SSFrames.Timer.Text1.text:SetTextColor(1, 1, 1, 1)
-	SSFrames.Timer.Text1.text:SetText("AFK")
-	
-	SSFrames.Timer.TextTime.text:SetFont(unpack(nibRealUI.font.pixel1))
-	SSFrames.Timer.TextTime.text:SetTextColor(1, 1, 1, 1)
+function ScreenSaver:RepositionPanel(...)
+	if ... and not db.panel.automove then return end
+	SSFrames.panel:ClearAllPoints()
+	SSFrames.panel:SetPoint("BOTTOM", UIParent, "CENTER", 0, math.random(
+		ndb.positions[ndbc.resolution]["HuDY"] + (ndb.positions[ndbc.resolution]["HuDHeight"] / 2),
+		(UIParent:GetHeight() / 2) - 180
+	))
 end
 
+-- Frame Updates
 function ScreenSaver:UpdateFrames()
-	-- Dark BG height/width
-	SSFrames.BG:SetWidth(UIParent:GetWidth() + 5000)
-	SSFrames.BG:SetHeight(UIParent:GetHeight() + 2000)
-	SSFrames.BG:SetAlpha(db.general.opacity1)
+	SSFrames.panel:SetBackdropColor(0.075, 0.075, 0.075, db.panel.opacity)
 	
-	-- Timer Position
-	SSFrames.Timer:SetPoint(db.timer.position.anchor, UIParent, db.timer.position.anchor, db.timer.position.x, db.timer.position.y)
-	SSFrames.Timer.Line:SetPoint("BOTTOM", SSFrames.Timer, "BOTTOM", -1, nibRealUI.font.pixel1[2] + 2 + db.resolution[ndbc.resolution].liney)
+	-- Make sure Size is still good
+	SSFrames.bg:SetWidth(UIParent:GetWidth() + 5000)
+	SSFrames.bg:SetHeight(UIParent:GetHeight() + 2000)
 	
-	-- Timer text positions
-	SSFrames.Timer.Text1.frame:SetPoint("BOTTOM", SSFrames.Timer, "BOTTOM", 0, 0)
-	SSFrames.Timer.Text1.frame:SetWidth(30)
-	SSFrames.Timer.Text1.frame:SetHeight(12)
-	SSFrames.Timer.Text1.text:SetJustifyH("CENTER")
-	SSFrames.Timer.Text1.text:SetPoint("BOTTOM", SSFrames.Timer.Text1.frame, "BOTTOM", 0.5, 0.5)
-	
-	SSFrames.Timer.TextTime.frame:SetPoint("BOTTOM", SSFrames.Timer, "BOTTOM", 0, nibRealUI.font.pixel1[2] + 2 + db.resolution[ndbc.resolution].liney + db.resolution[ndbc.resolution].timey)
-	SSFrames.Timer.TextTime.frame:SetWidth(30)
-	SSFrames.Timer.TextTime.frame:SetHeight(12)
-	SSFrames.Timer.TextTime.text:SetJustifyH("CENTER")
-	SSFrames.Timer.TextTime.text:SetPoint("BOTTOM", SSFrames.Timer.TextTime.frame, "BOTTOM", 0.5, 0.5)
+	SSFrames.panel:SetSize(UIParent:GetWidth(), 21)
 end
 
 -- Initialize / Refresh
@@ -357,10 +348,9 @@ function ScreenSaver:RefreshMod()
 	if not nibRealUI:GetModuleEnabled(MODNAME) then return end
 	
 	db = self.db.profile
+	ndb = nibRealUI.db.profile
 
 	ScreenSaver:UpdateFrames()
-	ScreenSaver:UpdateFont()
-	
 	ScreenSaver:AFKEvent()
 end
 
@@ -371,65 +361,55 @@ function ScreenSaver:PLAYER_LOGIN()
 end
 
 -- Frame Creation
-local function CreateTextFrame(parent)
-	local NewTextFrame = {frame = nil, text = nil}
-	NewTextFrame.frame = CreateFrame("Frame", nil, parent)
-	NewTextFrame.text = NewTextFrame.frame:CreateFontString(nil, "ARTWORK")
-	return NewTextFrame
-end
-
-local function CreateArtFrame(parent)
-	local NewArtFrame = {frame = nil, bg = nil}
-	NewArtFrame.frame = CreateFrame("Frame", nil, parent)
-	NewArtFrame.bg = NewArtFrame.frame:CreateTexture(nil, "ARTWORK")
-	return NewArtFrame
-end
-
 function ScreenSaver:CreateFrames()
 	SSFrames = {}
 
 	-- Dark Background
-	SSFrames.BG = CreateFrame("Frame", nil, UIParent)
-	SSFrames.BG:SetAllPoints(UIParent)
-	SSFrames.BG:SetFrameStrata("BACKGROUND")
-	SSFrames.BG:SetFrameLevel(0)
-	
-	SSFrames.BG:SetBackdrop({
+	SSFrames.bg = CreateFrame("Frame", nil, UIParent)
+	SSFrames.bg:SetAllPoints(UIParent)
+	SSFrames.bg:SetFrameStrata("BACKGROUND")
+	SSFrames.bg:SetFrameLevel(0)
+	SSFrames.bg:SetBackdrop({
 		bgFile = nibRealUI.media.textures.plain,
-		edgeFile = "",
-		edgeSize = 0, tile = false, tileSize = 0,
-		insets = {left = 0, right = 0, top = 0, bottom = 0}
 	})
-	SSFrames.BG:SetBackdropColor(0, 0, 0, 1)
+	SSFrames.bg:SetBackdropColor(0, 0, 0, 1)
+	SSFrames.bg:SetAlpha(0)
+	SSFrames.bg:Hide()
 	
-	SSFrames.BG:Hide()
+	-- SS Panel
+	SSFrames.panel = CreateFrame("Frame", "RealUIScreenSaver", UIParent)
+	SSFrames.panel:SetFrameStrata("MEDIUM")
+	SSFrames.panel:SetFrameLevel("1")
+	self:RepositionPanel()
+	SSFrames.panel:SetSize(UIParent:GetWidth(), 21)
+	nibRealUI:CreateBD(SSFrames.panel)
+	SSFrames.panel:SetBackdropColor(0.075, 0.075, 0.075, db.panel.opacity)
+	SSFrames.panel:SetAlpha(0)
+	SSFrames.panel:Hide()
 	
-	-- Timer Panel
-	SSFrames.Timer = CreateFrame("Frame", "RealUI_ScreenSaver_Timer", UIParent)
-	SSFrames.Timer:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
-	SSFrames.Timer:SetFrameStrata("MEDIUM")
-	SSFrames.Timer:SetFrameLevel("2")
+	SSFrames.panel.left = SSFrames.panel:CreateTexture(nil, "ARTWORK")
+	SSFrames.panel.left:SetTexture(unpack(nibRealUI:GetClassColor(nibRealUI.class)))
+	SSFrames.panel.left:SetPoint("LEFT", SSFrames.panel, "LEFT", 0, 0)
+	SSFrames.panel.left:SetHeight(19)
+	SSFrames.panel.left:SetWidth(4)
 	
-	SSFrames.Timer:SetWidth(db.resolution[ndbc.resolution].width)
-	SSFrames.Timer:SetHeight(db.resolution[ndbc.resolution].height)
+	SSFrames.panel.right = SSFrames.panel:CreateTexture(nil, "ARTWORK")
+	SSFrames.panel.right:SetTexture(unpack(nibRealUI:GetClassColor(nibRealUI.class)))
+	SSFrames.panel.right:SetPoint("RIGHT", SSFrames.panel, "RIGHT", 0, 0)
+	SSFrames.panel.right:SetHeight(19)
+	SSFrames.panel.right:SetWidth(4)
 	
-	SSFrames.Timer:Hide()
+	-- Timer
+	SSFrames.label = nibRealUI:CreateFS(SSFrames.panel, "CENTER")
+	SSFrames.label:SetPoint("RIGHT", SSFrames.panel, "CENTER", 15, 0)
+	local classColorStr = nibRealUI:ColorTableToStr(nibRealUI:GetClassColor(nibRealUI.class))
+	SSFrames.label:SetText("|cffffffffAFK |r|cff"..classColorStr.."TIME:")
+	SSFrames.label:SetFont(unpack(nibRealUI.font.pixeltiny))
 	
-	SSFrames.Timer.Line = CreateFrame("Frame", nil, SSFrames.Timer)
-	SSFrames.Timer.Line:SetHeight(3)
-	SSFrames.Timer.Line:SetWidth(db.resolution[ndbc.resolution].width)
-	SSFrames.Timer.Line:SetBackdrop({
-		bgFile = nibRealUI.media.textures.plain, 
-		edgeFile = nibRealUI.media.textures.plain, 
-		tile = false, tileSize = 0, edgeSize = 1, 
-		insets = { left = 1, right = 1, top = 1, bottom = 1	}
-	})
-	SSFrames.Timer.Line:SetBackdropColor(1, 1, 1, 1)
-	SSFrames.Timer.Line:SetBackdropBorderColor(0, 0, 0, 1)
-	
-	-- Timer Texts	
-	SSFrames.Timer.Text1 = CreateTextFrame(SSFrames.Timer)
-	SSFrames.Timer.TextTime = CreateTextFrame(SSFrames.Timer)
+	SSFrames.time = nibRealUI:CreateFS(SSFrames.panel, "LEFT")
+	SSFrames.time:SetPoint("LEFT", SSFrames.panel, "CENTER", 15, 0)
+	SSFrames.time:SetFont(unpack(nibRealUI.font.pixeltiny))
+	SSFrames.time:SetText("0s")
 end
 
 ----
@@ -442,31 +422,18 @@ function ScreenSaver:OnInitialize()
 				opacity2 = 0.50,
 				combatwarning = true,
 			},
-			timer = {
-				enabled = true,
-				position = {anchor = "CENTER", x = 0, y = 0},
-			},
-			resolution = {
-				[1] = {
-					width = 26,
-					height = 30,
-					liney = 0,
-					timey = 4,
-				},
-				[2] = {
-					width = 30,
-					height = 31,
-					liney = 1,
-					timey = 5,
-				},
+			panel = {
+				opacity = 0.9,
+				automove = true,
 			},
 		},
 	})
 	db = self.db.profile
+	ndb = nibRealUI.db.profile
 	ndbc = nibRealUI.db.char
 	
 	self:SetEnabledState(nibRealUI:GetModuleEnabled(MODNAME))
-	nibRealUI:RegisterExtrasOptions(MODNAME, GetOptions)
+	nibRealUI:RegisterModuleOptions(MODNAME, GetOptions)
 
 	ScreenSaver:CreateFrames()
 	

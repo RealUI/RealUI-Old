@@ -1,4 +1,3 @@
-local L = LibStub("AceLocale-3.0"):GetLocale("nibIceHUD", false)
 nibIceHUD = LibStub("AceAddon-3.0"):NewAddon("nibIceHUD", "AceConsole-3.0")
 local mass
 
@@ -23,7 +22,7 @@ nibIceHUD.debugging = false
 nibIceHUD.WowVer = select(4, GetBuildInfo())
 
 nibIceHUD.validBarList = { "CleanCurves" }
-nibIceHUD.validCustomModules = {Bar="Buff/Debuff watcher", CD="Ability cooldown bar"}
+nibIceHUD.validCustomModules = {Bar="Buff/Debuff watcher"}
 
 local function deepcopy(object)
 	local lookup_table = {}
@@ -47,9 +46,9 @@ nibIceHUD.deepcopy = deepcopy
 
 nibIceHUD.Location = "Interface\\AddOns\\nibIceHUD"
 
-StaticPopupDialogs["NIBICEHUD_CUSTOM_BAR_CREATED"] =
+StaticPopupDialogs["nibIceHUD_CUSTOM_BAR_CREATED"] =
 {
-	text = L["A custom bar has been created and can be configured through Module Settings => MyCustomBar. It is highly recommended that you change the bar name of this module so that it's easier to identify."],
+	text = "A custom bar has been created and can be configured through Module Settings => MyCustomBar. It is highly recommended that you change the bar name of this module so that it's easier to identify.",
 	button1 = OKAY,
 	timeout = 0,
 	whileDead = 1,
@@ -62,9 +61,9 @@ StaticPopupDialogs["NIBICEHUD_CUSTOM_BAR_CREATED"] =
 	end,
 }
 
-StaticPopupDialogs["NIBICEHUD_CUSTOM_CD_CREATED"] =
+StaticPopupDialogs["nibIceHUD_CUSTOM_CD_CREATED"] =
 {
-	text = L["A custom cooldown bar has been created and can be configured through Module Settings => MyCustomCD. It is highly recommended that you change the bar name of this module so that it's easier to identify."],
+	text = "A custom cooldown bar has been created and can be configured through Module Settings => MyCustomCD. It is highly recommended that you change the bar name of this module so that it's easier to identify.",
 	button1 = OKAY,
 	timeout = 0,
 	whileDead = 1,
@@ -77,9 +76,9 @@ StaticPopupDialogs["NIBICEHUD_CUSTOM_CD_CREATED"] =
 	end,
 }
 
-StaticPopupDialogs["NIBICEHUD_DELETE_CUSTOM_MODULE"] =
+StaticPopupDialogs["nibIceHUD_DELETE_CUSTOM_MODULE"] =
 {
-	text = L["Are you sure you want to delete this module? This will remove all settings associated with it and cannot be un-done."],
+	text = "Are you sure you want to delete this module? This will remove all settings associated with it and cannot be un-done.",
 	button1 = YES,
 	button2 = NO,
 	timeout = 0,
@@ -97,8 +96,8 @@ StaticPopupDialogs["NIBICEHUD_DELETE_CUSTOM_MODULE"] =
 	end,
 }
 
-StaticPopupDialogs["NIBICEHUD_CHANGED_PROFILE_COMBAT"] = {
-	text = L["You have changed nibIceHUD profiles while in combat. This can cause problems due to Blizzard's secure frame policy. You may need to reload your UI to repair nibIceHUD."],
+StaticPopupDialogs["nibIceHUD_CHANGED_PROFILE_COMBAT"] = {
+	text = "You have changed nibIceHUD profiles while in combat. This can cause problems due to Blizzard's secure frame policy. You may need to reload your UI to repair nibIceHUD.",
 	button1 = OKAY,
 	OnShow = function(self)
 		self:SetFrameStrata("TOOLTIP")
@@ -122,7 +121,7 @@ function nibIceHUD:OnInitialize()
 
 	self.db = LibStub("AceDB-3.0"):New("IceCoreRealUIDB", self.IceCore.defaults, true)
 	if not self.db or not self.db.global or not self.db.profile then
-		print(L["Error: nibIceHUD database not loaded correctly.  Please exit out of WoW and delete the database file (nibIceHUD.lua) found in: \\World of Warcraft\\WTF\\Account\\<Account Name>>\\SavedVariables\\"])
+		print("Error: nibIceHUD database not loaded correctly.  Please exit out of WoW and delete the database file (nibIceHUD.lua) found in: \\World of Warcraft\\WTF\\Account\\<Account Name>>\\SavedVariables\\")
 		return
 	end
 
@@ -178,17 +177,6 @@ function nibIceHUD:OnEnable(isFirst)
 		self.debugFrame = ChatFrame2
 	end
 end
-
--- blizzard interface options
-local blizOptionsPanel = CreateFrame("FRAME", "nibIceHUDConfigPanel", UIParent)
-blizOptionsPanel.name = "nibIceHUD"
-blizOptionsPanel.button = CreateFrame("BUTTON", "nibIceHUDOpenConfigButton", blizOptionsPanel, "UIPanelButtonTemplate")
-blizOptionsPanel.button:SetText("Open nibIceHUD configuration")
-blizOptionsPanel.button:SetWidth(240)
-blizOptionsPanel.button:SetHeight(30)
-blizOptionsPanel.button:SetScript("OnClick", function(self) HideUIPanel(InterfaceOptionsFrame) HideUIPanel(GameMenuFrame) nibIceHUD:OpenConfig() end)
-blizOptionsPanel.button:SetPoint('TOPLEFT', blizOptionsPanel, 'TOPLEFT', 20, -20)
-InterfaceOptions_AddCategory(blizOptionsPanel)
 
 function nibIceHUD:OpenConfig()
 	if not ConfigDialog then return end
@@ -311,7 +299,7 @@ end
 
 function nibIceHUD:PreProfileChanged(db)
 	if UnitAffectingCombat("player") then
-		StaticPopup_Show("NIBICEHUD_CHANGED_PROFILE_COMBAT")
+		StaticPopup_Show("nibIceHUD_CHANGED_PROFILE_COMBAT")
 	end
 	self.IceCore:Disable()
 end
@@ -405,13 +393,9 @@ end
 function nibIceHUD:CreateCustomModuleAndNotify(moduleKey, settings)
 	local newMod = nil
 	local popupMsg
-	if moduleKey == "Bar" then -- custom bar
-		newMod = IceCustomBar:new()
-		popupMsg = "NIBICEHUD_CUSTOM_BAR_CREATED"
-	elseif moduleKey == "CD" then -- cooldown bar
-		newMod = IceCustomCDBar:new()
-		popupMsg = "NIBICEHUD_CUSTOM_CD_CREATED"
-	end
+	
+	newMod = IceCustomBar:new()
+	popupMsg = "nibIceHUD_CUSTOM_BAR_CREATED"
 
 	if newMod ~= nil then
 		nibIceHUD.IceCore:AddNewDynamicModule(newMod, settings)

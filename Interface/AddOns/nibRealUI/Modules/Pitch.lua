@@ -43,6 +43,11 @@ local function GetOptions()
 				end,
 				order = 30,
 			},
+			gap1 = {
+				name = " ",
+				type = "description",
+				order = 31,
+			},
 			visibility = {
 				name = "Visibility",
 				type = "group",
@@ -81,6 +86,11 @@ local function GetOptions()
 					},
 				},
 			},
+			gap2 = {
+				name = " ",
+				type = "description",
+				order = 41,
+			},
 			position = {
 				name = "Position",
 				type = "group",
@@ -113,6 +123,11 @@ local function GetOptions()
 					},
 				},
 			},
+			gap3 = {
+				name = " ",
+				type = "description",
+				order = 51,
+			},
 			animation = {
 				name = "Animation",
 				type = "group",
@@ -142,6 +157,11 @@ local function GetOptions()
 						end,
 					},
 				},
+			},
+			gap4 = {
+				name = " ",
+				type = "description",
+				order = 61,
 			},
 			appearance = {
 				name = "Appearance",
@@ -465,7 +485,7 @@ function Pitch:OnInitialize()
 	db = self.db.profile
 	
 	self:SetEnabledState(nibRealUI:GetModuleEnabled(MODNAME))
-	nibRealUI:RegisterExtrasOptions(MODNAME, GetOptions)
+	nibRealUI:RegisterModuleOptions(MODNAME, GetOptions)
 end
 
 function Pitch:OnEnable()

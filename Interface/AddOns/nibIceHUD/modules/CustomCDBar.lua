@@ -1,4 +1,3 @@
-local L = LibStub("AceLocale-3.0"):GetLocale("nibIceHUD", false)
 IceCustomCDBar = IceCore_CreateClass(IceBarElement)
 local mass
 
@@ -74,8 +73,6 @@ function IceCustomCDBar.prototype:GetDefaultSettings()
 	local settings = IceCustomCDBar.super.prototype.GetDefaultSettings(self)
 
 	settings["enabled"] = true
-	settings["shouldAnimate"] = false
-	settings["desiredLerpTime"] = 0
 	settings["lowThreshold"] = 0
 	settings["side"] = IceCore.Side.Right
 	settings["offset"] = 8
@@ -85,10 +82,6 @@ function IceCustomCDBar.prototype:GetDefaultSettings()
 	settings["lowerTextVisible"] = false
 	settings["cooldownToTrack"] = ""
 	settings["barColor"] = {r=1, g=0, b=0, a=1}
-	settings["displayMode"] = "When cooling down"
-	settings["hideAnimationSettings"] = true
-	settings["cooldownTimerDisplay"] = "minutes"
-	settings["customBarType"] = "CD"
 	settings["maxDuration"] = 0
 	settings["lowerTextColor"] = {r=1, g=1, b=1}
 	settings["upperTextColor"] = {r=1, g=1, b=1}
@@ -116,16 +109,16 @@ function IceCustomCDBar.prototype:GetOptions()
 
 	opts["customHeader"] = {
 		type = 'header',
-		name = L["Custom CD settings"],
+		name = "Custom CD settings",
 		order = 30.1,
 	}
 
 	opts["deleteme"] = {
 		type = 'execute',
-		name = L["Delete me"],
-		desc = L["Deletes this custom module and all associated settings. Cannot be undone!"],
+		name = "Delete me",
+		desc = "Deletes this custom module and all associated settings. Cannot be undone!",
 		func = function()
-			local dialog = StaticPopup_Show("NIBICEHUD_DELETE_CUSTOM_MODULE")
+			local dialog = StaticPopup_Show("nibIceHUD_DELETE_CUSTOM_MODULE")
 			if dialog then
 				dialog.data = self
 			end
@@ -135,8 +128,8 @@ function IceCustomCDBar.prototype:GetOptions()
 
 	opts["duplicateme"] = {
 		type = 'execute',
-		name = L["Duplicate me"],
-		desc = L["Creates a new module of this same type and with all the same settings."],
+		name = "Duplicate me",
+		desc = "Creates a new module of this same type and with all the same settings.",
 		func = function()
 			nibIceHUD:CreateCustomModuleAndNotify(self.moduleSettings.customBarType, self.moduleSettings)
 		end,
@@ -145,14 +138,14 @@ function IceCustomCDBar.prototype:GetOptions()
 
 	opts["type"] = {
 		type = "description",
-		name = string.format("%s %s", L["Module type:"], tostring(self:GetBarTypeDescription("CD"))),
+		name = string.format("%s %s", "Module type:", tostring(self:GetBarTypeDescription("CD"))),
 		order = 21,
 	}
 
 	opts["name"] = {
 		type = 'input',
-		name = L["Bar name"],
-		desc = L["The name of this bar (must be unique!).\n\nRemember to press ENTER after filling out this box with the name you want or it will not save."],
+		name = "Bar name",
+		desc = "The name of this bar (must be unique!).\n\nRemember to press ENTER after filling out this box with the name you want or it will not save.",
 		get = function()
 			return self.elementName
 		end,
@@ -170,8 +163,8 @@ function IceCustomCDBar.prototype:GetOptions()
 
 	opts["cooldownToTrack"] = {
 		type = 'input',
-		name = L["Spell to track"],
-		desc = L["Which spell cooldown this bar will be tracking.\n\nRemember to press ENTER after filling out this box with the name you want or it will not save."],
+		name = "Spell to track",
+		desc = "Which spell cooldown this bar will be tracking.\n\nRemember to press ENTER after filling out this box with the name you want or it will not save.",
 		get = function()
 			return self.moduleSettings.cooldownToTrack
 		end,
@@ -199,8 +192,8 @@ function IceCustomCDBar.prototype:GetOptions()
 
 	opts["barColor"] = {
 		type = 'color',
-		name = L["Bar color"],
-		desc = L["The color for this bar"],
+		name = "Bar color",
+		desc = "The color for this bar",
 		get = function()
 			return self:GetBarColor()
 		end,
@@ -218,8 +211,8 @@ function IceCustomCDBar.prototype:GetOptions()
 
 	opts["displayMode"] = {
 		type = 'select',
-		name = L["Display mode"],
-		desc = L["When to display this bar."],
+		name = "Display mode",
+		desc = "When to display this bar.",
 		get = function(info)
 			return nibIceHUD:GetSelectValue(info, self.moduleSettings.displayMode)
 		end,
@@ -236,8 +229,8 @@ function IceCustomCDBar.prototype:GetOptions()
 
 	opts["cooldownTimerDisplay"] = {
 		type = 'select',
-		name = L["Cooldown timer display"],
-		desc = L["How to display the buff timer next to the name of the buff on the bar"],
+		name = "Cooldown timer display",
+		desc = "How to display the buff timer next to the name of the buff on the bar",
 		get = function(info)
 			return nibIceHUD:GetSelectValue(info, self.moduleSettings.cooldownTimerDisplay)
 		end,
@@ -254,8 +247,8 @@ function IceCustomCDBar.prototype:GetOptions()
 
 	opts["maxDuration"] = {
 		type = 'input',
-		name = L["Maximum duration"],
-		desc = L["Maximum Duration for the bar (the bar will remained full if it has longer than maximum remaining).  Leave 0 for spell duration.\n\nRemember to press ENTER after filling out this box with the name you want or it will not save."],
+		name = "Maximum duration",
+		desc = "Maximum Duration for the bar (the bar will remained full if it has longer than maximum remaining).  Leave 0 for spell duration.\n\nRemember to press ENTER after filling out this box with the name you want or it will not save.",
 		get = function()
 			return self.moduleSettings.maxDuration
 		end,
@@ -275,8 +268,8 @@ function IceCustomCDBar.prototype:GetOptions()
 
 	opts["bIgnoreRange"] = {
 		type = 'toggle',
-		name = L["Ignore range"],
-		desc = L["If the selected ability has a max range or only works on friendly units, this will ignore that check. Meaning you can use a CD bar for buff spells and it will display when you have an enemy targeted."],
+		name = "Ignore range",
+		desc = "If the selected ability has a max range or only works on friendly units, this will ignore that check. Meaning you can use a CD bar for buff spells and it will display when you have an enemy targeted.",
 		get = function()
 			return self.moduleSettings.bIgnoreRange
 		end,
@@ -291,8 +284,8 @@ function IceCustomCDBar.prototype:GetOptions()
 
 	opts["bUseNormalAlphas"] = {
 		type = 'toggle',
-		name = L["Use normal alpha"],
-		desc = L["Usually CD bars will always display if they're set to 'When Ready' or 'Always' mode regardless of your other transparency settings. If you'd rather this bar show/hide as per normal transparency rules, then check this box."],
+		name = "Use normal alpha",
+		desc = "Usually CD bars will always display if they're set to 'When Ready' or 'Always' mode regardless of your other transparency settings. If you'd rather this bar show/hide as per normal transparency rules, then check this box.",
 		get = function()
 			return self.moduleSettings.bUseNormalAlphas
 		end,
@@ -311,7 +304,7 @@ function IceCustomCDBar.prototype:GetOptions()
 
 	opts.textSettings.args.upperTextColor = {
 		type = "color",
-		name = L["Upper Text Color"],
+		name = "Upper Text Color",
 		get = function()
 			self:FixupTextColors()
 			return self.moduleSettings.upperTextColor.r, self.moduleSettings.upperTextColor.g, self.moduleSettings.upperTextColor.b, self.alpha
@@ -330,7 +323,7 @@ function IceCustomCDBar.prototype:GetOptions()
 
 	opts.textSettings.args.lowerTextColor = {
 		type = "color",
-		name = L["Lower Text Color"],
+		name = "Lower Text Color",
 		get = function()
 			return self.moduleSettings.lowerTextColor.r, self.moduleSettings.lowerTextColor.g, self.moduleSettings.lowerTextColor.b, 1
 		end,

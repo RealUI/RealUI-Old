@@ -1,41 +1,41 @@
-local L = LibStub("AceLocale-3.0"):NewLocale("nibRealUI", "deDE")
+﻿local L = LibStub("AceLocale-3.0"):NewLocale("nibRealUI", "deDE")
 
 if L then
 
-L["Enabled"] = "Enabled"
+L["Enabled"] = "Aktiviert"
 
-L["Layout will change after you leave combat."] = "Layout will change after you leave combat."
+L["Layout will change after you leave combat."] = "Das Layout ändert sich, nachdem Du den Kampf verlassen hast."
 
 -- Installation
-L["INSTALL"] = "INSTALL"	-- Note: Install Button isn't very wide, so string should be kept short
+L["INSTALL"] = "INSTALL"    -- Note: Install Button isn't very wide, so string should be kept short
 
-L["RealUI Mini Patch"] = "RealUI Mini Patch"
-L["RealUI's settings have been updated."] = "RealUI's settings have been updated."
+L["RealUI Mini Patch"] = "RealUI Mini-Patch"
+L["RealUI's settings have been updated."] = "Die RealUI-Einstellungen wurden aktualisiert."
 
-L["RealUI Layout Resolution"] = "RealUI Layout Resolution"
-L["This character's Layout Resolution needs to be updated to match the global setting."] = "This character's Layout Resolution needs to be updated to match the global setting."
+L["RealUI Layout Resolution"] = "RealUI Layout-Auflösung"
+L["This character's Layout Resolution needs to be updated to match the global setting."] = "Für diese Charakter muss die Auflösung aktualisiert werden, damit sie den globalen Einstellungen entspricht."
 
-L["Reload UI now to apply these changes?"] = "Reload UI now to apply these changes?"
+L["Reload UI now to apply these changes?"] = "UI neu laden, um die Änderungen zu übernehmen?"
 
-L["You need to Reload the UI for changes to take effect. Reload Now?"] = "You need to Reload the UI for changes to take effect. Reload Now?"
+L["You need to Reload the UI for changes to take effect. Reload Now?"] = "Die UI muss neu geladen werden, damit die Änderungen wirksam werden. Jetzt neu laden?"
 
 -- Info Line
-L["Micromenu"] = "Micromenu"
-L["XP/Rep"] = "XP/Rep"
-L["SysInfo"] = "SysInfo"
-L["Spec Changer"] = "Spec Changer"
-L["Layout Changer"] = "Layout Changer"
-L["Meter Toggle"] = "Meter Toggle"
+L["Micromenu"] = "Mikromenu"
+L["XP/Rep"] = "XP/Ruf"
+L["SysInfo"] = "System-Info"
+L["Spec Changer"] = "Spez.-Changer"
+L["Layout Changer"] = "Layout-Changer"
+L["Meter Toggle"] = "Anzeigen-Schalter"
 
-L["Menu"] = "Menu"
+L["Menu"] = "Menü"
 
-L["Meters"] = "Meters"
+L["Meters"] = "Anzeigen"
 
 L["Stat"] = "Stat"
-L["Cur"] = "Cur"
+L["Cur"] = "Akt"
 L["Max"] = "Max"
 L["Min"] = "Min"
-L["Avg"] = "Avg"
+L["Avg"] = "Dur"
 
 L["In"] = "In"
 L["Out"] = "Out"
@@ -43,34 +43,34 @@ L["kbps"] = "kbps"
 L["ms"] = "ms"
 L["FPS"] = "FPS"
 
-L["Date"] = "Date"
-L["Wintergrasp Time Left"] = "Wintergrasp Time Left"
-L["No Wintergrasp Time Available"] = "No Wintergrasp Time Available"
-L["Tol Barad Time Left"] = "Tol Barad Time Left:"
-L["No Tol Barad Time Available"] = "No Tol Barad Time Available"
-L["Pending Invites:"] = "Pending Invites:"
+L["Date"] = "Datum"
+L["Wintergrasp Time Left"] = "Restzeit Tausendwintersee"
+L["No Wintergrasp Time Available"] = "Keine Zeit für Tausendwintersee verfügbar"
+L["Tol Barad Time Left"] = "Restzeit Tol Barad"
+L["No Tol Barad Time Available"] = "Keine Zeit für Tol Barad Time verfügbar"
+L["Pending Invites:"] = "Offene Einladungen:"
 
-L["Layout Changer"] = "Layout Changer"
-L["Current Layout:"] = "Current Layout:"
-L["Current Resolution:"] = "Current Resolution:"
-L["Resolution Note:"] = "Resolution Note:"
-L["Different Resolutions are designed to better"] = "Different Resolutions are designed to better"
-L["optimize RealUI for your current screen size."] = "optimize RealUI for your current screen size."
-L["Minimum Screen Sizes:"] = "Minimum Screen Sizes:"
-L["Low Res:"] = "Low Res:"
-L["High Res:"] = "High Res:"
+L["Layout Changer"] = "Layout-Changer"
+L["Current Layout:"] = "Aktuelles Layout:"
+L["Current Resolution:"] = "Aktuelle Auflösung:"
+L["Resolution Note:"] = "Hinweis zur Auflösung:"
+L["Different Resolutions are designed to better"] = "Verschiedene Auflösungen sind dazu da, RealUI besser"
+L["optimize RealUI for your current screen size."] = "an Deine aktuelle Bildschirmgröße anpassen zu können."
+L["Minimum Screen Sizes:"] = "Minimale Bildschirmgrößen:"
+L["Low Res:"] = "Niedr. Aufl.:"
+L["High Res:"] = "Hohe Aufl.:"
 L["LR"] = "LR"
 L["HR"] = "HR"
 L["DPS/Tank"] = "DPS/Tank"
 L["Healing"] = "Healing"
 
-L["Meter Toggle"] = "Meter Toggle"
-L["Active Meters:"] = "Active Meters:"
+L["Meter Toggle"] = "Anzeigen-Schalter"
+L["Active Meters:"] = "Aktive Anzeige:"
 
 L["Start"] = "Start"
 
-L["Current"] = "Current"
-L["Remaining"] = "Remaining"
+L["Current"] = "Aktuelle"
+L["Remaining"] = "Übrige"
 
 L["Honor Points"] = "EhP"
 L["Conquest Points"] = "ErP"
@@ -78,28 +78,41 @@ L["Justice Points"] = "GP"
 L["Valor Points"] = "TP"
 L["Updated"] = "Akt."
 
-L["Faction not set"] = "Faction not set"
+L["Faction not set"] = "Keine Fraktion eingestellt"
 
-L["<Click> to switch between"] = "<Click> to switch between"
-L["XP and Rep display."] = "XP and Rep display."
-L["<Click> to switch currency displayed."] = "<Click> to switch currency displayed."
-L["<Alt+Click> to erase highlighted character data."] = "<Alt+Click> to erase highlighted character data."
-L["<Shift+Click> to reset weekly caps."] = "<Shift+Click> to reset weekly caps."
-L["Note: Weekly caps will reset upon loading currency data"] = "Note: Weekly caps will reset upon loading currency data"
-L["on a character whose weekly caps have reset."] = "on a character whose weekly caps have reset."
-L["<Click> to whisper, <Alt+Click> to invite."] = "<Click> to whisper, <Alt+Click> to invite."
+L["<Click> to switch between"] = "<Klick> zum Wechseln"
+L["XP and Rep display."] = "zwischen XP und Ruf."
+L["<Click> to switch currency displayed."] = "<Klick> Angezeigte Währung wechseln."
+L["<Alt+Click> to erase highlighted character data."] = "<Alt+Klick> Daten des markierten Charakters löschen."
+L["<Shift+Click> to reset weekly caps."] = "<Shift+Klick>: Wöchentlichen Caps zurückstellen."
+L["Note: Weekly caps will reset upon loading currency data"] = "Hinweis: Wöchentliche Caps werden auf einem Charakter, dessen wöchentliche "
+L["on a character whose weekly caps have reset."] = "Caps schon zurückgestellt sind, erst beim Laden der Währungsdaten zurückgestellt."
+L["<Click> to whisper, <Alt+Click> to invite."] = "<Klick> zum Flüstern, <Alt+Klick> zum Einladen."
 
-L["<Click> to change talent specs."] = "<Click> to change talent specs."
-L["<Equip Click> to equip."] = "<Equip Click> to equip."
-L["<Equip Ctl+Click> to assign to "] = "<Equip Ctl+Click> to assign to "
-L["<Equip Alt+Click> to assign to "] = "<Equip Alt+Click> to assign to "
-L["<Equip Shift+Click> to unassign."] = "<Equip Shift+Click> to unassign."
+L["Stat Display"] = "Stat-Anzeige"
+L["<Spec Click> to change talent specs."] = "<Spez. Klick>: Talent-Spezialisierung wechseln."
+L["<Equip Click> to equip."] = "<Ausr. Klick> zum Ausrüsten."
+L["<Equip Ctl+Click> to assign to "] = "<Ausr. Strg+Klick>: Zuordnen zu "
+L["<Equip Alt+Click> to assign to "] = "<Ausr. Alt+Klick>: Zuordnen zu "
+L["<Equip Shift+Click> to unassign."] = "<Ausr. Shift+Klick>: Zuordnung aufheben."
+L["<Stat Click> to configure."] = "<Stat Klick>: Konfigurieren."
 
-L["<Click> to cycle through equipment sets."] = "<Click> to cycle through equipment sets."
-L["<Click> to show calendar."] = "<Click> to show calendar."
-L["<Shift+Click> to show timer."] = "<Shift+Click> to show timer."
-L["<Click> to change layouts."] = "<Click> to change layouts."
-L["<Alt+Click> to change resolution."] = "<Alt+Click> to change resolution."
-L["<Click> to toggle meters."] = "<Click> to toggle meters."
+L["<Click> to cycle through equipment sets."] = "<Klick> Ausrüstungsset wechseln."
+L["<Click> to show calendar."] = "<Klick>: Kalender anzeigen."
+L["<Shift+Click> to show timer."] = "<Shift+Klick>: Timer anzeigen."
+L["<Click> to change layouts."] = "<Klick>: Layout ändern."
+L["<Alt+Click> to change resolution."] = "<Alt+Klick>: Auflösung wechseln."
+L["<Click> to toggle meters."] = "<Klick>: Anzeige wechseln."
+
+-- HuD Config
+L["Cannot open HuD Configuration while in combat."] = "Kann HuD-Konfiguration während des Kampfs nicht öffnen."
+L["Okay"] = "Okay"
+L["Load Defaults"] = "Standardwerte laden"
+L["Show HuD Elements"] = "HuD-Elemente anzeigen"
+L["HuD Configuration"] = "HuD-Konfiguration"
+L["Action Bars / Grid"] = "Aktionsleisten / Grid"
+L["Vertical"] = "Vertikal"
+L["Horizontal"] = "Horizontal"
+L["Width"] = "Breite"
 
 end

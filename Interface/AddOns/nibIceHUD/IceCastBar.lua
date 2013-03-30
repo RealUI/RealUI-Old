@@ -1,4 +1,3 @@
-local L = LibStub("AceLocale-3.0"):GetLocale("nibIceHUD", false)
 IceCastBar = IceCore_CreateClass(IceBarElement)
 local mass
 
@@ -78,8 +77,8 @@ function IceCastBar.prototype:GetOptions()
 	opts["showCastTime"] =
 	{
 		type = 'toggle',
-		name = L["Show spell cast time"],
-		desc = L["Whether or not to show the remaining cast time of a spell being cast."],
+		name = "Show spell cast time",
+		desc = "Whether or not to show the remaining cast time of a spell being cast.",
 		get = function()
 			return self.moduleSettings.showCastTime
 		end,
@@ -95,8 +94,8 @@ function IceCastBar.prototype:GetOptions()
 	opts["showSpellRank"] =
 	{
 		type = 'toggle',
-		name = L["Show spell rank"],
-		desc = L["Whether or not to show the rank of a spell being cast."],
+		name = "Show spell rank",
+		desc = "Whether or not to show the rank of a spell being cast.",
 		get = function()
 			return self.moduleSettings.showSpellRank
 		end,
@@ -111,8 +110,8 @@ function IceCastBar.prototype:GetOptions()
 
 	opts["reverseChannel"] = {
 		type = 'toggle',
-		name = L["Reverse channeling"],
-		desc = L["Whether or not to reverse the direction of the cast bar when a spell is being channeled. For example, if a normal cast causes this bar to fill up, then checking this option will cause a channeled spell to empty the bar instead."],
+		name = "Reverse channeling",
+		desc = "Whether or not to reverse the direction of the cast bar when a spell is being channeled. For example, if a normal cast causes this bar to fill up, then checking this option will cause a channeled spell to empty the bar instead.",
 		get = function()
 			return self.moduleSettings.reverseChannel
 		end,
@@ -127,12 +126,12 @@ function IceCastBar.prototype:GetOptions()
 	
 	opts["iconSettings"] = {
 		type = 'group',
-		name = "|c"..self.configColor..L["Icon Settings"].."|r",
+		name = "|c"..self.configColor.."Icon Settings".."|r",
 		args = {
 			displayAuraIcon = {
 				type = 'toggle',
-				name = L["Display aura icon"],
-				desc = L["Whether or not to display an icon for the aura that this bar is tracking"],
+				name = "Display aura icon",
+				desc = "Whether or not to display an icon for the aura that this bar is tracking",
 				get = function()
 					return self.moduleSettings.displayAuraIcon
 				end,
@@ -157,8 +156,8 @@ function IceCastBar.prototype:GetOptions()
 				min = -250,
 				max = 250,
 				step = 0.5,
-				name = L["Aura icon horizontal offset"],
-				desc = L["Adjust the horizontal position of the aura icon"],
+				name = "Aura icon horizontal offset",
+				desc = "Adjust the horizontal position of the aura icon",
 				get = function()
 					return self.moduleSettings.auraIconXOffset
 				end,
@@ -177,8 +176,8 @@ function IceCastBar.prototype:GetOptions()
 				min = -250,
 				max = 250,
 				step = 0.5,
-				name = L["Aura icon vertical offset"],
-				desc = L["Adjust the vertical position of the aura icon"],
+				name = "Aura icon vertical offset",
+				desc = "Adjust the vertical position of the aura icon",
 				get = function()
 					return self.moduleSettings.auraIconYOffset
 				end,
@@ -198,7 +197,7 @@ function IceCastBar.prototype:GetOptions()
 				max = 32,
 				step = 1,
 				name = "Aura icon size",
-				desc = L["Adjusts the size of the aura icon for this bar"],
+				desc = "Adjusts the size of the aura icon for this bar",
 				get = function()
 					return self.moduleSettings.auraIconSize
 				end,
@@ -233,7 +232,8 @@ end
 function IceCastBar.prototype:CreateFrame()
 	IceCastBar.super.prototype.CreateFrame(self)
 
-	self.frame.bottomUpperText:SetWidth(self.settings.gap + 30)
+	local layout = RealUI.db.char.resolution
+	self.frame.bottomUpperText:SetWidth(self.settings["gap"..layout] + 30)
 	
 	if not self.barFrame.icon then
 		self.barFrame.icon = self.frame:CreateTexture(nil, "OVERLAY")

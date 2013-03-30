@@ -1,0 +1,11 @@
+## Interface: 50200
+## Author: Allez
+## Title: |cff777777al|rDamageMeter
+## Version: 50100.13
+## Notes: Damage meter
+## RequiredDeps: nibRealUI, Aurora
+## SavedVariables: dmconf
+## LoadOnDemand: 1
+
+embeds.xml
+alDamageMeter.lua

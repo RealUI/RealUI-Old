@@ -1,5 +1,3 @@
-local LibDualSpec = LibStub('LibDualSpec-1.0', true)
-local L = LibStub("AceLocale-3.0"):GetLocale("nibIceHUD", false)
 local lastCustomModule = "Bar"
 local _
 local mass
@@ -20,131 +18,75 @@ local table_Outline = {
 local options =
 {
 	type = 'group',
-	name = L["nibIceHUD"],
-	desc = L["nibIceHUD"],
+	name = "nibIceHUD",
+	desc = "nibIceHUD",
 	icon = "Interface\\Icons\\Spell_Frost_Frost",
 	args =
 	{
 		headerGeneral = {
 			type = 'header',
-			name = L["General Settings"],
+			name = "General Settings",
 			order = 10
 		},
+		
+		-- positioningSettings = {
+			-- type = 'group',
+			-- name = "Positioning Settings",
+			-- desc = "Settings related to positioning and alpha",
+			-- order = 11,
+			-- args = {
 
-		faq = {
-			type = 'group',
-			name = L["FAQs"],
-			desc = L["Answers to questions that are frequently asked."],
-			order = 1,
-			args = {
-				test = {
-					type = 'description',
-					fontSize = "medium",
-					name = [[|cff9999ff1. How do I hide the HUD or change its transparency based on combat, targeting, etc.?|r
-Check the "Transparency Settings" section. Nearly any combination of states should be available for tweaking.
+				-- gap1 = {
+					-- type = 'range',
+					-- name = "Gap - Low Res",
+					-- desc = "Distance between the left and right bars",
+					-- get = function()
+						-- return nibIceHUD.IceCore:GetGap(1)
+					-- end,
+					-- set = function(info, v)
+						-- nibIceHUD.IceCore:SetGap(v, 1)
+					-- end,
+					-- min = 50,
+					-- max = 700,
+					-- step = 5,
+					-- order = 13,
+				-- },
+				-- gap2 = {
+					-- type = 'range',
+					-- name = "Gap - High Res",
+					-- desc = "Distance between the left and right bars",
+					-- get = function()
+						-- return nibIceHUD.IceCore:GetGap(2)
+					-- end,
+					-- set = function(info, v)
+						-- nibIceHUD.IceCore:SetGap(v, 2)
+					-- end,
+					-- min = 50,
+					-- max = 700,
+					-- step = 5,
+					-- order = 15,
+				-- },
 
-|cff9999ff2. What's this thing at the top of the player's cast bar? It's darker than the rest of the bar.|r
-That's the Cast Lag Indicator that shows you when you can start casting a new spell and still be able to finish the current one (based on your lag to the server). You can disable this in the Player Cast Bar module settings.
-
-|cff9999ff3. Is there a bar that shows breath underwater, and if so how can I adjust it?|r
-Yes, this is called the MirrorBarHandler in the |cffffdc42Module Settings|r. It's called that because it mirrors casting bar behavior, displays more than just breathing (fatigue is one example), and that's what Blizzard calls it. It can be moved/adjusted/resized/etc. as with any other module.
-
-|cff9999ff4. How do I turn off these big huge bars that pulse whenever one of my abilities procs?|r
-This isn't |cff9999ffnibIceHUD|r - it's Blizzard's new Spell Alerts they added in 4.0.1. Interface options => Combat => "Show Spell Alerts" to turn them off.]]
-				}
-			}
-		},
-
-		positioningSettings = {
-			type = 'group',
-			name = L["Positioning Settings"],
-			desc = L["Settings related to positioning and alpha"],
-			order = 11,
-			args = {
-				vpos = {
-					type = 'range',
-					name = L["Vertical position"],
-					desc = L["Vertical position"],
-					get = function()
-						return nibIceHUD.IceCore:GetVerticalPos()
-					end,
-					set = function(info, v)
-						nibIceHUD.IceCore:SetVerticalPos(v)
-					end,
-					min = -700,
-					max = 700,
-					step = 1,
-					order = 11
-				},
-
-				hpos = {
-					type = 'range',
-					name = L["Horizontal position"],
-					desc = L["Horizontal position (for you dual screen freaks)"],
-					get = function()
-						return nibIceHUD.IceCore:GetHorizontalPos()
-					end,
-					set = function(info, v)
-						nibIceHUD.IceCore:SetHorizontalPos(v)
-					end,
-					min = -2000,
-					max = 2000,
-					step = 1,
-					order = 12
-				},
-
-				gap = {
-					type = 'range',
-					name = L["Gap"],
-					desc = L["Distance between the left and right bars"],
-					get = function()
-						return nibIceHUD.IceCore:GetGap()
-					end,
-					set = function(info, v)
-						nibIceHUD.IceCore:SetGap(v)
-					end,
-					min = 50,
-					max = 700,
-					step = 5,
-					order = 13,
-				},
-
-				scale = {
-					type = 'range',
-					name = L["Scale"],
-					desc = L["HUD scale"],
-					get = function()
-						return nibIceHUD.IceCore:GetScale()
-					end,
-					set = function(info, v)
-						nibIceHUD.IceCore:SetScale(v)
-					end,
-					min = 0.5,
-					max = 1.5,
-					step = 0.01,
-					isPercent = true,
-					order = 14,
-				},
-			}
-		},
+			-- }
+		-- },
 
 
 		alphaSettings = {
 			type = 'group',
-			name = L["Transparency Settings"],
-			desc = L["Settings for bar transparencies"],
+			name = "Transparency Settings",
+			desc = "Settings for bar transparencies",
 			order = 12,
 			args = {
 				headerAlpha = {
 					type = 'header',
-					name = L["Bar Alpha"],
+					name = "Bar Alpha",
 					order = 10
 				},
 
 				alphaic = {
 					type = 'range',
-					name = L["Alpha in combat"],
-					desc = L["Bar alpha In Combat"],
+					name = "Alpha in combat",
+					desc = "Bar alpha In Combat",
 					get = function()
 						return nibIceHUD.IceCore:GetAlpha("IC")
 					end,
@@ -160,8 +102,8 @@ This isn't |cff9999ffnibIceHUD|r - it's Blizzard's new Spell Alerts they added i
 
 				alphaooc = {
 					type = 'range',
-					name = L["Alpha out of combat"],
-					desc = L["Bar alpha Out Of Combat without target"],
+					name = "Alpha out of combat",
+					desc = "Bar alpha Out Of Combat without target",
 					get = function()
 						return nibIceHUD.IceCore:GetAlpha("OOC")
 					end,
@@ -177,8 +119,8 @@ This isn't |cff9999ffnibIceHUD|r - it's Blizzard's new Spell Alerts they added i
 
 				alphaTarget = {
 					type = 'range',
-					name = L["Alpha OOC and Target"],
-					desc = L["Bar alpha Out Of Combat with target accuired (takes precedence over Not Full)"],
+					name = "Alpha OOC and Target",
+					desc = "Bar alpha Out Of Combat with target accuired (takes precedence over Not Full)",
 					get = function()
 						return nibIceHUD.IceCore:GetAlpha("Target")
 					end,
@@ -194,8 +136,8 @@ This isn't |cff9999ffnibIceHUD|r - it's Blizzard's new Spell Alerts they added i
 
 				alphaNotFull = {
 					type = 'range',
-					name = L["Alpha OOC and not full"],
-					desc = L["Bar alpha Out Of Combat with target accuired or bar not full (Target takes precedence over this)"],
+					name = "Alpha OOC and not full",
+					desc = "Bar alpha Out Of Combat with target accuired or bar not full (Target takes precedence over this)",
 					get = function()
 						return nibIceHUD.IceCore:GetAlpha("NotFull")
 					end,
@@ -212,14 +154,14 @@ This isn't |cff9999ffnibIceHUD|r - it's Blizzard's new Spell Alerts they added i
 
 				headerAlphaBackground = {
 					type = 'header',
-					name = L["Background Alpha"],
+					name = "Background Alpha",
 					order = 20
 				},
 
 				alphaicbg = {
 					type = 'range',
-					name = L["BG Alpha in combat"],
-					desc = L["Background alpha for bars IC"],
+					name = "BG Alpha in combat",
+					desc = "Background alpha for bars IC",
 					get = function()
 						return nibIceHUD.IceCore:GetAlphaBG("IC")
 					end,
@@ -235,8 +177,8 @@ This isn't |cff9999ffnibIceHUD|r - it's Blizzard's new Spell Alerts they added i
 
 				alphaoocbg = {
 					type = 'range',
-					name = L["BG Alpha out of combat"],
-					desc = L["Background alpha for bars OOC without target"],
+					name = "BG Alpha out of combat",
+					desc = "Background alpha for bars OOC without target",
 					get = function()
 						return nibIceHUD.IceCore:GetAlphaBG("OOC")
 					end,
@@ -252,8 +194,8 @@ This isn't |cff9999ffnibIceHUD|r - it's Blizzard's new Spell Alerts they added i
 
 				alphaTargetbg = {
 					type = 'range',
-					name = L["BG Alpha OOC and Target"],
-					desc = L["Background alpha for bars OOC and target accuired (takes precedence over Not Full)"],
+					name = "BG Alpha OOC and Target",
+					desc = "Background alpha for bars OOC and target accuired (takes precedence over Not Full)",
 					get = function()
 						return nibIceHUD.IceCore:GetAlphaBG("Target")
 					end,
@@ -269,8 +211,8 @@ This isn't |cff9999ffnibIceHUD|r - it's Blizzard's new Spell Alerts they added i
 
 				alphaNotFullbg = {
 					type = 'range',
-					name = L["BG Alpha OOC and not Full"],
-					desc = L["Background alpha for bars OOC and bar not full (Target takes precedence over this)"],
+					name = "BG Alpha OOC and not Full",
+					desc = "Background alpha for bars OOC and bar not full (Target takes precedence over this)",
 					get = function()
 						return nibIceHUD.IceCore:GetAlphaBG("NotFull")
 					end,
@@ -287,14 +229,14 @@ This isn't |cff9999ffnibIceHUD|r - it's Blizzard's new Spell Alerts they added i
 
 				headerBarAdvanced = {
 					type = 'header',
-					name = L["Other"],
+					name = "Other",
 					order = 30
 				},
 
 				backgroundToggle = {
 					type = "toggle",
-					name = L["Contextual Background"],
-					desc = L["Toggles contextual background coloring"],
+					name = "Contextual Background",
+					desc = "Toggles contextual background coloring",
 					get = function()
 						return nibIceHUD.IceCore:GetBackgroundToggle()
 					end,
@@ -306,8 +248,8 @@ This isn't |cff9999ffnibIceHUD|r - it's Blizzard's new Spell Alerts they added i
 
 				backgroundColor = {
 					type = 'color',
-					name = L["Background Color"],
-					desc = L["Background Color"],
+					name = "Background Color",
+					desc = "Background Color",
 					get = function()
 						return nibIceHUD.IceCore:GetBackgroundColor()
 					end,
@@ -322,91 +264,188 @@ This isn't |cff9999ffnibIceHUD|r - it's Blizzard's new Spell Alerts they added i
 
 		textSettings = {
 			type = 'group',
-			name = L["Font"],
+			name = "Font",
 			order = 19,
 			args = {
-				font = {
-					type = 'select',
-					dialogControl = "LSM30_Font",
-					name = L["Font"],
-					get = function(info)
-						return nibIceHUD.IceCore:GetFontFamily()
-					end,
-					set = function(info, value)
-						nibIceHUD.IceCore:SetFontFamily(value)
-					end,
-					disabled = function()
-						return not nibIceHUD.IceCore:IsEnabled()
-					end,
-					values = AceGUIWidgetLSMlists.font,
-					order = 94.75,
+				lowres = {
+					type = "group",
+					name = "Low Res",
+					order = 10,
+					args = {
+						font = {
+							type = 'select',
+							dialogControl = "LSM30_Font",
+							name = "Font",
+							get = function(info)
+								return nibIceHUD.IceCore:GetFontFamily(1)
+							end,
+							set = function(info, value)
+								nibIceHUD.IceCore:SetFontFamily(value, 1)
+							end,
+							disabled = function()
+								return not nibIceHUD.IceCore:IsEnabled()
+							end,
+							values = AceGUIWidgetLSMlists.font,
+							order = 94.75,
+						},
+						fontsize = {
+							type = 'range',
+							name = "Bar Font Size",
+							get = function()
+								return nibIceHUD.IceCore:GetFontSize(1)
+							end,
+							set = function(info, value)
+								nibIceHUD.IceCore:SetFontSize(value, 1)
+							end,
+							min = 6,
+							max = 20,
+							step = 1,
+							disabled = function()
+								return not nibIceHUD.IceCore:IsEnabled()
+							end,
+							order = 94.80
+						},
+						fontlarge = {
+							type = 'select',
+							dialogControl = "LSM30_Font",
+							name = "Font".." (large)",
+							get = function(info)
+								return nibIceHUD.IceCore:GetFontFamilyLarge(1)
+							end,
+							set = function(info, value)
+								nibIceHUD.IceCore:SetFontFamilyLarge(value, 1)
+							end,
+							disabled = function()
+								return not nibIceHUD.IceCore:IsEnabled()
+							end,
+							values = AceGUIWidgetLSMlists.font,
+							order = 94.85,
+						},
+						fontsizelarge = {
+							type = 'range',
+							name = "Bar Font Size".." (large)",
+							get = function()
+								return nibIceHUD.IceCore:GetFontSizeLarge(1)
+							end,
+							set = function(info, value)
+								nibIceHUD.IceCore:SetFontSizeLarge(value, 1)
+							end,
+							min = 6,
+							max = 20,
+							step = 1,
+							disabled = function()
+								return not nibIceHUD.IceCore:IsEnabled()
+							end,
+							order = 94.90
+						},
+						outline = {
+							type = 'select',
+							name = "Outline",
+							get = function(info)
+								for k,v in pairs(table_Outline) do
+									if v == nibIceHUD.IceCore:GetFontOutline(1) then return k end
+								end
+							end,
+							set = function(info, value)
+								nibIceHUD.IceCore:SetFontOutline(table_Outline[value], 1)
+							end,
+							disabled = function()
+								return not nibIceHUD.IceCore:IsEnabled()
+							end,
+							values = table_Outline,
+							order = 94.95,
+						},
+					},
 				},
-				fontsize = {
-					type = 'range',
-					name = L["Bar Font Size"],
-					get = function()
-						return nibIceHUD.IceCore:GetFontSize()
-					end,
-					set = function(info, value)
-						nibIceHUD.IceCore:SetFontSize(value)
-					end,
-					min = 6,
-					max = 20,
-					step = 1,
-					disabled = function()
-						return not nibIceHUD.IceCore:IsEnabled()
-					end,
-					order = 94.80
-				},
-				fontlarge = {
-					type = 'select',
-					dialogControl = "LSM30_Font",
-					name = L["Font"].." (large)",
-					get = function(info)
-						return nibIceHUD.IceCore:GetFontFamilyLarge()
-					end,
-					set = function(info, value)
-						nibIceHUD.IceCore:SetFontFamilyLarge(value)
-					end,
-					disabled = function()
-						return not nibIceHUD.IceCore:IsEnabled()
-					end,
-					values = AceGUIWidgetLSMlists.font,
-					order = 94.85,
-				},
-				fontsizelarge = {
-					type = 'range',
-					name = L["Bar Font Size"].." (large)",
-					get = function()
-						return nibIceHUD.IceCore:GetFontSizeLarge()
-					end,
-					set = function(info, value)
-						nibIceHUD.IceCore:SetFontSizeLarge(value)
-					end,
-					min = 6,
-					max = 20,
-					step = 1,
-					disabled = function()
-						return not nibIceHUD.IceCore:IsEnabled()
-					end,
-					order = 94.90
-				},
-				outline = {
-					type = 'select',
-					name = "Outline",
-					get = function(info)
-						for k,v in pairs(table_Outline) do
-							if v == nibIceHUD.IceCore:GetFontOutline() then return k end
-						end
-					end,
-					set = function(info, value)
-						nibIceHUD.IceCore:SetFontOutline(table_Outline[value])
-					end,
-					disabled = function()
-						return not nibIceHUD.IceCore:IsEnabled()
-					end,
-					values = table_Outline,
-					order = 94.95,
+				highres = {
+					type = "group",
+					name = "High Res",
+					order = 20,
+					args = {
+						font = {
+							type = 'select',
+							dialogControl = "LSM30_Font",
+							name = "Font",
+							get = function(info)
+								return nibIceHUD.IceCore:GetFontFamily(2)
+							end,
+							set = function(info, value)
+								nibIceHUD.IceCore:SetFontFamily(value, 2)
+							end,
+							disabled = function()
+								return not nibIceHUD.IceCore:IsEnabled()
+							end,
+							values = AceGUIWidgetLSMlists.font,
+							order = 94.75,
+						},
+						fontsize = {
+							type = 'range',
+							name = "Bar Font Size",
+							get = function()
+								return nibIceHUD.IceCore:GetFontSize(2)
+							end,
+							set = function(info, value)
+								nibIceHUD.IceCore:SetFontSize(value, 2)
+							end,
+							min = 6,
+							max = 20,
+							step = 1,
+							disabled = function()
+								return not nibIceHUD.IceCore:IsEnabled()
+							end,
+							order = 94.80
+						},
+						fontlarge = {
+							type = 'select',
+							dialogControl = "LSM30_Font",
+							name = "Font".." (large)",
+							get = function(info)
+								return nibIceHUD.IceCore:GetFontFamilyLarge(2)
+							end,
+							set = function(info, value)
+								nibIceHUD.IceCore:SetFontFamilyLarge(value, 2)
+							end,
+							disabled = function()
+								return not nibIceHUD.IceCore:IsEnabled()
+							end,
+							values = AceGUIWidgetLSMlists.font,
+							order = 94.85,
+						},
+						fontsizelarge = {
+							type = 'range',
+							name = "Bar Font Size".." (large)",
+							get = function()
+								return nibIceHUD.IceCore:GetFontSizeLarge(2)
+							end,
+							set = function(info, value)
+								nibIceHUD.IceCore:SetFontSizeLarge(value, 2)
+							end,
+							min = 6,
+							max = 20,
+							step = 1,
+							disabled = function()
+								return not nibIceHUD.IceCore:IsEnabled()
+							end,
+							order = 94.90
+						},
+						outline = {
+							type = 'select',
+							name = "Outline",
+							get = function(info)
+								for k,v in pairs(table_Outline) do
+									if v == nibIceHUD.IceCore:GetFontOutline(2) then return k end
+								end
+							end,
+							set = function(info, value)
+								nibIceHUD.IceCore:SetFontOutline(table_Outline[value], 2)
+							end,
+							disabled = function()
+								return not nibIceHUD.IceCore:IsEnabled()
+							end,
+							values = table_Outline,
+							order = 94.95,
+						},
+					},
 				},
 			},
 			
@@ -415,34 +454,20 @@ This isn't |cff9999ffnibIceHUD|r - it's Blizzard's new Spell Alerts they added i
 
 		barSettings = {
 			type = 'group',
-			name = L["Bar Settings"],
-			desc = L["Settings related to bars"],
+			name = "Bar Settings",
+			desc = "Settings related to bars",
 			order = 20,
 			args = {
 				headerBarAdvanced = {
 					type = 'header',
-					name = L["Advanced Bar Settings"],
+					name = "Advanced Bar Settings",
 					order = 10
 				},
-
-				barTexture = {
-					type = 'select',
-					name = L["Bar Texture"],
-					desc = L["nibIceHUD Bar Texture"],
-					get = function(info)
-						return nibIceHUD:GetSelectValue(info, nibIceHUD.IceCore:GetBarTexture())
-					end,
-					set = function(info, value)
-						nibIceHUD.IceCore:SetBarTexture(nibIceHUD.validBarList[value])
-					end,
-					values = nibIceHUD.validBarList,
-					order = 11
-				},
-
+				
 				barWidth = {
 					type = 'range',
-					name = L["Bar Width"],
-					desc = L["Bar texture width (not the actual bar!)"],
+					name = "Bar Width",
+					desc = "Bar texture width (not the actual bar!)",
 					get = function()
 						return nibIceHUD.IceCore:GetBarWidth()
 					end,
@@ -457,8 +482,8 @@ This isn't |cff9999ffnibIceHUD|r - it's Blizzard's new Spell Alerts they added i
 
 				barHeight = {
 					type = 'range',
-					name = L["Bar Height"],
-					desc = L["Bar texture height (not the actual bar!)"],
+					name = "Bar Height",
+					desc = "Bar texture height (not the actual bar!)",
 					get = function()
 						return nibIceHUD.IceCore:GetBarHeight()
 					end,
@@ -473,8 +498,8 @@ This isn't |cff9999ffnibIceHUD|r - it's Blizzard's new Spell Alerts they added i
 
 				barProportion = {
 					type = 'range',
-					name = L["Bar Proportion"],
-					desc = L["Determines the bar width compared to the whole texture width"],
+					name = "Bar Proportion",
+					desc = "Determines the bar width compared to the whole texture width",
 					get = function()
 						return nibIceHUD.IceCore:GetBarProportion()
 					end,
@@ -490,8 +515,8 @@ This isn't |cff9999ffnibIceHUD|r - it's Blizzard's new Spell Alerts they added i
 
 				barSpace = {
 					type = 'range',
-					name = L["Bar Space"],
-					desc = L["Space between bars on the same side"],
+					name = "Bar Space",
+					desc = "Space between bars on the same side",
 					get = function()
 						return nibIceHUD.IceCore:GetBarSpace()
 					end,
@@ -506,8 +531,8 @@ This isn't |cff9999ffnibIceHUD|r - it's Blizzard's new Spell Alerts they added i
 
 				bgBlendMode = {
 					type = 'select',
-					name = L["Bar Background Blend Mode"],
-					desc = L["nibIceHUD Bar Background Blend mode"],
+					name = "Bar Background Blend Mode",
+					desc = "nibIceHUD Bar Background Blend mode",
 					get = function(info)
 						return nibIceHUD.IceCore:GetBarBgBlendMode()
 					end,
@@ -520,8 +545,8 @@ This isn't |cff9999ffnibIceHUD|r - it's Blizzard's new Spell Alerts they added i
 
 				barBlendMode = {
 					type = 'select',
-					name = L["Bar Blend Mode"],
-					desc = L["nibIceHUD Bar Blend mode"],
+					name = "Bar Blend Mode",
+					desc = "nibIceHUD Bar Blend mode",
 					get = function(info)
 						return nibIceHUD.IceCore:GetBarBlendMode()
 					end,
@@ -537,24 +562,24 @@ This isn't |cff9999ffnibIceHUD|r - it's Blizzard's new Spell Alerts they added i
 
 		modules = {
 			type='group',
-			desc = L["Module configuration options"],
-			name = L["Module Settings"],
+			desc = "Module configuration options",
+			name = "Module Settings",
 			args = {},
 			order = 41
 		},
 
 		colors = {
 			type='group',
-			desc = L["Module color configuration options"],
-			name = L["Colors"],
+			desc = "Module color configuration options",
+			name = "Colors",
 			args = {},
 			order = 42
 		},
 
 		enabled = {
 			type = "toggle",
-			name = L["Enabled"],
-			desc = L["Enable/disable nibIceHUD"],
+			name = "Enabled",
+			desc = "Enable/disable nibIceHUD",
 			get = function()
 				return nibIceHUD.IceCore:IsEnabled()
 			end,
@@ -570,8 +595,8 @@ This isn't |cff9999ffnibIceHUD|r - it's Blizzard's new Spell Alerts they added i
 
 		debug = {
 			type = "toggle",
-			name = L["Debugging"],
-			desc = L["Enable/disable debug messages"],
+			name = "Debugging",
+			desc = "Enable/disable debug messages",
 			get = function()
 				return nibIceHUD.IceCore:GetDebug()
 			end,
@@ -598,37 +623,10 @@ This isn't |cff9999ffnibIceHUD|r - it's Blizzard's new Spell Alerts they added i
 			order = 92
 		},
 
-		customModuleSelect = {
-			type = "select",
-			name = L["Create custom module"],
-			desc = L["Select a custom module that you want to create here, then press the 'Create' button."],
-			get = function(info)
-				return lastCustomModule
-			end,
-			set = function(info, v)
-				lastCustomModule = v
-			end,
-			values = nibIceHUD.validCustomModules,
-			order = 94.5,
-		},
-
-		customModuleCreate = {
-			type = "execute",
-			name = L["Create"],
-			desc = L["Creates the selected custom module"],
-			func = function()
-				nibIceHUD:CreateCustomModuleAndNotify(lastCustomModule)
-			end,
-			disabled = function()
-				return not nibIceHUD.IceCore:IsEnabled()
-			end,
-			order = 94.6,
-		},
-
 		configMode = {
 			type = 'toggle',
-			name = L["Configuration Mode"],
-			desc = L["Makes all modules visible so you can see where they're placed and find any that are overlapping."],
+			name = "Configuration Mode",
+			desc = "Makes all modules visible so you can see where they're placed and find any that are overlapping.",
 			get = function()
 				return nibIceHUD.IceCore:IsInConfigMode()
 			end,
@@ -638,23 +636,19 @@ This isn't |cff9999ffnibIceHUD|r - it's Blizzard's new Spell Alerts they added i
 			disabled = function()
 				return not nibIceHUD.IceCore:IsEnabled()
 			end,
-			order = 95
+			order = 94.6
 		},
 
-		updatePeriod = {
-			type = 'range',
-			name = L["Update Period"],
-			desc = L["Number of updates per second. The higher this number is, the smoother bars will animate. However, higher settings will also use more CPU, so balance it to your liking. 30 is the recommended setting."],
-			get = function()
-				return math.ceil(1/nibIceHUD.IceCore:UpdatePeriod())
+		customModuleCreate = {
+			type = "execute",
+			name = "Create custom timer",
+			func = function()
+				nibIceHUD:CreateCustomModuleAndNotify("Bar")
 			end,
-			set = function(info, v)
-				nibIceHUD.IceCore:SetUpdatePeriod(1/v)
+			disabled = function()
+				return not nibIceHUD.IceCore:IsEnabled()
 			end,
-			min = 15,
-			max = 60,
-			step = 1,
-			order = 97
+			order = 95,
 		},
 	}
 }
@@ -672,12 +666,7 @@ function nibIceHUD_Options:OnLoad()
 	self:GenerateModuleOptions(true)
 	self.options.args.colors.args = nibIceHUD.IceCore:GetColorOptions()
 	self.options.args.profiles = LibStub("AceDBOptions-3.0"):GetOptionsTable(nibIceHUD.db)
-
-	-- Add dual-spec support
-	if nibIceHUD.db ~= nil and LibDualSpec then
-		LibDualSpec:EnhanceOptions(nibIceHUD_Options.options.args.profiles, nibIceHUD.db)
-	end
-
+	
 	LibStub("AceConfig-3.0"):RegisterOptionsTable("nibIceHUD", options, "nibIceHUDcl")
 end
 

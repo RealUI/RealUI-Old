@@ -1,0 +1,38 @@
+------------------------------------------------------------------------
+r12 | stassart | 2013-03-13 20:57:32 +0000 (Wed, 13 Mar 2013) | 1 line
+Changed paths:
+   M /trunk/GridStatusRaidDebuff.toc
+
+BUGFIX: Grab new libbabble-boss library to fix Italian lua error.
+------------------------------------------------------------------------
+r11 | stassart | 2013-03-06 23:03:13 +0000 (Wed, 06 Mar 2013) | 11 lines
+Changed paths:
+   M /trunk/Core.lua
+   M /trunk/GridStatusRaidDebuff.toc
+   A /trunk/info.txt
+
+Now use map ids instead of english names in library packages.
+New functions: BossNameId and DebuffId
+Deprecated functions: BossName and Debuff
+
+GridStatusRaidDebuff:BossName and GridStatusRaidDebuff:Debuff are deprecated
+in 5.2 because they are dependent on libbabble-zone which has been deprecated
+by its author in 5.2.
+
+See info.txt for more information.
+
+
+------------------------------------------------------------------------
+r10 | stassart | 2013-03-06 22:04:06 +0000 (Wed, 06 Mar 2013) | 1 line
+Changed paths:
+   M /trunk/GridStatusRaidDebuff.toc
+
+Updated toc to 5.2.
+------------------------------------------------------------------------
+r9 | stassart | 2012-11-28 00:51:23 +0000 (Wed, 28 Nov 2012) | 1 line
+Changed paths:
+   M /trunk/Core.lua
+   M /trunk/GridStatusRaidDebuff.toc
+
+Updated toc for 5.1. Commented out unused variable dt_prior.
+------------------------------------------------------------------------

@@ -379,6 +379,7 @@ function GridStatusRaidDebuff:DebuffLocale(zone, first, second, icon_priority, c
 	end
 end
 
+-- This function is dependent on libbabble-zone and is deprecated as of WoW 5.2
 function GridStatusRaidDebuff:Debuff(en_zone, first, second, icon_priority, color_priority, timer, stackable, color, default_disable, noicon)
 	local zone = bzone[en_zone]
 
@@ -392,6 +393,16 @@ function GridStatusRaidDebuff:Debuff(en_zone, first, second, icon_priority, colo
 		-- self:Debug("Debuff", realzone, "en_zone translation not found")
 		-- warn(("LibBabble translation for zone %q not found"):format(en_zone))
 		self:Debug(("LibBabble translation for zone %q not found"):format(en_zone))
+	end
+end
+
+function GridStatusRaidDebuff:DebuffId(zoneid, first, second, icon_priority, color_priority, timer, stackable, color, default_disable, noicon)
+	local zone = GetMapNameByID(zoneid)
+
+	if (zone) then
+		self:DebuffLocale(zone, first, second, icon_priority, color_priority, timer, stackable, color, default_disable, noicon)
+	else
+		self:Debug(("GetMapNameByID %d not found"):format(zoneid))
 	end
 end
 
@@ -419,6 +430,7 @@ function GridStatusRaidDebuff:BossNameLocale(zone, order, en_boss)
 	}
 end
 
+-- This function is dependent on libbabble-zone and is deprecated as of WoW 5.2
 function GridStatusRaidDebuff:BossName(en_zone, order, en_boss)
 	local zone = bzone[en_zone]
 
@@ -431,6 +443,16 @@ function GridStatusRaidDebuff:BossName(en_zone, order, en_boss)
 		-- self:Debug("BossName", realzone, "zone translation not found")
 		-- warn(("LibBabble translation for zone %q not found"):format(en_zone))
 		self:Debug(("LibBabble translation for zone %q not found"):format(en_zone))
+	end
+end
+
+function GridStatusRaidDebuff:BossNameId(zoneid, order, en_boss)
+	local zone = GetMapNameByID(zoneid)
+
+	if (zone) then
+		self:BossNameLocale(zone, order, en_boss)
+	else
+		self:Debug(("GetMapNameByID %d not found"):format(zoneid))
 	end
 end
 

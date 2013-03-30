@@ -320,6 +320,7 @@ local instantReportList = {
 	"^wt[bst]m?y?lolaccount", --WTS LOL ACCOUNT LEVEL 30 with 27 SKINS and 14k IP
 	"^sellingloleuw?acc.*info", --Selling LOL EUW acc pm for more info
 	"^wt[bs].*leagueoflegends.*points.*pay", --WTB 100 DOLLARS OF LEAGUE OF LEGENDS RIOT POINTS PST. YOU PAY WITH YOUR PHONE. PST PAYING A LOT.
+	"wts.*leagueoflegends.*acc.*info", --{rt1}wts golden{rt1} League of Legends{rt1} acc /w me for more info{rt1}
 
 	--[[  Account Buy/Sell  ]]--
 	"wtsnonemergeacc.*lvl?%d+char", --!WTS none-merge acc(can get a lv80 char)./W me for more info!
@@ -480,6 +481,10 @@ local instantReportList = {
 	--Help you with 2200/2400/2600(hero) skype: DvingHelp
 	"you.*skype.*dvinghelp", --Help you with The Bloodthirsty(72 hours), Sun Horde/Ally(48hours) skype: DvingHelp
 	"wts.*rbg.*challenge.*powerle?ve?l.*diablo", --{star}{star}{star}WTS Iphone game: Clash of Clans Gems ---- Cheap {star}{star}2200/2400/2700 RBG,finish within 12 hours {star}{star}Challenge Mode, finish in 1-2 days{star}{star}Achievement/Level Powerlvling{star}{star}Paragon lvling on Diablo3 {star}{star}
+	"^wtswowgold.*mount", --WTS wow gold...order 100k give u [Heart of the Nightwing] mount for free 
+	"^wtsmount.*blizzardstore.*safe.*info", --{rt1} WTS mounts from Blizzard Store, 10k each, safe trade! /w for more info. {rt1}
+	--WTS GIFT-codes  [Swift Windsteed] [Winged Guardian] 10k /w me
+	"^wtsgiftcode", --WTS GIFT-codes  [Heart of the Aspects] [Celestial Steed] 10k /w me
 
 	--[[  RBG  ]]--
 	"rbg.*2[%.,]2.*quick.*skype", --{rt8}WTS RBG Boost! We boosts any rating 2.2, 2.4, 2.7(HERO), 3k and more! Cap games also! Quickly, efficiently, safely! Test game included.{rt8} Details on skype {rt1}wowbooster666{rt1}
@@ -543,6 +548,12 @@ local instantReportList = {
 	"rbg.*2200.*account.*achie?v", --/2 Hi dude u wanna fast boost 2.2/2.4/Hero(aliance/horde) ,fast work right now =) skype BGboost up you RBG ratings! 2200/2400/HERO /cap/no sharing account /Dungeon challenges -gold/glory hero-raider-guild raider all achivemets /pm
 	"rbg.*2200.*legit.*paypal", --WTS RBG CARRY! 0-2200,2400,2750,CAP! No acc sharing, 100% legit. Our boost costs less than anyones' else in EU. We have business Paypal and website! /w me
 	"2[%.,]2.*legit.*rbg.*price", --WTS 2.2/2.4k Legit RBG [Boost.Cheapest] prices [EU.PST] for info!
+	"rbg.*2200.*boost.*skype", --{rt2} RBG Super Offer  new season!  fast T13/ RBG 2200/2400/HERO - /cap 3850/ boost today /skype BGboost
+	"2200.*accoun?t.*paypal.*skype", --ASSISTANCE: 2000-2200-2400 No sharing accout. Site, Bussines PayPal, Test Game.  Skype: Mike222eu{rt1}
+	"rbg.*2[24]00.*sale.*skype", --Help with RBG rat/cap, the best prices!2400/hero we are working 5th season. SALE RIGHT NOW. skype: kkboosting
+	"rbg.*2[%.,]2.*legit.*paypal", --WTS RBG BOOST! Any rating and CAP 2.2k,2.4k & Hero of the Horde/Alliance! No acc sharing, 100% legit, you play youself. Our boost costs less than anyones' else in [EU.We] have website + Paypal verified, OwnedCore verified. /w me
+	"quickest.*safi?est.*rbg.*legit.*account", --The 13th season has just started! And we're ready to provide you the quickest and safiest RBG PUSH! Any Rating! 100% legit - no account sharing required. Be the first to obtain elite gear, lots of achievements, titles and mounts! PM ME FOR MORE INFO.
+	"pvpforce.*professional.*2200.*skype", --{rt1}{rt1}{rt1} Become a part of new PvP force. Play with professionals to be among the first to get 2200/2400/HERO. 3850+ cp per week, T2 in Only 7 weeks! Skype: [***] {rt1}{rt1}{rt1}
 
 	--[[  Russian  ]]--
 	--[skull]Ovoschevik.rf[skull] continues to harm the enemy, to please you with fresh [circle]vegetables! BC 450. Operators of girls waiting for you!
@@ -631,7 +642,8 @@ local instantReportList = {
 	--WOW龙魂8H效率团低价出售橙匕+WOW各版本橙武。 397/403/410/416装备。带刷成就龙(ICC,ULD,CATA,FL)。帅气坐骑.死翼坐骑/火鹰/等。带刷RBG荣誉.1-85手工代练美金消费欢迎咨询QQ: 1416781477
 	"出售.*成就.*欢迎.*qq", --WOW龙魂8H美金消费团出售橙匕+WOW各版本橙武。 397/403/410/416装备。带刷成就龙(ICC,ULD,CATA,FL)。低价出售帅气坐骑.死翼坐骑/火鹰/等。带刷RBG荣誉.1-85手工代练欢迎咨询QQ: 1416781477
 	"wts.*nightwing.*order.*gametime", --WTS[Heart of the Nightwing]order 50k will get a free one plus 30days game time{star}买金送招募坐骑,炼金龙和DK马,大小幽灵虎特价出售,另有各种代练和账号{diamond}QQ：1933089703
-	"freemount.*[0o]rder.*stock.*skype", --get free mount with 50k 0rder,300k in stock, skype: sue861029,24/7 online。金币14刀一W，纯手工做任务专业代练，85-90仅需一天，价格优惠。更有稀有坐骑10只打包特卖，大小幽灵虎，白犀牛，大战熊，魔法公鸡쾰󩾀
+	"freemount.*[0o]rder.*stock.*skype", --get free mount with 50k 0rder,300k in stock, skype: sue861029,24/7 online。金币14刀一W，纯手工做任务专业代练，85-90仅需一天，价格优惠。更有稀有坐骑10只打包特卖，大小幽灵虎，白犀牛，大战熊，魔法公鸡쾰
+	"^wts.*challenge.*transmog.*mount.*qq%d+", --wts challenge mode:transmog set and mount qq:498890740 
 
 	--[[  Advanced URL's/Misc  ]]--
 	"%d+eu.*deliver.*credible.*kcq[%.,]", --12.66EUR/10000G 10 minutes delivery.absolutely credible. K C Q .< 0 M
@@ -688,6 +700,7 @@ local instantReportList = {
 	"mmomarket.*gold.*boost", --{rt1}{rt1} We are [MMO-market.com]!!! WE are all you ever going to NEED: GOLD / CHARACTERS(from 150$ char to 5000$ char)/ BOOSTs in PvE or ARENA BOOSTs in PvP! FULLY PROFESSIONAL. Come and check us! [MMO-MARKET.COM]{rt1}{rt1}
 	"complete.*gold.*challenge.*$%d+.*hurry", --complete all the Gold dungeon challenge (\n?) achievements now only $200 (\n?) paladin(tank) (\n?) shaman), Hurry contact me, you will complete all the Gold dungeon challenge quickly.
 	"cheap.*fast.*gold.*item.*skype", --{rt3}{rt3}To get cheap,fast gold and hot items in a great deal, please add my skype {rt3} linda871230 {rt3}for more information!{rt3}{rt3}
+	"rbg.*challenge.*mount.*boost", --WTS Iphone game: Clash of Clans  Gems----much cheaper than APP store2200/2400/2700 RGB,get your cool titles todayChallenge Mode, fast get ur Xmogs and mountT14.5 set boosted by 16/16H raid group
 }
 
 --This is the replacement table. It serves to deobfuscate words by replacing letters with their English "equivalents".
@@ -856,7 +869,7 @@ local filter = function(_, event, msg, player, _, _, _, flag, channelId, channel
 					elseif eventType == "WHISPER" or eventType == "AFK" or eventType == "DND" then
 						chatTarget = player:upper() -- Set to PLAYERNAME
 					end
-					local extraData = ChatHistory_GetAccessID(eventType, chatTarget, guid == "" and arg13 or guid)
+					local extraData = ChatHistory_GetAccessID(eventType, chatTarget, guid or arg13)
 					-- Finally, add the message
 					ChatFrame1:AddMessage(reportMsg:format(player, lineId, extraData), 0.2, 1, 0.6, nil, nil, nil, extraData)
 				end

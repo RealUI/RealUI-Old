@@ -1,4 +1,3 @@
-local L = LibStub("AceLocale-3.0"):GetLocale("nibIceHUD", false)
 local BurningEmbersBar = IceCore_CreateClass(IceUnitBar)
 local mass
 
@@ -37,13 +36,9 @@ function BurningEmbersBar.prototype:GetDefaultSettings()
 	defaults.textVisible.lower = false
 	defaults.offset = 2
 	defaults.enabled = true
-	defaults.usesDogTagStrings = false
 	defaults.textVerticalOffset = 5
 	defaults.textHorizontalOffset = 0
-	defaults.shouldAnimate = false
-	defaults.hideAnimationSettings = true
 	defaults.lockUpperTextAlpha = false
-	defaults.bHideMarkerSettings = true
 	defaults.bAllowExpand = false
 
 	return defaults

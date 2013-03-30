@@ -1,4 +1,3 @@
-local L = LibStub("AceLocale-3.0"):GetLocale("nibIceHUD", false)
 IceCustomBar = IceCore_CreateClass(IceUnitBar)
 local mass
 
@@ -140,7 +139,6 @@ function IceCustomBar.prototype:GetDefaultSettings()
 	settings["class"] = "ALL"
 	settings["barColor"] = {r=1, g=0, b=0, a=1}
 	settings["trackOnlyMine"] = true
-	settings["hideAnimationSettings"] = true
 	settings["buffTimerDisplay"] = "minutes"
 	settings["maxDuration"] = 0
 	settings["lowerTextColor"] = {r=1, g=1, b=1}
@@ -169,10 +167,10 @@ function IceCustomBar.prototype:GetOptions()
 
 	opts["deleteme"] = {
 		type = 'execute',
-		name = L["Delete me"],
-		desc = L["Deletes this custom module and all associated settings. Cannot be undone!"],
+		name = "Delete me",
+		desc = "Deletes this custom module and all associated settings. Cannot be undone!",
 		func = function()
-			local dialog = StaticPopup_Show("NIBICEHUD_DELETE_CUSTOM_MODULE")
+			local dialog = StaticPopup_Show("nibIceHUD_DELETE_CUSTOM_MODULE")
 			if dialog then
 				dialog.data = self
 			end
@@ -182,8 +180,8 @@ function IceCustomBar.prototype:GetOptions()
 
 	opts["duplicateme"] = {
 		type = 'execute',
-		name = L["Duplicate me"],
-		desc = L["Creates a new module of this same type and with all the same settings."],
+		name = "Duplicate me",
+		desc = "Creates a new module of this same type and with all the same settings.",
 		func = function()
 			nibIceHUD:CreateCustomModuleAndNotify(self.moduleSettings.customBarType, self.moduleSettings)
 		end,
@@ -192,20 +190,20 @@ function IceCustomBar.prototype:GetOptions()
 
 	opts["type"] = {
 		type = "description",
-		name = string.format("%s %s", L["Module type:"], tostring(self:GetBarTypeDescription("Bar"))),
+		name = string.format("%s %s", "Module type:", tostring(self:GetBarTypeDescription("Bar"))),
 		order = 21,
 	}
 -------
 	opts["customHeader"] = {
 		type = 'header',
-		name = L["Custom bar settings"],
+		name = "Custom bar settings",
 		order = 30.1,
 	}
 -------
 	opts["name"] = {
 		type = 'input',
-		name = L["Bar name"],
-		desc = L["The name of this bar (must be unique!).\n\nRemember to press ENTER after filling out this box with the name you want or it will not save."],
+		name = "Bar name",
+		desc = "The name of this bar (must be unique!).\n\nRemember to press ENTER after filling out this box with the name you want or it will not save.",
 		get = function()
 			return self.elementName
 		end,
@@ -223,8 +221,8 @@ function IceCustomBar.prototype:GetOptions()
 
 	opts["trackOnlyMine"] = {
 		type = 'toggle',
-		name = L["Only track auras by me"],
-		desc = L["Checking this means that only buffs or debuffs that the player applied will trigger this bar"],
+		name = "Only track auras by me",
+		desc = "Checking this means that only buffs or debuffs that the player applied will trigger this bar",
 		get = function()
 			return self.moduleSettings.trackOnlyMine
 		end,
@@ -241,8 +239,8 @@ function IceCustomBar.prototype:GetOptions()
 
 	opts["barColor"] = {
 		type = 'color',
-		name = L["Bar color"],
-		desc = L["The color for this bar"],
+		name = "Bar color",
+		desc = "The color for this bar",
 		get = function()
 			return self:GetBarColor()
 		end,
@@ -260,8 +258,8 @@ function IceCustomBar.prototype:GetOptions()
 -------
 	opts["buffToTrack"] = {
 		type = 'input',
-		name = L["Aura to track"],
-		desc = L["Which buff/debuff this bar will be tracking.\n\nRemember to press ENTER after filling out this box with the name you want or it will not save."],
+		name = "Aura to track",
+		desc = "Which buff/debuff this bar will be tracking.\n\nRemember to press ENTER after filling out this box with the name you want or it will not save.",
 		get = function()
 			return self.moduleSettings.buffToTrack
 		end,
@@ -290,8 +288,8 @@ function IceCustomBar.prototype:GetOptions()
 	opts["unitToTrack"] = {
 		type = 'select',
 		values = validUnits,
-		name = L["Unit to track"],
-		desc = L["Select which unit that this bar should be looking for buffs/debuffs on"],
+		name = "Unit to track",
+		desc = "Select which unit that this bar should be looking for buffs/debuffs on",
 		get = function(info)
 			return nibIceHUD:GetSelectValue(info, self.moduleSettings.myUnit)
 		end,
@@ -311,8 +309,8 @@ function IceCustomBar.prototype:GetOptions()
 	opts["buffOrDebuff"] = {
 		type = 'select',
 		values = buffOrDebuff,
-		name = L["Buff or debuff?"],
-		desc = L["Whether we are tracking a buff or debuff"],
+		name = "Buff or debuff?",
+		desc = "Whether we are tracking a buff or debuff",
 		get = function(info)
 			return nibIceHUD:GetSelectValue(info, self.moduleSettings.buffOrDebuff)
 		end,
@@ -368,8 +366,8 @@ function IceCustomBar.prototype:GetOptions()
 	
 	opts["buffTimerDisplay"] = {
 		type = 'select',
-		name = L["Buff timer display"],
-		desc = L["How to display the buff timer next to the name of the buff on the bar"],
+		name = "Buff timer display",
+		desc = "How to display the buff timer next to the name of the buff on the bar",
 		get = function(info)
 			return nibIceHUD:GetSelectValue(info, self.moduleSettings.buffTimerDisplay)
 		end,
@@ -386,8 +384,8 @@ function IceCustomBar.prototype:GetOptions()
 
 	opts["maxDuration"] = {
 		type = 'input',
-		name = L["Maximum duration"],
-		desc = L["Maximum Duration for the bar (the bar will remained full if it has longer than maximum remaining).  Leave 0 for spell duration.\n\nRemember to press ENTER after filling out this box with the name you want or it will not save."],
+		name = "Maximum duration",
+		desc = "Maximum Duration for the bar (the bar will remained full if it has longer than maximum remaining).  Leave 0 for spell duration.\n\nRemember to press ENTER after filling out this box with the name you want or it will not save.",
 		get = function()
 			return self.moduleSettings.maxDuration
 		end,
@@ -407,7 +405,7 @@ function IceCustomBar.prototype:GetOptions()
 
 	opts.textSettings.args.upperTextColor = {
 		type = "color",
-		name = L["Upper Text Color"],
+		name = "Upper Text Color",
 		get = function()
 			self:FixupTextColors()
 			return self.moduleSettings.upperTextColor.r, self.moduleSettings.upperTextColor.g, self.moduleSettings.upperTextColor.b, 1
@@ -426,7 +424,7 @@ function IceCustomBar.prototype:GetOptions()
 
 	opts.textSettings.args.lowerTextColor = {
 		type = "color",
-		name = L["Lower Text Color"],
+		name = "Lower Text Color",
 		get = function()
 			return self.moduleSettings.lowerTextColor.r, self.moduleSettings.lowerTextColor.g, self.moduleSettings.lowerTextColor.b, 1
 		end,

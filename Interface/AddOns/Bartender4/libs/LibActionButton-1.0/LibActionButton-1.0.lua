@@ -29,7 +29,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ]]
 local MAJOR_VERSION = "LibActionButton-1.0"
-local MINOR_VERSION = 35
+local MINOR_VERSION = 37
 
 if not LibStub then error(MAJOR_VERSION .. " requires LibStub.") end
 local lib, oldversion = LibStub:NewLibrary(MAJOR_VERSION, MINOR_VERSION)
@@ -305,8 +305,8 @@ function SetupSecureSnippets(button)
 			-- We can only use a handful of the possible things on the cursor
 			-- return false for all those we can't put on buttons
 
-			self:SetAttribute(format("labtype-%d", state), kind)
-			self:SetAttribute(format("labaction-%d", state), value)
+			self:SetAttribute(format("labtype-%s", state), kind)
+			self:SetAttribute(format("labaction-%s", state), value)
 			-- update internal state
 			self:RunAttribute("UpdateState", state)
 			-- send a notification to the insecure code
@@ -561,13 +561,13 @@ function Generic:PostClick()
 			self._old_type = nil
 		end
 		local oldType, oldAction = self._state_type, self._state_action
-		local a, b, c = GetCursorInfo()
+		local kind, data, subtype, extra = GetCursorInfo()
 		self.header:SetFrameRef("updateButton", self)
 		self.header:Execute(format([[
 			local frame = self:GetFrameRef("updateButton")
-			control:RunFor(frame, frame:GetAttribute("OnReceiveDrag"), %s, %s, %s)
+			control:RunFor(frame, frame:GetAttribute("OnReceiveDrag"), %s, %s, %s, %s)
 			control:RunFor(frame, frame:GetAttribute("UpdateState"), %s)
-		]], formatHelper(a), formatHelper(b), formatHelper(c), formatHelper(self:GetAttribute("state"))))
+		]], formatHelper(kind), formatHelper(data), formatHelper(subtype), formatHelper(extra), formatHelper(self:GetAttribute("state"))))
 		PickupAny("clear", oldType, oldAction)
 	end
 	self._receiving_drag = nil
@@ -645,6 +645,7 @@ function InitializeEventHandler()
 	lib.eventFrame:RegisterEvent("ACTIONBAR_SLOT_CHANGED")
 	lib.eventFrame:RegisterEvent("UPDATE_BINDINGS")
 	lib.eventFrame:RegisterEvent("UPDATE_SHAPESHIFT_FORM")
+	lib.eventFrame:RegisterEvent("UPDATE_VEHICLE_ACTIONBAR")
 
 	lib.eventFrame:RegisterEvent("ACTIONBAR_UPDATE_STATE")
 	lib.eventFrame:RegisterEvent("ACTIONBAR_UPDATE_USABLE")
@@ -692,7 +693,7 @@ function OnEvent(frame, event, arg1, ...)
 				Update(button)
 			end
 		end
-	elseif event == "PLAYER_ENTERING_WORLD" or event == "UPDATE_SHAPESHIFT_FORM" then
+	elseif event == "PLAYER_ENTERING_WORLD" or event == "UPDATE_SHAPESHIFT_FORM" or event == "UPDATE_VEHICLE_ACTIONBAR" then
 		ForAllButtons(Update)
 	elseif event == "ACTIONBAR_PAGE_CHANGED" or event == "UPDATE_BONUS_ACTIONBAR" then
 		-- TODO: Are these even needed?

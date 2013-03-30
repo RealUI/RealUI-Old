@@ -1,10 +1,10 @@
 ## Interface: 50200
-## Title: |cffaaaaaanib|rIceHUD |cff7fff7f-Options-|r
+## Title: |cffffffffReal|r|cffbf3333UI|r |cffffffffHuD|r - |cffe0e0e0Options|r
 ## Author: Parnic (modified by Nibelheim) (originally created by Iceroth)
-## Version: 7.3 r7
+## Version: 7.4
 ## Notes: Configuration options for nibIceHUD
 ## OptionalDeps: AceGUI-3.0-SharedMediaWidgets
-## Dependencies: nibIcehUD
+## Dependencies: nibIceHUD
 ## LoadOnDemand: 1
 
 Options.lua

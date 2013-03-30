@@ -1,5 +1,5 @@
 local nibRealUI = LibStub("AceAddon-3.0"):GetAddon("nibRealUI")
-local db, ndbc
+local db, ndb, ndbc
 
 local _
 local MODNAME = "FrameMover"
@@ -12,11 +12,6 @@ local GarbageTimerFrame
 
 local FrameList = {
 	addons = {
-		omen = {
-			name = "Omen",
-			addon = "Omen",
-			frames = {[1] = {name = "OmenAnchor"},},
-		},
 		grid = {
 			name = "Grid",
 			addon = "Grid",
@@ -166,7 +161,7 @@ local function GetOptions()
 			name = FrameList.addons[k_a].name,
 			childGroups = "tab",
 			order = addonOrderCnt,
-			disabled = function() if (IsAddOnLoaded(FrameList.addons[k_a].addon) and nibRealUI:GetModuleEnabled(MODNAME)) then return false else return true end end,
+			disabled = function() return not(IsAddOnLoaded(FrameList.addons[k_a].addon) and nibRealUI:GetModuleEnabled(MODNAME)) end,
 			args = {
 				header = {
 					type = "header",
@@ -176,11 +171,24 @@ local function GetOptions()
 				enabled = {
 					type = "toggle",
 					name = string.format("Move %s", FrameList.addons[k_a].name),
-					get = function(info) return db.addons[k_a].move end,
+					get = function(info)
+						if k_a == "grid" then
+							return ndb.addonControl.grid
+						else
+							return db.addons[k_a].move
+						end
+					end,
 					set = function(info, value) 
-						db.addons[k_a].move = value 
-						if db.addons[k_a].move then
-							FrameMover:MoveAddons()
+						if k_a == "grid" then
+							ndb.addonControl.grid = value 
+							if ndb.addonControl.grid then
+								FrameMover:MoveAddons()
+							end
+						else
+							db.addons[k_a].move = value
+							if db.addons[k_a].move then
+								FrameMover:MoveAddons()
+							end
 						end
 					end,
 					order = 20,
@@ -849,7 +857,7 @@ end
 function FrameMover:MoveAddons()
 	local FrameDB = {}
 	for k,v in pairs(FrameList.addons) do
-		if db.addons[k].move then
+		if (k ~= "grid" and db.addons[k].move) or (k == "grid" and ndb.addonControl.grid) then
 			
 			local IsHealing = ( FrameList.addons[k].hashealing and db.addons[k].healing and nibRealUI.db.char.layout.current == 2 )
 			local IsHighRes = ( FrameList.addons[k].highres and db.addons[k].highres and ndbc.resolution == 2 )
@@ -922,7 +930,7 @@ end
 -- Hide Party/Raid Frames
 local compactRaid = "1"
 local function FrameMover_RaidFramesCheck()
-	if not InCombatLockdown() then 
+	if not InCombatLockdown() then
 		if db.hide.raid.hide and compactRaid ~= "0" then
 			CompactRaidFrameManager_SetSetting("IsShown","0")
 		else
@@ -933,10 +941,6 @@ end
 
 function FrameMover:HidePartyRaid()
 	if db.hide.raid.hide then
-		if not IsAddOnLoaded("Blizzard_CompactRaidFrames") then
-			LoadAddOn("Blizzard_CompactRaidFrames")
-			compactRaid = CompactRaidFrameManager_GetSetting("IsShown")
-		end
 		FrameMover_RaidFramesCheck()
 	end
 	
@@ -1013,30 +1017,75 @@ local function Hook_Raven()
 	end)
 end
 
+-- Action Bars - hook when configuring
+local function AB_Notification()
+	if nibRealUI:GetModuleEnabled(MODNAME) and ndb.addonControl.actionBars then
+		nibRealUI:Notification("RealUI is controlling Action Bar positioning.", true, "Type |cFFFFAE5E/hud|r for positioning options.")
+	end
+end
+local function Hook_AB()
+	if not Bartender4 then return end
+	hooksecurefunc(LibStub("AceConfigDialog-3.0"), "Open", function(...)
+		if select(2, ...) == "Bartender4" then
+			AB_Notification()
+		end
+	end)
+	hooksecurefunc(Bartender4, "ShowUnlockDialog", function()
+		AB_Notification()
+	end)
+end
+
 -- Grid - Hook when Grid is moved
 local function Hook_Grid()
 	local gridframe = _G["GridLayoutFrame"]
 	if not gridframe then return end
 	
 	hooksecurefunc(gridframe, "StopMovingOrSizing", function()
-		if nibRealUI:GetModuleEnabled(MODNAME) and db.addons.grid.move then
-			print("|cff00ffffRealUI: |r|cffffff40RealUI is controlling the position of Grid. To change this behaviour: |cffffffff/realui > Frame Mover > AddOns > Grid|r")
+		if nibRealUI:GetModuleEnabled(MODNAME) and ndb.addonControl.grid then
+			nibRealUI:Notification("RealUI is controlling Grid positioning.", true, "Type |cFFFFAE5E/hud|r for positioning options.")
 			FrameMover:MoveAddons()
 		end
-	end)	
+	end)
 end
 
--- Omen - hook when Omen is moved
-local function Hook_Omen()
-	local omenframe = _G["OmenAnchor"]
-	if not omenframe then return end
+function RealUI_MoveAll()
+	FrameMover:MoveUIFrames()
+	FrameMover:MoveAddons()
+end
+
+function FrameMover:RefreshMod()
+	db = self.db.profile
+	RealUI_MoveAll()
+end
+
+function FrameMover:PLAYER_ENTERING_WORLD()
+	if not nibRealUI:GetModuleEnabled(MODNAME) then return end
 	
-	hooksecurefunc(omenframe, "StopMovingOrSizing", function()
-		if nibRealUI:GetModuleEnabled(MODNAME) and db.addons.omen.move then
-			print("|cff00ffffRealUI: |r|cffffff40RealUI is controlling the position of Omen. To change this behaviour: |cffffffff/realui > Frame Mover > AddOns > Omen|r")
-			FrameMover:MoveIndividualFrameGroup(FrameList.addons.omen.frames, db.addons.omen.frames)
+	if not EnteredWorld then
+		Hook_Grid()
+		Hook_AB()
+		Hook_Raven()
+		Hook_VSI()
+		
+		self:MoveUIFrames()
+		self:MoveAddons()
+		self:HideFrames()
+		
+		CreateGarbageTimer()
+	end
+	EnteredWorld = true
+	
+	self:HidePartyRaid("PLAYER_ENTERING_WORLD")
+	
+	GarbageTimerFrame:Show()
+end
+
+function FrameMover:ADDON_LOADED(event, addon)
+	if addon == "MSBTOptions" then
+		if nibRealUI:GetModuleEnabled(MODNAME) and ndb.addonControl.msbt then
+			nibRealUI:Notification("RealUI is controlling MSBT positioning.", "Type |cFFFFAE5E/hud|r for positioning options.")
 		end
-	end)	
+	end
 end
 
 ----
@@ -1059,38 +1108,6 @@ function FrameMover:UpdateLockdown(...)
 	LockdownTimer:Show()
 end
 
-function RealUI_MoveAll()
-	FrameMover:MoveUIFrames()
-	FrameMover:MoveAddons()
-end
-
-function FrameMover:RefreshMod()
-	db = self.db.profile
-	RealUI_MoveAll()
-end
-
-function FrameMover:PLAYER_ENTERING_WORLD()
-	if not nibRealUI:GetModuleEnabled(MODNAME) then return end
-	
-	if not EnteredWorld then
-		Hook_Omen()
-		Hook_Grid()
-		Hook_Raven()
-		Hook_VSI()
-		
-		self:MoveUIFrames()
-		self:MoveAddons()
-		self:HideFrames()
-		
-		CreateGarbageTimer()
-	end
-	EnteredWorld = true
-	
-	self:HidePartyRaid("PLAYER_ENTERING_WORLD")
-	
-	GarbageTimerFrame:Show()
-end
-
 function FrameMover:OnInitialize()
 	self.db = nibRealUI.db:RegisterNamespace(MODNAME)
 	self.db:RegisterDefaults({
@@ -1101,11 +1118,6 @@ function FrameMover:OnInitialize()
 					healing = false,
 					highres = false,
 				},
-				omen = {
-					frames = {
-						[1] = {name = "OmenAnchor", parent = "UIParent", point = "CENTER", rpoint = "CENTER", x = 2, y = -148},
-					},
-				},
 				grid = {
 					healing = true,
 					highres = true,
@@ -1113,13 +1125,13 @@ function FrameMover:OnInitialize()
 						[1] = {name = "GridLayoutFrame", parent = "UIParent", point = "BOTTOM", rpoint = "BOTTOM", x = -0.5, y = -1},
 					},
 					frameshealing = {
-						[1] = {name = "GridLayoutFrame", parent = "UIParent", point = "TOP", rpoint = "CENTER", x = -0.5, y = -159.5},
+						[1] = {name = "GridLayoutFrame", parent = "RealUIPositionersLayoutBottomItem", point = "TOP", rpoint = "CENTER", x = 0, y = 0},
 					},
 					frameshr = {
 						[1] = {name = "GridLayoutFrame", parent = "UIParent", point = "BOTTOM", rpoint = "BOTTOM", x = -0.5, y = 2},
 					},
 					frameshrhealing = {
-						[1] = {name = "GridLayoutFrame", parent = "UIParent", point = "TOP", rpoint = "CENTER", x = -0.5, y = -170.5},
+						[1] = {name = "GridLayoutFrame", parent = "RealUIPositionersLayoutBottomItem", point = "TOP", rpoint = "CENTER", x = 0, y = 0},
 					},
 				},
 				raven = {
@@ -1131,7 +1143,6 @@ function FrameMover:OnInitialize()
 						[5] = {name = "RavenBarGroupFocusBuffs", 	parent = "oUF_RealUIFocus", 	point = "LEFT", 	rpoint = "LEFT", 	x = -59, 	y = -6.5},
 						[6] = {name = "RavenBarGroupFocusDebuffs", 	parent = "oUF_RealUIFocus", 	point = "LEFT", 	rpoint = "LEFT", 	x = -59, 	y = -34.5},
 						[7] = {name = "RavenBarGroupToTDebuffs", 	parent = "oUF_RealUITargetTarget", point = "RIGHT", rpoint = "RIGHT", 	x = 59, 	y = -6.5},
-						-- [8] = {name = "RavenBarGroupBuffs", 		parent = "UIParent", 			point = "TOPRIGHT", rpoint = "TOPRIGHT", 	x = -2, 	y = -2},
 					},
 				},
 			},
@@ -1146,7 +1157,12 @@ function FrameMover:OnInitialize()
 				},
 				raidmessages = {
 					frames = {
-						[1] = {name = "RaidWarningFrame", parent = "UIParent", point = "CENTER", rpoint = "CENTER", x = 0, y = 145},
+						[1] = {name = "RaidWarningFrame", parent = "RealUIPositionersCenter", point = "CENTER", rpoint = "CENTER", x = 0, y = 183},
+					},
+				},
+				errorframe = {
+					frames = {
+						[1] = {name = "UIErrorsFrame", parent = "RealUIPositionersCenter", point = "BOTTOM", rpoint = "CENTER", x = 0, y = 138},
 					},
 				},
 				ticketstatus = {
@@ -1157,11 +1173,6 @@ function FrameMover:OnInitialize()
 				worldstate = {
 					frames = {
 						[1] = {name = "WorldStateAlwaysUpFrame", parent = "UIParent", point = "TOP", rpoint = "TOP", x = -5, y = -20},
-					},
-				},
-				errorframe = {
-					frames = {
-						[1] = {name = "UIErrorsFrame", parent = "UIParent", point = "BOTTOM", rpoint = "CENTER", x = 0, y = 100},
 					},
 				},
 				vsi = {
@@ -1179,10 +1190,14 @@ function FrameMover:OnInitialize()
 				["**"] = {
 					hide = true,
 				},
+				raid = {
+					hide = true,
+				},
 			},
 		},
 	})
 	db = self.db.profile
+	ndb = nibRealUI.db.profile
 	ndbc = nibRealUI.db.char
 	
 	self:SetEnabledState(nibRealUI:GetModuleEnabled(MODNAME))
@@ -1190,6 +1205,25 @@ function FrameMover:OnInitialize()
 end
 
 function FrameMover:OnEnable()
+	if db.hide.raid.hide then
+		CompactUnitFrameProfiles:UnregisterAllEvents()
+		
+		if not IsAddOnLoaded("Blizzard_CompactRaidFrames") then
+			LoadAddOn("Blizzard_CompactRaidFrames")
+			compactRaid = CompactRaidFrameManager_GetSetting("IsShown")
+		end
+		CompactRaidFrameManager:UnregisterAllEvents()
+		CompactRaidFrameContainer:UnregisterAllEvents()
+		InterfaceOptionsFrameCategoriesButton11:SetScale(0.0001)
+	end
+	if db.hide.party.hide then
+		InterfaceOptionsFrameCategoriesButton10:SetScale(0.0001)
+	end
+	if db.hide.raid.hide and db.hide.part.hide then
+		InterfaceOptionsFrameCategoriesButton9:SetScale(0.0001)
+	end
+	
+	self:RegisterEvent("ADDON_LOADED")
 	self:RegisterEvent("PLAYER_ENTERING_WORLD")
 	self:RegisterEvent("GROUP_ROSTER_UPDATE", "HidePartyRaid")
 	self:RegisterEvent("PLAYER_ALIVE", "HidePartyRaid")

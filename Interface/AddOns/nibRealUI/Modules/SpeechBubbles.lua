@@ -10,7 +10,7 @@ end
 
 local _
 local MODNAME = "SpeechBubbles"
-local SpeechBubbles = nibRealUI:NewModule(MODNAME, "AceEvent-3.0", "AceTimer-3.0")
+local SpeechBubbles = nibRealUI:NewModule(MODNAME, "AceEvent-3.0")
 
 -- Options
 local options
@@ -54,10 +54,16 @@ local function GetOptions()
 				name = "Note: You will need to reload the UI (/rl) for changes to take effect.",
 				order = 32,
 			},
+			gap1 = {
+				name = " ",
+				type = "description",
+				order = 33,
+			},
 			general = {
 				type = "group",
 				name = "General",
 				inline = true,
+				disabled = function() if nibRealUI:GetModuleEnabled(MODNAME) then return false else return true end end,
 				order = 40,
 				args = {
 					sendersize = {
@@ -92,10 +98,16 @@ local function GetOptions()
 					},
 				},
 			},
+			gap2 = {
+				name = " ",
+				type = "description",
+				order = 41,
+			},
 			colors = {
 				type = "group",
 				name = "Colors",
 				inline = true,
+				disabled = function() if nibRealUI:GetModuleEnabled(MODNAME) then return false else return true end end,
 				order = 50,
 				args = {
 					background = {
@@ -200,8 +212,8 @@ local function UpdateFrame(frame, guid, name)
 	end
 	
 	if name then
-		local color = nibRealUI:GetClassColor(class, true)
-		frame.sender:SetText(("|cFF%2x%2x%2x%s|r"):format(color[1] * 255, color[2] * 255, color[3] * 255, name))
+		local color = nibRealUI:GetClassColor(class)
+		frame.sender:SetText(("|cff%2x%2x%2x%s|r"):format(color[1] * 255, color[2] * 255, color[3] * 255, name))
 		if frame.text:GetWidth() < frame.sender:GetWidth() then
 			frame.text:SetWidth(frame.sender:GetWidth())
 		end
@@ -255,7 +267,7 @@ function SpeechBubbles:OnInitialize()
 	db = self.db.profile
 	
 	self:SetEnabledState(nibRealUI:GetModuleEnabled(MODNAME))
-	nibRealUI:RegisterPlainOptions(MODNAME, GetOptions)
+	nibRealUI:RegisterModuleOptions(MODNAME, GetOptions)
 end
 
 function SpeechBubbles:OnEnable()

@@ -52,7 +52,7 @@ _G["CWA_SatSliderText"]:ClearAllPoints()
 local red, green, blue, opacity
 local CPFCopyButton = CreateFrame("Button", nil, CPF, "OptionsButtonTemplate")
 CPFCopyButton:SetText("Copy")
-CPFCopyButton:SetPoint("BOTTOMLEFT", CPF, "TOPLEFT", 10, -2)
+CPFCopyButton:SetPoint("TOPLEFT", CPF, "TOPLEFT", 2, -2)
 CPFCopyButton:SetScript("OnClick", function()
 	red, green, blue = CPF:GetColorRGB()
 	opacity = OSF:GetValue()
@@ -62,11 +62,17 @@ end)
 
 local CPFPasteButton = CreateFrame("Button", nil, CPF, "OptionsButtonTemplate")
 CPFPasteButton:SetText("Paste")
-CPFPasteButton:SetPoint("BOTTOMRIGHT", CPF, "TOPRIGHT", -10, -2)
+CPFPasteButton:SetPoint("TOPRIGHT", CPF, "TOPRIGHT", -2, -2)
 CPFPasteButton:SetScript("OnClick", function()
 	CPF:SetColorRGB(red, green, blue)
 	OSF:SetValue(opacity)
 end)
+
+if Aurora then
+	local F = Aurora[1]
+	F.Reskin(CPFCopyButton)
+	F.Reskin(CPFPasteButton)
+end
 
 local CPFEditBoxes = {
 	Red = 0,

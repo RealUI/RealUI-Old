@@ -4,14 +4,15 @@ local LSM = LibStub("LibSharedMedia-3.0")
 local db, dbc, dbg
 
 local nibRealUICharacter_defaults = {
+	installStage = 0,
 	initialized = false,
 	needchatmoved = true,
 	resolution = 1,
 }
 
 -- Minipatch list. These get flagged on a PrimaryInstall as not being required.
-local MiniPatchMajorVer = "73"
-local table_MiniPatches = {1, 5, 6, 9, 10, 11, 12, 13, 16, 18, 19, 20, 21, 22}
+local MiniPatchMajorVer = "74"
+local table_MiniPatches = {}
 
 local IWTextures = {
 	Logo = [[Interface\AddOns\nibRealUI\Media\Logo.tga]],
@@ -21,7 +22,7 @@ local IWF = {}
 
 ---- Misc functions
 -- Set default Chat frame position (called from Core.lua "PLAYER_ENTERING_WORLD")
-function nibRealUI:SetChatPosition()	
+function nibRealUI:SetChatPosition()
 	if nibRealUICharacter.needchatmoved then
 		ChatFrame1:ClearAllPoints()
 		ChatFrame1:SetPoint("BOTTOMLEFT", "UIParent", "BOTTOMLEFT", 6, 32)
@@ -57,6 +58,7 @@ local function SetDefaultCVars()
 	SetCVar("deselectOnClick", 1)					-- Turn off Sticky Targeting (inverted)
 	-- Combat
 	SetCVar("displaySpellActivationOverlays", 1)	-- Turn on Spell Alerts
+	SetCVar("spellActivationOverlayOpacity", 0.75)	-- Spell Alert Opacity
 	-- Display
 	SetCVar("emphasizeMySpellEffects", 0)			-- Turn off Emphasize My Spell Effects
 	SetCVar("SpellTooltip_DisplayAvgValues", 0)		-- Turn off Display Points As Average
@@ -97,8 +99,8 @@ local function InitialSettings()
 		if cf then FCF_SetLocked(cf, 1) end
     end	
 	-- Set all chat channels to color player names by class
-	for k, v in pairs(ChatTypeInfo) do
-		SetChatColorNameByClass(k, true)
+	for k, v in pairs(CHAT_CONFIG_CHAT_LEFT) do
+		ToggleChatColorNamesByClassGroup(true, v.type)
 	end	
 	-- Make Chat windows transparent
 	SetChatWindowAlpha(1, 0)
@@ -111,16 +113,17 @@ end
 ---- Primary Installation
 ---- Stage 1
 function RealUI_RunStage1()
-	dbc.installation.stage = -1
+	nibRealUICharacter.installStage = -1
 	
 	if dbg.tags.firsttime then
 		dbg.tags.firsttime = false
 
 		-- Show Layout Changer tip once UI has reloaded
-		dbg.tags.layouttip = true
+		dbg.tags.needtutorial = true
 		
 		-- Addon Data
 		nibRealUI:LoadAddonData()
+		AuroraConfig = {}
 	end
 	
 	-- Make Chat windows transparent (again)
@@ -153,16 +156,11 @@ local function CreateInstallWindow()
 	IWF = CreateFrame("Frame", nil, UIParent)
 	IWF:EnableMouse(true)
 	IWF:SetParent(UIParent)
-	IWF:SetPoint("CENTER", UIParent, "CENTER")
+	IWF:SetAllPoints(UIParent)
 	IWF:SetFrameStrata("DIALOG")
 	IWF:SetFrameLevel(0)
-	IWF:SetWidth(UIParent:GetWidth() + 2000)
-	IWF:SetHeight(UIParent:GetHeight() + 2000)
 	IWF:SetBackdrop({
-		bgFile = "Interface\\AddOns\\nibRealUI\\Media\\Plain",
-		insets = {left = 0, right = 0, top = 0, bottom = 0},
-		edgeFile = "",
-		edgeSize = 0
+		bgFile = nibRealUI.media.textures.plain,
 	})
 	IWF:SetBackdropColor(0, 0, 0, 0.9)
 	
@@ -184,8 +182,8 @@ local function CreateInstallWindow()
 		F.Reskin(IWF.install)
 		
 		-- Button Highlight
-		IWF.installhighlight = CreateFrame("Frame", nil, IWF)
-		IWF.installhighlight:SetPoint("CENTER", IWF, "CENTER", 0, 0)
+		IWF.installhighlight = CreateFrame("Frame", nil, IWF.install)
+		IWF.installhighlight:SetPoint("CENTER", IWF.install, "CENTER", 0, 0)
 		IWF.installhighlight:SetWidth(108)
 		IWF.installhighlight:SetHeight(48)
 		IWF.installhighlight:SetBackdrop({
@@ -195,7 +193,7 @@ local function CreateInstallWindow()
 			insets = { left = 1, right = 1, top = 1, bottom = 1	}
 		})
 		IWF.installhighlight:SetBackdropColor(0,0,0,0.1)
-		IWF.installhighlight:SetBackdropBorderColor(unpack(nibRealUI:GetClassColor(nibRealUI.class, true)))
+		IWF.installhighlight:SetBackdropBorderColor(unpack(nibRealUI:GetClassColor(nibRealUI.class)))
 	end
 	
 	-- Logo
@@ -236,15 +234,15 @@ end
 
 ---- Process
 local function PrimaryInstallation()
-	if dbc.installation.stage > -1 then
+	if nibRealUICharacter.installStage > -1 then
 		InstallationStage1()
 	end
 end
 
 -- Mini Patch
 local function MiniPatchInstallation()
-	local CurVer = dbg.verinfo
-	if CurVer[1] == 7 and CurVer[2] == 3 then
+	local CurVer = nibRealUI.verinfo
+	if CurVer[1] == 7 and CurVer[2] == 4 then
 		-- Find out which Mini Patches are needed
 		local NP = {}
 		for k,v in ipairs(table_MiniPatches) do
@@ -252,20 +250,7 @@ local function MiniPatchInstallation()
 		end
 		if dbg.minipatches ~= nil then
 			for k,v in pairs(dbg.minipatches) do
-				if v == "73r1" then NP[2] = false end
-				if v == "73r5" then NP[5] = false end
-				if v == "73r6" then NP[6] = false end
-				if v == "73r9" then NP[9] = false end
-				if v == "73r10" then NP[10] = false end
-				if v == "73r11" then NP[11] = false end
-				if v == "73r12" then NP[12] = false end
-				if v == "73r13" then NP[13] = false end
-				if v == "73r16" then NP[16] = false end
-				if v == "73r18" then NP[18] = false end
-				if v == "73r19" then NP[19] = false end
-				if v == "73r20" then NP[20] = false end
-				if v == "73r21" then NP[21] = false end
-				if v == "73r22" then NP[22] = false end
+				-- if v == "74r2" then NP[2] = false end
 			end
 		end
 		
@@ -274,20 +259,7 @@ local function MiniPatchInstallation()
 		local HasMPatched = false
 		if dbg.minipatches == nil then dbg.minipatches = {} end
 		
-		if NP[2] then tinsert(toPatch, "73r1") end
-		if NP[5] then tinsert(toPatch, "73r5") end
-		if NP[6] then tinsert(toPatch, "73r6") end
-		if NP[9] then tinsert(toPatch, "73r9") end
-		if NP[10] then tinsert(toPatch, "73r10") end
-		if NP[11] then tinsert(toPatch, "73r11") end
-		if NP[12] then tinsert(toPatch, "73r12") end
-		if NP[13] then tinsert(toPatch, "73r13") end
-		if NP[16] then tinsert(toPatch, "73r16") end
-		if NP[18] then tinsert(toPatch, "73r18") end
-		if NP[19] then tinsert(toPatch, "73r19") end
-		if NP[20] then tinsert(toPatch, "73r20") end
-		if NP[21] then tinsert(toPatch, "73r21") end
-		if NP[22] then tinsert(toPatch, "73r22") end
+		-- if NP[2] then tinsert(toPatch, "74r2") end
 		
 		for k,v in ipairs(toPatch) do
 			if v then
@@ -351,18 +323,27 @@ function nibRealUI:InstallProcedure()
 	dbc = self.db.char
 	dbg = self.db.global
 	
+	---- Version checking
+	local CurVer = nibRealUI.verinfo
+	local OldVer = nibRealUI.verinfo
+	local IsNewVer, IsOneMore = nibRealUI:GetVerDifference(OldVer, CurVer)
+	
+	-- nibRealUIVersion = nibRealUI.verinfo
+	
+	-- Reset DB if new Major version
+	if IsNewVer then
+		nibRealUI.db:ResetDB("RealUI")
+		if StaticPopup1 then
+			StaticPopup1:Hide()
+		end
+	end
 	-- Set Char defaults
-	if not nibRealUICharacter then
+	if not(nibRealUICharacter) or IsNewVer or not(nibRealUICharacter.installStage) then
 		nibRealUICharacter = nibRealUICharacter_defaults
 	end
-
-	---- Version checking
-	local CurVer, OldVer = dbg.verinfo, dbc.installation.verinfo
-	local IsNewVer, IsOneMore = nibRealUI:GetVerDifference(OldVer, CurVer)
-	dbc.installation.verinfo = CurVer	
 	
 	-- Primary Stages
-	if dbc.installation.stage > -1 then
+	if nibRealUICharacter.installStage > -1 then
 		PrimaryInstallation()
 	-- Mini Patch	
 	else

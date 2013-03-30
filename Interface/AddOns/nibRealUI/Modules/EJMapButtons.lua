@@ -111,7 +111,7 @@ function EJMapButtons:OnInitialize()
 	db = self.db.profile
 	
 	self:SetEnabledState(nibRealUI:GetModuleEnabled(MODNAME))
-	nibRealUI:RegisterExtrasOptions(MODNAME, GetOptions)
+	nibRealUI:RegisterModuleOptions(MODNAME, GetOptions)
 end
 
 function EJMapButtons:OnEnable()

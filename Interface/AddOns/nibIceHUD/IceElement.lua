@@ -1,4 +1,3 @@
-local L = LibStub("AceLocale-3.0"):GetLocale("nibIceHUD", false)
 local SML = LibStub("LibSharedMedia-3.0")
 local mass
 
@@ -130,11 +129,11 @@ function IceElement.prototype:GetBarTypeDescription(barType)
 	local retval = ""
 
 	if barType == "CD" then
-		retval = L["Cooldown"]
+		retval = "Cooldown"
 	elseif barType == "Bar" then
-		retval = L["(De)Buff watcher"]
+		retval = "(De)Buff watcher"
 	elseif barType == "Counter" then
-		retval = L["Counter"]
+		retval = "Counter"
 	elseif barType == "Health" then
 		retval = HEALTH
 	elseif barType == "Mana" then
@@ -152,8 +151,8 @@ function IceElement.prototype:GetOptions()
 
 	opts["enabled"] = {
 		type = "toggle",
-		name = L["Enabled"],
-		desc = L["Enable/disable module"],
+		name = "Enabled",
+		desc = "Enable/disable module",
 		get = function()
 			return self.moduleSettings.enabled
 		end,
@@ -170,15 +169,15 @@ function IceElement.prototype:GetOptions()
 
 	opts["headerVisibility"] = {
 		type = 'header',
-		name = L["Visibility Settings"],
+		name = "Visibility Settings",
 		order = 27
 	}
 
 	opts["scale"] =
 	{
 		type = 'range',
-		name = L["Scale"],
-		desc = L["Scale of the element"],
+		name = "Scale",
+		desc = "Scale of the element",
 		min = 0.2,
 		max = 2,
 		step = 0.1,
@@ -200,8 +199,8 @@ function IceElement.prototype:GetOptions()
 	opts["alwaysFullAlpha"] =
 	{
 		type = 'toggle',
-		name = L["Always show at 100% alpha"],
-		desc = L["Whether to always show this module at 100% alpha or not"],
+		name = "Always show at 100% alpha",
+		desc = "Whether to always show this module at 100% alpha or not",
 		width = 'double',
 		get = function()
 			return self.moduleSettings.alwaysFullAlpha
@@ -387,13 +386,15 @@ function IceElement.prototype:FontFactory(frame, font, isLarge)
 		fontString = font
 	end
 	
-	local fontSize = isLarge and self.settings.fontSizeLarge or self.settings.fontSize
-	local fontFamily = isLarge and self.settings.fontFamilyLarge or self.settings.fontFamily
-	if not fontString:SetFont(SML:Fetch('font', fontFamily), fontSize, self.settings.fontOutline) then
-		fontString:SetFont("Fonts\\FRIZQT__.TTF", fontSize, self.settings.fontOutline)
+	local layout = RealUI.db.char.resolution
+	
+	local fontSize = isLarge and self.settings["fontSizeLarge"..layout] or self.settings["fontSize"..layout]
+	local fontFamily = isLarge and self.settings["fontFamilyLarge"..layout] or self.settings["fontFamily"..layout]
+	if not fontString:SetFont(SML:Fetch('font', fontFamily), fontSize, self.settings["fontOutline"..layout]) then
+		fontString:SetFont("Fonts\\FRIZQT__.TTF", fontSize, self.settings["fontOutline"..layout])
 	end
 
-	if (self.settings.fontOutline == "NONE") then
+	if (self.settings["fontOutline"..layout] == "NONE") then
 		fontString:SetShadowColor(0, 0, 0, 1)
 		fontString:SetShadowOffset(1, -1)
 	end

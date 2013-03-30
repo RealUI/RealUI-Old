@@ -1,4 +1,3 @@
-local L = LibStub("AceLocale-3.0"):GetLocale("nibIceHUD", false)
 local WeakenedBlows = IceCore_CreateClass(IceUnitBar)
 
 local nibIceHUD = _G.nibIceHUD
@@ -9,8 +8,6 @@ function WeakenedBlows.prototype:init()
 
 
 	self.moduleSettings = {}
-	self.moduleSettings.desiredLerpTime = 0
-	self.moduleSettings.shouldAnimate = false
 
 	self:SetDefaultColor("WeakenedBlowsColor", 0.45, 0.45, 1)
 	self.bTreatEmptyAsFull = true
@@ -40,14 +37,10 @@ function WeakenedBlows.prototype:GetDefaultSettings()
 	local defaults = WeakenedBlows.super.prototype.GetDefaultSettings(self)
 
 	defaults.enabled = true
-	defaults.shouldAnimate = false
 	defaults.side = IceCore.Side.Right
 	defaults.offset = 2
-	defaults.hideAnimationSettings = true
 	defaults.lockLowerFontAlpha = false
 	defaults.lowerTextString = ""
-	defaults.bAllowExpand = true
-	--defaults.buffOrDebuff = "Debuff"
 	
 	return defaults
 end

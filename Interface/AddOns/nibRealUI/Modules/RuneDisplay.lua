@@ -59,13 +59,6 @@ local table_Strata = {
 	"DIALOG",
 }
 
-local function ValidateOffset(value)
-	val = tonumber(value)
-	if val == nil then val = 0; end
-	if val < -5000 then val = -5000 elseif val > 5000 then val = 5000; end
-	return val
-end
-
 local options
 local function GetOptions()
 	if not options then options = {
@@ -98,6 +91,11 @@ local function GetOptions()
 				end,
 				order = 30,
 			},
+			gap1 = {
+				name = " ",
+				type = "description",
+				order = 31,
+			},
 			position = {
 				name = "Position",
 				type = "group",
@@ -111,7 +109,7 @@ local function GetOptions()
 						order = 10,
 						get = function(info) return tostring(db.position.x) end,
 						set = function(info, value)
-							value = ValidateOffset(value)
+							value = nibRealUI:ValidateOffset(value)
 							db.position.x = value
 							RuneDisplay:UpdateSettings()
 						end,
@@ -123,7 +121,7 @@ local function GetOptions()
 						order = 20,
 						get = function(info) return tostring(db.position.y) end,
 						set = function(info, value)
-							value = ValidateOffset(value)
+							value = nibRealUI:ValidateOffset(value)
 							db.position.y = value
 							RuneDisplay:UpdateSettings()
 						end,
@@ -164,6 +162,11 @@ local function GetOptions()
 					},
 				},
 			},
+			gap2 = {
+				name = " ",
+				type = "description",
+				order = 41,
+			},
 			framelevel = {
 				type = "group",
 				name = "Strata",
@@ -200,6 +203,11 @@ local function GetOptions()
 					},
 				},
 			},
+			gap3 = {
+				name = " ",
+				type = "description",
+				order = 51,
+			},
 			appearance = {
 				type = "group",
 				name = "Appearance",
@@ -218,6 +226,11 @@ local function GetOptions()
 						order = 10,
 					},
 				},
+			},
+			gap4 = {
+				name = " ",
+				type = "description",
+				order = 61,
 			},
 			runes = {
 				type = "group",
@@ -238,7 +251,7 @@ local function GetOptions()
 								order = 10,
 								get = function(info) return tostring(db.runes.size.width) end,
 								set = function(info, value)
-									value = ValidateOffset(value)
+									value = nibRealUI:ValidateOffset(value)
 									db.runes.size.width = value
 									RuneDisplay:UpdateSettings()
 								end,
@@ -250,7 +263,7 @@ local function GetOptions()
 								order = 20,
 								get = function(info) return tostring(db.runes.size.height) end,
 								set = function(info, value)
-									value = ValidateOffset(value)
+									value = nibRealUI:ValidateOffset(value)
 									db.runes.size.height = value
 									RuneDisplay:UpdateSettings()
 								end,
@@ -262,7 +275,7 @@ local function GetOptions()
 								order = 20,
 								get = function(info) return tostring(db.runes.size.padding) end,
 								set = function(info, value)
-									value = ValidateOffset(value)
+									value = nibRealUI:ValidateOffset(value)
 									db.runes.size.padding = value
 									RuneDisplay:UpdateSettings()
 								end,
@@ -393,6 +406,11 @@ local function GetOptions()
 						},
 					},
 				},
+			},
+			gap5 = {
+				name = " ",
+				type = "description",
+				order = 71,
 			},
 			combatfader = {
 				type = "group",
@@ -661,7 +679,7 @@ end
 function RuneDisplay:UpdateSettings()
 	RuneDisplay.Frames.Parent:SetFrameStrata(db.framelevel.strata)
 	RuneDisplay.Frames.Parent:SetFrameLevel(db.framelevel.level)
-	RuneDisplay.Frames.Parent:SetPoint(db.position.anchorfrom, "UIParent", db.position.anchorto, db.position.x, db.position.y)
+	RuneDisplay.Frames.Parent:SetPoint(db.position.anchorfrom, RealUIPositionersBottomInfo, db.position.anchorto, db.position.x, db.position.y)
 	RuneDisplay.Frames.Parent:SetHeight(db.runes.size.height + db.runes.size.padding * 2)
 	RuneDisplay.Frames.Parent:SetWidth(db.runes.size.width * 6 + db.runes.size.padding * 7)
 	
@@ -706,7 +724,7 @@ function RuneDisplay:CreateFrames()
 	RuneDisplay.Frames = {}
 	
 	-- Parent frame
-	RuneDisplay.Frames.Parent = CreateFrame("Frame", "RealUI_RuneDisplay", UIParent)
+	RuneDisplay.Frames.Parent = CreateFrame("Frame", "RealUI_RuneDisplay", RealUIPositionersBottomInfo)
 	
 	-- Create main frame
 	RuneDisplay.Frames.Main = CreateFrame("Frame", nil, RuneDisplay.Frames.Parent)
@@ -775,9 +793,9 @@ function RuneDisplay:OnInitialize()
 		profile = {
 			position = {
 				x = 0,
-				y = -110,
-				anchorto = "CENTER",
-				anchorfrom = "CENTER",
+				y = 2,
+				anchorto = "TOP",
+				anchorfrom = "BOTTOM",
 			},
 			framelevel = {strata = "LOW", level = 6},
 			appearance = {
@@ -820,7 +838,7 @@ function RuneDisplay:OnInitialize()
 	self:SetEnabledState(nibRealUI:GetModuleEnabled(MODNAME))
 	
 	if (select(2, UnitClass("player")) == "DEATHKNIGHT") then
-		nibRealUI:RegisterPlainOptions(MODNAME, GetOptions)
+		nibRealUI:RegisterModuleOptions(MODNAME, GetOptions)
 		
 		RuneDisplay:CreateFrames()
 		

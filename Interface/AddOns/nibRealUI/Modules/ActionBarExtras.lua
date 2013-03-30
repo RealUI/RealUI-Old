@@ -10,12 +10,12 @@ local MODNAME = "ActionBarExtras"
 local ActionBarExtras = nibRealUI:NewModule(MODNAME, "AceEvent-3.0")
 
 local EnteredWorld = false
-local Bar4, Bar4Profile, BSB, BTB
+local Bar4, Bar4Profile
 
 local Textures = {
 	PetBar = {
-		surround = [[Interface\Addons\nibRealUI\Media\Doodads\PetBar_Surround]],
-		background = [[Interface\Addons\nibRealUI\Media\Doodads\PetBar_Background]],
+		top = [[Interface\Addons\nibRealUI\Media\Doodads\PetBarTop]],
+		bottom = [[Interface\Addons\nibRealUI\Media\Doodads\PetBarBottom]],
 	},
 }
 
@@ -52,7 +52,7 @@ local function GetOptions()
 			},
 			desc = {
 				type = "description",
-				name = "Adds some extra features to the Action Bars.",
+				name = "Adds extra features to the Action Bars.",
 				fontSize = "medium",
 				order = 20,
 			},
@@ -77,6 +77,11 @@ local function GetOptions()
 				end,
 				order = 30,
 			},
+			gap1 = {
+				name = " ",
+				type = "description",
+				order = 31,
+			},
 			petbar = {
 				name = "Pet Bar Indicator",
 				type = "group",
@@ -97,63 +102,26 @@ local function GetOptions()
 					},
 				},
 			},
-			stancebar = {
-				name = "Stance Bar Centering",
-				type = "group",
-				inline = true,
-				disabled = function() if nibRealUI:GetModuleEnabled(MODNAME) then return false else return true end end,
-				order = 60,
-				args = {
-					enabled = {
-						type = "toggle",
-						name = "Enabled",
-						width = "full",
-						get = function(info) return db.stancebar.enabled end,
-						set = function(info, value) 
-							db.stancebar.enabled = value 
-							nibRealUI:ReloadUIDialog()
-						end,
-						order = 10,
-					},
-					x = {
-						type = "input",
-						name = "X Offset",
-						width = "half",
-						order = 20,
-						get = function(info) return tostring(db.stancebar.xoffset) end,
-						set = function(info, value)
-							value = nibRealUI:ValidateOffset(value)
-							db.stancebar.xoffset = value
-							ActionBarExtras:UpdateStanceBar()
-						end,
-					},
-				},
-			},
 		},
 	}
 	end
 	return options
 end
 
----- StanceBar functions
-local StanceNeedUpdate
-function ActionBarExtras:UpdateStanceBar()
-	if not(db.stancebar.enabled and nibRealUI:GetModuleEnabled(MODNAME) and Bar4 and BSB) then return end
-	if not BSB.bar then return end
-	if InCombatLockdown() then StanceNeedUpdate = true; return end
-	StanceNeedUpdate = false
-	
-	local NumStances = GetNumShapeshiftForms()
-	if NumStances < 1 then return end
-	
-	Bar4Profile = Bartender4DB["profileKeys"][nibRealUI.key]
-	local sbP = Bartender4DB["namespaces"]["StanceBar"]["profiles"][Bar4Profile]["padding"]
-	local sbS = Bartender4DB["namespaces"]["StanceBar"]["profiles"][Bar4Profile]["position"]["scale"]
-	local sbW = (NumStances * 30) + ((NumStances - 1) * sbP)
-	local sbX = floor(-(sbW / 2) * sbS) + 0.5 + db.stancebar.xoffset
-	
-	Bartender4DB["namespaces"]["StanceBar"]["profiles"][Bar4Profile]["position"]["x"] = sbX
-	BSB.bar:ApplyConfig(Bartender4DB["namespaces"]["StanceBar"]["profiles"][Bar4Profile])
+function ActionBarExtras:SetFonts()
+	for i = 1, 120 do
+		button = _G["BT4Button"..i];
+		if button then
+			local name = button:GetName();
+			local count = _G[name.."Count"];
+			local hotkey = _G[name.."HotKey"];
+			
+			if count then
+				count:SetFont(unpack(nibRealUI.font.pixeltiny))
+			end
+			hotkey:SetFont(unpack(nibRealUI.font.pixeltiny))
+		end
+	end
 end
 
 ---- PetBar functions
@@ -172,8 +140,7 @@ function ActionBarExtras:UpdatePetBar()
 	
 	-- Color
 	local color = nibRealUI:GetClassColor(nibRealUI.class)
-	PetBarDoodad.surround:SetVertexColor(1, 1, 1, 1)
-	PetBarDoodad.background:SetVertexColor(color[1], color[2], color[3], 0.85)
+	PetBarDoodad.top:SetVertexColor(unpack(color))
 	
 	-- Size/Position
 	Bar4Profile = Bartender4DB["profileKeys"][nibRealUI.key]
@@ -181,7 +148,7 @@ function ActionBarExtras:UpdatePetBar()
 	local pbY = Bartender4DB["namespaces"]["PetBar"]["profiles"][Bar4Profile]["position"]["y"]
 	local pbA = Bartender4DB["namespaces"]["PetBar"]["profiles"][Bar4Profile]["position"]["point"]
 	PetBarDoodad:ClearAllPoints()
-	PetBarDoodad:SetPoint(pbA, "UIParent", pbA, floor(pbX + 132), floor(pbY - 18))
+	PetBarDoodad:SetPoint(pbA, "UIParent", pbA, floor(pbX) + 132, floor(pbY) - 18)
 end
 
 local function MakePetBarDoodad()
@@ -193,7 +160,7 @@ local function MakePetBarDoodad()
 	PetBarDoodad:SetFrameStrata("BACKGROUND")
 	PetBarDoodad:SetFrameLevel(1)
 	PetBarDoodad:SetHeight(32)
-	PetBarDoodad:SetWidth(64)
+	PetBarDoodad:SetWidth(32)
 	
 	PetBarDoodad:RegisterEvent("PLAYER_ENTERING_WORLD")
 	PetBarDoodad:RegisterEvent("UNIT_PET")
@@ -201,35 +168,13 @@ local function MakePetBarDoodad()
 		ActionBarExtras:UpdatePetBar()
 	end)
 	
-	PetBarDoodad.surround = PetBarDoodad:CreateTexture(nil, "ARTWORK")
-	PetBarDoodad.surround:SetAllPoints(PetBarDoodad)
-	PetBarDoodad.surround:SetTexture(Textures.PetBar.surround)
+	PetBarDoodad.top = PetBarDoodad:CreateTexture(nil, "ARTWORK")
+	PetBarDoodad.top:SetAllPoints(PetBarDoodad)
+	PetBarDoodad.top:SetTexture(Textures.PetBar.top)
 	
-	PetBarDoodad.background = PetBarDoodad:CreateTexture(nil, "ARTWORK")
-	PetBarDoodad.background:SetAllPoints(PetBarDoodad)
-	PetBarDoodad.background:SetTexture(Textures.PetBar.background)
-end
-
----- Lockdown
-local LT = CreateFrame("Frame")
-LT:Hide()
-LT.e = 0
-LT:SetScript("OnUpdate", function(s, e)
-	s.e = s.e + e
-	if s.e > 1 then
-		if not InCombatLockdown() then
-			if StanceNeedUpdate then ActionBarExtras:UpdateStanceBar() end
-			s.e = 0
-			s:Hide()
-		else
-			s.e = 0
-		end
-	end
-end)
-function ActionBarExtras:PLAYER_REGEN_ENABLED()
-	if StanceNeedUpdate then 
-		LT:Show()
-	end
+	PetBarDoodad.bottom = PetBarDoodad:CreateTexture(nil, "ARTWORK")
+	PetBarDoodad.bottom:SetAllPoints(PetBarDoodad)
+	PetBarDoodad.bottom:SetTexture(Textures.PetBar.bottom)
 end
 
 ----
@@ -241,17 +186,13 @@ function ActionBarExtras:RefreshMod()
 	if not PetBarDoodad then MakePetBarDoodad() end
 	self:UpdatePetBar()
 	self:TogglePetBar()
-	self:UpdateStanceBar()
+	self:SetFonts()
 end
 
 local function ClassColorsUpdate()
 	if not(nibRealUI:GetModuleEnabled(MODNAME) and Bar4) then return end
 	
 	ActionBarExtras:UpdatePetBar()
-end
-
-function ActionBarExtras:UPDATE_SHAPESHIFT_FORMS()
-	self:UpdateStanceBar()
 end
 
 function ActionBarExtras:UNIT_PET()
@@ -261,14 +202,11 @@ end
 function ActionBarExtras:PLAYER_ENTERING_WORLD()
 	if not Bar4 then return end
 	
-	self:UpdateStanceBar()
 	self:TogglePetBar()
 	
 	if EnteredWorld then return end
 	
 	self:RegisterEvent("UNIT_PET")
-	self:RegisterEvent("UPDATE_SHAPESHIFT_FORMS")
-	self:RegisterEvent("PLAYER_REGEN_ENABLED")
 	
 	self:RefreshMod()
 	
@@ -282,7 +220,6 @@ end
 function ActionBarExtras:PLAYER_LOGIN()
 	if IsAddOnLoaded("Bartender4") and Bartender4DB then
 		Bar4 = LibStub("AceAddon-3.0"):GetAddon("Bartender4", true)
-		BSB = Bar4:GetModule("StanceBar", true)
 	end
 end
 
@@ -293,22 +230,19 @@ function ActionBarExtras:OnInitialize()
 			petbar = {
 				enabled = true,
 			},
-			stancebar = {
-				enabled = true,
-				xoffset = -5,
-			},
 		},
 	})
 	db = self.db.profile
 
 	self:SetEnabledState(nibRealUI:GetModuleEnabled(MODNAME))
-	nibRealUI:RegisterPlainOptions(MODNAME, GetOptions)
+	nibRealUI:RegisterModuleOptions(MODNAME, GetOptions)
 end
 
 function ActionBarExtras:OnEnable()	
 	self:RegisterEvent("PLAYER_LOGIN")
 	self:RegisterEvent("PLAYER_ENTERING_WORLD")
 	
+	self:SetFonts()
 	if EnteredWorld then 
 		self:RefreshMod()
 	end

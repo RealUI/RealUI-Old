@@ -1,4 +1,3 @@
-local L = LibStub("AceLocale-3.0"):GetLocale("nibIceHUD", false)
 local CastBar = IceCore_CreateClass(IceCastBar)
 local mass
 
@@ -33,16 +32,34 @@ function CastBar.prototype:GetDefaultSettings()
 	local settings = CastBar.super.prototype.GetDefaultSettings(self)
 
 	settings["side"] = IceCore.Side.Left
-	settings["offset"] = 0
 	settings["flashInstants"] = "Caster"
 	settings["flashFailures"] = "Caster"
-	settings["lagAlpha"] = 0.7
+	settings["lagAlpha"] = 0.6
 	settings["showBlizzCast"] = false
-	settings["shouldAnimate"] = false
-	settings["hideAnimationSettings"] = true
 	settings["rangeColor"] = true
-	settings["bAllowExpand"] = false
 	settings["showTicks"] = true
+	settings["offset"] = 2
+	settings["barHorizontalOffset"] = -4
+	settings["scale"] = 0.85
+	settings["textHorizontalOffset"] = -6
+	settings["displayAuraIcon"] = true
+	settings["auraIconXOffset"] = 24
+	settings["barFontSize"] = 8
+	settings["auraIconYOffset"] = -29
+	settings["textVerticalOffset"] = 0
+	settings["forceJustifyText"] = "RIGHT"
+	settings["markers"] = {
+		{
+			["height"] = 1,
+		}, -- [1]
+		{
+			["height"] = 1,
+		}, -- [2]
+		{
+			["height"] = 1,
+		}, -- [3]
+	}
+	settings["barVerticalOffset"] = 15
 	
 	settings.markers = {}
 	local MarkerTemplate = {
@@ -66,8 +83,8 @@ function CastBar.prototype:GetOptions()
 	opts["flashInstants"] =
 	{
 		type = 'select',
-		name = L["Flash Instant Spells"],
-		desc = L["Defines when cast bar should flash on instant spells"],
+		name = "Flash Instant Spells",
+		desc = "Defines when cast bar should flash on instant spells",
 		get = function(info)
 			return nibIceHUD:GetSelectValue(info, self.moduleSettings.flashInstants)
 		end,
@@ -84,8 +101,8 @@ function CastBar.prototype:GetOptions()
 	opts["flashFailures"] =
 	{
 		type = 'select',
-		name = L["Flash on Spell Failures"],
-		desc = L["Defines when cast bar should flash on failed spells"],
+		name = "Flash on Spell Failures",
+		desc = "Defines when cast bar should flash on failed spells",
 		get = function(info)
 			return nibIceHUD:GetSelectValue(info, self.moduleSettings.flashFailures)
 		end,
@@ -102,8 +119,8 @@ function CastBar.prototype:GetOptions()
 	opts["lagAlpha"] =
 	{
 		type = 'range',
-		name = L["Lag Indicator alpha"],
-		desc = L["Lag indicator alpha (0 is disabled)"],
+		name = "Lag Indicator alpha",
+		desc = "Lag indicator alpha (0 is disabled)",
 		min = 0,
 		max = 1,
 		step = 0.1,
@@ -123,8 +140,8 @@ function CastBar.prototype:GetOptions()
 	opts["showBlizzCast"] =
 	{
 		type = 'toggle',
-		name = L["Show default cast bar"],
-		desc = L["Whether or not to show the default cast bar."],
+		name = "Show default cast bar",
+		desc = "Whether or not to show the default cast bar.",
 		get = function()
 			return self.moduleSettings.showBlizzCast
 		end,
@@ -157,8 +174,8 @@ function CastBar.prototype:GetOptions()
 
 	opts["rangeColor"] = {
 		type = 'toggle',
-		name = L["Change color when not in range"],
-		desc = L["Changes the bar color to the CastNotInRange color when the target goes out of range for the current spell."],
+		name = "Change color when not in range",
+		desc = "Changes the bar color to the CastNotInRange color when the target goes out of range for the current spell.",
 		width = 'double',
 		get = function()
 			return self.moduleSettings.rangeColor
@@ -175,8 +192,8 @@ function CastBar.prototype:GetOptions()
 	opts["textSettings"] =
 	{
 		type = 'group',
-		name = "|c"..self.configColor..L["Text Settings"].."|r",
-		desc = L["Settings related to texts"],
+		name = "|c"..self.configColor.."Text Settings".."|r",
+		desc = "Settings related to texts",
 		order = 32,
 		disabled = function()
 			return not self.moduleSettings.enabled
@@ -185,8 +202,8 @@ function CastBar.prototype:GetOptions()
 
 			lockFontAlpha = {
 				type = "toggle",
-				name = L["Lock Bar Text Alpha"],
-				desc = L["Locks text alpha to 100%"],
+				name = "Lock Bar Text Alpha",
+				desc = "Locks text alpha to 100%",
 				get = function()
 					return self.moduleSettings.lockUpperTextAlpha
 				end,
@@ -199,8 +216,8 @@ function CastBar.prototype:GetOptions()
 
 			upperTextVisible = {
 				type = 'toggle',
-				name = L["Spell cast text visible"],
-				desc = L["Toggle spell cast text visibility"],
+				name = "Spell cast text visible",
+				desc = "Toggle spell cast text visibility",
 				get = function()
 					return self.moduleSettings.textVisible['upper']
 				end,
@@ -213,8 +230,8 @@ function CastBar.prototype:GetOptions()
 
 			textVerticalOffset = {
 				type = 'range',
-				name = L["Text Vertical Offset"],
-				desc = L["Offset of the text from the bar vertically (negative is farther below)"],
+				name = "Text Vertical Offset",
+				desc = "Offset of the text from the bar vertically (negative is farther below)",
 				min = -250,
 				max = 350,
 				step = 1,
@@ -232,8 +249,8 @@ function CastBar.prototype:GetOptions()
 
 			textHorizontalOffset = {
 				type = 'range',
-				name = L["Text Horizontal Offset"],
-				desc = L["Offset of the text from the bar horizontally"],
+				name = "Text Horizontal Offset",
+				desc = "Offset of the text from the bar horizontally",
 				min = -350,
 				max = 350,
 				step = 1,
@@ -251,8 +268,8 @@ function CastBar.prototype:GetOptions()
 
 			forceJustifyText = {
 				type = 'select',
-				name = L["Force Text Justification"],
-				desc = L["This sets the alignment for the text on this bar"],
+				name = "Force Text Justification",
+				desc = "This sets the alignment for the text on this bar",
 				get = function()
 					return self.moduleSettings.forceJustifyText
 				end,
@@ -281,10 +298,6 @@ function CastBar.prototype:Enable(core)
 
 	if self.moduleSettings.enabled and not self.moduleSettings.showBlizzCast then
 		self:ToggleBlizzCast(false)
-	end
-
-	if self.moduleSettings.shouldAnimate then
-		self.moduleSettings.shouldAnimate = false
 	end
 end
 

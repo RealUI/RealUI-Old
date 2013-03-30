@@ -1,4 +1,3 @@
-local L = LibStub("AceLocale-3.0"):GetLocale("nibIceHUD", false)
 local RogueExtras1 = IceCore_CreateClass(IceUnitBar)
 local mass
 
@@ -62,8 +61,6 @@ function RogueExtras1.prototype:init()
 	RogueExtras1.super.prototype.init(self, "RogueExtras1", "player")
 
 	self.moduleSettings = {}
-	self.moduleSettings.desiredLerpTime = 0
-	self.moduleSettings.shouldAnimate = false
 
 	self:SetDefaultColor("RogueExtras1AR", 0.9, 0.65, 0.25)
 	self:SetDefaultColor("RogueExtras1ToTT", 0.3, 0.8, 0.3)
@@ -136,7 +133,6 @@ function RogueExtras1.prototype:GetDefaultSettings()
 
 	settings["enabled"] = true
 	settings["showAsPercentOfMax"] = true
-	settings["hideAnimationSettings"] = true
 	settings["displayAuraIcon"] = false
 	settings["auraIconXOffset"] = 0
 	settings["auraIconYOffset"] = 0
@@ -155,7 +151,7 @@ function RogueExtras1.prototype:GetOptions()
 	opts["showAsPercentOfMax"] =
 	{
 		type = 'toggle',
-		name = L["Show bar as % of maximum"],
+		name = "Show bar as % of maximum",
 		desc = "If this is checked, then the buff time shows as a percent of the maximum attainable (taking set bonuses and talents into account). Otherwise, the bar always goes from full to empty when applying no matter the duration.",
 		get = function()
 			return self.moduleSettings.showAsPercentOfMax
@@ -170,12 +166,12 @@ function RogueExtras1.prototype:GetOptions()
 	
 	opts["iconSettings"] = {
 		type = 'group',
-		name = "|c"..self.configColor..L["Icon Settings"].."|r",
+		name = "|c"..self.configColor.."Icon Settings".."|r",
 		args = {
 			displayAuraIcon = {
 				type = 'toggle',
-				name = L["Display aura icon"],
-				desc = L["Whether or not to display an icon for the aura that this bar is tracking"],
+				name = "Display aura icon",
+				desc = "Whether or not to display an icon for the aura that this bar is tracking",
 				get = function()
 					return self.moduleSettings.displayAuraIcon
 				end,
@@ -200,8 +196,8 @@ function RogueExtras1.prototype:GetOptions()
 				min = -250,
 				max = 250,
 				step = 0.5,
-				name = L["Aura icon horizontal offset"],
-				desc = L["Adjust the horizontal position of the aura icon"],
+				name = "Aura icon horizontal offset",
+				desc = "Adjust the horizontal position of the aura icon",
 				get = function()
 					return self.moduleSettings.auraIconXOffset
 				end,
@@ -220,8 +216,8 @@ function RogueExtras1.prototype:GetOptions()
 				min = -250,
 				max = 250,
 				step = 0.5,
-				name = L["Aura icon vertical offset"],
-				desc = L["Adjust the vertical position of the aura icon"],
+				name = "Aura icon vertical offset",
+				desc = "Adjust the vertical position of the aura icon",
 				get = function()
 					return self.moduleSettings.auraIconYOffset
 				end,
@@ -241,7 +237,7 @@ function RogueExtras1.prototype:GetOptions()
 				max = 32,
 				step = 1,
 				name = "Aura icon size",
-				desc = L["Adjusts the size of the aura icon for this bar"],
+				desc = "Adjusts the size of the aura icon for this bar",
 				get = function()
 					return self.moduleSettings.auraIconSize
 				end,
@@ -262,20 +258,6 @@ end
 
 function RogueExtras1.prototype:CreateFrame()
 	RogueExtras1.super.prototype.CreateFrame(self)
-end
-
-function RogueExtras1.prototype:RotateHorizontal()
-	RogueExtras1.super.prototype.RotateHorizontal(self)
-
-	self:RotateFrame(self.durationFrame)
-end
-
-function RogueExtras1.prototype:ResetRotation()
-	RogueExtras1.super.prototype.ResetRotation(self)
-
-	if self.durationFrame.anim then
-		self.durationFrame.anim:Stop()
-	end
 end
 
 -- 'Protected' methods --------------------------------------------------------

@@ -40,6 +40,11 @@ local function GetOptions()
 				end,
 				order = 30,
 			},
+			gap1 = {
+				name = " ",
+				type = "description",
+				order = 31,
+			},
 			general = {
 				type = "group",
 				name = "General",
@@ -408,10 +413,11 @@ function Nameplates:OnInitialize()
 	ndbc = nibRealUI.db.char
 	
 	self:SetEnabledState(nibRealUI:GetModuleEnabled(MODNAME))
-	nibRealUI:RegisterPlainOptions(MODNAME, GetOptions)
+	nibRealUI:RegisterModuleOptions(MODNAME, GetOptions)
 end
 
 function Nameplates:OnEnable()
+	if IsAddOnLoaded("TidyPlates") then return end
 	self:RegisterEvent("PLAYER_LOGIN")
 	
 	if LoggedIn then

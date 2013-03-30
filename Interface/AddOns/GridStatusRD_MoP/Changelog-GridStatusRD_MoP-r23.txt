@@ -1,0 +1,89 @@
+------------------------------------------------------------------------
+r23 | sithempress | 2013-03-11 15:28:28 +0000 (Mon, 11 Mar 2013) | 21 lines
+Changed paths:
+   M /trunk/ThroneofThunder.lua
+
+--Horridon
+Fixed some priorities in anticipation of heroic mode. Tank abilities were too high. Some of the dispellable debuffs or heavy damage debuffs were too low. 
+
+--Durumu 
+Fixed priorities so that people can correctly receive heals for more damaging abilities
+
+--Primordius
+Added volatile pathogen as top priority
+
+--Iron Qon
+Fixed priorities.  Arcing Lightning needed to be lower then other debuffs that are more important (like Freeze and Electrified).
+Added Electrified (the stun)
+
+--Twin consorts
+Corrupted healing stacks
+
+--Lei'Shen
+Fixed priorities.  Static shock and overcharge are 2 most important debuffs for the raid. Made sure nothing else would conflict with their priority.
+
+--Trash
+Begin to add trash debuffs.
+------------------------------------------------------------------------
+r22 | stassart | 2013-03-07 00:54:01 +0000 (Thu, 07 Mar 2013) | 14 lines
+Changed paths:
+   A /trunk/CheckCompat.lua
+   M /trunk/GridStatusRD_MoP.toc
+   M /trunk/HeartOfFear.lua
+   M /trunk/MogushanVaults.lua
+   M /trunk/ShaofAnger.lua
+   M /trunk/TerraceofEndlessSpring.lua
+   M /trunk/ThroneofThunder.lua
+   M /trunk/info.txt
+
+Updated for 5.2.
+This version requires GridStatusRaidDebuff MoP 5.2/r11 or higher.
+
+This will generate a popup warning if you are running an older incompatible
+version. I appologize for the pop-up again, but it is better than things
+being broken and getting a lot of bug reports.
+
+This change was required because libbabble-zone is deprecated in 5.2 and I
+had to rewrite GridStatusRaidDebuff MoP to no longer require it for new
+dungeons.  Libbabble-zone is still being included in GridStatusRaidDebuff
+for old raid packs that I do not have access to update so they remain
+functional as long as possible.
+
+
+------------------------------------------------------------------------
+r21 | sithempress | 2013-03-06 22:28:19 +0000 (Wed, 06 Mar 2013) | 1 line
+Changed paths:
+   M /trunk/GridStatusRD_MoP.toc
+
+Forgot to add Throne to the toc file. Fixed that. 
+------------------------------------------------------------------------
+r20 | sithempress | 2013-03-02 02:05:54 +0000 (Sat, 02 Mar 2013) | 1 line
+Changed paths:
+   M /trunk/ThroneofThunder.lua
+
+Ready as can be for 5.2! marking as release candidate. 
+------------------------------------------------------------------------
+r19 | sithempress | 2013-03-01 03:33:04 +0000 (Fri, 01 Mar 2013) | 1 line
+Changed paths:
+   M /trunk/ThroneofThunder.lua
+
+More priority and spell ID fixes for various bosses now that there are some logs for heroic tests. 
+------------------------------------------------------------------------
+r18 | sithempress | 2013-03-01 02:56:16 +0000 (Fri, 01 Mar 2013) | 1 line
+Changed paths:
+   M /trunk/ThroneofThunder.lua
+
+Add Ji-Kun. Fix Durumu
+------------------------------------------------------------------------
+r17 | sithempress | 2013-02-20 21:50:08 +0000 (Wed, 20 Feb 2013) | 1 line
+Changed paths:
+   A /trunk/ThroneofThunder.lua
+
+Adding ThroneofThunder.lua
+------------------------------------------------------------------------
+r16 | stassart | 2012-12-21 00:35:53 +0000 (Fri, 21 Dec 2012) | 1 line
+Changed paths:
+   M /trunk/HeartOfFear.lua
+
+HoF: Added Kor'thik Strike for Wind Lord. This debuff is an example of one not detected by GridStatusRaidDebuff itself.
+------------------------------------------------------------------------

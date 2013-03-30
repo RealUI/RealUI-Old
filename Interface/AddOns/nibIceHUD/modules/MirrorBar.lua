@@ -1,4 +1,3 @@
-local L = LibStub("AceLocale-3.0"):GetLocale("nibIceHUD", false)
 local MirrorBarAdv = IceCore_CreateClass(IceBarElement)
 local mass
 
@@ -42,8 +41,6 @@ function MirrorBarAdv.prototype:GetDefaultSettings()
 	
 	defaults.enabled = false
 	defaults.lockUpperTextAlpha = false
-	defaults.shouldAnimate = false
-	defaults.hideAnimationSettings = true
 	defaults.offset = 2
 	defaults.side = IceCore.Side.Left
 	return defaults

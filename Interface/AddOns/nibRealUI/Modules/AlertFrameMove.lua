@@ -180,7 +180,7 @@ function AlertFrameMove:OnInitialize()
 	})
 	
 	self:SetEnabledState(nibRealUI:GetModuleEnabled(MODNAME))
-	nibRealUI:RegisterExtrasOptions(MODNAME, GetOptions)
+	nibRealUI:RegisterModuleOptions(MODNAME, GetOptions)
 end
 
 function AlertFrameMove:OnEnable()

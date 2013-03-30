@@ -97,7 +97,7 @@ MSQ:AddSkin(
 		HotKey = {
 			Width = 32,
 			Height = 10,
-			OffsetX = 5.5,
+			OffsetX = 6.5,
 			OffsetY = -5.5,
 			Font = [[Interface\AddOns\Masque_RealUI\Font\pixel1.ttf]],
 			FontSize = 8,

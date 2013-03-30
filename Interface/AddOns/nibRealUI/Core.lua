@@ -2,26 +2,55 @@ local nibRealUI = LibStub("AceAddon-3.0"):NewAddon("nibRealUI", "AceConsole-3.0"
 local L = LibStub("AceLocale-3.0"):GetLocale("nibRealUI")
 local LSM = LibStub("LibSharedMedia-3.0")
 local db, dbc, dbg
+_G.RealUI = nibRealUI
 
-local nibRealUI_Version = {
+nibRealUI.verinfo = {
 	[1] = 7,
-	[2] = 3,
-	[3] = 22,
+	[2] = 4,
+	[3] = 1,
+}
+
+nibRealUI.defaultpositions = {
+	-- Low Res
+	[1] = {
+		["Nothing"] = 0,
+		["HuDX"] = 0,
+		["HuDY"] = -38,
+		["BIY"] = 0,
+		["UFHorizontal"] = 0,
+		["ActionBarsX"] = -171.5,
+		["ActionBarsY"] = -155.5,
+		["HuDWidth"] = 282,		-- Outer edge of CastBar to TargetCastBar
+		["HuDHeight"] = 182,	-- Top to Bottom of CastBar
+		["UFWidth"] = 223,
+	},
+	-- High Res
+	[2] = {
+		["Nothing"] = 0,
+		["HuDX"] = 0,
+		["HuDY"] = -38,
+		["BIY"] = 0,
+		["UFHorizontal"] = 0,
+		["ActionBarsX"] = -171.5,
+		["ActionBarsY"] = -155.5,
+		["HuDWidth"] = 282,		-- Outer edge of CastBar to TargetCastBar
+		["HuDHeight"] = 182,	-- Top to Bottom of CastBar
+		["UFWidth"] = 243,
+	},
 }
 
 -- Default Options
 local defaults = {
 	global = {
-		verinfo = {
-			[1] = 0,
-			[2] = 0,
-			[3] = 0,
-		},
 		tags = {
 			firsttime = true,
-			layouttip = false,
+			needtutorial = true,
+			tutorialdone = false,
 		},
 		minipatches = {},
+		extrasettings = {
+			skada = false,
+		},
 		resolution = 1,
 	},
 	char = {
@@ -36,6 +65,7 @@ local defaults = {
 		layout = {
 			current = 1,
 			needchanged = false,
+			spec = {1, 1},
 		},
 		resolution = 1,	-- So we can check to make sure each Char is on the correct Res
 		cbResetNew = false,	-- Reset New items for cargBags on character's first load
@@ -44,7 +74,25 @@ local defaults = {
 		modules = {
 			['*'] = true,
 		},
+		-- Control positioning and sizes of RealUI elements
+		positions = nibRealUI.defaultpositions,
+		addonControl = {
+			actionBars = true,
+			grid = true,
+			msbt = true,
+		},
+		-- Media
 		media = {
+			backgroundalpha = 0.8,
+			textures = {
+				plain = [[Interface\AddOns\nibRealUI\Media\Plain.tga]],
+				plain80 = [[Interface\AddOns\nibRealUI\Media\Plain80.tga]],
+				border = [[Interface\AddOns\nibRealUI\Media\Glow.tga]],
+				background = [[Interface\AddOns\nibRealUI\Media\media\BG1.tga]],
+			},
+			colors = {
+				red = {0.75, 0.2, 0.2, 1},
+			},
 			font = {
 				standard = {"Standard"},
 				pixel = {
@@ -58,191 +106,29 @@ local defaults = {
 					},
 				},
 			},
-			textures = {
-				plain = [[Interface\AddOns\nibRealUI\Media\Plain.tga]],
-				border = [[Interface\AddOns\nibRealUI\Media\Glow.tga]],
-				background = [[Interface\AddOns\nibRealUI\Media\media\BG1.tga]],
-			},
 		},
+		-- Other
 		other = {
 			uiscaler = true,
 		},
 	},
 }
 
-function FindSpellID(SpellName)
-	print("|cffffff20 SpellID tracking active. When |r|cffffffff"..SpellName.."|r|cffffff20 next activates, the SpellID will be printed in the chat window.|r")
-	local f = CreateFrame("FRAME")
-	f:RegisterEvent("UNIT_AURA")
-	f:SetScript("OnEvent", function(self, event, ...)
-		if ... == "player" then
-			local spellID = select(11, UnitAura("player", SpellName))
-			if spellID then
-				print(SpellName..": #", spellID); 
-				f:UnregisterEvent("UNIT_AURA")
-			end
-		end
-	end)
-end
+TABLE_STRATAS = {
+	"BACKGROUND",
+	"LOW",
+	"MEDIUM",
+	"HIGH",
+	"DIALOG",
+	"TOOLTIP",
+}
 
--- Frame work
-function nibRealUI:CreateBD(frame, alpha)
-	frame:SetBackdrop({
-		bgFile = nibRealUI.media.textures.plain, 
-		edgeFile = nibRealUI.media.textures.plain, 
-		edgeSize = 1, 
-	})
-	frame:SetBackdropColor(0, 0, 0, alpha or .5)
-	frame:SetBackdropBorderColor(0, 0, 0)
-end
-
-function nibRealUI:CreateBG(frame, alpha)
-	local f = frame
-	if frame:GetObjectType() == "Texture" then f = frame:GetParent() end
-
-	local bg = f:CreateTexture(nil, "BACKGROUND")
-	bg:SetPoint("TOPLEFT", f, -1, 1)
-	bg:SetPoint("BOTTOMRIGHT", f, 1, -1)
-	bg:SetTexture(nibRealUI.media.textures.plain)
-	bg:SetVertexColor(0, 0, 0, alpha or 1)
-
-	return bg
-end
-
-function nibRealUI:CreateInnerBG(frame)
-	local f = frame
-	if frame:GetObjectType() == "Texture" then f = frame:GetParent() end
-
-	local bg = f:CreateTexture(nil, "BACKGROUND")
-	bg:SetPoint("TOPLEFT", frame, 1, -1)
-	bg:SetPoint("BOTTOMRIGHT", frame, -1, 1)
-	bg:SetTexture(nibRealUI.media.textures.plain)
-	bg:SetVertexColor(0, 0, 0, 0)
-
-	return bg
-end
-
-function nibRealUI:CreateFS(parent, justify, ...)
-	--print("nibRealUI/Core:CreateFS parent; "..tostring(parent))
-	local f = parent:CreateFontString(nil, "OVERLAY")
-	local size
-	if ... then 
-		size = ...
-	else
-		size = nibRealUI.font.pixel1[2]
-	end
-	f:SetFont(nibRealUI.font.pixel1[1], size, nibRealUI.font.pixel1[3])
-	f:SetShadowColor(0, 0, 0, 0)
-	if justify then f:SetJustifyH(justify) end
-	return f
-end
-
-local function FormatToDecimalPlaces(num, places)
-	local placeValue = ("%%.%df"):format(places)
-	return placeValue:format(num)
-end
-
-function nibRealUI:ReadableNumber(num)
-	local ret = 0
-	if not num then
-		return 0
-	elseif num >= 100000000 then
-		ret = FormatToDecimalPlaces(num / 1000000, 0) .. "m" -- hundred million
-	elseif num >= 10000000 then
-		ret = FormatToDecimalPlaces(num / 1000000, 1) .. "m" -- ten million
-	elseif num >= 1000000 then
-		ret = FormatToDecimalPlaces(num / 1000000, 2) .. "m" -- million
-	elseif num >= 100000 then
-		ret = FormatToDecimalPlaces(num / 1000, 0) .. "k" -- hundred thousand
-	elseif num >= 10000 then
-		ret = FormatToDecimalPlaces(num / 1000, 1) .. "k" -- ten thousand
-	elseif num >= 1000 then
-		ret = FormatToDecimalPlaces(num / 1000, 2) .. "k" -- thousand
-	else
-		ret = num -- hundreds
-	end
-	return ret
-end
-
--- Reload UI dialog
-function nibRealUI:ReloadUIDialog()
-	LibStub("AceConfigDialog-3.0"):Close("nibRealUI")
-
-	-- Display Dialog
-	StaticPopupDialogs["PUDRUIRELOADUI"] = {
-		text = L["You need to Reload the UI for changes to take effect. Reload Now?"],
-		button1 = "Yes",
-		button2 = "No",
-		OnAccept = function()
-			ReloadUI()
-		end,
-		timeout = 0,
-		whileDead = true,
-		hideOnEscape = true,
-		notClosableByLogout = false,
-	}
-	StaticPopup_Show("PUDRUIRELOADUI")
-end
-
--- Font Retrieval
-function nibRealUI:RetrieveFont(font)
-	local font = LSM:Fetch("font", font)
-	if font == nil then font = GameFontNormalSmall:GetFont() end
-	return font
-end
-
-function nibRealUI:GetFont(fontID)
-	local font = {}
-	if fontID == "small" then
-		if dbc.resolution == 1 then
-			font = {self:RetrieveFont(self.media.font.pixel.lowres.small[1]), self.media.font.pixel.lowres.small[2], self.media.font.pixel.lowres.small[3]}
-		else
-			font = {self:RetrieveFont(self.media.font.pixel.highres.small[1]), self.media.font.pixel.highres.small[2], self.media.font.pixel.highres.small[3]}
-		end
-	elseif fontID == "large" then
-		if dbc.resolution == 1 then
-			font = {self:RetrieveFont(self.media.font.pixel.lowres.large[1]), self.media.font.pixel.lowres.large[2], self.media.font.pixel.lowres.large[3]}
-		else
-			font = {self:RetrieveFont(self.media.font.pixel.highres.large[1]), self.media.font.pixel.highres.large[2], self.media.font.pixel.highres.large[3]}
-		end
-	else
-		font = self:RetrieveFont(self.media.font.standard[1])
-	end
-	return font
-end
-
--- Opposite Faction
-function nibRealUI:OtherFaction(f)
-	if (f == "Horde") then
-		return "Alliance"
-	else
-		return "Horde"
-	end
-end
-
--- Validate Offset
-function nibRealUI:ValidateOffset(value, ...)
-	local val = tonumber(value)
-	local vmin, vmax = -5000, 5000
-	if ... then vmin, vmax = ... end	
-	if val == nil then val = 0 end
-	val = max(val, vmin)
-	val = min(val, vmax)
-	return val
-end
-
--- Class Color
-function nibRealUI:GetClassColor(class, ...)
-	if not RAID_CLASS_COLORS[class] then return {1, 1, 1} end
-	local classColors = CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[class] or RAID_CLASS_COLORS[class]
-	local offset
-	if not ... then
-		offset = 0--(class == "PRIEST" and -0.2) or ((class == "ROGUE" or class == "MAGE" or class == "HUNTER") and -0.1) or 0
-	else
-		offset = 0
-	end
-	return {classColors.r * (1 + offset), classColors.g * (1 + offset), classColors.b * (1 + offset)}
-end
+TABLE_OUTLINES = {
+	"NONE",
+	"OUTLINE",
+	"THINOUTLINE",
+	"THICKOUTLINE",
+}
 
 -- Memory Display
 local function FormatMem(memory)
@@ -280,25 +166,18 @@ end
 -- Version info retrieval
 function nibRealUI:GetVerString(...)
 	if ... then
-		return string.format("|cffffa060%s|r.|cff70d0ff%s|r |cff60ff60r%s|r", dbg.verinfo[1], dbg.verinfo[2], dbg.verinfo[3])
+		return string.format("|cFFFF8000%s|r.|cFF00D8FF%s|r |cff30ff30r%s|r", nibRealUI.verinfo[1], nibRealUI.verinfo[2], nibRealUI.verinfo[3])
 	else
-		return string.format("%s.%s", dbg.verinfo[1], dbg.verinfo[2])
+		return string.format("%s.%s", nibRealUI.verinfo[1], nibRealUI.verinfo[2])
 	end
 end
 function nibRealUI:GetVerDifference(OldVer, CurVer)
 	local IsNewVer, IsOneMore = false, false
 	
-	if ( CurVer[1] > OldVer[1] ) then
+	if ( (CurVer[1] > OldVer[1]) or (CurVer[2] > OldVer[2]) ) then
 		IsNewVer = true
-		IsOneMore = false
-	elseif ( (CurVer[1] == OldVer[1]) and (CurVer[2] == OldVer[2]) ) then
-		if ( (CurVer[2] > (OldVer[2] + 1)) ) then
-			IsNewVer = true
-			IsOneMore = false
-		elseif ( (CurVer[2] == (OldVer[2] + 1)) ) then
-			IsNewVer = true
-			IsOneMore = true			
-		end
+	else
+		IsOneMore = true
 	end
 	
 	return IsNewVer, IsOneMore
@@ -349,9 +228,7 @@ function nibRealUI:SetAddonProfileKeys()
 	
 	-- Addons that just need to be set to RealUI
 	local nonLayoutAddonList = {
-		"ARKINVDB",
 		"ChatterDB",
-		"MapsterDB",
 		"MasqueDB",
 	}
 	-- Any Addons which need a Layout profile change, also changes Res
@@ -361,14 +238,9 @@ function nibRealUI:SetAddonProfileKeys()
 	}
 	-- Any Addons which aren't in the Layout list, but still need a Res profile change
 	local ResAddonList = {
-		"DXEDB",
-		"IceCoreRealUIDB",
-		"nibMinimapDB",
-		"nibPointDisplayRUIDB",
-		"nibSpellAlertConfigDB",
-		"Omen3DB",
 		"RavenDB",
 		"SkadaDB",
+		"IceCoreRealUIDB",
 	}
 	
 	-- Set Addon profiles
@@ -457,12 +329,15 @@ function nibRealUI:SetLayout()
 		local IL = nibRealUI:GetModule("InfoLine", true)
 		if IL then IL:Refresh() end
 	end
+	
+	-- HuD Config
+	nibRealUI:GetModule("HuDConfig"):RegisterForUpdate("AB", 0.05)
 end
 function nibRealUI:UpdateLayout()
 	if InCombatLockdown() then
 		-- Store variable to change layout after combat ends
 		dbc.layout.needchanged = true
-		print("|cff00ffffRealUI:|r "..L["Layout will change after you leave combat."])
+		nibRealUI:Notification("RealUI", true, L["Layout will change after you leave combat."])
 	else
 		dbc.layout.needchanged = false
 		nibRealUI:SetLayout()
@@ -505,7 +380,7 @@ function nibRealUI:UPDATE_PENDING_MAIL()
 end
 
 function nibRealUI:PLAYER_ENTERING_WORLD()
-	nibRealUI:SetChatPosition()	
+	nibRealUI:SetChatPosition()
 	nibRealUI:OOCUpdates()
 end
 
@@ -514,8 +389,24 @@ function nibRealUI:UI_SCALE_CHANGED()
 end
 
 function nibRealUI:PLAYER_LOGIN()
+	-- Load LOD AddOns
+	LoadAddOn("alDamageMeter")
+	if alDM_ResetCurrent then alDM_ResetCurrent() end
+	LoadAddOn("nibIceHUD")
+	
+	-- Load any extra AddOn settings
+	if IsAddOnLoaded("Skada") and not(dbg.extrasettings.skada) and dbg.tags.tutorialdone then
+		self:LoadSkadaData()
+		self:Notification("Skada detected", true, "Reload UI (/rl) to apply RealUI settings.")
+	end
+	
 	-- Check if Installation/Patch is necessary
 	nibRealUI:InstallProcedure()
+	
+	-- Tutorial
+	if not dbg.tags.tutorialdone and dbg.tags.needtutorial and (nibRealUICharacter.installStage == -1) then
+		nibRealUI:InitTutorial()
+	end
 end
 
 function nibRealUI:ADDON_LOADED(event, addon)
@@ -524,6 +415,16 @@ function nibRealUI:ADDON_LOADED(event, addon)
 	-- Open before login to stop taint
 	ToggleFrame(SpellBookFrame)
 	PetJournal_LoadUI()
+	
+	-- Remove Interface Options cancel button because it = taint
+	-- Remove the cancel button
+	InterfaceOptionsFrameCancel:Hide()
+	InterfaceOptionsFrameOkay:SetAllPoints(InterfaceOptionsFrameCancel)
+
+	-- Make clicking cancel the same as clicking okay
+	InterfaceOptionsFrameCancel:SetScript("OnClick", function()
+		InterfaceOptionsFrameOkay:Click()
+	end)
 end
 
 function nibRealUI:OnInitialize()
@@ -540,14 +441,6 @@ function nibRealUI:OnInitialize()
 	self.class = select(2, UnitClass("player"))
 	self.name = UnitName("player")
 	self.key = string.format("%s - %s", self.name, self.realm)
-	
-	---- Version Checking ----
-	
-	-- Set version to current version
-	dbg.verinfo = nibRealUI_Version
-	
-	---- End Version Checking ----
-	
 	
 	-- Profile change
 	self.db.RegisterCallback(self, "OnProfileChanged", "Refresh")
@@ -569,7 +462,9 @@ function nibRealUI:OnInitialize()
 	-- Chat Commands
 	nibRealUI:RegisterChatCommand("memory", "MemoryDisplay")
 	
+	-- Done
 	print(format("RealUI %s loaded.", nibRealUI:GetVerString(true)))
+	print("|cffFFFFFFType |r|cFFFF8000/hud|r |cffFFFFFFto access the new HuD Configuration utility.|r")
 end
 
 function nibRealUI:GetModuleEnabled(module)

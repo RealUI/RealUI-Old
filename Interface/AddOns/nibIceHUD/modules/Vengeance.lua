@@ -1,4 +1,3 @@
-local L = LibStub("AceLocale-3.0"):GetLocale("nibIceHUD", false)
 local Vengeance = IceCore_CreateClass(IceUnitBar)
 local mass
 
@@ -54,8 +53,6 @@ function Vengeance.prototype:GetDefaultSettings()
 	local defaults = Vengeance.super.prototype.GetDefaultSettings(self)
 	defaults.enabled = false
 	defaults.lockUpperTextAlpha = false
-	defaults.shouldAnimate = false
-	defaults.hideAnimationSettings = true
 	defaults.offset = 5
 	defaults.side = IceCore.Side.Left
 	return defaults

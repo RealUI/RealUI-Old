@@ -67,6 +67,11 @@ local function GetOptions()
 				end,
 				order = 30,
 			},
+			gap1 = {
+				name = " ",
+				type = "description",
+				order = 31,
+			},
 			size = {
 				name = "Size",
 				type = "group",
@@ -99,6 +104,11 @@ local function GetOptions()
 						end,
 					},
 				},							
+			},
+			gap2 = {
+				name = " ",
+				type = "description",
+				order = 51,
 			},
 			position = {
 				name = "Position",
@@ -174,6 +184,11 @@ local function GetOptions()
 						},
 					},
 				},
+			},
+			gap3 = {
+				name = " ",
+				type = "description",
+				order = 61,
 			},
 			colors = {
 				name = "Colors",
@@ -378,7 +393,7 @@ function AltPowerBar:OnInitialize()
 	ndbc = nibRealUI.db.char
 	
 	self:SetEnabledState(nibRealUI:GetModuleEnabled(MODNAME))
-	nibRealUI:RegisterPlainOptions(MODNAME, GetOptions)
+	nibRealUI:RegisterModuleOptions(MODNAME, GetOptions)
 	
 	AltPowerBar:CreateFrames()
 end

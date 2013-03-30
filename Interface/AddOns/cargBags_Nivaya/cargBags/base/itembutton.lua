@@ -20,6 +20,8 @@
 local addon, ns = ...
 local cargBags = ns.cargBags
 
+local _G = _G
+
 --[[!
 	@class ItemButton
 		This class serves as the basis for all itemSlots in a container
@@ -53,6 +55,7 @@ function ItemButton:New(bagID, slotID)
 	button.bagID = bagID
 	button.slotID = slotID
 	button:SetID(slotID)
+	
 	button:Show()
 	
 	return button
@@ -64,6 +67,7 @@ end
 	@return button <ItemButton>
 	@callback button:OnCreate(tpl)
 ]]
+local bFS
 function ItemButton:Create(tpl)
 	local impl = self.implementation
 	impl.numSlots = (impl.numSlots or 0) + 1
@@ -73,6 +77,13 @@ function ItemButton:Create(tpl)
 
 	if(button.Scaffold) then button:Scaffold(tpl) end
 	if(button.OnCreate) then button:OnCreate(tpl) end
+	local btnNT = _G[button:GetName().."NormalTexture"]
+	if btnNT then btnNT:SetTexture(nil) end
+	
+	button:SetSize(32, 32)
+	bFS = _G[button:GetName().."Count"]
+	bFS:ClearAllPoints()
+	bFS:SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", 0.5, 0.5);
 
 	return button
 end

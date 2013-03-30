@@ -22,7 +22,7 @@ local function SkinBar(bar)
 	end
 	
 	bar:SetStatusBarTexture(nibRealUI.media.textures.plain)
-	bar:SetStatusBarColor(0.5, 0, 0)
+	bar:SetStatusBarColor(0.35, 0, 0)
 	
 	local background = bar:CreateTexture(bar:GetName().."Background", "BACKGROUND")
 	background:SetTexture(TimerTexture)
@@ -38,11 +38,6 @@ function TimerTrackers:START_TIMER()
 			timer.skinned = true
 		end
 	end
-end
-
-function DoIt()
-	TimerTracker_OnEvent(TimerTracker, "START_TIMER", 1, 60, 60)
-	TimerTrackers:START_TIMER()
 end
 
 function TimerTrackers:OnInitialize()

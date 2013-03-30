@@ -1,0 +1,13 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\FrameXML\UI.xsd">
+	<!-- Core -->
+	<Script file="Core\Fun.lua"/>
+	<Script file="Core\AddonData.lua"/>
+	<Script file="Core\Fonts.lua"/>
+	<Script file="Core\MiniPatches.lua"/>
+	<Script file="Core\Settings.lua"/>
+	<Script file="Core\Positioners.lua"/>
+	<Script file="Core\Tutorial.lua"/>
+	<Script file="Core\Notifications.lua"/>
+</Ui>

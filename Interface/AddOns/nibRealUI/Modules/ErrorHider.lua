@@ -92,6 +92,11 @@ local function GetOptions()
 				end,
 				order = 30,
 			},
+			gap1 = {
+				name = " ",
+				type = "description",
+				order = 31,
+			},
 		},
 	};
 	end
@@ -217,7 +222,7 @@ function ErrorHider:OnInitialize()
 	db = self.db.profile;
 	
 	self:SetEnabledState(nibRealUI:GetModuleEnabled(MODNAME));
-	nibRealUI:RegisterPlainOptions(MODNAME, GetOptions);
+	nibRealUI:RegisterModuleOptions(MODNAME, GetOptions);
 end
 
 function ErrorHider:OnEnable()

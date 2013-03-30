@@ -1,4 +1,3 @@
-local L = LibStub("AceLocale-3.0"):GetLocale("nibIceHUD", false)
 local RogueExtras2 = IceCore_CreateClass(IceUnitBar)
 local mass
 
@@ -45,8 +44,6 @@ function RogueExtras2.prototype:init()
 	RogueExtras2.super.prototype.init(self, "RogueExtras2", "player")
 
 	self.moduleSettings = {}
-	self.moduleSettings.desiredLerpTime = 0
-	self.moduleSettings.shouldAnimate = false
 
 	self:SetDefaultColor("RogueExtras2ToTT", 0.3, 0.8, 0.3)
 
@@ -110,7 +107,6 @@ function RogueExtras2.prototype:GetDefaultSettings()
 	local settings = RogueExtras2.super.prototype.GetDefaultSettings(self)
 
 	settings["enabled"] = true
-	settings["hideAnimationSettings"] = true
 	
 	return settings
 end
@@ -127,20 +123,6 @@ end
 
 function RogueExtras2.prototype:CreateFrame()
 	RogueExtras2.super.prototype.CreateFrame(self)
-end
-
-function RogueExtras2.prototype:RotateHorizontal()
-	RogueExtras2.super.prototype.RotateHorizontal(self)
-
-	self:RotateFrame(self.durationFrame)
-end
-
-function RogueExtras2.prototype:ResetRotation()
-	RogueExtras2.super.prototype.ResetRotation(self)
-
-	if self.durationFrame.anim then
-		self.durationFrame.anim:Stop()
-	end
 end
 
 -- 'Protected' methods --------------------------------------------------------

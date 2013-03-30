@@ -1,4 +1,3 @@
-local L = LibStub("AceLocale-3.0"):GetLocale("nibIceHUD", false)
 -- needs to not be local so that we can inherit from it
 TargetCC = IceCore_CreateClass(IceUnitBar)
 
@@ -275,12 +274,12 @@ function TargetCC.prototype:GetOptions()
 
 	opts["iconSettings"] = {
 		type = 'group',
-		name = "|c"..self.configColor..L["Icon Settings"].."|r",
+		name = "|c"..self.configColor.."Icon Settings".."|r",
 		args = {
 			displayAuraIcon = {
 				type = 'toggle',
-				name = L["Display aura icon"],
-				desc = L["Whether or not to display an icon for the aura that this bar is tracking"],
+				name = "Display aura icon",
+				desc = "Whether or not to display an icon for the aura that this bar is tracking",
 				get = function()
 					return self.moduleSettings.displayAuraIcon
 				end,
@@ -305,8 +304,8 @@ function TargetCC.prototype:GetOptions()
 				min = -250,
 				max = 250,
 				step = 0.5,
-				name = L["Aura icon horizontal offset"],
-				desc = L["Adjust the horizontal position of the aura icon"],
+				name = "Aura icon horizontal offset",
+				desc = "Adjust the horizontal position of the aura icon",
 				get = function()
 					return self.moduleSettings.auraIconXOffset
 				end,
@@ -325,8 +324,8 @@ function TargetCC.prototype:GetOptions()
 				min = -250,
 				max = 250,
 				step = 0.5,
-				name = L["Aura icon vertical offset"],
-				desc = L["Adjust the vertical position of the aura icon"],
+				name = "Aura icon vertical offset",
+				desc = "Adjust the vertical position of the aura icon",
 				get = function()
 					return self.moduleSettings.auraIconYOffset
 				end,
@@ -346,7 +345,7 @@ function TargetCC.prototype:GetOptions()
 				max = 32,
 				step = 1,
 				name = "Aura icon size",
-				desc = L["Adjusts the size of the aura icon for this bar"],
+				desc = "Adjusts the size of the aura icon for this bar",
 				get = function()
 					return self.moduleSettings.auraIconSize
 				end,
@@ -371,7 +370,8 @@ end
 function TargetCC.prototype:CreateFrame()
 	TargetCC.super.prototype.CreateFrame(self)
 
-	self.frame.bottomUpperText:SetWidth(self.settings.gap + 30)
+	local layout = RealUI.db.char.resolution
+	self.frame.bottomUpperText:SetWidth(self.settings["gap"..layout] + 30)
 	
 	if not self.barFrame.icon then
 		self.barFrame.icon = self.frame:CreateTexture(nil, "OVERLAY")

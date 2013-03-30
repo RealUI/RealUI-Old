@@ -1,4 +1,3 @@
-local L = LibStub("AceLocale-3.0"):GetLocale("nibIceHUD", false)
 local StaggerBar = IceCore_CreateClass(IceUnitBar)
 
 local nibIceHUD = _G.nibIceHUD
@@ -59,9 +58,7 @@ function StaggerBar.prototype:GetDefaultSettings()
 	defaults.textVerticalOffset = 0
 	defaults.textHorizontalOffset = 0
 	defaults.lockUpperTextAlpha = true
-	defaults.bHideMarkerSettings = true
 	defaults.showAsPercentOfMax = true
-	defaults.bAllowExpand = false
 	defaults.upperText = "St"
 	defaults.maxPercent = 20
 	defaults.timerAlpha = 0.3

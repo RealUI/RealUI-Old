@@ -52,10 +52,16 @@ local function GetOptions()
 				end,
 				order = 30,
 			},
+			gap1 = {
+				name = " ",
+				type = "description",
+				order = 31,
+			},
 			position = {
 				name = "Position",
 				type = "group",
 				inline = true,
+				disabled = function() if nibRealUI:GetModuleEnabled(MODNAME) then return false else return true end end,
 				order = 40,
 				args = {
 					cursor = {
@@ -117,10 +123,16 @@ local function GetOptions()
 					},
 				},
 			},
+			gap2 = {
+				name = " ",
+				type = "description",
+				order = 41,
+			},
 			font = {
 				name = "Font",
 				type = "group",
 				inline = true,
+				disabled = function() if nibRealUI:GetModuleEnabled(MODNAME) then return false else return true end end,
 				order = 50,
 				args = {
 					size = {
@@ -293,7 +305,7 @@ function Tooltip:SetupUnitStyling()
 
 		if UnitIsPlayer(unit) then
 			local _, class = UnitClass(unit)
-			r, g, b = unpack(nibRealUI:GetClassColor(class or "WARRIOR", true))
+			r, g, b = unpack(nibRealUI:GetClassColor(class or "WARRIOR"))
 		elseif UnitIsTapped(unit) and not UnitIsTappedByPlayer(unit) or UnitIsDead(unit) then
 			r, g, b = .6, .6, .6
 		else
@@ -391,7 +403,7 @@ function Tooltip:OnInitialize()
 		profile = {
 			position = {
 				cursor = false,
-				manual = {"BOTTOMRIGHT", UIParent, "BOTTOMRIGHT", -42, 220},
+				manual = {"BOTTOMRIGHT", UIParent, "BOTTOMRIGHT", -31, 175},
 			},
 			font = {
 				size = 11,
@@ -410,7 +422,7 @@ function Tooltip:OnInitialize()
 	ndbc = nibRealUI.db.char
 	
 	self:SetEnabledState(nibRealUI:GetModuleEnabled(MODNAME))
-	nibRealUI:RegisterPlainOptions(MODNAME, GetOptions)
+	nibRealUI:RegisterModuleOptions(MODNAME, GetOptions)
 	
 	self:RegisterEvent("PLAYER_LOGIN")
 end

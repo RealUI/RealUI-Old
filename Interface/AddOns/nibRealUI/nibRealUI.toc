@@ -1,16 +1,29 @@
 ## Interface: 50200
-## Title: |cffaaaaaanib|rRealUI
+## Title: |cffffffffReal|r|cffbf3333UI|r
 ## Author: Nibelheim
 ## Notes: RealUI core functionality
-## Version: 7.3 r22
-## SavedVariables: nibRealUIDB
+## Version: 7.4 r1
+## SavedVariables: nibRealUIDB, nibRealUIVersion
 ## SavedVariablesPerCharacter: nibRealUICharacter
-## OptionalDeps: Aurora, oUF, oUF_RealUI, Ace3, LibSharedMedia-3.0, AceGUI-3.0-SharedMediaWidgets, ArkInventory, Grid, Omen, Recount, Skada
-## Dependencies: nibLibs
+## OptionalDeps: Ace3, LibSharedMedia-3.0, AceGUI-3.0-SharedMediaWidgets, Aurora
+
+# Ace3
+Libs\Embeds.xml
 
 Locale.xml
 
 Core.lua
 Config.lua
+
+Core.xml
 Modules.xml
 Skins.xml
+
+# HuD
+HuD.xml
+HuD\PointDisplay\PointDisplay.xml
+## X-oUF: oUFembed
+HuD\UnitFrames\oUF\oUF.xml
+HuD\UnitFrames\UnitFrames.xml
+
+Bindings.xml

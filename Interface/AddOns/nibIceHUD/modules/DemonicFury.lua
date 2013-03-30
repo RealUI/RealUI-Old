@@ -1,4 +1,3 @@
-local L = LibStub("AceLocale-3.0"):GetLocale("nibIceHUD", false)
 local DemonicFuryBar = IceCore_CreateClass(IceUnitBar)
 local mass
 
@@ -40,13 +39,9 @@ function DemonicFuryBar.prototype:GetDefaultSettings()
 	defaults.textVisible.lower = false
 	defaults.offset = 2
 	defaults.enabled = true
-	defaults.usesDogTagStrings = false
 	defaults.textVerticalOffset = 5
 	defaults.textHorizontalOffset = 0
-	defaults.shouldAnimate = false
-	defaults.hideAnimationSettings = true
 	defaults.lockUpperTextAlpha = false
-	defaults.bHideMarkerSettings = true
 	defaults.markers[1] = {
 		position = 0,
 		color = {r=1, g=0, b=0, a=1},

@@ -90,6 +90,11 @@ local function GetOptions()
 				end,
 				order = 30,
 			},
+			gap1 = {
+				name = " ",
+				type = "description",
+				order = 31,
+			},
 			loot = {
 				name = "Loot Window",
 				type = "group",
@@ -175,6 +180,11 @@ local function GetOptions()
 						},
 					},
 				},
+			},
+			gap2 = {
+				name = " ",
+				type = "description",
+				order = 41,
 			},
 			roll = {
 				name = "Group Loot",
@@ -431,14 +441,14 @@ local function LootOnEnter(self)
 		GameTooltip:SetLootItem(slot)
 		CursorUpdate(self)
 	end
-	self.bg:SetBackdropColor(0.1, 0.1, 0.1, 0.6)
+	self.bg:SetBackdropColor(0.1, 0.1, 0.1, nibRealUI.media.backgroundalpha)
 end
 
 local LootOnLeave = function(self)
 	--print("LootOnLeave: ")
 	GameTooltip:Hide()
 	ResetCursor()
-	self.bg:SetBackdropColor(0, 0, 0, 0.6)
+	self.bg:SetBackdropColor(0, 0, 0, nibRealUI.media.backgroundalpha)
 end
 
 local LootOnClick = function(self)
@@ -727,7 +737,7 @@ function Loot:OnInitialize()
 	ndbc = nibRealUI.db.char
 	
 	self:SetEnabledState(nibRealUI:GetModuleEnabled(MODNAME))
-	nibRealUI:RegisterPlainOptions(MODNAME, GetOptions)
+	nibRealUI:RegisterModuleOptions(MODNAME, GetOptions)
 end
 
 function Loot:OnEnable()

@@ -43,9 +43,9 @@ end
 local BagButton = cargBags:NewClass("BagButton", nil, "CheckButton")
 
 -- Default attributes
-BagButton.checkedTex = [[Interface\Buttons\CheckButtonHilight]]
-BagButton.bgTex = [[Interface\Paperdoll\UI-PaperDoll-Slot-Bag]]
-BagButton.itemFadeAlpha = 0.1
+BagButton.checkedTex = [[Interface\AddOns\cargBags_Nivaya\media\BagHighlight]]
+BagButton.bgTex = [[Interface\AddOns\cargBags_Nivaya\media\BagSlot]]
+BagButton.itemFadeAlpha = 0.2
 
 local buttonNum = 0
 function BagButton:Create(bagID)
@@ -63,13 +63,27 @@ function BagButton:Create(bagID)
 	button:RegisterForClicks("anyUp")
 	button:SetCheckedTexture(self.checkedTex, "ADD")
 
-	button:SetSize(37, 37)
+	button:SetSize(32, 32)
 
 	button.Icon = 		_G[name.."IconTexture"]
 	button.Count = 		_G[name.."Count"]
 	button.Cooldown = 	_G[name.."Cooldown"]
 	button.Quest = 		_G[name.."IconQuestTexture"]
 	button.Border =		_G[name.."NormalTexture"]
+	
+	button.bg = CreateFrame("Frame", nil, button)
+	button.bg:SetAllPoints(button)
+	button.bg:SetBackdrop({
+		bgFile = "Interface\\ChatFrame\\ChatFrameBackground",
+		edgeFile = "Interface\\Buttons\\WHITE8x8",
+		tile = false, tileSize = 16, edgeSize = 1,
+	})
+	button.bg:SetBackdropColor(1, 1, 1, 0)
+	button.bg:SetBackdropBorderColor(0, 0, 0, 1)
+	
+	button.Icon:SetTexCoord(.08, .92, .08, .92)
+	button.Icon:SetVertexColor(0.8, 0.8, 0.8)
+	button.Border:SetAlpha(0)
 
 	cargBags.SetScriptHandlers(button, "OnClick", "OnReceiveDrag", "OnEnter", "OnLeave", "OnDragStart")
 

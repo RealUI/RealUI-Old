@@ -858,14 +858,16 @@ function GridLayout:Update()
 			--print(tostring(name)..", "..tostring(subGroup))
 			if name and subGroup then
 				raidGroupInUse["group"..subGroup] = true
-			else
-				break
+			-- else
+				-- break
 			end
 		end
-
+		
+		local NewHoriz = LayoutDB.standards.layout.horizontalgroups
 		if (raidGroupInUse.group8 or raidGroupInUse.group7) or raidGroupInUse.group6 then --newSize > 25 then
 			--print("You have more than 25 players in the raid")
 			NewLayout = Grid.L["By Group 40"]
+			NewHoriz = LayoutDB.standards.layout.verticalgroups
 		elseif (raidGroupInUse.group5 or raidGroupInUse.group4) then --newSize > 15 then
 			--print("You have more than 15 players in the raid")
 			NewLayout = Grid.L["By Group 25"]
@@ -881,7 +883,6 @@ function GridLayout:Update()
 		end
 
 		-- Change Grid Layout
-		local NewHoriz = LayoutDB.standards.layout.horizontalgroups
 		if ( (difficulty == 1 or 3) and ((NewLayout ~= GLM.db.profile.layouts.raid_10) or (NewHoriz ~= GLM.db.profile.horizontal)) ) then
 			GLM.db.profile.layouts.raid_10 = NewLayout
 			GLM.db.profile.horizontal = NewHoriz
@@ -978,7 +979,7 @@ function GridLayout:OnInitialize()
 	db = self.db.profile
 	
 	self:SetEnabledState(nibRealUI:GetModuleEnabled(MODNAME))
-	nibRealUI:RegisterPlainOptions(MODNAME, GetOptions)
+	nibRealUI:RegisterModuleOptions(MODNAME, GetOptions)
 	
 	-- Find Grid / modules
 	if IsAddOnLoaded("Grid") then

@@ -1,4 +1,3 @@
-local L = LibStub("AceLocale-3.0"):GetLocale("nibIceHUD", false)
 local TargetCast = IceCore_CreateClass(IceCastBar)
 local mass
 
@@ -69,8 +68,6 @@ function TargetCast.prototype:GetDefaultSettings()
 	settings["offset"] = 3
 	settings["flashInstants"] = "Never"
 	settings["flashFailures"] = "Never"
-	settings["shouldAnimate"] = false
-	settings["hideAnimationSettings"] = true
 	settings["displayNonInterruptible"] = true
 
 	return settings
@@ -109,8 +106,8 @@ function TargetCast.prototype:GetOptions()
 
 	opts["displayNonInterruptible"] = {
 		type = 'toggle',
-		name = L["Display non-interruptible color"],
-		desc = L["Toggles whether or not to show the CastNonInterruptible color for this bar when a cast is non-interruptible"],
+		name = "Display non-interruptible color",
+		desc = "Toggles whether or not to show the CastNonInterruptible color for this bar when a cast is non-interruptible",
 		width = 'double',
 		get = function()
 			return self.moduleSettings.displayNonInterruptible

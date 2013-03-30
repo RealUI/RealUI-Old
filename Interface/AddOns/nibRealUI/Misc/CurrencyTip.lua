@@ -50,6 +50,7 @@ end
 
 ------------------------------------------------------------------------
 
+local classColor
 local function AddTooltipInfo(tooltip, currency, includePlayer)
 	local spaced
 	for i = (includePlayer and 1 or 2), #playerList do
@@ -63,7 +64,8 @@ local function AddTooltipInfo(tooltip, currency, includePlayer)
 			local r, g, b
 			local class = realmDB[name].class
 			if class then
-				r, g, b = unpack(nibRealUI:GetClassColor(class, true))
+				classColor = nibRealUI:GetClassColor(class)
+				r, g, b = classColor[1], classColor[2], classColor[3]
 			else
 				r, g, b = 0.5, 0.5, 0.5
 			end
