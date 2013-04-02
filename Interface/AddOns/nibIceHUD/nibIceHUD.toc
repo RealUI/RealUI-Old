@@ -1,11 +1,11 @@
 ## Interface: 50200
-## Author: Parnic (modified by Nibelheim (MoP update by Gethe)) (originally created by Iceroth)
+## Author: Parnic (modified by Nibelheim) (originally created by Iceroth)
 ## Name: nibIceHUD
 ## Title: |cffffffffReal|r|cffbf3333UI|r |cffffffffHuD|r
 ## Notes: Heeavvillly modified IceHUD for use in RealUI
 ## Version: 7.4
 ## SavedVariables: IceCoreRealUIDB
-## Dependencies: nibRealUI
+## OptionalDeps: nibRealUI
 ## LoadOnDemand: 1
 
 # IceHUD core functionality

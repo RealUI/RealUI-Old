@@ -149,7 +149,8 @@ C.modules["Blizzard_AchievementUI"] = function()
 		bottom:SetPoint("BOTTOMLEFT", tex, -1, -1)
 		bottom:SetPoint("BOTTOMRIGHT", tex, 1, -1)
 	end
-
+	
+	AchievementFrameAchievementsContainerButton1.background:SetPoint("TOPLEFT", AchievementFrameAchievementsContainerButton1, "TOPLEFT", 2, -3)
 	hooksecurefunc("AchievementButton_DisplayAchievement", function(button, category, achievement)
 		local _, _, _, completed = GetAchievementInfo(category, achievement)
 		if completed then

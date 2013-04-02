@@ -52,7 +52,7 @@ local function GetOptions()
 			},
 			desc3 = {
 				type = "description",
-				name = "Note: 3rd party addons such as MSBT will need fonts adjusted through their own configuration window.",
+				name = "Note: Some 3rd party addons (such as MSBT) will need fonts adjusted through their own configuration window.",
 				order = 22,
 			},
 			desc4 = {
@@ -93,6 +93,31 @@ local function GetOptions()
 							db.standard.sizeadjust = value
 						end,
 						order = 20,
+					},
+					changeYellow = {
+						type = "toggle",
+						name = "Adjust Yellow Fonts",
+						desc = "Change the color of WoW's 'yellow' fonts.",
+						get = function() return db.standard.changeYellow end,
+						set = function(info, value) 
+							db.standard.changeYellow = value
+							InfoLine:Refresh()
+						end,
+						order = 30,
+					},
+					yellowColor = {
+						type = "color",
+						name = "Yellow Font Color",
+						hasAlpha = false,
+						get = function(info,r,g,b)
+							return db.standard.yellowColor[1], db.standard.yellowColor[2], db.standard.yellowColor[3]
+						end,
+						set = function(info,r,g,b)
+							db.standard.yellowColor[1] = r
+							db.standard.yellowColor[2] = g
+							db.standard.yellowColor[3] = b
+						end,
+						order = 40,
 					},
 				},
 			},
@@ -361,7 +386,7 @@ function Fonts:UpdateUIFonts2()
 	QuestFont_Large:SetFont(font, 12)
 	QuestFont_Large:SetShadowColor(0, 0, 0)
 	QuestFont_Large:SetShadowOffset(1, -1)
-	QuestFont_Shadow_Huge:SetFont(font, 15)
+	QuestFont_Shadow_Huge:SetFont(font, 18)
 	QuestFont_Super_Huge:SetFont(font, 24)
 	QuestFont_Super_Huge:SetShadowColor(0, 0, 0)
 	QuestFont_Super_Huge:SetShadowOffset(1, -1)
@@ -413,6 +438,30 @@ function Fonts:UpdateUIFonts2()
 	Tooltip_Small:SetFont(font, 9 + resSizeExtra + adjSize)
 	Tooltip_Small:SetShadowColor(0, 0, 0)
 	Tooltip_Small:SetShadowOffset(1, -1)
+	
+	if db.standard.changeYellow then
+		local yellowFonts = {
+			GameFontNormal,
+			GameFontNormalSmall,
+			GameFontNormalMed3,
+			GameFontNormalLarge,
+			GameFontNormalHuge,
+			BossEmoteNormalHuge,
+			NumberFontNormalRightYellow,
+			NumberFontNormalYellow,
+			NumberFontNormalLargeRightYellow,
+			NumberFontNormalLargeYellow,
+			QuestTitleFontBlackShadow,
+			DialogButtonNormalText,
+			AchievementPointsFont,
+			AchievementPointsFontSmall,
+			AchievementDateFont,
+			FocusFontSmall
+		}
+		for k, font in pairs(yellowFonts) do
+			font:SetTextColor(db.standard.yellowColor[1], db.standard.yellowColor[2], db.standard.yellowColor[3])
+		end
+	end
 end
 
 function Fonts:UpdateUIFonts()
@@ -447,6 +496,8 @@ function Fonts:OnInitialize()
 		profile = {
 			standard = {
 				sizeadjust = 0,
+				changeYellow = true,
+				yellowColor = {1, 0.65, 0}
 			},
 			resolution = {
 				[1] = {

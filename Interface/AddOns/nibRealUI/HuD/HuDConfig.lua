@@ -463,10 +463,11 @@ local abNeedUpdate = false
 function HuDConfig:ApplyABConfig()
 	if not ndb.addonControl.actionBars then return end
 	if not IsAddOnLoaded("Bartender4") then return end
-	if not Bartender4DB then return end
+	
+	local prof = ndbc.resolution == 1 and "RealUI" or "RealUI-HR"
+	if not(Bartender4DB and Bartender4DB["namespaces"]["ActionBars"]["profiles"][prof]) then return end
 	
 	if not InCombatLockdown() then
-		local prof = ndbc.resolution == 1 and "RealUI" or "RealUI-HR"
 		local zero = {
 			x = -171.5,
 			y = -147.5 
@@ -563,7 +564,6 @@ function HuDConfig:ApplyABConfig()
 		if B4Stance then B4Stance:ApplyConfig() end
 		if B4Vehicle then B4Vehicle:ApplyConfig() end
 		if B4PetBar then B4PetBar:ApplyConfig() end
-		-- B4PetBar.bar:UpdateButtonLayout()
 		
 		-- ActionBarExtras
 		if nibRealUI:GetModuleEnabled("ActionBarExtras") then
@@ -582,9 +582,10 @@ end
 function HuDConfig:ApplyMSBTConfig()
 	if not ndb.addonControl.msbt then return end
 	if not IsAddOnLoaded("MikScrollingBattleText") then return end
-	if not MSBTProfiles_SavedVars then return end
 	
 	local prof = ndbc.resolution == 1 and "RealUI" or "RealUI-HR"
+	if not(MSBTProfiles_SavedVars and MSBTProfiles_SavedVars["profiles"][prof]) then return end
+	
 	local incWidth = MSBTProfiles_SavedVars["profiles"][prof]["scrollAreas"]["Incoming"]["scrollWidth"] or 130
 	local notifyWidth = MSBTProfiles_SavedVars["profiles"][prof]["scrollAreas"]["Notification"]["scrollWidth"] or 300
 	local xPos = ndb.positions[ndbc.resolution]["HuDX"] 

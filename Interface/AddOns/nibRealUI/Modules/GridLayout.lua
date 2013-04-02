@@ -979,7 +979,7 @@ function GridLayout:OnInitialize()
 	db = self.db.profile
 	
 	self:SetEnabledState(nibRealUI:GetModuleEnabled(MODNAME))
-	nibRealUI:RegisterModuleOptions(MODNAME, GetOptions)
+	nibRealUI:RegisterPlainOptions(MODNAME, GetOptions)
 	
 	-- Find Grid / modules
 	if IsAddOnLoaded("Grid") then

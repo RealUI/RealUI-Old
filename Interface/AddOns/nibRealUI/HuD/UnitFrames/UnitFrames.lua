@@ -835,7 +835,7 @@ end
 
 -- Seconds to Time
 local function ConvertSecondstoTime(value)
-	local minues, seconds
+	local minutes, seconds
 	minutes = floor(value / 60)
 	seconds = floor(value - (minutes * 60))
 	if ( minutes > 0 ) then

@@ -82,6 +82,20 @@ local function GetOptions()
 				type = "description",
 				order = 31,
 			},
+			smallfont = {
+				type = "toggle",
+				name = "Use Small Font",
+				get = function() return db.smallfont end,
+				set = function(info, value) 
+					db.smallfont = value
+				end,
+				order = 40,
+			},
+			gap2 = {
+				name = " ",
+				type = "description",
+				order = 41,
+			},
 			petbar = {
 				name = "Pet Bar Indicator",
 				type = "group",
@@ -116,10 +130,11 @@ function ActionBarExtras:SetFonts()
 			local count = _G[name.."Count"];
 			local hotkey = _G[name.."HotKey"];
 			
+			local font = db.smallfont and nibRealUI.font.pixeltiny or nibRealUI.font.pixel1
 			if count then
-				count:SetFont(unpack(nibRealUI.font.pixeltiny))
+				count:SetFont(unpack(font))
 			end
-			hotkey:SetFont(unpack(nibRealUI.font.pixeltiny))
+			hotkey:SetFont(unpack(font))
 		end
 	end
 end
@@ -227,6 +242,7 @@ function ActionBarExtras:OnInitialize()
 	self.db = nibRealUI.db:RegisterNamespace(MODNAME)
 	self.db:RegisterDefaults({
 		profile = {
+			smallfont = true,
 			petbar = {
 				enabled = true,
 			},

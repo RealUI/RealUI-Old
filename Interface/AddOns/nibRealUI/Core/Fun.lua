@@ -213,6 +213,37 @@ function nibRealUI:ValidateOffset(value, ...)
 	return val
 end
 
+-- Durability Color
+function nibRealUI:GetDurabilityColour(percent)
+	if percent < 0 then
+		return 1, 0, 0
+	elseif percent <= 0.5 then
+		return 1, percent * 2, 0
+	elseif percent >= 1 then
+		return 0, 1, 0
+	else
+		return 2 - percent * 2, 1, 0
+	end
+end
+
+-- Item Level Color
+local ilvlLimits = {
+	normal = 385,
+	uncommon = 437,
+	rare = 463,
+}
+function nibRealUI:GetILVLColor(ilvl)
+	if ilvl >= ilvlLimits.rare then
+		return {GetItemQualityColor(4)}
+	elseif ilvl >= ilvlLimits.uncommon then
+		return {GetItemQualityColor(3)}
+	elseif ilvl >= ilvlLimits.normal then
+		return {GetItemQualityColor(2)}
+	else
+		return {0.8, 0.8, 0.8, "ffd0d0d0"}
+	end
+end
+
 -- Class Color
 function nibRealUI:GetClassColor(class)
 	if not RAID_CLASS_COLORS[class] then return {1, 1, 1} end

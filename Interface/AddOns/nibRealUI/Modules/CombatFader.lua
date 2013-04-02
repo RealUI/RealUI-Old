@@ -256,6 +256,9 @@ local power_check = {
 	ENERGY = function()
 		return UnitMana("player") < UnitManaMax("player")
 	end,
+	FOCUS = function()
+		return UnitPower('player') < UnitPowerMax('player')
+	end,
 	RUNIC_POWER = function()
 		return UnitMana("player") > 0
 	end,

@@ -2,7 +2,7 @@
 ## Title: |cffffffffReal|r|cffbf3333UI|r
 ## Author: Nibelheim
 ## Notes: RealUI core functionality
-## Version: 7.4 r1
+## Version: 7.4 r3
 ## SavedVariables: nibRealUIDB, nibRealUIVersion
 ## SavedVariablesPerCharacter: nibRealUICharacter
 ## OptionalDeps: Ace3, LibSharedMedia-3.0, AceGUI-3.0-SharedMediaWidgets, Aurora

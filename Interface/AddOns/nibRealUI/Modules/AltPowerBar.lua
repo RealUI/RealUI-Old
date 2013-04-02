@@ -197,38 +197,6 @@ local function GetOptions()
 				inline = true,
 				order = 70,
 				args = {
-					background = {
-						type = "color",
-						name = "Background",
-						hasAlpha = true,
-						get = function(info,r,g,b,a)
-							return db.colors.background.r, db.colors.background.g, db.colors.background.b, db.colors.background.a
-						end,
-						set = function(info,r,g,b,a)
-							db.colors.background.r = r
-							db.colors.background.g = g
-							db.colors.background.b = b
-							db.colors.background.a = a
-							AltPowerBar:UpdateColors()
-						end,
-						order = 10,
-					},
-					border = {
-						type = "color",
-						name = "Border",
-						hasAlpha = true,
-						get = function(info,r,g,b,a)
-							return db.colors.border.r, db.colors.border.g, db.colors.border.b, db.colors.border.a
-						end,
-						set = function(info,r,g,b,a)
-							db.colors.border.r = r
-							db.colors.border.g = g
-							db.colors.border.b = b
-							db.colors.border.a = a
-							AltPowerBar:UpdateColors()
-						end,
-						order = 20,
-					},
 					statusbar = {
 						type = "color",
 						name = "Status Bar",
@@ -243,7 +211,7 @@ local function GetOptions()
 							db.colors.statusbar.a = a
 							AltPowerBar:UpdateColors()
 						end,
-						order = 30,
+						order = 10,
 					},
 				},
 			},
@@ -267,8 +235,8 @@ end
 -- Colors
 function AltPowerBar:UpdateColors()
 	-- BG + Border
-	APBFrames.bg:SetBackdropColor(db.colors.background.r, db.colors.background.g, db.colors.background.b, db.colors.background.a)
-	APBFrames.bg:SetBackdropBorderColor(db.colors.border.r, db.colors.border.g, db.colors.border.b, db.colors.border.a)
+	APBFrames.bg:SetBackdropColor(0, 0, 0, nibRealUI.media.backgroundalpha)
+	APBFrames.bg:SetBackdropBorderColor(0, 0, 0, 1)
 	
 	-- Bar
 	APBFrames.bar:SetStatusBarColor(db.colors.statusbar.r, db.colors.statusbar.g, db.colors.statusbar.b, db.colors.statusbar.a)
@@ -375,8 +343,6 @@ function AltPowerBar:OnInitialize()
 				y = -200,
 			},
 			colors = {
-				background = {r = 0, g = 0, b = 0, a = 0.5},
-				border = {r = 0, g = 0, b = 0, a = 1},
 				statusbar = {r = 0, g = 0.7, b = 0, a = 0.85},				
 			},
 			resolution = {

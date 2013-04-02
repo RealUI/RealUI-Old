@@ -386,7 +386,7 @@ function IceElement.prototype:FontFactory(frame, font, isLarge)
 		fontString = font
 	end
 	
-	local layout = RealUI.db.char.resolution
+	local layout = RealUI and RealUI.db.char.resolution or 1
 	
 	local fontSize = isLarge and self.settings["fontSizeLarge"..layout] or self.settings["fontSize"..layout]
 	local fontFamily = isLarge and self.settings["fontFamilyLarge"..layout] or self.settings["fontFamily"..layout]

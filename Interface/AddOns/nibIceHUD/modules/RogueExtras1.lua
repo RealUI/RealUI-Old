@@ -265,8 +265,9 @@ end
 -- OVERRIDE
 function RogueExtras1.prototype:CreateFrame()
 	RogueExtras1.super.prototype.CreateFrame(self)
-
-	self.frame.bottomUpperText:SetWidth(self.settings.gap + 30)
+	
+	local layout = RealUI and RealUI.db.char.resolution or 1
+	self.frame.bottomUpperText:SetWidth(self.settings["gap"..layout] + 30)
 	
 	if not self.barFrame.icon then
 		self.barFrame.icon = self.frame:CreateTexture(nil, "OVERLAY")

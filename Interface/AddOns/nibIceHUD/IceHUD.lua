@@ -178,6 +178,17 @@ function nibIceHUD:OnEnable(isFirst)
 	end
 end
 
+-- blizzard interface options
+local blizOptionsPanel = CreateFrame("FRAME", "nibIceHUDConfigPanel", UIParent)
+blizOptionsPanel.name = "nibIceHUD"
+blizOptionsPanel.button = CreateFrame("BUTTON", "nibIceHUDOpenConfigButton", blizOptionsPanel, "UIPanelButtonTemplate")
+blizOptionsPanel.button:SetText("Open nibIceHUD configuration")
+blizOptionsPanel.button:SetWidth(240)
+blizOptionsPanel.button:SetHeight(30)
+blizOptionsPanel.button:SetScript("OnClick", function(self) HideUIPanel(InterfaceOptionsFrame) HideUIPanel(GameMenuFrame) nibIceHUD:OpenConfig() end)
+blizOptionsPanel.button:SetPoint('TOPLEFT', blizOptionsPanel, 'TOPLEFT', 20, -20)
+InterfaceOptions_AddCategory(blizOptionsPanel)
+
 function nibIceHUD:OpenConfig()
 	if not ConfigDialog then return end
 

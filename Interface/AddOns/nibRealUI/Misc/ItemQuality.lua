@@ -15,17 +15,6 @@ local BordersSet = false
 local ItemsList, NDItemsList
 
 ----
-local function GetThresholdColour(percent)
-	if percent < 0 then
-		return 1, 0, 0
-	elseif percent <= 0.5 then
-		return 1, percent * 2, 0
-	elseif percent >= 1 then
-		return 0, 1, 0
-	else
-		return 2 - percent * 2, 1, 0
-	end
-end
 
 function ItemQuality:CreateBorder(slottype, slot, name, hasText)
 	local gslot = _G[slottype..slot.."Slot"]
@@ -52,7 +41,7 @@ function ItemQuality:CreateBorder(slottype, slot, name, hasText)
 		if hasText then
 			local str = gslot:CreateFontString(slot .. name .. "S", "OVERLAY")
 			str:SetFont(unpack(nibRealUI.font.pixel1))
-			str:SetPoint("CENTER", gslot, "BOTTOM", 2, 6.5)
+			str:SetPoint("BOTTOMRIGHT", gslot, "BOTTOMRIGHT", 2, 1.5)
 		end
 	end
 end
@@ -73,6 +62,8 @@ function ItemQuality:UpdateItems()
 	
 	for _, item in ipairs(ItemsList) do
 		local id, _ = GetInventorySlotInfo(item .. "Slot")
+		
+		-- Item Durability
 		local str = _G[item.."ItemQualityS"]
 		local v1, v2 = GetInventoryItemDurability(id)
 		v1, v2 = tonumber(v1) or 0, tonumber(v2) or 0
@@ -85,17 +76,31 @@ function ItemQuality:UpdateItems()
 		
 		if (v2 ~= 0) then
 			local text
-			str:SetTextColor(GetThresholdColour(v1/v2))
+			str:SetTextColor(nibRealUI:GetDurabilityColour(v1/v2))
 			text = string.format("%d%%", percent)
 			str:SetText(text)
 		else
 			str:SetText("")
 		end
 		
+		-- Quality Border
 		self:ColourBorders(id, item)
 	end
 	
 	self:ColourBordersND()
+	
+	if not self.ilvl then
+		self.ilvl = PaperDollFrame:CreateFontString("ARTWORK")
+		self.ilvl:SetFontObject(SystemFont_Small)
+		self.ilvl:SetPoint("TOP", PaperDollFrame, "TOP", 0, -20)
+	end
+	local avgItemLevel, avgItemLevelEquipped = GetAverageItemLevel()
+	local aILColor = nibRealUI:GetILVLColor(avgItemLevel)[4]
+	local aILEColor = nibRealUI:GetILVLColor(avgItemLevelEquipped)[4]
+    avgItemLevel = floor(avgItemLevel)
+    avgItemLevelEquipped = floor(avgItemLevelEquipped)
+    self.ilvl:SetText("|c"..aILEColor..avgItemLevelEquipped.."|r |cffffffff/|r |c"..aILColor..avgItemLevel)
+	-- self.ilvl:SetTextColor(unpack(nibRealUI:GetILVLColor(avgItemLevel)))
 end
 
 function ItemQuality:CharacterFrame_OnShow()

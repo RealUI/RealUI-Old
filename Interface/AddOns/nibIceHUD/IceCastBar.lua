@@ -232,7 +232,7 @@ end
 function IceCastBar.prototype:CreateFrame()
 	IceCastBar.super.prototype.CreateFrame(self)
 
-	local layout = RealUI.db.char.resolution
+	local layout = RealUI and RealUI.db.char.resolution or 1
 	self.frame.bottomUpperText:SetWidth(self.settings["gap"..layout] + 30)
 	
 	if not self.barFrame.icon then

@@ -1,7 +1,9 @@
 local addon, ns = ...
 local cargBags = ns.cargBags
 
+local _
 local L = cBnivL
+
 
 local LSM
 if LibStub then
@@ -172,27 +174,28 @@ local JS = CreateFrame("Frame")
 JS:RegisterEvent("MERCHANT_SHOW")
 local function SellJunk()
 	if not(cBnivCfg.SellJunk) or (UnitLevel("player") < 5) then return end
-	local profit = 0
-	local bagSlots
-	for bag = 0, 4 do
-		bagSlots = GetContainerNumSlots(bag)
-		if bagSlots then
-			for slot = 0, bagSlots do
-				local link = GetContainerItemLink(bag, slot)
-				if link then
-					local sellprice = select(11, GetItemInfo(link)) * select(2, GetContainerItemInfo(bag, slot))
-					if select(3, GetItemInfo(link)) == 0 then
-						ShowMerchantSellCursor(1)
-						UseContainerItem(bag, slot)
-						profit = profit + sellprice
-					end
+	
+	local Profit, SoldCount, Rarity, ItemPrice, ItemCount = 0, 0, 0, 0, 0
+	local CurrentItemLink
+
+	for BagID = 0, 4 do
+		for BagSlot = 1, GetContainerNumSlots(BagID) do
+			CurrentItemLink = GetContainerItemLink(BagID, BagSlot)
+			if CurrentItemLink then
+				_, _, Rarity, _, _, _, _, _, _, _, ItemPrice = GetItemInfo(CurrentItemLink)
+				_, ItemCount = GetContainerItemInfo(BagID, BagSlot)
+				if Rarity == 0 and ItemPrice ~= 0 then
+					Profit = Profit + (ItemPrice * ItemCount)
+					SoldCount = SoldCount + 1
+					UseContainerItem(BagID, BagSlot)
 				end
 			end
 		end
 	end
-	if profit > 0 then
-		local g, s, c = math.floor(profit / 10000) or 0, math.floor((profit%10000) / 100) or 0, profit%100
-		print("Vendor trash sold: Profit - |cffffffff"..g.."|cffffd700g |cffffffff"..s.."|cffc7c7cfs|cffffffff "..c.."|cffeda55fc|r.")
+	
+	if Profit > 0 then
+		local g, s, c = math.floor(Profit / 10000) or 0, math.floor((Profit%10000) / 100) or 0, Profit%100
+		print("Vendor trash sold: |cff00a956+|r |cffffffff"..g..GOLD_AMOUNT..s..SILVER_AMOUNT..c..COPPER_AMOUNT.."|r")
 	end
 end
 JS:SetScript("OnEvent", function() SellJunk() end)

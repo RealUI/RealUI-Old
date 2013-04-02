@@ -292,7 +292,7 @@ function IceCore.prototype:IsEnabled()
 end
 
 function IceCore.prototype:DrawFrame()
-	local layout = RealUI.db.char.resolution
+	local layout = RealUI and RealUI.db.char.resolution or 1
 	self.nibIceHUDFrame:SetFrameStrata("BACKGROUND")
 	self.nibIceHUDFrame:SetWidth(self.settings["gap"..layout])
 	self.nibIceHUDFrame:SetHeight(20)
@@ -666,6 +666,8 @@ local FastModules = {
 	["TargetCast"] = true,
 	["TargetTargetCast"] = true,
 	["FocusCast"] = true,
+	["TargetCC"] = true,
+	["TargetInvuln"] = true,
 }
 function IceCore.prototype:HandleUpdates()
 	local update_period = 0.033

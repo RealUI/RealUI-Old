@@ -2037,7 +2037,7 @@ local function Guild_UpdateTablet()
 		GuildSection.headerCat:AddLine("isLine", true, "text", "")
 		
 		-- Guild Level
-		GuildSection.headerCat:AddLine("text", (GetGuildFactionGroup() == 0) and strform(GUILD_LEVEL_AND_FACTION, GetGuildLevel(), FACTION_HORDE) or strform(GUILD_LEVEL_AND_FACTION, GetGuildLevel(), FACTION_ALLIANCE), "size", db.text.tablets.columnsize + resExtraSize, "textR", 0.7, "textG", 0.7, "textB", 0.7)
+		GuildSection.headerCat:AddLine("text", (GetGuildFactionGroup() == 0) and strform(GUILD_LEVEL_AND_FACTION, GetGuildLevel(), FACTION_HORDE) or strform(GUILD_LEVEL_AND_FACTION, GetGuildLevel(), FACTION_ALLIANCE), "size", db.text.tablets.columnsize + resExtraSize, "textR", db.colors.blue1[1], "textG", db.colors.blue1[2], "textB", db.colors.blue1[3])
 		
 		-- Reputation
 		GuildSection.headerCat:AddLine("text", GetText("FACTION_STANDING_LABEL"..GetGuildFactionInfo(), UnitSex("player")), "size", db.text.tablets.normalsize + resExtraSize, "textR", 0.7, "textG", 0.7, "textB", 0.7)
@@ -3959,8 +3959,8 @@ function InfoLine:OnInitialize()
 				disabled = {0.5, 0.5, 0.5},
 				ttheader = {1, 1, 1},
 				orange1 = {1, 0.4, 0},
-				orange2 = {1, 0.73, 0.3},
-				blue1 = {0.2, 0.9, 0.9},
+				orange2 = {1, 0.65, 0},
+				blue1 = {0, 0.6, 1},
 			},
 			other = {
 				clock = {
