@@ -2,7 +2,7 @@
 ## Title: Aurora
 ## Notes: Minimalistic window theme.
 ## Author: Haleth/Freethinker
-## Version: 4.4.3
+## Version: 4.5b
 ## SavedVariables: AuroraConfig
 
 aurora.lua
@@ -42,4 +42,8 @@ AddOns\Blizzard_VoidStorageUI.lua
 AddOns\Recount.lua
 
 FrameXML\Fonts.lua
+FrameXML\LFDFrame.lua
+FrameXML\LFGFrame.lua
 FrameXML\PVEFrame.lua
+FrameXML\RolePoll.lua
+FrameXML\StaticPopup.lua
