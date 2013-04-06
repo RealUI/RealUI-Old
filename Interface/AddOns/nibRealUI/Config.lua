@@ -267,10 +267,6 @@ function nibRealUI:OpenOptions(...)
 	end
 end
 
-function nibRealUI:ChatCommand()
-	nibRealUI:OpenOptions()
-end
-
 function nibRealUI:ConfigRefresh()
 	db = self.db.profile
 	dbc = self.db.char
@@ -282,9 +278,6 @@ function nibRealUI:SetUpInitialOptions()
 	-- Create Interface - Addons panel
 	LibStub("AceConfig-3.0"):RegisterOptionsTable("nibRealUI-Int", GetIntOptions)
 	self.optionsFrame = LibStub("AceConfigDialog-3.0"):AddToBlizOptions("nibRealUI-Int", "RealUI")
-	
-	-- Chat command
-	nibRealUI:RegisterChatCommand("realui", "ChatCommand")
 	
 	nibRealUI:ConfigRefresh()
 end

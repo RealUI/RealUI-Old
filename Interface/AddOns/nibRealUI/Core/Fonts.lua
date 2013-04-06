@@ -17,6 +17,10 @@ nibRealUI.font = {
 	pixeltiny = nil,
 }
 
+RealUIFontTiny = CreateFont("RealUIFontObjectTiny")
+RealUIFontLarge = CreateFont("RealUIFontObjectLarge")
+RealUIFontPixel = CreateFont("RealUIFontObjectPixel")
+
 -- Options
 local table_Outline = {
 	"NONE",
@@ -521,8 +525,9 @@ function Fonts:OnInitialize()
 	nibRealUI.font.pixeltiny = {nibRealUI:RetrieveFont(nibRealUI.media.font.pixel.lowres.small[1]), nibRealUI.media.font.pixel.lowres.small[2], nibRealUI.media.font.pixel.lowres.small[3]}
 	nibRealUI.font.pixellarge = {nibRealUI:RetrieveFont(nibRealUI.media.font.pixel.highres.small[1]), nibRealUI.media.font.pixel.highres.small[2], nibRealUI.media.font.pixel.highres.small[3]}
 	
-	RealUIFontTiny = nibRealUI.font.pixeltiny
-	RealUIFontLarge = nibRealUI.font.pixellarge
+	RealUIFontTiny:SetFont(unpack(nibRealUI.font.pixeltiny))
+	RealUIFontLarge:SetFont(unpack(nibRealUI.font.pixellarge))
+	RealUIFontPixel:SetFont(unpack(nibRealUI.font.pixel1))
 	
 	self:UpdateUIFonts()
 	

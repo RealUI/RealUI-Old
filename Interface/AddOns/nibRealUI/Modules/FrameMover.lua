@@ -3,7 +3,7 @@ local db, ndb, ndbc
 
 local _
 local MODNAME = "FrameMover"
-local FrameMover = nibRealUI:NewModule(MODNAME, "AceEvent-3.0", "AceBucket-3.0")
+local FrameMover = nibRealUI:NewModule(MODNAME, "AceEvent-3.0", "AceBucket-3.0", "AceTimer-3.0")
 
 local EnteredWorld
 
@@ -71,15 +71,6 @@ local FrameList = {
 		durabilityframe = {
 			name = "Durability Frame",
 			frames = {[1] = {name = "DurabilityFrame"},},
-		},
-		bossframes = {
-			name = "Boss Frames",
-			frames = {
-				[1] = {name = "Boss1TargetFrame"},
-				[2] = {name = "Boss2TargetFrame"},
-				[3] = {name = "Boss3TargetFrame"},
-				[4] = {name = "Boss4TargetFrame"},
-			},
 		},
 		raid = {
 			name = "Raid",
@@ -929,7 +920,7 @@ end
 
 -- Hide Party/Raid Frames
 local compactRaid = "1"
-local function FrameMover_RaidFramesCheck()
+local function RaidFramesCheck()
 	if not InCombatLockdown() then
 		if db.hide.raid.hide and compactRaid ~= "0" then
 			CompactRaidFrameManager_SetSetting("IsShown","0")
@@ -941,12 +932,12 @@ end
 
 function FrameMover:HidePartyRaid()
 	if db.hide.raid.hide then
-		FrameMover_RaidFramesCheck()
+		RaidFramesCheck()
 	end
 	
 	if not InCombatLockdown() then
-		if not self.partyhidden and EnteredWorld and db.hide.party.hide then
-			self.partyhidden = true
+		if not FrameMover.partyhidden and EnteredWorld and db.hide.party.hide then
+			FrameMover.partyhidden = true
 			for i = 1, 4 do
 				local frame = _G["PartyMemberFrame"..i]
 				frame:UnregisterAllEvents()
@@ -955,6 +946,9 @@ function FrameMover:HidePartyRaid()
 			end
 		end
 	end
+end
+function FrameMover_HidePartyRaid()
+	FrameMover:HidePartyRaid()
 end
 
 -- Hide all UI Frames
@@ -968,21 +962,6 @@ function FrameMover:HideFrames()
 		end
 	end
 end
-
--- Garbage Timer
-local function CreateGarbageTimer()
-	GarbageTimerFrame = CreateFrame("Frame")
-	GarbageTimerFrame:Hide()
-	GarbageTimerFrame:SetScript("OnUpdate", function(self, elapsed)
-		GarbageTimerInt = GarbageTimerInt - elapsed
-		if GarbageTimerInt <= 0 then
-			collectgarbage("collect")
-			GarbageTimerFrame:Hide()
-			GarbageTimerInt = 1
-		end	
-	end)
-end
-
 
 ---- Hook into addons to display PopUpMessage and reposition frames
 -- VSI
@@ -1070,14 +1049,10 @@ function FrameMover:PLAYER_ENTERING_WORLD()
 		self:MoveUIFrames()
 		self:MoveAddons()
 		self:HideFrames()
-		
-		CreateGarbageTimer()
 	end
 	EnteredWorld = true
 	
-	self:HidePartyRaid("PLAYER_ENTERING_WORLD")
-	
-	GarbageTimerFrame:Show()
+	FrameMover_HidePartyRaid()
 end
 
 function FrameMover:ADDON_LOADED(event, addon)
@@ -1089,23 +1064,8 @@ function FrameMover:ADDON_LOADED(event, addon)
 end
 
 ----
-local LockdownTimer = CreateFrame("Frame")
-LockdownTimer.Elapsed = 0
-LockdownTimer:Hide()
-LockdownTimer:SetScript("OnUpdate", function(self, elapsed)
-	LockdownTimer.Elapsed = LockdownTimer.Elapsed + elapsed
-	if LockdownTimer.Elapsed >= 1 then
-		if not InCombatLockdown() then
-			FrameMover:HidePartyRaid()
-			LockdownTimer.Elapsed = 0
-			LockdownTimer:Hide()
-		else
-			LockdownTimer.Elapsed = 0
-		end
-	end
-end)
 function FrameMover:UpdateLockdown(...)
-	LockdownTimer:Show()
+	nibRealUI:RegisterLockdownUpdate("FrameMover_HidePartyRaid", FrameMover_HidePartyRaid)
 end
 
 function FrameMover:OnInitialize()

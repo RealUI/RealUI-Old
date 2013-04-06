@@ -66,6 +66,26 @@ function nibRealUI:CreateBD(frame, alpha)
 	frame:SetBackdropBorderColor(0, 0, 0)
 end
 
+function nibRealUI:CreateBDFrame(f, a)
+	local frame
+	if f:GetObjectType() == "Texture" then
+		frame = f:GetParent()
+	else
+		frame = f
+	end
+
+	local lvl = frame:GetFrameLevel()
+
+	local bg = CreateFrame("Frame", nil, frame)
+	bg:SetPoint("TOPLEFT", f, -1, 1)
+	bg:SetPoint("BOTTOMRIGHT", f, 1, -1)
+	bg:SetFrameLevel(lvl == 0 and 1 or lvl - 1)
+
+	nibRealUI:CreateBD(bg, a or nibRealUI.media.backgroundalpha)
+
+	return bg
+end
+
 function nibRealUI:CreateBG(frame, alpha)
 	local f = frame
 	if frame:GetObjectType() == "Texture" then f = frame:GetParent() end
@@ -193,6 +213,39 @@ function nibRealUI:GetFont(fontID)
 	return font
 end
 
+-- Memory Display
+local function FormatMem(memory)
+	if ( memory > 999 ) then
+		return format("%.1f |cff%s%s|r", memory/1024, "ff8030", "MiB")
+	else
+		return format("%.1f |cff%s%s|r", memory, "80ff30", "KB")
+	end
+end
+
+function nibRealUI:MemoryDisplay()
+	local addons, total = {}, 0
+	UpdateAddOnMemoryUsage()
+	local memory = gcinfo()
+	
+	for i = 1, GetNumAddOns() do
+		if ( IsAddOnLoaded(i) ) then
+			table.insert(addons, { GetAddOnInfo(i), GetAddOnMemoryUsage(i) })
+			total = total + GetAddOnMemoryUsage(i)
+		end
+	end
+	
+	table.sort(addons, (function(a, b) return a[2] > b[2] end))
+	
+	local userMem = format("|cff00ffffMemory usage: |r%.1f |cffff8030%s|r", total/1024, "MiB")
+	print(userMem)
+	print("-------------------------------")
+	for key, val in pairs(addons) do
+		if ( key <= 20 ) then
+			print(FormatMem(val[2]).."  -  "..val[1])
+		end
+	end
+end
+
 -- Opposite Faction
 function nibRealUI:OtherFaction(f)
 	if (f == "Horde") then
@@ -245,8 +298,12 @@ function nibRealUI:GetILVLColor(ilvl)
 end
 
 -- Class Color
-function nibRealUI:GetClassColor(class)
+function nibRealUI:GetClassColor(class, ...)
 	if not RAID_CLASS_COLORS[class] then return {1, 1, 1} end
 	local classColors = CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[class] or RAID_CLASS_COLORS[class]
-	return {classColors.r, classColors.g, classColors.b}
+	if ... then
+		return {r = classColors.r, g = classColors.g, b = classColors.b}
+	else
+		return {classColors.r, classColors.g, classColors.b}
+	end
 end

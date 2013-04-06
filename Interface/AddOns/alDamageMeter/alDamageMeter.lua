@@ -1,5 +1,3 @@
-local F, C = unpack(Aurora)
-
 local anchor = "BOTTOMRIGHT"
 local x, y = -32, 32
 local font = RealUI.font.pixel1[1]
@@ -292,7 +290,7 @@ local CreateBar = function()
 	newbar.right = CreateFS(newbar)
 	newbar.right:SetPoint("RIGHT", -2, 0)
 	newbar.right:SetJustifyH("RIGHT")
-	F.CreateBDFrame(newbar)
+	RealUI:CreateBDFrame(newbar)
 	newbar:SetScript("OnEnter", OnBarEnter)
 	newbar:SetScript("OnLeave", OnBarLeave)
 	newbar:SetScript("OnMouseUp", function(self, button)
@@ -321,6 +319,7 @@ local CreateUnitInfo = function(uGUID)
 end
 
 local Add = function(uGUID, amount, mode, spell, target)
+	if not target then return end
 	if not current[uGUID] then
 		current[uGUID] = CreateUnitInfo(uGUID)
 		tinsert(barguids, uGUID)
@@ -356,7 +355,7 @@ local UpdateBars = function()
 		end
 		bar[i].id = i + offset
 		bar[i]:SetValue(100 * cur[sMode].amount / max[sMode].amount)
-		color = C.classcolours[cur.class]
+		color = RealUI:GetClassColor(cur.class, true)
 		if dmconf.classcolorbar and color then
 			bar[i]:SetStatusBarColor(color.r, color.g, color.b)
 		else

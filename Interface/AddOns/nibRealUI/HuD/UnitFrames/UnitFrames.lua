@@ -360,6 +360,40 @@ local function GetOptions()
 					},
 				},
 			},
+			font = {
+				type = "group",
+				name = "Font",
+				order = 80,
+				args = {
+					standard = {
+						type = "toggle",
+						name = "Use Standard Font",
+						desc = "Use RealUI Standard Font instead of RealUI Pixel Font.",
+						get = function() return db.overlay.font.standard end,
+						set = function(info, value) 
+							db.overlay.font.standard = value
+							UnitFrames:UpdateFonts()
+						end,
+						order = 10,
+					},
+					size = {
+						type = "range",
+						name = "Font Size",
+						min = 6, max = 24, step = 1,
+						get = function(info) return db.overlay.font.size end,
+						set = function(info, value) db.overlay.font.size = value; UnitFrames:UpdateFonts() end,
+						order = 20,
+					},
+					yoffset = {
+						type = "range",
+						name = "Y Offset",
+						min = -12, max = 12, step = 1,
+						get = function(info) return db.overlay.font.yoffset end,
+						set = function(info, value) db.overlay.font.yoffset = value; UnitFrames:UpdateFonts() end,
+						order = 20,
+					},
+				},
+			},
 		},
 	}
 	end
@@ -476,6 +510,9 @@ local FOCUSTARGET_ID = "focustarget"
 local TARGET_ID = "target"
 local TARGETTARGET_ID = "targettarget"
 local MAINTANK_ID = "maintank"
+local BOSS_ID = "boss"
+
+local ALTERNATE_POWER_INDEX = ALTERNATE_POWER_INDEX
 
 local Textures = {
 	[1] = {
@@ -594,6 +631,11 @@ local Textures = {
 			},
 		},
 	},
+}
+
+local colorStrings = {
+	health = "ffffff",
+	mana = "ffffff",
 }
 
 local HealthEndBarCoords = {
@@ -763,6 +805,7 @@ local NameLengths = {
 		[FOCUSTARGET_ID] = 12,
 		[TARGETTARGET_ID] = 12,
 		[MAINTANK_ID] = 12,
+		[BOSS_ID] = 12,
 	},
 	[2] = {
 		[TARGET_ID] = 18,
@@ -770,6 +813,7 @@ local NameLengths = {
 		[FOCUSTARGET_ID] = 12,
 		[TARGETTARGET_ID] = 12,
 		[MAINTANK_ID] = 12,
+		[BOSS_ID] = 12,
 	},
 }
 
@@ -881,6 +925,19 @@ local function ReadableNumber(num, places)
     return ret
 end
 
+-- Abbreviated Name
+local function AbrvName(name, ...)
+	local UnitID = ... or BOSS_ID
+	local maxNameLength = NameLengths[ndbc.resolution][UnitID]
+	
+	local newName = (strlen(name) > maxNameLength) and gsub(name, "%s?(.[\128-\191]*)%S+%s", "%1.") or name
+	if strlen(newName) > maxNameLength then
+		newName = strsub(newName, 1, maxNameLength - 1)..".."
+	end
+	
+	return newName
+end
+
 -- Class Color
 local classColors
 local function GetClassColor(class)
@@ -919,7 +976,7 @@ end
 local function SetTextPosition(frame, p1, p2)
 	local cPos = (p1 ~= "CENTER") and p1..p2 or p1
 	frame.text:ClearAllPoints()
-	frame.text:SetPoint(cPos, frame, cPos, 0.5, 0.5)
+	frame.text:SetPoint(cPos, frame, cPos, 0.5, 0.5 + (frame.hasTextYOffset and db.overlay.font.yoffset or 0))
 	frame.text:SetJustifyH(p2)
 	frame.text:SetJustifyV(p1)
 end
@@ -982,8 +1039,8 @@ local function SetBarValue(bar, pos)
 	end
 end
 
-local smoothUpdateFrame = CreateFrame('Frame')
-smoothUpdateFrame:SetScript('OnUpdate', function()
+local smoothUpdateFrame = CreateFrame("Frame")
+smoothUpdateFrame:SetScript("OnUpdate", function()
 	local limit = 30 / GetFramerate()
 	for bar, pos in pairs(smoothing) do
 		local cur = bar.pos
@@ -1150,13 +1207,13 @@ function UnitFrames:UpdateUnitHealth(UnitID, ...)
 		-- Change Health Arrow color
 		if StepChanged then
 			UF[UFUnit].health.arrow.background.bg:SetVertexColor(db.overlay.arrow.colors[NewStep+1][1], db.overlay.arrow.colors[NewStep+1][2], db.overlay.arrow.colors[NewStep+1][3], db.overlay.arrow.opacity.background)
-			UF[UFUnit].health.arrow.percent.text:SetTextColor(db.overlay.arrow.colors[NewStep+1][1], db.overlay.arrow.colors[NewStep+1][2], db.overlay.arrow.colors[NewStep+1][3], db.overlay.arrow.opacity.surround)
+			-- UF[UFUnit].health.arrow.percent.text:SetTextColor(db.overlay.arrow.colors[NewStep+1][1], db.overlay.arrow.colors[NewStep+1][2], db.overlay.arrow.colors[NewStep+1][3], db.overlay.arrow.opacity.surround)
 			UF[UFUnit].health.arrow.step = NewStep
 		end
 		
 		---- Texts
 		local ArrowText = ""
-		ArrowText = tostring(floor(PerHP * 100)).."%"
+		ArrowText = tostring(floor(PerHP * 100)).."|cff"..colorStrings.health.."%"
 		if StepChanged then
 			if CurStep == 0 then
 				UnitFrames:UpdateUnitTextPosition(UFUnit, "health.fullval", "OUTSIDE")
@@ -1280,14 +1337,14 @@ function UnitFrames:UpdateUnitPower(UnitID, ...)
 	-- Change Power Arrow color
 	if StepChanged then
 		UF[UFUnit].power.arrow.background.bg:SetVertexColor(db.overlay.arrow.colors[NewStep+1][1], db.overlay.arrow.colors[NewStep+1][2], db.overlay.arrow.colors[NewStep+1][3], db.overlay.arrow.opacity.background)
-		UF[UFUnit].power.arrow.percent.text:SetTextColor(db.overlay.arrow.colors[NewStep+1][1], db.overlay.arrow.colors[NewStep+1][2], db.overlay.arrow.colors[NewStep+1][3], db.overlay.arrow.opacity.surround)
+		-- UF[UFUnit].power.arrow.percent.text:SetTextColor(db.overlay.arrow.colors[NewStep+1][1], db.overlay.arrow.colors[NewStep+1][2], db.overlay.arrow.colors[NewStep+1][3], db.overlay.arrow.opacity.surround)
 		UF[UFUnit].power.arrow.step = NewStep
 	end
 	
 	---- Texts
 	local ArrowText, FullValText = "", ""
 	if pToken == "MANA" then
-		ArrowText = tostring(floor(PerMP * 100)).."%"
+		ArrowText = tostring(floor(PerMP * 100)).."|cff"..colorStrings.mana.."%"
 		FullValText = ReadableNumber(uPower, 1)
 	else
 		ArrowText = tostring(uPower)
@@ -1540,11 +1597,7 @@ function UnitFrames:UpdateUnitInfo(UnitID)
 	if not(UnitExists(UnitID)) then return end
 	
 	-- Name
-	local oldName = UnitName(UnitID)
-	local uName = (strlen(oldName) > NameLengths[ndbc.resolution][UnitID]) and gsub(oldName, "%s?(.[\128-\191]*)%S+%s", "%1.") or oldName
-	if strlen(uName) > NameLengths[ndbc.resolution][UnitID] then
-		uName = strsub(uName, 1, NameLengths[ndbc.resolution][UnitID] - 1)..".."
-	end
+	local uName = AbrvName(UnitName(UnitID), UnitID)
 	
 	-- Level
 	local uLevel = UnitLevel(UnitID)
@@ -1859,24 +1912,25 @@ end
 
 -- Font Update
 function UnitFrames:UpdateFonts()
+	local font = db.overlay.font.standard and {nibRealUI.font.standard, db.overlay.font.size, "OUTLINE"} or nibRealUI.font.pixel1
 	for k,v in pairs(UF) do
 		if type(v) == "table" then
 			for k2,v2 in pairs(v) do
 				if type(v2) == "table" then
 					if UF[k][k2].text then
-						UF[k][k2].text:SetFont(unpack(nibRealUI.font.pixel1))
+						UF[k][k2].text:SetFont(unpack(font))
 					else
 					
 			for k3,v3 in pairs(v2) do
 				if type(v3) == "table" then
 					if UF[k][k2][k3].text then
-						UF[k][k2][k3].text:SetFont(unpack(nibRealUI.font.pixel1))
+						UF[k][k2][k3].text:SetFont(unpack(font))
 					else
 
 			for k4,v4 in pairs(v3) do
 				if type(v4) == "table" then
 					if UF[k][k2][k3][k4].text then
-						UF[k][k2][k3][k4].text:SetFont(unpack(nibRealUI.font.pixel1))
+						UF[k][k2][k3][k4].text:SetFont(unpack(font))
 		
 		end; end; end; end; end; end; end; end; end; end
 	end
@@ -1977,11 +2031,13 @@ local function CreateArtFrame(parent)
 	return NewArtFrame
 end
 
-local function CreateTextFrame(parent, position1, position2)
+local function CreateTextFrame(parent, position1, position2, ...)
 	local NewTextFrame
+	local font = db.overlay.font.standard and {nibRealUI.font.standard, db.overlay.font.size, "OUTLINE"} or nibRealUI.font.pixel1
 	NewTextFrame = CreateFrame("Frame", nil, parent)
+	if ... then NewTextFrame.hasTextYOffset = true end
 	NewTextFrame.text = NewTextFrame:CreateFontString(nil, "ARTWORK")
-	NewTextFrame.text:SetFont(unpack(nibRealUI.font.pixel1))
+	NewTextFrame.text:SetFont(unpack(font))
 	SetTextPosition(NewTextFrame, position1, position2)
 	return NewTextFrame
 end
@@ -2040,7 +2096,7 @@ function UnitFrames:CreateFrames()
 		UF[PLAYER_ID].health.bar.ender:Hide()
 		
 		-- HealthBar Text
-		UF[PLAYER_ID].healthtext = CreateTextFrame(UF[PLAYER_ID].health, "BOTTOM", "RIGHT")
+		UF[PLAYER_ID].healthtext = CreateTextFrame(UF[PLAYER_ID].health, "BOTTOM", "RIGHT", true)
 		SetFramePosition(UF[PLAYER_ID].healthtext, "MEDIUM", UF[PLAYER_ID].health:GetFrameLevel() + 2, 12, 12, {"BOTTOMRIGHT", UF[PLAYER_ID].health, "BOTTOMRIGHT", -6, 1})
 		
 		-- Health Text
@@ -2194,11 +2250,11 @@ function UnitFrames:CreateFrames()
 	
 	
 	-- End Box Text
-	UF[PLAYER_ID].endboxtext = CreateTextFrame(UF[PLAYER_ID].endbox, "CENTER", "CENTER")
+	UF[PLAYER_ID].endboxtext = CreateTextFrame(UF[PLAYER_ID].endbox, "CENTER", "CENTER", true)
 	SetFramePosition(UF[PLAYER_ID].endboxtext, "MEDIUM", UF[PLAYER_ID].endbox:GetFrameLevel() + 1, 12, 12, {"CENTER", UF[PLAYER_ID].endbox, "CENTER", EndBoxTextXOffset[ndbc.resolution][PLAYER_ID], 0})
 	
 	-- Range Display
-	UF[PLAYER_ID].rangedisplay = CreateTextFrame(UF[PLAYER_ID].endbox, "BOTTOM", "LEFT")
+	UF[PLAYER_ID].rangedisplay = CreateTextFrame(UF[PLAYER_ID].endbox, "BOTTOM", "LEFT", true)
 	SetFramePosition(UF[PLAYER_ID].rangedisplay, "MEDIUM", UF[PLAYER_ID]:GetFrameLevel(), 12, 12, {"BOTTOMLEFT", UF[PLAYER_ID].endbox, "BOTTOMRIGHT", -2, 12})
 	UF[PLAYER_ID].rangedisplay.elapsed = 0
 	UF[PLAYER_ID].rangedisplay.interval = 0.2
@@ -2275,7 +2331,7 @@ function UnitFrames:CreateFrames()
 		UF[TARGET_ID].health.bar.ender:Hide()
 		
 		-- HealthBar Text
-		UF[TARGET_ID].healthtext = CreateTextFrame(UF[TARGET_ID].health, "BOTTOM", "LEFT")
+		UF[TARGET_ID].healthtext = CreateTextFrame(UF[TARGET_ID].health, "BOTTOM", "LEFT", true)
 		SetFramePosition(UF[TARGET_ID].healthtext, "MEDIUM", UF[TARGET_ID].health:GetFrameLevel() + 2, 12, 12, {"BOTTOMLEFT", UF[TARGET_ID].health, "BOTTOMLEFT", 8, 1})
 		
 		-- Health Text
@@ -2351,7 +2407,7 @@ function UnitFrames:CreateFrames()
 		UF[TARGET_ID].power.bar.ender:Hide()
 		
 		-- PowerBar Text
-		UF[TARGET_ID].powertext = CreateTextFrame(UF[TARGET_ID].power, "BOTTOM", "LEFT")
+		UF[TARGET_ID].powertext = CreateTextFrame(UF[TARGET_ID].power, "BOTTOM", "LEFT", true)
 		SetFramePosition(UF[TARGET_ID].powertext, "MEDIUM", UF[TARGET_ID].power:GetFrameLevel() + 2, 10, 10, {"BOTTOMLEFT", UF[TARGET_ID].power, "BOTTOMLEFT", 8, (ndbc.resolution == 1) and 7 or 6})
 		
 		-- Power Text
@@ -2415,11 +2471,11 @@ function UnitFrames:CreateFrames()
 	UF[TARGET_ID].endbox.bar:SetVertexColor(0, 0, 0, 0)
 	
 	-- End Box Text
-	UF[TARGET_ID].endboxtext = CreateTextFrame(UF[TARGET_ID].endbox, "CENTER", "CENTER")
+	UF[TARGET_ID].endboxtext = CreateTextFrame(UF[TARGET_ID].endbox, "CENTER", "CENTER", true)
 	SetFramePosition(UF[TARGET_ID].endboxtext, "MEDIUM", UF[TARGET_ID].endbox:GetFrameLevel() + 1, 12, 12, {"CENTER", UF[TARGET_ID].endbox, "CENTER", 4, 0})
 	
 	-- Range Display
-	UF[TARGET_ID].rangedisplay = CreateTextFrame(UF[TARGET_ID].endbox, "BOTTOM", "RIGHT")
+	UF[TARGET_ID].rangedisplay = CreateTextFrame(UF[TARGET_ID].endbox, "BOTTOM", "RIGHT", true)
 	SetFramePosition(UF[TARGET_ID].rangedisplay, "MEDIUM", UF[TARGET_ID]:GetFrameLevel(), 12, 12, {"BOTTOMRIGHT", UF[TARGET_ID].endbox, "BOTTOMLEFT", 4, 12})
 	UF[TARGET_ID].rangedisplay.elapsed = 0
 	UF[TARGET_ID].rangedisplay.interval = 0.2
@@ -2497,11 +2553,11 @@ function UnitFrames:CreateFrames()
 		UF[FOCUS_ID].health.bar.ender:Hide()
 		
 		-- HealthBar Text
-		UF[FOCUS_ID].healthtext = CreateTextFrame(UF[FOCUS_ID].health, "BOTTOM", "RIGHT")
+		UF[FOCUS_ID].healthtext = CreateTextFrame(UF[FOCUS_ID].health, "BOTTOM", "RIGHT", true)
 		SetFramePosition(UF[FOCUS_ID].healthtext, "MEDIUM", UF[FOCUS_ID].health:GetFrameLevel() + 2, 12, 12, {"BOTTOMRIGHT", UF[FOCUS_ID].health, "BOTTOMRIGHT", -4, 0})
 		
 		-- Health Text
-		UF[FOCUS_ID].health.fullval = CreateTextFrame(UF[FOCUS_ID].health, "BOTTOM", "LEFT")
+		UF[FOCUS_ID].health.fullval = CreateTextFrame(UF[FOCUS_ID].health, "BOTTOM", "LEFT", true)
 		SetFramePosition(UF[FOCUS_ID].health.fullval, "MEDIUM", UF[FOCUS_ID].health:GetFrameLevel() + 2, 12, 12, {"BOTTOMLEFT", UF[FOCUS_ID].health, "BOTTOMLEFT", 256 - HealthWidthShort[ndbc.resolution][FOCUS_ID], 0})
 		
 	-- End Box
@@ -2513,11 +2569,11 @@ function UnitFrames:CreateFrames()
 	UF[FOCUS_ID].endbox.bar:SetVertexColor(0, 0, 0, 0)
 	
 	-- End Box Text
-	UF[FOCUS_ID].endboxtext = CreateTextFrame(UF[FOCUS_ID].endbox, "CENTER", "CENTER")
+	UF[FOCUS_ID].endboxtext = CreateTextFrame(UF[FOCUS_ID].endbox, "CENTER", "CENTER", true)
 	SetFramePosition(UF[FOCUS_ID].endboxtext, "MEDIUM", UF[FOCUS_ID].endbox:GetFrameLevel() + 1, 12, 12, {"CENTER", UF[FOCUS_ID].endbox, "CENTER", -2, -4})
 	
 	-- Range Display
-	UF[FOCUS_ID].rangedisplay = CreateTextFrame(UF[FOCUS_ID].endbox, "BOTTOM", "LEFT")
+	UF[FOCUS_ID].rangedisplay = CreateTextFrame(UF[FOCUS_ID].endbox, "BOTTOM", "LEFT", true)
 	SetFramePosition(UF[FOCUS_ID].rangedisplay, "MEDIUM", UF[FOCUS_ID]:GetFrameLevel(), 12, 12, {"BOTTOMLEFT", UF[FOCUS_ID].endbox, "BOTTOMRIGHT", -2, 0})
 	UF[FOCUS_ID].rangedisplay.elapsed = 0
 	UF[FOCUS_ID].rangedisplay.interval = 0.2
@@ -2592,11 +2648,11 @@ function UnitFrames:CreateFrames()
 		UF[FOCUSTARGET_ID].health.bar.ender:Hide()
 		
 		-- HealthBar Text
-		UF[FOCUSTARGET_ID].healthtext = CreateTextFrame(UF[FOCUSTARGET_ID].health, "BOTTOM", "RIGHT")
+		UF[FOCUSTARGET_ID].healthtext = CreateTextFrame(UF[FOCUSTARGET_ID].health, "BOTTOM", "RIGHT", true)
 		SetFramePosition(UF[FOCUSTARGET_ID].healthtext, "MEDIUM", UF[FOCUSTARGET_ID].health:GetFrameLevel() + 2, 12, 12, {"BOTTOMRIGHT", UF[FOCUSTARGET_ID].health, "BOTTOMRIGHT", -4, 0})
 		
 		-- Health Text
-		UF[FOCUSTARGET_ID].health.fullval = CreateTextFrame(UF[FOCUSTARGET_ID].health, "BOTTOM", "LEFT")
+		UF[FOCUSTARGET_ID].health.fullval = CreateTextFrame(UF[FOCUSTARGET_ID].health, "BOTTOM", "LEFT", true)
 		SetFramePosition(UF[FOCUSTARGET_ID].health.fullval, "MEDIUM", UF[FOCUSTARGET_ID].health:GetFrameLevel() + 2, 12, 12, {"BOTTOMLEFT", UF[FOCUSTARGET_ID].health, "BOTTOMLEFT", 256 - HealthWidthShort[ndbc.resolution][FOCUSTARGET_ID], 0})
 		
 	-- End Box
@@ -2608,11 +2664,11 @@ function UnitFrames:CreateFrames()
 	UF[FOCUSTARGET_ID].endbox.bar:SetVertexColor(0, 0, 0, 0)
 	
 	-- End Box Text
-	UF[FOCUSTARGET_ID].endboxtext = CreateTextFrame(UF[FOCUSTARGET_ID].endbox, "CENTER", "CENTER")
+	UF[FOCUSTARGET_ID].endboxtext = CreateTextFrame(UF[FOCUSTARGET_ID].endbox, "CENTER", "CENTER", true)
 	SetFramePosition(UF[FOCUSTARGET_ID].endboxtext, "MEDIUM", UF[FOCUSTARGET_ID].endbox:GetFrameLevel() + 1, 12, 12, {"CENTER", UF[FOCUSTARGET_ID].endbox, "CENTER", -2, -4})
 	
 	-- Range Display
-	UF[FOCUSTARGET_ID].rangedisplay = CreateTextFrame(UF[FOCUSTARGET_ID].endbox, "BOTTOM", "LEFT")
+	UF[FOCUSTARGET_ID].rangedisplay = CreateTextFrame(UF[FOCUSTARGET_ID].endbox, "BOTTOM", "LEFT", true)
 	SetFramePosition(UF[FOCUSTARGET_ID].rangedisplay, "MEDIUM", UF[FOCUSTARGET_ID]:GetFrameLevel(), 12, 12, {"BOTTOMLEFT", UF[FOCUSTARGET_ID].endbox, "BOTTOMRIGHT", -2, 0})
 	UF[FOCUSTARGET_ID].rangedisplay.elapsed = 0
 	UF[FOCUSTARGET_ID].rangedisplay.interval = 0.2
@@ -2689,11 +2745,11 @@ function UnitFrames:CreateFrames()
 		UF[TARGETTARGET_ID].health.bar.ender:Hide()
 		
 		-- HealthBar Text
-		UF[TARGETTARGET_ID].healthtext = CreateTextFrame(UF[TARGETTARGET_ID].health, "BOTTOM", "LEFT")
+		UF[TARGETTARGET_ID].healthtext = CreateTextFrame(UF[TARGETTARGET_ID].health, "BOTTOM", "LEFT", true)
 		SetFramePosition(UF[TARGETTARGET_ID].healthtext, "MEDIUM", UF[TARGETTARGET_ID].health:GetFrameLevel() + 2, 12, 12, {"BOTTOMLEFT", UF[TARGETTARGET_ID].health, "BOTTOMLEFT", 6, 0})
 		
 		-- Health Text
-		UF[TARGETTARGET_ID].health.fullval = CreateTextFrame(UF[TARGETTARGET_ID].health, "BOTTOM", "RIGHT")
+		UF[TARGETTARGET_ID].health.fullval = CreateTextFrame(UF[TARGETTARGET_ID].health, "BOTTOM", "RIGHT", true)
 		SetFramePosition(UF[TARGETTARGET_ID].health.fullval, "MEDIUM", UF[TARGETTARGET_ID].health:GetFrameLevel() + 2, 12, 12, {"BOTTOMRIGHT", UF[TARGETTARGET_ID].health, "BOTTOMRIGHT", -(256 - HealthWidthShort[ndbc.resolution][TARGETTARGET_ID]) + 2, 0})
 		
 	-- End Box
@@ -2708,11 +2764,11 @@ function UnitFrames:CreateFrames()
 	UF[TARGETTARGET_ID].endbox.bar:SetVertexColor(0, 0, 0, 0)
 	
 	-- End Box Text
-	UF[TARGETTARGET_ID].endboxtext = CreateTextFrame(UF[TARGETTARGET_ID].endbox, "CENTER", "CENTER")
+	UF[TARGETTARGET_ID].endboxtext = CreateTextFrame(UF[TARGETTARGET_ID].endbox, "CENTER", "CENTER", true)
 	SetFramePosition(UF[TARGETTARGET_ID].endboxtext, "MEDIUM", UF[TARGETTARGET_ID].endbox:GetFrameLevel() + 1, 12, 12, {"CENTER", UF[TARGETTARGET_ID].endbox, "CENTER", 4, -4})
 	
 	-- Range Display
-	UF[TARGETTARGET_ID].rangedisplay = CreateTextFrame(UF[TARGETTARGET_ID].endbox, "BOTTOM", "RIGHT")
+	UF[TARGETTARGET_ID].rangedisplay = CreateTextFrame(UF[TARGETTARGET_ID].endbox, "BOTTOM", "RIGHT", true)
 	SetFramePosition(UF[TARGETTARGET_ID].rangedisplay, "MEDIUM", UF[TARGETTARGET_ID]:GetFrameLevel(), 12, 12, {"BOTTOMRIGHT", UF[TARGETTARGET_ID].endbox, "BOTTOMLEFT", 4, 0})
 	UF[TARGETTARGET_ID].rangedisplay.elapsed = 0
 	UF[TARGETTARGET_ID].rangedisplay.interval = 0.2
@@ -3023,6 +3079,40 @@ function UnitFrames:InitializeOverlay()
 	if CF then CF:FadeFrames() end
 end
 
+-------------------
+------ Auras ------
+-------------------
+
+-- Aura Filters
+local function FilterBossAuras(...)
+	local _,_,_,_,_,_,_,_,_,_,caster = ...
+	if not caster then return false end
+	local guid, isNPC = UnitGUID(caster), false
+	if guid then
+		local first3 = tonumber("0x" .. strsub(guid, 3,5))
+		local unitType = bit.band(first3, 0x00f)
+		isNPC = (unitType == 0x003)
+	end
+	return isNPC
+end
+
+------------------
+------ Tags ------
+------------------
+local tags = oUF.Tags
+
+tags.Methods["realui:name"] = function(unit)
+	if UnitIsDead(unit) or UnitIsGhost(unit) or not(UnitIsConnected(unit)) then return end
+
+	return AbrvName(UnitName(unit))
+end
+
+tags.Methods["realui:healthPercent"] = function(unit)
+	if UnitIsDead(unit) or UnitIsGhost(unit) or not(UnitIsConnected(unit)) then return end
+
+	return ("%d|cff%s%%|r"):format(UnitHealth(unit) / UnitHealthMax(unit) * 100, nibRealUI:ColorTableToStr(db.overlay.colors.health.normal))
+end
+oUF.Tags.Events["realui:healthPercent"] = "UNIT_HEALTH_FREQUENT UNIT_MAXHEALTH UNIT_TARGETABLE_CHANGED"
 
 --------------------
 ------ Layout ------
@@ -3038,6 +3128,7 @@ local unit_sizes = {
 		target = 		{width = 224, height = 22},
 		targettarget = 	{width = 158, height = 10},
 		tank = 			{width = 158, height = 10},
+		boss = 			{width = 160, height = 28},
 	},
 	[2] = {
 		player = 		{width = 244, height = 22},
@@ -3047,6 +3138,7 @@ local unit_sizes = {
 		target = 		{width = 244, height = 22},
 		targettarget = 	{width = 168, height = 10},
 		tank = 			{width = 168, height = 10},
+		boss = 			{width = 160, height = 28},
 	},
 }
 
@@ -3060,33 +3152,7 @@ local OnLeave = function(self)
 end
 
 -- Dropdown Menu
-local dropdown = CreateFrame('Frame', 'RealUIUnitFramesDropDown', UIParent, 'UIDropDownMenuTemplate')
-
--- local function DisplayPetDismissPopUp()
-	-- StaticPopupDialogs["RUIPETDISMISSHELP"] = {
-		-- text = "Blizzard has "..ACTION_SPELL_AURA_REMOVED.." the ability to |cffffff20"..PET_ACTION_DISMISS.." "..PET_TYPE_PET.."|r via Custom "..UNITFRAME_LABEL..".\n\nPlease drag the |cffffff20"..PET_ACTION_DISMISS.." "..PET_TYPE_PET.."|r ability to your |cffffff20"..ACTIONBAR_LABEL.."|r from the |cffffff20"..SPELLBOOK.."|r.",
-		-- button1 = OKAY,
-		-- OnAccept = function() return end,
-		-- timeout = 0,
-		-- whileDead = true,
-		-- hideOnEscape = true,
-		-- notClosableByLogout = false,
-	-- }
-	-- StaticPopup_Show("RUIPETDISMISSHELP")
--- end
-
-local function DisplayFocusPopUp()
-	StaticPopupDialogs["RUIFOCUSHELP"] = {
-		text = "Use Shift+Click to set focus.",
-		button1 = OKAY,
-		OnAccept = function() return end,
-		timeout = 0,
-		whileDead = true,
-		hideOnEscape = true,
-		notClosableByLogout = false,
-	}
-	StaticPopup_Show("RUIFOCUSHELP")
-end
+local dropdown = CreateFrame("Frame", "RealUIUnitFramesDropDown", UIParent, "UIDropDownMenuTemplate")
 
 hooksecurefunc("UnitPopup_OnClick",function(self)
 	local button = self.value
@@ -3094,7 +3160,9 @@ hooksecurefunc("UnitPopup_OnClick",function(self)
 		if StaticPopup1 then
 			StaticPopup1:Hide()
 		end
-		DisplayFocusPopUp()
+		if db.misc.focusclick then
+			nibRealUI:Notification("RealUI", true, "Use "..db.misc.focuskey.."+click to set Focus.")
+		end
 	elseif button == "PET_DISMISS" then
 		if StaticPopup1 then
 			StaticPopup1:Hide()
@@ -3104,7 +3172,7 @@ end)
 
 local function menu(self)
 	dropdown:SetParent(self)
-	return ToggleDropDownMenu(1, nil, dropdown, 'cursor', 0, 0)
+	return ToggleDropDownMenu(1, nil, dropdown, "cursor", 0, 0)
 end
 
 local init = function(self)
@@ -3141,10 +3209,24 @@ local init = function(self)
 	end
 end
 
-UIDropDownMenu_Initialize(dropdown, init, 'MENU')
+UIDropDownMenu_Initialize(dropdown, init, "MENU")
 
 -- Frames
-local Shared = function(self, unit)
+local function CreateBD(parent)
+	local bg = CreateFrame("Frame", nil, parent)
+		bg:SetFrameStrata("LOW")
+		bg:SetPoint("BOTTOMRIGHT", parent, "BOTTOMRIGHT", 1, -1)
+		bg:SetPoint("TOPLEFT", parent, "TOPLEFT", -1, 1)
+		bg:SetBackdrop({bgFile = nibRealUI.media.textures.plain, edgeFile = nibRealUI.media.textures.plain, edgeSize = 1, insets = {top = 0, bottom = 0, left = 0, right = 0}})
+		bg:SetBackdropColor(0, 0, 0, db.overlay.bar.opacity.background)
+		bg:SetBackdropBorderColor(0, 0, 0, db.overlay.bar.opacity.surround)
+	return bg
+end
+
+local function Shared(self, unit)
+	unit = unit:match("(boss)%d?$") or unit
+	local font = db.overlay.font.standard and {nibRealUI.font.standard, db.overlay.font.size, "OUTLINE"} or nibRealUI.font.pixel1
+	
 	self.menu = menu
 	
 	self:SetScript("OnEnter", OnEnter)
@@ -3154,18 +3236,105 @@ local Shared = function(self, unit)
   	if db.misc.focusclick then
 		local ModKey = db.misc.focuskey
 		local MouseButton = 1
-		local key = ModKey .. '-type' .. (MouseButton or '')
-		if(self.unit == 'focus') then
-			self:SetAttribute(key, 'macro')
-			self:SetAttribute('macrotext', '/clearfocus')
+		local key = ModKey .. "-type" .. (MouseButton or "")
+		if(self.unit == "focus") then
+			self:SetAttribute(key, "macro")
+			self:SetAttribute("macrotext", "/clearfocus")
 		else
-			self:SetAttribute(key, 'focus')
+			self:SetAttribute(key, "focus")
 		end
+	end
+	
+	if (unit == "boss") then
+		local Health = CreateFrame("StatusBar", nil, self)
+		self.Health = Health
+			self.Health:SetPoint("TOPRIGHT", self, "TOPRIGHT", -30, -21 + db.boss.health.height - db.boss.health.y)
+			self.Health:SetPoint("TOPLEFT", self, "TOPLEFT", 1, -21 + db.boss.health.height - db.boss.health.y)
+			self.Health:SetPoint("BOTTOM", self, "BOTTOM", 0, 7 + db.boss.health.y)
+			Health:SetStatusBarTexture(nibRealUI.media.textures.plain)
+			Health:SetStatusBarColor(db.overlay.colors.health.hostile[1], db.overlay.colors.health.hostile[2], db.overlay.colors.health.hostile[3], db.overlay.bar.opacity.bar[2])
+			Health.frequentUpdates = true
+		
+		local healthBG = CreateBD(Health)
+			healthBG:SetFrameStrata("LOW")
+			
+		local HealthValue = Health:CreateFontString(nil, "OVERLAY")
+		self.HealthValue = HealthValue
+			HealthValue:SetPoint("BOTTOMRIGHT", Health, "TOPRIGHT", 1.5, 2.5)
+			HealthValue:SetFont(unpack(font))
+			HealthValue:SetJustifyH("RIGHT")
+		
+			self:Tag(self.HealthValue, "[realui:healthPercent]")
+		
+		local Name = Health:CreateFontString(nil, "OVERLAY")
+		self.Name = Name
+			Name:SetPoint("BOTTOMLEFT", Health, "TOPLEFT", 1.5, 2.5)
+			Name:SetFont(unpack(font))
+			Name:SetJustifyH("LEFT")
+			
+			self:Tag(self.Name, "[realui:name]")
+			
+		local Power = CreateFrame("StatusBar", nil, self)
+			self.Power = Power
+			Power:SetFrameStrata("MEDIUM")
+			Power:SetFrameLevel(6)
+			Power:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", -34, 2 + db.boss.power.y)
+			Power:SetPoint("BOTTOMLEFT", self, "BOTTOMLEFT", 69, 2 + db.boss.power.y)
+			Power:SetPoint("TOP", Health, "BOTTOM", 0, -5 + db.boss.power.height + db.boss.power.y)
+			Power:SetStatusBarTexture(nibRealUI.media.textures.plain)
+			Power:SetStatusBarColor(db.overlay.colors.power["MANA"][1], db.overlay.colors.power["MANA"][2], db.overlay.colors.power["MANA"][3], db.overlay.bar.opacity.bar[2])
+			-- Power.colorPower = true
+			Power.PostUpdate = function(bar, unit, min, max)
+				bar:SetShown(max > 0)
+			end
+		
+		local powerBG = CreateBD(Power)
+			powerBG:SetFrameStrata("MEDIUM")
+			powerBG:SetFrameLevel(5)
+			
+		local AltPowerBar = CreateFrame("StatusBar", nil, self)
+		self.AltPowerBar = AltPowerBar
+			AltPowerBar:SetFrameStrata("MEDIUM")
+			AltPowerBar:SetFrameLevel(6)
+			AltPowerBar:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", -96, 2 + db.boss.power.y)
+			AltPowerBar:SetPoint("BOTTOMLEFT", self, "BOTTOMLEFT", 5, 2 + db.boss.power.y)
+			AltPowerBar:SetPoint("TOP", Health, "BOTTOM", 0, -5 + db.boss.power.height + db.boss.power.y)
+			AltPowerBar:SetStatusBarTexture(nibRealUI.media.textures.plain)
+			AltPowerBar:SetStatusBarColor(db.overlay.colors.power["ALTERNATE"][1], db.overlay.colors.power["ALTERNATE"][2], db.overlay.colors.power["ALTERNATE"][3], db.overlay.bar.opacity.bar[2])
+		
+		local altpowerBG = CreateBD(AltPowerBar)
+			altpowerBG:SetFrameStrata("MEDIUM")
+			altpowerBG:SetFrameLevel(5)
+		
+		local Portrait = CreateFrame("PlayerModel", nil, self)
+		self.Portrait = Portrait
+			Portrait:SetWidth(26)
+			Portrait:SetHeight(25)
+			Portrait:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", -1, 2)
+			
+		local portraitBG = CreateBD(Portrait)
+			portraitBG:SetFrameStrata("LOW")
+			portraitBG:SetPoint("BOTTOMLEFT", Portrait, "BOTTOMLEFT", -1, -2)
+			portraitBG:SetBackdropColor(0, 0, 0, db.overlay.bar.opacity.status)
+		
+		local Auras = CreateFrame("Frame", nil, self)
+		self.Auras = Auras
+			Auras:SetPoint("BOTTOMRIGHT", self, "BOTTOMLEFT", db.boss.auras.size * 3, 1)
+			Auras:SetWidth((db.boss.auras.size + 1) * 4)
+			Auras:SetHeight(db.boss.auras.size)
+			Auras["size"] = db.boss.auras.size
+			Auras["spacing"] = 1
+			Auras["numBuffs"] = 3
+			Auras["numDebuffs"] = 3
+			Auras["growth-x"] = "LEFT"
+			Auras.CustomFilter = FilterBossAuras
+			-- Auras.showStealableAuras = true
 	end
 end
 
 function UnitFrames:InitializeLayout()
 	ndbc.resolution = ndbc.resolution
+	oUF:RegisterStyle("RealUI", Shared)
 	
 	local UnitSpecific = {
 		player = function(self, ...)
@@ -3198,25 +3367,23 @@ function UnitFrames:InitializeLayout()
 			self:SetSize(unit_sizes[ndbc.resolution].targettarget.width, unit_sizes[ndbc.resolution].targettarget.height)
 		end,
 		
-		-- tank = function(self, ...)
-			-- Shared(self, ...)
-			-- self:SetSize(unit_sizes[ndbc.resolution].tank.width, unit_sizes[ndbc.resolution].tank.height)
-		-- end,
+		boss = function(self, ...)
+			Shared(self, ...)
+			self:SetSize(160, 28)
+		end
 	}
 
-	oUF:RegisterStyle("RealUI", Shared)
-
 	for unit,layout in next, UnitSpecific do
-		oUF:RegisterStyle('RealUI - ' .. unit:gsub("^%l", string.upper), layout)
+		oUF:RegisterStyle("RealUI - " .. unit:gsub("^%l", string.upper), layout)
 	end
 
-	local spawnHelper = function(self, unit, ...)
+	local function spawnHelper(self, unit, ...)
 		if (UnitSpecific[unit]) then
-			self:SetActiveStyle('RealUI - ' .. unit:gsub("^%l", string.upper))
-		elseif(UnitSpecific[unit:match('[^%d]+')]) then 
-			self:SetActiveStyle('RealUI - ' .. unit:match('[^%d]+'):gsub("^%l", string.upper))
+			self:SetActiveStyle("RealUI - " .. unit:gsub("^%l", string.upper))
+		elseif(UnitSpecific[unit:match("[^%d]+")]) then 
+			self:SetActiveStyle("RealUI - " .. unit:match("[^%d]+"):gsub("^%l", string.upper))
 		else
-			self:SetActiveStyle'RealUI'
+			self:SetActiveStyle("RealUI")
 		end
 		
 		local object = self:Spawn(unit)
@@ -3225,17 +3392,48 @@ function UnitFrames:InitializeLayout()
 	end
 
 	oUF:Factory(function(self)
-		spawnHelper(self, "player", 		"RIGHT", "RealUIPositionersUnitFrames", "LEFT",	db.positions[ndbc.resolution].player.x, 			db.positions[ndbc.resolution].player.y)
+		spawnHelper(self, "player", 		"RIGHT", "RealUIPositionersUnitFrames", "LEFT",		db.positions[ndbc.resolution].player.x, 		db.positions[ndbc.resolution].player.y)
 		spawnHelper(self, "pet", 			"RIGHT", "oUF_RealUIPlayer", 						db.positions[ndbc.resolution].pet.x, 			db.positions[ndbc.resolution].pet.y)
 		spawnHelper(self, "focus", 			"RIGHT", "oUF_RealUIPlayer", 						db.positions[ndbc.resolution].focus.x, 			db.positions[ndbc.resolution].focus.y)
 		spawnHelper(self, "focustarget", 	"RIGHT", "oUF_RealUIFocus", 						db.positions[ndbc.resolution].focustarget.x, 	db.positions[ndbc.resolution].focustarget.y)
-		spawnHelper(self, "target", 		"LEFT", "RealUIPositionersUnitFrames", "RIGHT",	db.positions[ndbc.resolution].target.x, 			db.positions[ndbc.resolution].target.y)
+		spawnHelper(self, "target", 		"LEFT", "RealUIPositionersUnitFrames", "RIGHT",		db.positions[ndbc.resolution].target.x, 		db.positions[ndbc.resolution].target.y)
 		spawnHelper(self, "targettarget", 	"LEFT", "oUF_RealUITarget", 						db.positions[ndbc.resolution].targettarget.x, 	db.positions[ndbc.resolution].targettarget.y)
+		
+		for b = 1, MAX_BOSS_FRAMES do
+			local boss = spawnHelper(self, "boss"..b, "TOPRIGHT", "RealUIPositionersBossFrames", "TOPRIGHT", db.positions[ndbc.resolution].boss.x, db.positions[ndbc.resolution].boss.y)
+			if (b ~= 1) then
+				boss:SetPoint("TOP", _G["oUF_RealUIBoss" .. b - 1], "BOTTOM", 0, -db.boss.gap)
+			end
+
+			local blizzBF = _G["Boss" .. b .. "TargetFrame"]
+			blizzBF:UnregisterAllEvents()
+			blizzBF:Hide()
+		end
 		
 		UnitFrames:InitializeOverlay()
 	end)
 end
 
+function RealUIUFBossConfig(toggle, unit)
+	for b = 1, MAX_BOSS_FRAMES do
+		local f = _G["oUF_RealUIBoss" .. b]
+		if toggle then
+			if not f.__realunit then
+				f.__realunit = f:GetAttribute("unit") or f.unit
+				f:SetAttribute("unit", unit)
+				f.unit = unit
+				f:Show()
+			end
+		else
+			if f.__realunit then
+				f:SetAttribute("unit", f.__realunit)
+				f.unit = f.__realunit
+				f.__realunit = nil
+				f:Hide()
+			end
+		end
+	end
+end
 
 ----------------------------
 ------ Initialization ------
@@ -3264,27 +3462,48 @@ function UnitFrames:OnInitialize()
 				arena = false,
 				tank = false,
 			},
+			boss = {
+				gap = 1,
+				health = {
+					y = 0,
+					height = 5,
+				},
+				power = {
+					y = 2,
+					height = 4,
+				},
+				auras = {
+					size = 22,
+				},
+			},
 			positions = {
 				[1] = {
 					player = 		{ x = 0,	y = 0},		-- Anchored to Positioner
 					pet = 			{ x = 11, 	y = 0},		-- Anchored to Player
 					focus = 		{ x = 0,	y = -51},	-- Anchored to Player
 					focustarget = 	{ x = 0,	y = -10},	-- Anchored to Focus
-					target = 		{ x = 0,	y = 0},	-- Anchored to Positioner
+					target = 		{ x = 0,	y = 0},		-- Anchored to Positioner
 					targettarget = 	{ x = 0,	y = -51},	-- Anchored to Target
-					-- tank = 			{ x = 0,	y = -10},	-- Anchored to TargetTarget
+					boss =			{ x = 0,	y = 0},		-- Anchored to Positioner
+					-- tank = 		{ x = 0,	y = -10},	-- Anchored to TargetTarget
 				},
 				[2] = {
 					player = 		{ x = 0,	y = 0},		-- Anchored to Positioner
 					pet = 			{ x = 11, 	y = 0},		-- Anchored to Player
 					focus = 		{ x = 0,	y = -51},	-- Anchored to Player
 					focustarget = 	{ x = 0,	y = -10},	-- Anchored to Focus
-					target = 		{ x = 0,	y = 0},	-- Anchored to Positioner
+					target = 		{ x = 0,	y = 0},		-- Anchored to Positioner
 					targettarget = 	{ x = 0,	y = -51},	-- Anchored to Target
-					-- tank = 			{ x = 0,	y = -10},	-- Anchored to TargetTarget
+					boss =			{ x = 0,	y = 0},		-- Anchored to Positioner
+					-- tank = 		{ x = 0,	y = -10},	-- Anchored to TargetTarget
 				},
 			},
 			overlay = {
+				font = {
+					standard = false,
+					size = 12,
+					yoffset = -1,
+				},
 				bar = {
 					opacity = {
 						surround = 		1,				-- Border of objects
@@ -3313,23 +3532,24 @@ function UnitFrames:OnInitialize()
 				},
 				colors = {
 					health = {
-						normal = 	{0.7, 0.1, 0.1},
-						hostile = 	{0.7, 0.1, 0.1},
-						neutral = 	{0.75, 0.75, 0},
-						friendly = 	{0.1, 0.7, 0.25},
+						normal = 	{0.70, 0.10, 0.10},
+						hostile = 	{0.70, 0.10, 0.10},
+						neutral = 	{0.75, 0.75, 0.00},
+						friendly = 	{0.10, 0.70, 0.25},
 					},
 					power = {
-						["MANA"] = 			{0.00, 0.00, 1.00},
-						["RAGE"] = 			{1.00, 0.00, 0.00},
+						["MANA"] = 			{0.00, 0.45, 0.80},
+						["RAGE"] = 			{0.85, 0.15, 0.15},
 						["FOCUS"] = 		{1.00, 0.50, 0.25},
-						["ENERGY"] = 		{1.00, 1.00, 0.00},
-						["LIGHT_FORCE"] = 	{0.71, 1.0, 0.92},	--chi
+						["ENERGY"] = 		{0.95, 0.85, 0.10},
+						["CHI"] =		 	{0.71, 1.00, 0.92},
 						["RUNES"] = 		{0.50, 0.50, 0.50},
 						["RUNIC_POWER"] = 	{0.00, 0.82, 1.00},
 						["SOUL_SHARDS"] = 	{0.50, 0.32, 0.55},
 						["HOLY_POWER"] = 	{0.95, 0.90, 0.60},
 						["AMMOSLOT"] = 		{0.80, 0.60, 0.00},
-						["FUEL"] = 			{0.0, 0.55, 0.5},
+						["FUEL"] = 			{0.00, 0.55, 0.50},
+						["ALTERNATE"] =		{0.00, 0.85, 0.85},
 					},
 					status = {
 						damage = 		{1, 0, 0},
@@ -3357,5 +3577,8 @@ function UnitFrames:OnInitialize()
 end
 
 function UnitFrames:OnEnable()
+	colorStrings.health = nibRealUI:ColorTableToStr(db.overlay.colors.health.normal)
+	colorStrings.mana = nibRealUI:ColorTableToStr(db.overlay.colors.power["MANA"])
+	
 	UnitFrames:InitializeLayout()
 end

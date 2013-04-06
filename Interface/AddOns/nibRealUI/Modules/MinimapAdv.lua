@@ -678,11 +678,11 @@ function MinimapAdv:UpdateInfoPosition()
 	
 	local fontSize
 	if ndbc.resolution == 1 then
-		Font2:SetFont(RealUIFontTiny[1], RealUIFontTiny[2] / scale, RealUIFontTiny[3])
-		fontSize = RealUIFontTiny[2]
+		Font2:SetFont(nibRealUI.font.pixeltiny[1], nibRealUI.font.pixeltiny[2] / scale, nibRealUI.font.pixeltiny[3])
+		fontSize = nibRealUI.font.pixeltiny[2]
 	else
-		Font2:SetFont(RealUIFontLarge[1], RealUIFontLarge[2] / scale, RealUIFontLarge[3])
-		fontSize = RealUIFontLarge[2]
+		Font2:SetFont(nibRealUI.font.pixellarge[1], nibRealUI.font.pixellarge[2] / scale, nibRealUI.font.pixellarge[3])
+		fontSize = nibRealUI.font.pixellarge[2]
 	end
 	
 	local iHeight = (fontSize + db.information.gap) / scale
@@ -1093,6 +1093,7 @@ end
 -- Select Closest POI
 function MinimapAdv:SelectClosestPOI()
 	if not db.poi.enabled then return end
+	if IsAddOnLoaded("Carbonite") or IsAddOnLoaded("DugisGuideViewerZ") then return end 
 	
 	local closest = self:ClosestPOI()
 	if closest then
@@ -1148,6 +1149,7 @@ end
 -- Update all POIs
 function MinimapAdv:POIUpdate(...)
 	if ( (not db.poi.enabled) or (ExpandedState == 1 and db.expand.extras.hidepoi) ) then return end
+	if IsAddOnLoaded("Carbonite") or IsAddOnLoaded("DugisGuideViewerZ") then return end
 	
 	self:RemoveAllPOIs()
 	
@@ -1247,7 +1249,7 @@ function MinimapAdv:InitializePOI()
 end
 
 function MinimapAdv:UpdatePOIEnabled()
-	if db.poi.enabled then
+	if db.poi.enabled and not(IsAddOnLoaded("Carbonite") or IsAddOnLoaded("DugisGuideViewerZ")) then
 		self:POIUpdate()
 		self:InitializePOI()
 	else
@@ -1847,13 +1849,13 @@ end
 function MinimapAdv:UpdateFonts()
 	-- Retrieve Font variables
 	local FontSize
-	Font1:SetFont(RealUIFontTiny[1], RealUIFontTiny[2], RealUIFontTiny[3])
+	Font1:SetFont(nibRealUI.font.pixeltiny[1], nibRealUI.font.pixeltiny[2], nibRealUI.font.pixeltiny[3])
 	if ndbc.resolution == 1 then
-		Font2:SetFont(RealUIFontTiny[1], RealUIFontTiny[2], RealUIFontTiny[3])
-		FontSize = RealUIFontTiny[2]
+		Font2:SetFont(nibRealUI.font.pixeltiny[1], nibRealUI.font.pixeltiny[2], nibRealUI.font.pixeltiny[3])
+		FontSize = nibRealUI.font.pixeltiny[2]
 	else
-		Font2:SetFont(RealUIFontLarge[1], RealUIFontLarge[2], RealUIFontLarge[3])
-		FontSize = RealUIFontLarge[2]
+		Font2:SetFont(nibRealUI.font.pixellarge[1], nibRealUI.font.pixellarge[2], nibRealUI.font.pixellarge[3])
+		FontSize = nibRealUI.font.pixellarge[2]
 	end
 
 	-- Set Info font

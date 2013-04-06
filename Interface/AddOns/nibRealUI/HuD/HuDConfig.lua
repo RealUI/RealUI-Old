@@ -69,6 +69,7 @@ function RealUIHuDTestMode(toggle)
 	else
 		HuDConfig.options.gridBox:Hide()
 	end
+	RealUIUFBossConfig(toggle, "player")
 end
 
 function RealUIHuDCloseConfig()
@@ -621,11 +622,10 @@ function HuDConfig:ApplyMSBTConfig()
 	self.registeredTimers["MSBT"] = nil
 end
 
-function HuDConfig:RegisterForUpdate(addon, ...)
+function HuDConfig:RegisterForUpdate(addon)
 	self.registeredUpdates[addon] = true
 	if not self.registeredTimers[addon] then
-		local interval = ... or 0.05
-		self.registeredTimers[addon] = self:ScheduleRepeatingTimer("Apply"..addon.."Config", interval)
+		self.registeredTimers[addon] = self:ScheduleRepeatingTimer("Apply"..addon.."Config", 0.1)
 	end
 end
 

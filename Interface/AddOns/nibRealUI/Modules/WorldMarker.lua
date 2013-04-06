@@ -46,7 +46,7 @@ local options
 local function GetOptions()
 	if not options then options = {
 		type = "group",
-		name = "WorldMarker",
+		name = "World Marker",
 		desc = "Quick access to World Markers.",
 		childGroups = "tab",
 		arg = MODNAME,
@@ -54,7 +54,7 @@ local function GetOptions()
 		args = {
 			header = {
 				type = "header",
-				name = "WorldMarker",
+				name = "World Marker",
 				order = 10,
 			},
 			desc = {
@@ -76,6 +76,59 @@ local function GetOptions()
 					end
 				end,
 				order = 30,
+			},
+			gap1 = {
+				name = " ",
+				type = "description",
+				order = 31,
+			},
+			visibility = {
+				name = "Show the World Marker in..",
+				type = "group",
+				disabled = function() return not nibRealUI:GetModuleEnabled(MODNAME) end,
+				order = 40,
+				args = {
+					arena = {
+						type = "toggle",
+						name = "Arenas",
+						get = function(info) return db.visibility.arena end,
+						set = function(info, value) 
+							db.visibility.arena = value
+							WorldMarker:UpdateVisibility()
+						end,
+						order = 10,
+					},
+					pvp = {
+						type = "toggle",
+						name = "Battlegrounds",
+						get = function(info) return db.visibility.pvp end,
+						set = function(info, value)
+							db.visibility.pvp = value
+							WorldMarker:UpdateVisibility()
+						end,
+						order = 20,
+					},
+					party = {
+						type = "toggle",
+						name = "5 Man Dungeons",
+						get = function(info) return db.visibility.party end,
+						set = function(info, value) 
+							db.visibility.party = value
+							WorldMarker:UpdateVisibility()
+						end,
+						order = 30,
+					},
+					raid = {
+						type = "toggle",
+						name = "Raid Dungeons",
+						get = function(info) return db.visibility.raid end,
+						set = function(info, value) 
+							db.visibility.raid = value 
+							WorldMarker:UpdateVisibility()
+						end,
+						order = 40,
+					},
+				},
 			},
 		},
 	}
@@ -110,7 +163,24 @@ function WorldMarker:UpdateVisibility()
 			NeedRefreshed = true
 		else
 			-- print("uv", 4)
-			if ( (GetNumGroupMembers() > 0) and (UnitIsGroupLeader("player") or UnitIsGroupAssistant("player")) and nibRealUI:GetModuleEnabled(MODNAME) ) then
+			local Inst, InstType = IsInInstance()
+			local Hide = false
+			if not nibRealUI:GetModuleEnabled(MODNAME) then Hide = true end
+			if Inst and not(Hide) then
+				if (InstType == "pvp" and db.visibility.pvp) then			-- Battlegrounds
+					Hide = true
+				elseif (InstType == "arena" and db.visibility.arena) then	-- Arena
+					Hide = true
+				elseif (InstType == "party" and db.visibility.party) then	-- 5 Man Dungeons
+					Hide = true
+				elseif (InstType == "raid" and db.visibility.raid) then		-- Raid Dungeons
+					Hide = true
+				end
+			end
+			if not(Hide) and not( (GetNumGroupMembers() > 0) and (UnitIsGroupLeader("player") or UnitIsGroupAssistant("player")) ) then
+				Hide = true
+			end
+			if not(Hide) then
 				-- print("uv", 5)
 				-- Viable to use World Markers
 				if ( not WMF.Parent:IsShown() and not InCombatLockdown() ) then
@@ -129,25 +199,17 @@ function WorldMarker:UpdateVisibility()
 	end
 end
 
--- Fired when Exiting / Entering Combat
-local LockdownTimer = CreateFrame("Frame")
-local LockdownTimer_Elapsed = 0
-LockdownTimer:Hide()
-LockdownTimer:SetScript("OnUpdate", function(self, elapsed)
-	LockdownTimer_Elapsed = LockdownTimer_Elapsed + elapsed
-	if LockdownTimer_Elapsed >= 2 then
-		if NeedRefreshed then
-			WorldMarker:RefreshMod()
-		else
-			WorldMarker:UpdateVisibility()
-		end
-		LockdownTimer_Elapsed = 0
-		LockdownTimer:Hide()
+function WorldMarker_oocUpdate()
+	if NeedRefreshed then
+		WorldMarker:RefreshMod()
+	else
+		WorldMarker:UpdateVisibility()
 	end
-end)
-
+end
 function WorldMarker:UpdateLockdown(...)
-	LockdownTimer:Show()
+	nibRealUI:RegisterLockdownUpdate("WorldMarker_oocUpdate", function()
+		WorldMarker_oocUpdate()
+	end)
 end
 
 function WorldMarker:HighlightUpdate(self)
@@ -269,7 +331,14 @@ end
 function WorldMarker:OnInitialize()
 	self.db = nibRealUI.db:RegisterNamespace(MODNAME)
 	self.db:RegisterDefaults({
-		profile = {},
+		profile = {
+			visibility = {
+				pvp = false,
+				arena = false,
+				party = false,
+				raid = true,
+			},
+		},
 	})
 	db = self.db.profile
 	

@@ -157,6 +157,22 @@ function AlertFrameMove:AlertFrame_SetGuildChallengeAnchors(alertAnchor)
 	end
 end
 
+local brfMoving = false
+local function BonusRollFrame_SetPoint()
+	if brfMoving then return end
+	brfMoving = true
+	BonusRollFrame:ClearAllPoints()
+	BonusRollFrame:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
+	brfMoving = false
+end
+
+local function BonusRollFrame_Show()
+	brfMoving = true
+	BonusRollFrame:ClearAllPoints()
+	BonusRollFrame:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
+	brfMoving = false
+end
+
 function AlertFrameMove:AlertMovers()
 	self:SecureHook('AlertFrame_FixAnchors', PostAlertMove)
 	self:SecureHook('AlertFrame_SetLootAnchors')
@@ -168,6 +184,9 @@ function AlertFrameMove:AlertMovers()
 	self:SecureHook('AlertFrame_SetDungeonCompletionAnchors')
 	self:SecureHook('AlertFrame_SetScenarioAnchors')
 	self:SecureHook('AlertFrame_SetGuildChallengeAnchors')
+	
+	hooksecurefunc(BonusRollFrame, 'SetPoint', BonusRollFrame_SetPoint)
+	hooksecurefunc(BonusRollFrame, 'Show', BonusRollFrame_Show)
 	
 	UIPARENT_MANAGED_FRAME_POSITIONS["GroupLootContainer"] = nil
 end

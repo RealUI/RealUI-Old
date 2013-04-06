@@ -195,7 +195,7 @@ local function SellJunk()
 	
 	if Profit > 0 then
 		local g, s, c = math.floor(Profit / 10000) or 0, math.floor((Profit%10000) / 100) or 0, Profit%100
-		print("Vendor trash sold: |cff00a956+|r |cffffffff"..g..GOLD_AMOUNT..s..SILVER_AMOUNT..c..COPPER_AMOUNT.."|r")
+		print("Vendor trash sold: |cff00a956+|r |cffffffff"..g.."\124TInterface\\MoneyFrame\\UI-GoldIcon:0:0:2:0\124t "..s.."\124TInterface\\MoneyFrame\\UI-SilverIcon:0:0:2:0\124t "..c.."\124TInterface\\MoneyFrame\\UI-CopperIcon:0:0:2:0\124t".."|r")
 	end
 end
 JS:SetScript("OnEvent", function() SellJunk() end)
@@ -351,6 +351,9 @@ local resetNewItems = function(self)
 		end
 	end
 	cbNivaya:UpdateBags()
+end
+function cbNivResetNew()
+	resetNewItems()
 end
 
 local UpdateDimensions = function(self)
@@ -580,17 +583,17 @@ function MyContainer:OnCreate(name, settings)
 	local background = CreateFrame("Frame", nil, self)
 	background:SetBackdrop{
 		bgFile = Textures.Background,
-		edgeFile = Textures.Border,
-		tile = true, tileSize = 16, edgeSize = 3,
-		insets = {left = 4, right = 4, top = 4, bottom = 4},
+		edgeFile = Textures.Background,
+		tile = true, tileSize = 16, edgeSize = 1,
+		insets = {left = 1, right = 1, top = 1, bottom = 1},
 	}
 	background:SetFrameStrata("HIGH")
 	background:SetFrameLevel(1)
 	background:SetBackdropColor(color_rb,color_gb,color_bb,alpha_fb)
 	background:SetBackdropBorderColor(0, 0, 0, 1)
 
-	background:SetPoint("TOPLEFT", -6, 6)
-	background:SetPoint("BOTTOMRIGHT", 6, -6)
+	background:SetPoint("TOPLEFT", -4, 4)
+	background:SetPoint("BOTTOMRIGHT", 4, -4)
 
 	-- Caption, close button
 	local caption = background:CreateFontString(background, "OVERLAY", nil)
@@ -600,16 +603,16 @@ function MyContainer:OnCreate(name, settings)
 		if not t then t = self.name end
 		if self.Name == "cBniv_ItemSets" then t=ItemSetCaption..t end
 		caption:SetText(t)
-		caption:SetPoint("TOPLEFT", 10.5, -10.5)
+		caption:SetPoint("TOPLEFT", 7.5, -7.5)
 		self.Caption = caption
 		
 		if tBag or tBank then
 			local close = CreateFrame("Button", nil, self, "UIPanelCloseButton")
 			if Aurora then
 				local F = Aurora[1]
-				F.ReskinClose(close, "TOPRIGHT", self, "TOPRIGHT", -1, -1)
+				F.ReskinClose(close, "TOPRIGHT", self, "TOPRIGHT", 1, 1)
 			else
-				close:SetPoint("TOPRIGHT", 7, 6)
+				close:SetPoint("TOPRIGHT", 8, 8)
 			end
 			close:SetScript("OnClick", function(self) if cbNivaya:AtBank() then CloseBankFrame() else CloseAllBags() end end)
 		end
@@ -848,7 +851,7 @@ function MyContainer:OnCreate(name, settings)
 		
 		-- The money display
 		local money = self:SpawnPlugin("TagDisplay", "[money]", self)
-		money:SetPoint("TOPRIGHT", self, -26.5, -4.5)
+		money:SetPoint("TOPRIGHT", self, -25.5, -2.5)
 		money:SetFont(unpack(font))
 		money:SetJustifyH("RIGHT")
 		money:SetShadowColor(0, 0, 0, 0)

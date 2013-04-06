@@ -356,7 +356,11 @@ function Timer.OnSizeChanged(self, width, height)
 	if fontScale < db.minScale then
 		self:Hide()
 	else
-		self.text:SetFont(nibRealUI.font.standard, fontScale * db.fontSize, 'OUTLINE')
+		if self.usePixel then
+			self.text:SetFont(nibRealUI.font.pixel1[1], nibRealUI.font.pixel1[2], nibRealUI.font.pixel1[3])
+		else
+			self.text:SetFont(nibRealUI.font.standard, fontScale * db.fontSize, 'OUTLINE')
+		end
 		if self.enabled then
 			Timer.ForceUpdate(self)
 		end
@@ -381,9 +385,15 @@ function Timer.Create(cd)
 	timer.updater = updater	
 
 	local text = timer:CreateFontString(nil, 'OVERLAY')
-	text:SetPoint('CENTER', 0, 0)
-	text:SetFont(nibRealUI.font.standard, db.fontSize, 'OUTLINE')
 	timer.text = text
+	if cd.usePixel then
+		timer.usePixel = true
+		text:SetPoint('BOTTOMLEFT', 0.5, 0.5)
+		text:SetFont(nibRealUI.font.pixel1[1], nibRealUI.font.pixel1[2], nibRealUI.font.pixel1[3])
+	else
+		text:SetPoint('CENTER', 0, 0)
+		text:SetFont(nibRealUI.font.standard, db.fontSize, 'OUTLINE')
+	end
 
 	Timer.OnSizeChanged(timer, scaler:GetSize())
 	scaler:SetScript('OnSizeChanged', function(self, ...) Timer.OnSizeChanged(timer, ...) end)

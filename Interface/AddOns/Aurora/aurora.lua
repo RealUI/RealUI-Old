@@ -45,7 +45,7 @@ C.defaults = {
 	["chatBubbles"] = false,
 	["enableFont"] = false,
 	["gradientAlpha"] = {
-		"VERTICAL", 0.02, 0.02, 0.02, 0.7, 0.02, 0.02, 0.02, 0.7
+		"VERTICAL", 0.09, 0.09, 0.09, 1, 0.09, 0.09, 0.09, 1
 	},
 	["loot"] = true,
 	["useCustomColour"] = false,
@@ -75,8 +75,8 @@ F.CreateBD = function(f, a)
 		edgeFile = C.media.backdrop,
 		edgeSize = 1,
 	})
-	f:SetBackdropColor(0.025, 0.025, 0.025, a or alpha)
-	f:SetBackdropBorderColor(0.025, 0.025, 0.025)
+	f:SetBackdropColor(0.04, 0.04, 0.04, a or alpha)
+	f:SetBackdropBorderColor(0, 0, 0)
 	if not a then tinsert(C.frames, f) end
 end
 
@@ -88,7 +88,7 @@ F.CreateBG = function(frame)
 	bg:SetPoint("TOPLEFT", frame, -1, 1)
 	bg:SetPoint("BOTTOMRIGHT", frame, 1, -1)
 	bg:SetTexture(C.media.backdrop)
-	bg:SetVertexColor(0.025, 0.025, 0.025)
+	bg:SetVertexColor(0.04, 0.04, 0.04)
 
 	return bg
 end
@@ -98,12 +98,12 @@ F.CreateSD = function(parent, size, r, g, b, alpha, offset)
 	sd.size = size or 5
 	sd.offset = offset or 0
 	sd:SetBackdrop({
-		edgeFile = C.media.glow,
+		edgeFile = nil,--C.media.glow,
 		edgeSize = sd.size,
 	})
 	sd:SetPoint("TOPLEFT", parent, -sd.size - 1 - sd.offset, sd.size + 1 + sd.offset)
 	sd:SetPoint("BOTTOMRIGHT", parent, sd.size + 1 + sd.offset, -sd.size - 1 - sd.offset)
-	sd:SetBackdropBorderColor(r or 0.025, g or 0.025, b or 0.025)
+	sd:SetBackdropBorderColor(r or 0, g or 0, b or 0)
 	sd:SetAlpha(alpha or 1)
 end
 

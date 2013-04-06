@@ -97,13 +97,8 @@ local function SetValues(row, name, class, perc)
 end
 
 local function ToggleRow(row, state)
-	if state then
-		ThreatMeter.Names[row]:Show()
-		ThreatMeter.Percent[row]:Show()
-	else
-		ThreatMeter.Names[row]:Hide()
-		ThreatMeter.Percent[row]:Hide()
-	end
+	ThreatMeter.Names[row]:SetShown(state)
+	ThreatMeter.Percent[row]:SetShown(state)
 end
 
 function ThreatMeter:UpdateBars()
@@ -191,39 +186,38 @@ function ThreatMeter:CreateFrames()
 	local SD = nibRealUI:GetModule("StatDisplay")
 	
 	self.ThreatFrame = CreateFrame("Frame", "RealUI_ThreatMeter", RealUIPositionersBottomInfo)
-	if SD and nibRealUI:GetModuleEnabled("StatDisplay") then
-		self.ThreatFrame:SetPoint("TOPRIGHT", RealUIPositionersBottomInfo, "TOPRIGHT", -4, ndbc.resolution == 1 and -2 or -3)
-		self.ThreatFrame:SetPoint("BOTTOMLEFT", RealUIPositionersBottomInfo, "BOTTOM", 0, 3)
-	else
-		self.ThreatFrame:SetPoint("TOPRIGHT", RealUIPositionersBottomInfo, "TOPRIGHT", -4, ndbc.resolution == 1 and -2 or -3)
-		self.ThreatFrame:SetPoint("BOTTOMLEFT", RealUIPositionersBottomInfo, "BOTTOMLEFT", 4, 3)
-	end
-	self.ThreatFrame:SetHeight(ndbc.resolution == 1 and 27 or 28)
+		if SD and nibRealUI:GetModuleEnabled("StatDisplay") then
+			self.ThreatFrame:SetPoint("TOPRIGHT", RealUIPositionersBottomInfo, "TOPRIGHT", -4, ndbc.resolution == 1 and -2 or -3)
+			self.ThreatFrame:SetPoint("BOTTOMLEFT", RealUIPositionersBottomInfo, "BOTTOM", 0, 3)
+		else
+			self.ThreatFrame:SetPoint("TOPRIGHT", RealUIPositionersBottomInfo, "TOPRIGHT", -4, ndbc.resolution == 1 and -2 or -3)
+			self.ThreatFrame:SetPoint("BOTTOMLEFT", RealUIPositionersBottomInfo, "BOTTOMLEFT", 4, 3)
+		end
+		self.ThreatFrame:SetHeight(ndbc.resolution == 1 and 27 or 28)
 	
 	local font = db.smallfont and nibRealUI.font.pixeltiny or nibRealUI.font.pixel1
+	
 	self.Names = {}
 	self.Names[1] = self.ThreatFrame:CreateFontString(nil, "OVERLAY")
-	self.Names[1]:SetPoint("TOPLEFT", self.ThreatFrame, "TOPLEFT", 0.5, -0.5)
-	self.Names[1]:SetFont(unpack(font))
-	self.Names[1]:SetTextColor(1, 1, 1, 1)
-	
+		self.Names[1]:SetPoint("TOPLEFT", self.ThreatFrame, "TOPLEFT", 0.5, -0.5)
+		self.Names[1]:SetFont(unpack(font))
+		self.Names[1]:SetTextColor(1, 1, 1, 1)
 	self.Names[2] = self.ThreatFrame:CreateFontString(nil, "OVERLAY")
-	self.Names[2]:SetPoint("TOPLEFT", self.ThreatFrame, "TOPLEFT", 0.5, ndbc.resolution == 1 and -13.5 or -14.5)
-	self.Names[2]:SetFont(unpack(font))
-	self.Names[2]:SetTextColor(1, 1, 1, 1)
+		self.Names[2]:SetPoint("TOPLEFT", self.ThreatFrame, "TOPLEFT", 0.5, ndbc.resolution == 1 and -13.5 or -14.5)
+		self.Names[2]:SetFont(unpack(font))
+		self.Names[2]:SetTextColor(1, 1, 1, 1)
 	
 	self.Percent = {}
 	self.Percent[1] = self.ThreatFrame:CreateFontString(nil, "OVERLAY")
-	self.Percent[1]:SetPoint("TOPRIGHT", self.ThreatFrame, "TOPRIGHT", 0.5, -0.5)
-	self.Percent[1]:SetFont(unpack(font))
-	self.Percent[1]:SetJustifyH("RIGHT")
-	self.Percent[1]:SetTextColor(1, 1, 1, 1)
-	
+		self.Percent[1]:SetPoint("TOPRIGHT", self.ThreatFrame, "TOPRIGHT", 0.5, -0.5)
+		self.Percent[1]:SetFont(unpack(font))
+		self.Percent[1]:SetJustifyH("RIGHT")
+		self.Percent[1]:SetTextColor(1, 1, 1, 1)
 	self.Percent[2] = self.ThreatFrame:CreateFontString(nil, "OVERLAY")
-	self.Percent[2]:SetPoint("TOPRIGHT", self.ThreatFrame, "TOPRIGHT", 0.5, ndbc.resolution == 1 and -13.5 or -14.5)
-	self.Percent[2]:SetFont(unpack(font))
-	self.Percent[2]:SetJustifyH("RIGHT")
-	self.Percent[2]:SetTextColor(1, 1, 1, 1)
+		self.Percent[2]:SetPoint("TOPRIGHT", self.ThreatFrame, "TOPRIGHT", 0.5, ndbc.resolution == 1 and -13.5 or -14.5)
+		self.Percent[2]:SetFont(unpack(font))
+		self.Percent[2]:SetJustifyH("RIGHT")
+		self.Percent[2]:SetTextColor(1, 1, 1, 1)
 	
 	ToggleRow(1, false)
 	ToggleRow(2, false)

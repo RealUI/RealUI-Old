@@ -72,13 +72,13 @@ function IceCore.prototype:SetupDefaults()
 			barPreset = defaultPreset,
 			
 			fontFamily1 = "pixel_lr_small",
-			fontFamilyLarge1 = "pixel_lr_small",
+			fontFamilyLarge1 = "pixel_numbers",
 			fontSize1 = 8,
 			fontSizeLarge1 = 16,
 			fontOutline1 = "MONOCHROMEOUTLINE",
 			
 			fontFamily2 = "pixel_hr_small",
-			fontFamilyLarge2 = "pixel_lr_small",
+			fontFamilyLarge2 = "pixel_numbers",
 			fontSize2 = 8,
 			fontSizeLarge2 = 16,
 			fontOutline2 = "MONOCHROMEOUTLINE",

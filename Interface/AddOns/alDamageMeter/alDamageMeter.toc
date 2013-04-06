@@ -3,7 +3,7 @@
 ## Title: |cff777777al|rDamageMeter
 ## Version: 50100.13
 ## Notes: Damage meter
-## RequiredDeps: nibRealUI, Aurora
+## RequiredDeps: nibRealUI
 ## SavedVariables: dmconf
 ## LoadOnDemand: 1
 

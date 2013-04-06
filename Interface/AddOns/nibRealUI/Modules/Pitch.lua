@@ -60,7 +60,7 @@ local function GetOptions()
 						desc = "Show the Pitch display while flying.",
 						get = function() return db.visibility.flying end,
 						set = function(info, value) 
-							db.visibility.flying = value;
+							db.visibility.flying = value
 						end,
 						order = 10,
 					},
@@ -70,7 +70,7 @@ local function GetOptions()
 						desc = "Show the Pitch display while swimming.",
 						get = function() return db.visibility.swimming end,
 						set = function(info, value) 
-							db.visibility.swimming = value;
+							db.visibility.swimming = value
 						end,
 						order = 20,
 					},
@@ -80,7 +80,7 @@ local function GetOptions()
 						desc = "Show the Pitch display while in combat.",
 						get = function() return db.visibility.combat end,
 						set = function(info, value) 
-							db.visibility.combat = value;
+							db.visibility.combat = value
 						end,
 						order = 30,
 					},
@@ -259,35 +259,35 @@ local PitchCenterPoint = 1	-- When to change the Pitch display to Center style
 ---- PITCH UPDATE
 -- Timer
 local PitchTimer = CreateFrame("FRAME")
-PitchTimer.int = 0.5;
+PitchTimer.int = 0.5
 PitchTimer:Hide()
 PitchTimer:SetScript("OnUpdate", function(self, elapsed)
-	PitchTimer.int = PitchTimer.int - elapsed;
-	ElapsedSinceChange = ElapsedSinceChange + elapsed;
+	PitchTimer.int = PitchTimer.int - elapsed
+	ElapsedSinceChange = ElapsedSinceChange + elapsed
 	if (PitchTimer.int <= 0) then
 		if ( ((db.visibility.flying and IsFlying()) or (db.visibility.swimming and IsSwimming() and not UnitOnTaxi("player"))) and (db.visibility.combat or not UnitAffectingCombat("player")) ) then
 			-- Show Pitch display, update pitch and increase update rate
 			if not PitchVisible then
-				ElapsedSinceChange = 0;
-				Pitch:UpdateShown(true);
+				ElapsedSinceChange = 0
+				Pitch:UpdateShown(true)
 			end
-			Pitch:UpdatePitch();
-			PitchTimer.int = db.animation.updatespeed;
+			Pitch:UpdatePitch()
+			PitchTimer.int = db.animation.updatespeed
 		else
 			-- Hide Pitch display and decrease update rate
 			if PitchVisible then
-				Pitch:UpdateShown(false);
+				Pitch:UpdateShown(false)
 			end
-			PitchTimer.int = 0.5;
-			ElapsedSinceChange = 0;
+			PitchTimer.int = 0.5
+			ElapsedSinceChange = 0
 		end		
 	end
-end);
+end)
 
 -- Update Pitch display to current pitch
 function Pitch:UpdatePitch()
-	local OldPitch = CurPitch;
-	CurPitch = GetUnitPitch("player") * 360 / (2 * math.pi);
+	local OldPitch = CurPitch
+	CurPitch = GetUnitPitch("player") * 360 / (2 * math.pi)
 	
 	-- Limit Pitch to normal max limits (incase people activate Barrel Rolls on their flyers)
 	if CurPitch > PitchLimit then CurPitch = PitchLimit end
@@ -295,67 +295,67 @@ function Pitch:UpdatePitch()
 	
 	-- Fader
 	if OldPitch ~= CurPitch then
-		ElapsedSinceChange = 0;
-		if PitchFaded then self:Fade(true); end
+		ElapsedSinceChange = 0
+		if PitchFaded then self:Fade(true) end
 	else
 		if ElapsedSinceChange > db.animation.fadetime and not PitchFaded then
-			self:Fade(false);
+			self:Fade(false)
 		end
 	end	
 	
 	-- Move Mover
-	local yPos = floor(CurPitch * ((PitchHeight / 2) / PitchLimit) + 0.5);
-	PitchFrame["Mover"]:SetPoint("CENTER", PitchFrame, "CENTER", 0, yPos);
+	local yPos = floor(CurPitch * ((PitchHeight / 2) / PitchLimit) + 0.5)
+	PitchFrame["Mover"]:SetPoint("CENTER", PitchFrame, "CENTER", 0, yPos)
 	
 	-- Update textures if changing between Up/Down/Center 
 	if ((CurPitch < PitchCenterPoint and CurPitch > -PitchCenterPoint) and (PitchDirection ~= 0)) then
 		-- Center
-		PitchFrame["Center"].bg:SetTexture(PitchTextures.Center.M.bg);
-		PitchFrame["Center"].surround:SetTexture(PitchTextures.Center.M.surround);
-		PitchFrame["Center"]:SetPoint("CENTER", PitchFrame, "CENTER", 0, 0);
-		PitchFrame["Mover"].bg:SetTexture(PitchTextures.Mover.M.bg);
-		PitchFrame["Mover"].surround:SetTexture(PitchTextures.Mover.M.surround);
-		PitchFrame["Limit"]:Hide();
+		PitchFrame["Center"].bg:SetTexture(PitchTextures.Center.M.bg)
+		PitchFrame["Center"].surround:SetTexture(PitchTextures.Center.M.surround)
+		PitchFrame["Center"]:SetPoint("CENTER", PitchFrame, "CENTER", 0, 0)
+		PitchFrame["Mover"].bg:SetTexture(PitchTextures.Mover.M.bg)
+		PitchFrame["Mover"].surround:SetTexture(PitchTextures.Mover.M.surround)
+		PitchFrame["Limit"]:Hide()
 		
-		PitchDirection = 0;
+		PitchDirection = 0
 	elseif ((CurPitch >= PitchCenterPoint) and (PitchDirection ~= 1)) then
 		-- Up
-		PitchFrame["Center"].bg:SetTexture(PitchTextures.Center.U.bg);
-		PitchFrame["Center"].surround:SetTexture(PitchTextures.Center.U.surround);
+		PitchFrame["Center"].bg:SetTexture(PitchTextures.Center.U.bg)
+		PitchFrame["Center"].surround:SetTexture(PitchTextures.Center.U.surround)
 		PitchFrame["Center"].bg:SetTexCoord(0, 1, 0, 1)
 		PitchFrame["Center"].surround:SetTexCoord(0, 1, 0, 1)
-		PitchFrame["Center"]:SetPoint("CENTER", PitchFrame, "CENTER", 0, 1);
-		PitchFrame["Mover"].bg:SetTexture(PitchTextures.Mover.U.bg);
-		PitchFrame["Mover"].surround:SetTexture(PitchTextures.Mover.U.surround);
+		PitchFrame["Center"]:SetPoint("CENTER", PitchFrame, "CENTER", 0, 1)
+		PitchFrame["Mover"].bg:SetTexture(PitchTextures.Mover.U.bg)
+		PitchFrame["Mover"].surround:SetTexture(PitchTextures.Mover.U.surround)
 		PitchFrame["Mover"].bg:SetTexCoord(0, 1, 0, 1)
 		PitchFrame["Mover"].surround:SetTexCoord(0, 1, 0, 1)
-		PitchFrame["Limit"].bg:SetTexture(PitchTextures.Limit.bg);
-		PitchFrame["Limit"].surround:SetTexture(PitchTextures.Limit.surround);
+		PitchFrame["Limit"].bg:SetTexture(PitchTextures.Limit.bg)
+		PitchFrame["Limit"].surround:SetTexture(PitchTextures.Limit.surround)
 		PitchFrame["Limit"].bg:SetTexCoord(0, 1, 0, 1)
 		PitchFrame["Limit"].surround:SetTexCoord(0, 1, 0, 1)
-		PitchFrame["Limit"]:SetPoint("CENTER", PitchFrame, "CENTER", 0, floor((PitchHeight / 2) + 12));
-		PitchFrame["Limit"]:Show();
+		PitchFrame["Limit"]:SetPoint("CENTER", PitchFrame, "CENTER", 0, floor((PitchHeight / 2) + 12))
+		PitchFrame["Limit"]:Show()
 		
-		PitchDirection = 1;
+		PitchDirection = 1
 	elseif ((CurPitch <= -PitchCenterPoint) and (PitchDirection ~= -1)) then
 		-- Down
-		PitchFrame["Center"].bg:SetTexture(PitchTextures.Center.U.bg);
-		PitchFrame["Center"].surround:SetTexture(PitchTextures.Center.U.surround);
+		PitchFrame["Center"].bg:SetTexture(PitchTextures.Center.U.bg)
+		PitchFrame["Center"].surround:SetTexture(PitchTextures.Center.U.surround)
 		PitchFrame["Center"].bg:SetTexCoord(0, 1, 1, 0)
 		PitchFrame["Center"].surround:SetTexCoord(0, 1, 1, 0)
-		PitchFrame["Center"]:SetPoint("CENTER", PitchFrame, "CENTER", 0, -1);
-		PitchFrame["Mover"].bg:SetTexture(PitchTextures.Mover.U.bg);
-		PitchFrame["Mover"].surround:SetTexture(PitchTextures.Mover.U.surround);
+		PitchFrame["Center"]:SetPoint("CENTER", PitchFrame, "CENTER", 0, -1)
+		PitchFrame["Mover"].bg:SetTexture(PitchTextures.Mover.U.bg)
+		PitchFrame["Mover"].surround:SetTexture(PitchTextures.Mover.U.surround)
 		PitchFrame["Mover"].bg:SetTexCoord(0, 1, 1, 0)
 		PitchFrame["Mover"].surround:SetTexCoord(0, 1, 1, 0)
-		PitchFrame["Limit"].bg:SetTexture(PitchTextures.Limit.bg);
-		PitchFrame["Limit"].surround:SetTexture(PitchTextures.Limit.surround);
+		PitchFrame["Limit"].bg:SetTexture(PitchTextures.Limit.bg)
+		PitchFrame["Limit"].surround:SetTexture(PitchTextures.Limit.surround)
 		PitchFrame["Limit"].bg:SetTexCoord(0, 1, 1, 0)
 		PitchFrame["Limit"].surround:SetTexCoord(0, 1, 1, 0)
-		PitchFrame["Limit"]:SetPoint("CENTER", PitchFrame, "CENTER", 0, floor(-(PitchHeight / 2) - 12));
-		PitchFrame["Limit"]:Show();
+		PitchFrame["Limit"]:SetPoint("CENTER", PitchFrame, "CENTER", 0, floor(-(PitchHeight / 2) - 12))
+		PitchFrame["Limit"]:Show()
 		
-		PitchDirection = -1;
+		PitchDirection = -1
 	end
 end
 
@@ -363,22 +363,22 @@ end
 -- Fade In/Out the Pitch display
 function Pitch:Fade(val)
 	if val then
-		UIFrameFadeIn(PitchFrame, 0, 1, 1);
-		PitchFaded = false;
+		UIFrameFadeIn(PitchFrame, 0, 1, 1)
+		PitchFaded = false
 	else
-		UIFrameFadeOut(PitchFrame, 0.5, 1, 0);
-		PitchFaded = true;
+		UIFrameFadeOut(PitchFrame, 0.5, 1, 0)
+		PitchFaded = true
 	end
 end
 
 -- Show/Hide the Pitch display
 function Pitch:UpdateShown(shown)
 	if shown then
-		PitchFrame:Show();
-		PitchVisible = true;
+		PitchFrame:Show()
+		PitchVisible = true
 	else
-		PitchFrame:Hide();
-		PitchVisible = false;
+		PitchFrame:Hide()
+		PitchVisible = false
 	end
 end
 
@@ -394,18 +394,18 @@ end
 
 -- Set Position
 function Pitch:UpdatePosition()
-	PitchFrame:ClearAllPoints();
-	PitchFrame:SetPoint("CENTER", UIParent, "CENTER", db.position.x, db.position.y);
+	PitchFrame:ClearAllPoints()
+	PitchFrame:SetPoint("CENTER", RealUIPositionersCenter, "CENTER", db.position.x, db.position.y)
 end
 
 -- Frame Creation
 local function CreateArtFrame(parent)
 	local NewArtFrame
-	NewArtFrame = CreateFrame("Frame", nil, parent);
-	NewArtFrame:SetParent(parent);
-	NewArtFrame.surround = NewArtFrame:CreateTexture(nil, "ARTWORK");
+	NewArtFrame = CreateFrame("Frame", nil, parent)
+	NewArtFrame:SetParent(parent)
+	NewArtFrame.surround = NewArtFrame:CreateTexture(nil, "ARTWORK")
 	NewArtFrame.surround:SetAllPoints()
-	NewArtFrame.bg = NewArtFrame:CreateTexture(nil, "ARTWORK");
+	NewArtFrame.bg = NewArtFrame:CreateTexture(nil, "ARTWORK")
 	NewArtFrame.bg:SetAllPoints(NewArtFrame)
 	return NewArtFrame
 end
@@ -413,26 +413,26 @@ end
 local function CreateFrames()
 	if not PitchFrame then
 		-- Main
-		PitchFrame = CreateFrame("Frame", "RealUI_Pitch", UIParent);
-		PitchFrame:SetParent(UIParent)
-		PitchFrame:SetFrameStrata("MEDIUM");
-		PitchFrame:SetFrameLevel(0);
-		PitchFrame:SetHeight(PitchHeight);
-		PitchFrame:SetWidth(100);
-		PitchFrame:Hide();
+		PitchFrame = CreateFrame("Frame", "RealUIPitch", RealUIPositionersCenter)
+		PitchFrame:SetParent(RealUIPositionersCenter)
+		PitchFrame:SetFrameStrata("MEDIUM")
+		PitchFrame:SetFrameLevel(0)
+		PitchFrame:SetHeight(PitchHeight)
+		PitchFrame:SetWidth(100)
+		PitchFrame:Hide()
 		
 		-- Elements
 		for i, v in pairs(PitchElements) do
-			PitchFrame[v] = CreateArtFrame(PitchFrame);
-			PitchFrame[v]:ClearAllPoints();
-			PitchFrame[v]:SetPoint("CENTER", PitchFrame, "CENTER", 0, 0);
+			PitchFrame[v] = CreateArtFrame(PitchFrame)
+			PitchFrame[v]:ClearAllPoints()
+			PitchFrame[v]:SetPoint("CENTER", PitchFrame, "CENTER", 0, 0)
 			PitchFrame[v]:SetFrameStrata("MEDIUM")
 			PitchFrame[v]:SetFrameLevel(0)
 			PitchFrame[v]:SetWidth(64)
 			PitchFrame[v]:SetHeight(64)
 		end
-		PitchFrame["Mover"]:SetFrameLevel(1);
-		PitchFrame["Limit"].bg:SetTexture(ArrowLarge);
+		PitchFrame["Mover"]:SetFrameLevel(1)
+		PitchFrame["Limit"].bg:SetTexture(ArrowLarge)
 	end
 end
 
@@ -453,7 +453,7 @@ function Pitch:RefreshMod()
 end
 
 function Pitch:PLAYER_LOGIN()
-	self:RefreshMod();
+	self:RefreshMod()
 end
 
 ---- INITIALIZE
@@ -468,7 +468,7 @@ function Pitch:OnInitialize()
 			},
 			position = {
 				x = -1,
-				y = -38,
+				y = 0,
 			},
 			animation = {
 				updatespeed = 0.03,

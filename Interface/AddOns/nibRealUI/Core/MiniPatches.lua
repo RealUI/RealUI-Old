@@ -17,5 +17,7 @@ function nibRealUI:MiniPatch(ver)
 	
 	-- end
 	
-	
+	if ver == "74r4" then
+		AuroraConfig = nil
+	end
 end

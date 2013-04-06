@@ -1,4 +1,4 @@
-local nibRealUI = LibStub("AceAddon-3.0"):NewAddon("nibRealUI", "AceConsole-3.0", "AceEvent-3.0")
+local nibRealUI = LibStub("AceAddon-3.0"):NewAddon("nibRealUI", "AceConsole-3.0", "AceEvent-3.0", "AceTimer-3.0")
 local L = LibStub("AceLocale-3.0"):GetLocale("nibRealUI")
 local LSM = LibStub("LibSharedMedia-3.0")
 local db, dbc, dbg
@@ -7,8 +7,11 @@ _G.RealUI = nibRealUI
 nibRealUI.verinfo = {
 	[1] = 7,
 	[2] = 4,
-	[3] = 3,
+	[3] = 4,
 }
+
+nibRealUI.oocFunctionOrder = {}
+nibRealUI.oocFunctions = {}
 
 nibRealUI.defaultpositions = {
 	-- Low Res
@@ -114,55 +117,6 @@ local defaults = {
 	},
 }
 
-TABLE_STRATAS = {
-	"BACKGROUND",
-	"LOW",
-	"MEDIUM",
-	"HIGH",
-	"DIALOG",
-	"TOOLTIP",
-}
-
-TABLE_OUTLINES = {
-	"NONE",
-	"OUTLINE",
-	"THINOUTLINE",
-	"THICKOUTLINE",
-}
-
--- Memory Display
-local function FormatMem(memory)
-	if ( memory > 999 ) then
-		return format("%.1f |cff%s%s|r", memory/1024, "ff8030", "MiB")
-	else
-		return format("%.1f |cff%s%s|r", memory, "80ff30", "KB")
-	end
-end
-
-function nibRealUI:MemoryDisplay()
-	local addons, total = {}, 0
-	UpdateAddOnMemoryUsage()
-	local memory = gcinfo()
-	
-	for i = 1, GetNumAddOns() do
-		if ( IsAddOnLoaded(i) ) then
-			table.insert(addons, { GetAddOnInfo(i), GetAddOnMemoryUsage(i) })
-			total = total + GetAddOnMemoryUsage(i)
-		end
-	end
-	
-	table.sort(addons, (function(a, b) return a[2] > b[2] end))
-	
-	local userMem = format("|cff00ffffMemory usage: |r%.1f |cffff8030%s|r", total/1024, "MiB")
-	print(userMem)
-	print("-------------------------------")
-	for key, val in pairs(addons) do
-		if ( key <= 20 ) then
-			print(FormatMem(val[2]).."  -  "..val[1])
-		end
-	end
-end
-
 -- Version info retrieval
 function nibRealUI:GetVerString(...)
 	if ... then
@@ -215,85 +169,9 @@ function nibRealUI:GetRecommendedResolution()
 	end
 end
 
----- LAYOUTS
--- Profiles
-function nibRealUI:SetAddonProfileKeys()
-	-- Refresh Key
-	self.key = string.format("%s - %s", UnitName("player"), GetRealmName())
-	
-	local ResProfileTag = (dbc.resolution == 2) and "-HR" or ""
-	local LayoutProfileTag = (dbc.layout.current == 2) and "-Healing" or ""
-	local NewProfileRes = "RealUI" .. ResProfileTag
-	local NewProfileLayout = "RealUI" .. ResProfileTag .. LayoutProfileTag
-	
-	-- Addons that just need to be set to RealUI
-	local nonLayoutAddonList = {
-		"ChatterDB",
-		"MasqueDB",
-	}
-	-- Any Addons which need a Layout profile change, also changes Res
-	local LayoutAddonList = {
-		"Bartender4DB",
-		"GridDB",
-	}
-	-- Any Addons which aren't in the Layout list, but still need a Res profile change
-	local ResAddonList = {
-		"RavenDB",
-		"SkadaDB",
-		"IceCoreRealUIDB",
-	}
-	
-	-- Set Addon profiles
-	for kn, vn in pairs(nonLayoutAddonList) do
-		if _G[vn] then
-			if _G[vn]["profileKeys"] then 
-				_G[vn]["profileKeys"][self.key] = "RealUI"
-			end
-		end
-	end
-	for kl, vl in pairs(LayoutAddonList) do
-		if _G[vl] then
-			if _G[vl]["profileKeys"] then 
-				_G[vl]["profileKeys"][self.key] = NewProfileLayout
-			end
-		end
-	end
-	for kr, vr in pairs(ResAddonList) do
-		if _G[vr] then
-			if _G[vr]["profileKeys"] then 
-				_G[vr]["profileKeys"][self.key] = NewProfileRes
-			end
-		end
-	end
-	
-	-- MSBT
-	if MSBTProfiles_SavedVars then
-		if MSBTProfiles_SavedVars["profiles"][NewProfileRes] then
-			MSBTProfiles_SavedVarsPerChar["currentProfileName"] = NewProfileRes
-		end
-	end
-end
-
-function nibRealUI:SetLayoutProfiles()
-	local ResProfileTag = (dbc.resolution == 2) and "-HR" or ""
-	local LayoutProfileTag = (dbc.layout.current == 2) and "-Healing" or ""
-	local NewProfileLayout = "RealUI" .. ResProfileTag .. LayoutProfileTag
-	
-	local LayoutAddonList = {
-		Bartender4 = LibStub("AceAddon-3.0"):GetAddon("Bartender4", true),
-		Grid = LibStub("AceAddon-3.0"):GetAddon("Grid", true),
-	}
-	
-	for kl, vl in pairs(LayoutAddonList) do
-		if vl then
-			if vl.db then vl.db:SetProfile(NewProfileLayout) end
-		end
-	end
-end
-
 -- Resolution Updates
 function nibRealUI:SetResolution()
-	nibRealUI:SetAddonProfileKeys()
+	nibRealUI:Profiles_SetKeys()
 end
 function nibRealUI:UpdateResolution()
 	if not InCombatLockdown() then
@@ -304,7 +182,7 @@ end
 
 -- Layout Updates
 function nibRealUI:SetLayout()
-	nibRealUI:SetLayoutProfiles()
+	nibRealUI:Profiles_SetLayout()
 	
 	-- FrameMover
 	if nibRealUI:GetModuleEnabled("FrameMover") then
@@ -331,42 +209,50 @@ function nibRealUI:SetLayout()
 	end
 	
 	-- HuD Config
-	nibRealUI:GetModule("HuDConfig"):RegisterForUpdate("AB", 0.05)
+	nibRealUI:GetModule("HuDConfig"):RegisterForUpdate("AB")
 end
 function nibRealUI:UpdateLayout()
 	if InCombatLockdown() then
 		-- Store variable to change layout after combat ends
-		dbc.layout.needchanged = true
+		if not self.oocFunctions["SetLayout"] then
+			self.oocFunctions["SetLayout"] = function() nibRealUI:SetLayout() end
+		end
 		nibRealUI:Notification("RealUI", true, L["Layout will change after you leave combat."])
 	else
-		dbc.layout.needchanged = false
+		self.oocFunctions["SetLayout"] = nil
 		nibRealUI:SetLayout()
 	end
 end
 
 -- Lockdown check, out-of-combat updates
-function nibRealUI:OOCUpdates()
+function nibRealUI:LockdownUpdates()
 	if not InCombatLockdown() then
-		if dbc.layout.needchanged then nibRealUI:UpdateLayout() end
-	end
-end
-local LockdownTimer = CreateFrame("Frame")
-LockdownTimer.Elapsed = 0
-LockdownTimer:Hide()
-LockdownTimer:SetScript("OnUpdate", function(self, elapsed)
-	LockdownTimer.Elapsed = LockdownTimer.Elapsed + elapsed
-	if LockdownTimer.Elapsed >= 1 then
-		if not InCombatLockdown() then
-			nibRealUI:OOCUpdates()
-			LockdownTimer.Elapsed = 0
-			LockdownTimer:Hide()
-		else
-			LockdownTimer.Elapsed = 0
+		local stillProcessing
+		for k, fun in pairs(self.oocFunctions) do
+			self.oocFunctions[k] = nil
+			if type(fun) == "function" then
+				fun()
+				stillProcessing = true
+				break
+			end
+		end
+		if not stillProcessing then
+			self:CancelTimer(self.lockdownTimer)
+			self.lockdownTimer = nil
 		end
 	end
-end)
+end
 function nibRealUI:UpdateLockdown(...)
-	LockdownTimer:Show()
+	self.lockdownTimer = self:ScheduleRepeatingTimer("LockdownUpdates", 0.5)
+end
+function nibRealUI:RegisterLockdownUpdate(id, fun, ...)
+	local retVal = ...
+	if not InCombatLockdown() then
+		self.oocFunctions[id] = nil
+		fun(retVal)
+	else
+		self.oocFunctions[id] = function() fun(retVal) end
+	end
 end
 
 -- Events
@@ -381,7 +267,8 @@ end
 
 function nibRealUI:PLAYER_ENTERING_WORLD()
 	nibRealUI:SetChatPosition()
-	nibRealUI:OOCUpdates()
+	nibRealUI:LockdownUpdates()
+	self:ScheduleTimer(function() collectgarbage("collect") end, 1)
 end
 
 function nibRealUI:UI_SCALE_CHANGED()
@@ -406,6 +293,13 @@ function nibRealUI:PLAYER_LOGIN()
 	-- Tutorial
 	if not dbg.tags.tutorialdone and dbg.tags.needtutorial and (nibRealUICharacter.installStage == -1) then
 		nibRealUI:InitTutorial()
+	end
+
+	-- Do we need a Layout change?
+	if dbc.layout.needchanged then
+		if not self.oocFunctions["SetLayout"] then
+			self.oocFunctions["SetLayout"] = function() nibRealUI:SetLayout() end
+		end
 	end
 end
 
@@ -460,7 +354,10 @@ function nibRealUI:OnInitialize()
 	self:RegisterEvent("UPDATE_PENDING_MAIL")
 	
 	-- Chat Commands
-	nibRealUI:RegisterChatCommand("memory", "MemoryDisplay")
+	self:RegisterChatCommand("real", function() nibRealUI:OpenOptions() end)
+	self:RegisterChatCommand("realui", function() nibRealUI:OpenOptions() end)
+	self:RegisterChatCommand("memory", "MemoryDisplay")
+	self:RegisterChatCommand("rl", function() ReloadUI() end)
 	
 	-- Done
 	print(format("RealUI %s loaded.", nibRealUI:GetVerString(true)))

@@ -747,13 +747,13 @@ function WatchFrameAdv:OnInitialize()
 					pvp = true,
 					arena = false,
 					party = true,
-					raid = true,
+					raid = false,
 				},
 				hide = {
 					pvp = false,
 					arena = true,
 					party = false,
-					raid = false,
+					raid = true,
 				},
 			},
 			fading = {

@@ -136,7 +136,6 @@ function nibIceHUD:OnInitialize()
 	self:RegisterChatCommand("icehud", function()
 		nibIceHUD:OpenConfig()
 	end)
-	self:RegisterChatCommand("rl", function() ReloadUI() end)
 	
 	if SML then
 		SML.RegisterCallback(self, "LibSharedMedia_Registered", "UpdateMedia")

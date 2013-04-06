@@ -12,7 +12,7 @@ local nibRealUICharacter_defaults = {
 
 -- Minipatch list. These get flagged on a PrimaryInstall as not being required.
 local MiniPatchMajorVer = "74"
-local table_MiniPatches = {}
+local table_MiniPatches = {4}
 
 local IWTextures = {
 	Logo = [[Interface\AddOns\nibRealUI\Media\Logo.tga]],
@@ -131,7 +131,7 @@ function RealUI_RunStage1()
 	SetChatWindowAlpha(2, 0)
 	
 	-- Addon Profiles
-	nibRealUI:SetAddonProfileKeys()
+	nibRealUI:Profiles_SetKeys()
 end
 
 local function CreateIWTextureFrame(texture, width, height, position, color)
@@ -226,7 +226,7 @@ local function InstallationStage1()
 	---- Set MiniPatch flags
 	dbg.minipatches = {}
 	for k,v in ipairs(table_MiniPatches) do
-		tinsert(dbg.minipatches, MiniPatchMajorVer.."r"..tostring(v))
+		tinsert(dbg.minipatches, v)
 	end
 	
 	DEFAULT_CHATFRAME_ALPHA = 0
@@ -246,11 +246,11 @@ local function MiniPatchInstallation()
 		-- Find out which Mini Patches are needed
 		local NP = {}
 		for k,v in ipairs(table_MiniPatches) do
-			NP[v] = true
+			NP[k] = true
 		end
 		if dbg.minipatches ~= nil then
-			for k,v in pairs(dbg.minipatches) do
-				-- if v == "74r2" then NP[2] = false end
+			for k,v in ipairs(dbg.minipatches) do
+				NP[k] = false
 			end
 		end
 		
@@ -258,17 +258,14 @@ local function MiniPatchInstallation()
 		local toPatch = {}
 		local HasMPatched = false
 		if dbg.minipatches == nil then dbg.minipatches = {} end
-		
-		-- if NP[2] then tinsert(toPatch, "74r2") end
-		
-		for k,v in ipairs(toPatch) do
+		for k,v in ipairs(NP) do
 			if v then
-				nibRealUI:MiniPatch(v)
-				tinsert(dbg.minipatches, v)
+				nibRealUI:MiniPatch(MiniPatchMajorVer.."r"..tostring(table_MiniPatches[k]))
+				tinsert(dbg.minipatches, k)
 				HasMPatched = true
 			end
 		end
-		
+
 		-- Reload UI
 		if HasMPatched then
 			StaticPopupDialogs["PUDRUIMP"] = {
@@ -302,7 +299,7 @@ local function CharToGlobalResolution()
 		OnAccept = function()
 			dbc.resolution = dbg.resolution
 			nibRealUICharacter.resolution = dbg.resolution
-			nibRealUI:SetAddonProfileKeys()
+			nibRealUI:Profiles_SetKeys()
 			ReloadUI()
 		end,
 		OnCancel = function()

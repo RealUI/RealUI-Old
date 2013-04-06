@@ -403,7 +403,7 @@ function Tooltip:OnInitialize()
 		profile = {
 			position = {
 				cursor = false,
-				manual = {"BOTTOMRIGHT", UIParent, "BOTTOMRIGHT", -31, 175},
+				manual = {"BOTTOMRIGHT", UIParent, "BOTTOMRIGHT", -31, 220},
 			},
 			font = {
 				size = 11,

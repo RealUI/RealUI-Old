@@ -2606,7 +2606,6 @@ function InfoLine:SpecUpdateEquip()
 		EquipmentManager_EquipSet(GetEquipmentSetInfo(dbc.specgear.secondary))
 	end
 	self:CancelTimer(self.timerSpecEquip)
-	print("x")
 end
 
 local function Spec_Update(self)

@@ -107,6 +107,7 @@ function Positioners:OnInitialize()
 					["SpellAlerts"] =		{"CENTER", 	"UIParent",	"CENTER", 0, 0, -110, 140, 	{"HuDX"},	{"HuDY"}, {"HuDWidth"}, nil},
 					["BottomInfo"] =		{"TOP", 	"UIParent",	"CENTER", 0, -96, -132, 27, {"HuDX"},	{"HuDY"}, {"HuDWidth"}, nil},
 					["UnitFrames"] =		{"CENTER", 	"UIParent",	"CENTER", 0, 0, 80, 2, 		{"HuDX"}, 	{"HuDY"}, {"HuDWidth", "UFHorizontal"}, nil},
+					["BossFrames"] =		{"RIGHT", 	"UIParent",	"RIGHT",  -34, 320, 2, 2, 	nil, 		{"HuDY"}, nil, nil},
 					["LayoutBottomItem"] =	{"CENTER", 	"UIParent",	"CENTER", 0, -133, 342, 1, 	nil,		{"HuDY", "BIY"}, nil, nil},
 				},
 				class = {
@@ -133,6 +134,7 @@ function Positioners:OnInitialize()
 					["SpellAlerts"] =		{"CENTER", 	"UIParent",	"CENTER", 0, 0, -160, 140, 	{"HuDX"},	{"HuDY"}, {"HuDWidth"}, nil},
 					["BottomInfo"] =		{"TOP", 	"UIParent",	"CENTER", 0, -95, -132, 28, {"HuDX"},	{"HuDY"}, {"HuDWidth"}, nil},
 					["UnitFrames"] =		{"CENTER", 	"UIParent",	"CENTER", 0, 0, 80, 2, 		{"HuDX"},	{"HuDY"}, {"HuDWidth", "UFHorizontal"}, nil},
+					["BossFrames"] =		{"RIGHT", 	"UIParent",	"RIGHT",  -34, 320, 2, 2, 	nil, 		{"HuDY"}, nil, nil},
 					["LayoutBottomItem"] =	{"CENTER", 	"UIParent",	"CENTER", 0, -133, 342, 1,	nil,		{"HuDY", "BIY"}, nil, nil},
 				},
 				class = {

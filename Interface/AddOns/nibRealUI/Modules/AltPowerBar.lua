@@ -335,7 +335,7 @@ function AltPowerBar:OnInitialize()
 	self.db = nibRealUI.db:RegisterNamespace(MODNAME)
 	self.db:RegisterDefaults({
 		profile = {
-			size = {width = 180, height = 20},
+			size = {width = 160, height = 16},
 			position = {
 				anchorto = "TOP",
 				anchorfrom = "TOP",

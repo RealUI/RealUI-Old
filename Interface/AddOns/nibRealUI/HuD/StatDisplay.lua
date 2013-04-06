@@ -614,11 +614,7 @@ local function SetValues(row, text)
 end
 
 local function ToggleRow(row, state)
-	if state then
-		StatDisplay.Stats[row]:Show()
-	else
-		StatDisplay.Stats[row]:Hide()
-	end
+	StatDisplay.Stats[row]:SetShown(state)
 end
 
 local function GatherStats(stats)
@@ -634,7 +630,7 @@ function StatDisplay:StatUpdate()
 		self:CombatUpdate()
 		return
 	end
-	-- print(watchedStats[1], watchedStats[2])
+	
 	statVals = GatherStats(watchedStats)
 	SetValues(1, statVals[1])
 	SetValues(2, statVals[2])
@@ -666,21 +662,23 @@ end
 
 function StatDisplay:CreateFrames()
 	self.SDFrame = CreateFrame("Frame", "RealUI_StatDisplay", RealUIPositionersBottomInfo)
-	self.SDFrame:SetPoint("TOPLEFT", RealUIPositionersBottomInfo, "TOPLEFT", 4, ndbc.resolution == 1 and -2 or -3)
-	self.SDFrame:SetPoint("BOTTOMRIGHT", RealUIPositionersBottomInfo, "BOTTOM", 0, 3)
-	self.SDFrame:SetHeight(ndbc.resolution == 1 and 27 or 28)
+		self.SDFrame:SetPoint("TOPLEFT", RealUIPositionersBottomInfo, "TOPLEFT", 4, ndbc.resolution == 1 and -2 or -3)
+		self.SDFrame:SetPoint("BOTTOMRIGHT", RealUIPositionersBottomInfo, "BOTTOM", 0, 3)
+		self.SDFrame:SetHeight(ndbc.resolution == 1 and 27 or 28)
 	
 	local font = db.smallfont and nibRealUI.font.pixeltiny or nibRealUI.font.pixel1
+	
 	self.Stats = {}
+	
 	self.Stats[1] = self.SDFrame:CreateFontString(nil, "OVERLAY")
-	self.Stats[1]:SetPoint("TOPLEFT", self.SDFrame, "TOPLEFT", -0.5, -0.5)
-	self.Stats[1]:SetFont(unpack(font))
-	self.Stats[1]:SetTextColor(db.color.r, db.color.g, db.color.b)
+		self.Stats[1]:SetPoint("TOPLEFT", self.SDFrame, "TOPLEFT", -0.5, -0.5)
+		self.Stats[1]:SetFont(unpack(font))
+		self.Stats[1]:SetTextColor(db.color.r, db.color.g, db.color.b)
 	
 	self.Stats[2] = self.SDFrame:CreateFontString(nil, "OVERLAY")
-	self.Stats[2]:SetPoint("TOPLEFT", self.SDFrame, "TOPLEFT", -0.5, ndbc.resolution == 1 and -13.5 or -14.5)
-	self.Stats[2]:SetFont(unpack(font))
-	self.Stats[2]:SetTextColor(db.color.r, db.color.g, db.color.b)
+		self.Stats[2]:SetPoint("TOPLEFT", self.SDFrame, "TOPLEFT", -0.5, ndbc.resolution == 1 and -13.5 or -14.5)
+		self.Stats[2]:SetFont(unpack(font))
+		self.Stats[2]:SetTextColor(db.color.r, db.color.g, db.color.b)
 	
 	ToggleRow(1, false)
 	ToggleRow(2, false)
@@ -743,13 +741,14 @@ end
 
 local createTextButton = function (name, parent, width, height)
 	local button = CreateFrame("Button", nil, parent)
-	button:SetNormalFontObject(GameFontNormalSmall)
-	button:SetHighlightFontObject(GameFontHighlightSmall)
-	button:SetText(name)
-	button:SetWidth(width)
-	button:SetHeight(height)
-	button:SetScript("OnEnter", buttonEnter)
-	button:SetScript("OnLeave", buttonLeave)
+		button:SetNormalFontObject(GameFontNormalSmall)
+		button:SetHighlightFontObject(GameFontHighlightSmall)
+		button:SetText(name)
+		button:SetWidth(width)
+		button:SetHeight(height)
+		button:SetScript("OnEnter", buttonEnter)
+		button:SetScript("OnLeave", buttonLeave)
+		
 	return button
 end
 
@@ -758,79 +757,80 @@ function StatDisplay:CreateOptionsFrame()
 	
 	self.options = CreateFrame("Frame", "RealUIStatDisplayOptions", UIParent)
 	local sdO = self.options
-	sdO:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
-	sdO:SetSize(460, 134)
-	sdO:SetFrameLevel(5)
-	sdO:SetFrameStrata("HIGH")
-	sdO:Hide()
+		sdO:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
+		sdO:SetSize(460, 134)
+		sdO:SetFrameLevel(5)
+		sdO:SetFrameStrata("HIGH")
+		sdO:Hide()
+	
 	tinsert(UISpecialFrames, "RealUIStatDisplayOptions") -- Close on "Esc"
 	
 	-- Close
 	local close = CreateFrame("Button", nil, sdO, "UIPanelCloseButton")
-	close:SetPoint("TOPRIGHT", 6, 4)
-	close:SetScript("OnClick", function() RealUIStatDisplayOptions:Hide() end)
+		close:SetPoint("TOPRIGHT", 6, 4)
+		close:SetScript("OnClick", function() RealUIStatDisplayOptions:Hide() end)
 	
 	sdO.okay = createTextButton(L["Okay"], sdO, 100, 24)
-	sdO.okay:SetPoint("BOTTOM", sdO, "BOTTOM", 0, 5)
-	sdO.okay:SetScript("OnClick", function() RealUIStatDisplayOptions:Hide() end)
-	nibRealUI:CreateBGSection(sdO, sdO.okay, sdO.okay)
+		sdO.okay:SetPoint("BOTTOM", sdO, "BOTTOM", 0, 5)
+		sdO.okay:SetScript("OnClick", function() RealUIStatDisplayOptions:Hide() end)
+		nibRealUI:CreateBGSection(sdO, sdO.okay, sdO.okay)
 	
 	-- Header
 	local header = nibRealUI:CreateFS(sdO, "CENTER")
-	header:SetText("Stat Display")
-	header:SetPoint("TOP", sdO, "TOP", 0, -9)
+		header:SetText("Stat Display")
+		header:SetPoint("TOP", sdO, "TOP", 0, -9)
 	
 	-- Header Primary
 	local hP1 = nibRealUI:CreateFS(sdO, "CENTER")
-	hP1:SetPoint("TOPLEFT", sdO, "TOPLEFT", 3, -28)
-	hP1:SetSize(235, 16)
-	hP1:SetText(PRIMARY)
-	hP1:SetTextColor(unpack(nibRealUI.media.colors.red))
+		hP1:SetPoint("TOPLEFT", sdO, "TOPLEFT", 3, -28)
+		hP1:SetSize(235, 16)
+		hP1:SetText(PRIMARY)
+		hP1:SetTextColor(unpack(nibRealUI.media.colors.red))
 	
 	-- Header Secondary
 	local hS1 = nibRealUI:CreateFS(sdO, "CENTER")
-	hS1:SetPoint("TOPRIGHT", sdO, "TOPRIGHT", -1, -28)
-	hS1:SetSize(235, 16)
-	hS1:SetText(SECONDARY)
-	hS1:SetTextColor(unpack(nibRealUI.media.colors.red))
+		hS1:SetPoint("TOPRIGHT", sdO, "TOPRIGHT", -1, -28)
+		hS1:SetSize(235, 16)
+		hS1:SetText(SECONDARY)
+		hS1:SetTextColor(unpack(nibRealUI.media.colors.red))
 	
 	-- P1
 	sdO.ddP1 = CreateFrame("Frame", "RealUIStatDisplayOptionsPrimary1", sdO, "UIDropDownMenuTemplate")
-	UIDropDownMenu_SetWidth(sdO.ddP1, 184)
-	sdO.ddP1:SetPoint("TOP", hP1, "BOTTOM", 0, -3)
-	sdO.ddP1:SetFrameLevel(sdO:GetFrameLevel() + 2)
-	sdO.ddP1:SetSize(235, 18)
-	sdO.ddP1.spec = 1
-	sdO.ddP1.stat = 1
+		UIDropDownMenu_SetWidth(sdO.ddP1, 184)
+		sdO.ddP1:SetPoint("TOP", hP1, "BOTTOM", 0, -3)
+		sdO.ddP1:SetFrameLevel(sdO:GetFrameLevel() + 2)
+		sdO.ddP1:SetSize(235, 18)
+		sdO.ddP1.spec = 1
+		sdO.ddP1.stat = 1
 	
 	-- P2
 	sdO.ddP2 = CreateFrame("Frame", "RealUIStatDisplayOptionsPrimary2", sdO, "UIDropDownMenuTemplate")
-	UIDropDownMenu_SetWidth(sdO.ddP2, 184)
-	sdO.ddP2:SetPoint("TOP", sdO.ddP1, "BOTTOM", 0, 11)
-	sdO.ddP2:SetFrameLevel(sdO:GetFrameLevel() + 2)
-	sdO.ddP2:SetSize(235, 18)
-	sdO.ddP2.spec = 1
-	sdO.ddP2.stat = 2
+		UIDropDownMenu_SetWidth(sdO.ddP2, 184)
+		sdO.ddP2:SetPoint("TOP", sdO.ddP1, "BOTTOM", 0, 11)
+		sdO.ddP2:SetFrameLevel(sdO:GetFrameLevel() + 2)
+		sdO.ddP2:SetSize(235, 18)
+		sdO.ddP2.spec = 1
+		sdO.ddP2.stat = 2
 	
 	nibRealUI:CreateBGSection(sdO, sdO.ddP1, sdO.ddP2, 14, -2, -16, 6)
 	
 	-- S1
 	sdO.ddS1 = CreateFrame("Frame", "RealUIStatDisplayOptionsSecondary1", sdO, "UIDropDownMenuTemplate")
-	UIDropDownMenu_SetWidth(sdO.ddS1, 184)
-	sdO.ddS1:SetPoint("TOP", hS1, "BOTTOM", 0, -3)
-	sdO.ddS1:SetFrameLevel(sdO:GetFrameLevel() + 2)
-	sdO.ddS1:SetSize(235, 18)
-	sdO.ddS1.spec = 2
-	sdO.ddS1.stat = 1
+		UIDropDownMenu_SetWidth(sdO.ddS1, 184)
+		sdO.ddS1:SetPoint("TOP", hS1, "BOTTOM", 0, -3)
+		sdO.ddS1:SetFrameLevel(sdO:GetFrameLevel() + 2)
+		sdO.ddS1:SetSize(235, 18)
+		sdO.ddS1.spec = 2
+		sdO.ddS1.stat = 1
 	
 	-- S2
 	sdO.ddS2 = CreateFrame("Frame", "RealUIStatDisplayOptionsSecondary2", sdO, "UIDropDownMenuTemplate")
-	UIDropDownMenu_SetWidth(sdO.ddS2, 184)
-	sdO.ddS2:SetPoint("TOP", sdO.ddS1, "BOTTOM", 0, 11)
-	sdO.ddS2:SetFrameLevel(sdO:GetFrameLevel() + 2)
-	sdO.ddS2:SetSize(235, 18)
-	sdO.ddS2.spec = 2
-	sdO.ddS2.stat = 2
+		UIDropDownMenu_SetWidth(sdO.ddS2, 184)
+		sdO.ddS2:SetPoint("TOP", sdO.ddS1, "BOTTOM", 0, 11)
+		sdO.ddS2:SetFrameLevel(sdO:GetFrameLevel() + 2)
+		sdO.ddS2:SetSize(235, 18)
+		sdO.ddS2.spec = 2
+		sdO.ddS2.stat = 2
 	
 	nibRealUI:CreateBGSection(sdO, sdO.ddS1, sdO.ddS2, 14, -2, -16, 6)
 
