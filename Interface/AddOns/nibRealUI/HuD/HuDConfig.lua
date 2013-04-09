@@ -582,6 +582,18 @@ function HuDConfig:ApplyABConfig()
 				["version"] = 3,
 			}
 		end
+		if nibRealUI.db.global.tags.ldOptimized and Bartender4DB["namespaces"]["ExtraActionBar"]["profiles"]["RealUI-HR-Healing"] then
+			Bartender4DB["namespaces"]["ExtraActionBar"]["profiles"]["RealUI-HR-Healing"] = {
+				["position"] = {
+					["y"] = 178,
+					["x"] = p.eab.x,
+					["point"] = "BOTTOM",
+					["growHorizontal"] = "RIGHT",
+					["growVertical"] = "DOWN",
+				},
+				["version"] = 3,
+			}
+		end
 		
 		-- Apply profile changes to Bartender bars
 		local Bar4 = LibStub("AceAddon-3.0"):GetAddon("Bartender4", true)
