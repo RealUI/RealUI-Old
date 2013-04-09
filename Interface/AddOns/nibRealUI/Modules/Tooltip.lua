@@ -57,12 +57,32 @@ local function GetOptions()
 				type = "description",
 				order = 31,
 			},
+			features = {
+				name = "Features",
+				type = "group",
+				inline = true,
+				disabled = function() if nibRealUI:GetModuleEnabled(MODNAME) then return false else return true end end,
+				order = 40,
+				args = {
+					talents = {
+						type = "toggle",
+						name = "Show Talent Spec",
+						width = "full",
+						desc = "Display the Talent Spec of the moused-over unit in the Tooltip. This feature sends Inspect requests, so may delay the opening of the Inspect window.",
+						get = function() return db.features.talents end,
+						set = function(info, value) 
+							db.features.talents = value
+						end,
+						order = 10,
+					},
+				},
+			},
 			position = {
 				name = "Position",
 				type = "group",
 				inline = true,
 				disabled = function() if nibRealUI:GetModuleEnabled(MODNAME) then return false else return true end end,
-				order = 40,
+				order = 50,
 				args = {
 					cursor = {
 						type = "toggle",
@@ -126,14 +146,14 @@ local function GetOptions()
 			gap2 = {
 				name = " ",
 				type = "description",
-				order = 41,
+				order = 51,
 			},
 			font = {
 				name = "Font",
 				type = "group",
 				inline = true,
 				disabled = function() if nibRealUI:GetModuleEnabled(MODNAME) then return false else return true end end,
-				order = 50,
+				order = 60,
 				args = {
 					size = {
 						type = "range",
@@ -174,6 +194,7 @@ local pName = UnitName("player")
 local talentsGUID
 local talents = {}
 function Tooltip:TalentQuery()
+	if not db.features.talents then return end
 	if CanInspect("mouseover") then
 		if UnitName("mouseover") ~= pName and UnitLevel("mouseover") > 9 then
 			local talentline = nil
@@ -205,6 +226,7 @@ function Tooltip:TalentQuery()
 end
 
 function Tooltip:TalentText()
+	if not db.features.talents then return end
 	local specID, spec, left, leftText
 	if UnitExists("mouseover") then
 		specID = GetInspectSpecialization("mouseover")
@@ -212,11 +234,11 @@ function Tooltip:TalentText()
 		for i = 1, GameTooltip:NumLines() do
 			left = _G[GameTooltip:GetName().."TextLeft"..i]
 			leftText = left:GetText()
-			if strsub(leftText, 1, 3) == "S: " then
+			if leftText ~= nil and strsub(leftText, 1, 3) == "S: " then
 				if spec then
-					left:SetFormattedText("S: %s", spec)
+					left:SetFormattedText("S: |cffffffff%s|r", spec)
 				else
-					left:SetText("S: None")
+					left:SetText("S: |cffffffff"..NONE.."|r")
 				end
 			end
 			GameTooltip:Show()
@@ -227,6 +249,7 @@ function Tooltip:TalentText()
 end
 
 function Tooltip:INSPECT_READY(event, arg)
+	if not db.features.talents then return end
 	if talentsGUID == arg then
 		self:TalentText()
 	end
@@ -284,6 +307,7 @@ end
 
 -- Unit Styling
 function Tooltip:UPDATE_MOUSEOVER_UNIT()
+	if not db.features.talents then return end
 	Tooltip:UnregisterEvent("INSPECT_READY")
 	Tooltip:TalentQuery()
 end
@@ -295,10 +319,6 @@ function Tooltip:SetupUnitStyling()
 		elite = "+",
 		rare = "R",
 	}
-
-	local function Hex(r, g, b)
-		return string.format('|cff%02x%02x%02x', r * 255, g * 255, b * 255)
-	end
 
 	local function GetColor(unit)
 		local r, g, b = 1, 1, 1
@@ -312,7 +332,7 @@ function Tooltip:SetupUnitStyling()
 			r, g, b = unpack(UnitReactionColor[UnitReaction("player", unit) or 5])
 		end
 
-		return Hex(r, g, b)
+		return "|cff"..nibRealUI:ColorTableToStr({r, g, b})
 	end
 
 	local function OnTooltipSetUnit(self)
@@ -328,12 +348,13 @@ function Tooltip:SetupUnitStyling()
 
 		if(level and level==-1) then
 			if(c=="worldboss") then
-				level = "|cffff0000Boss|r"
+				level = "Boss"
 			else
-				level = "|cffff0000??|r"
+				level = "??"
 			end
 		end
-
+		local levelColor = GetQuestDifficultyColor(tonumber(level) or 99)
+		levelColor = nibRealUI:ColorTableToStr({levelColor.r, levelColor.g, levelColor.b})
 		local color = GetColor(unit)
 		
 		if unitRealm and unitRealm ~= "" then
@@ -349,13 +370,13 @@ function Tooltip:SetupUnitStyling()
 			end
 
 			local n = InGuild and 3 or 2
-			_G["GameTooltipTextLeft"..n]:SetFormattedText("%s %s", level, race)
+			_G["GameTooltipTextLeft"..n]:SetFormattedText("|cff%s%s|r %s", levelColor, level, race)
 		else
 			for i = 2, lines do
 				local line = _G["GameTooltipTextLeft"..i]
 				local text = line:GetText() or ""
 				if((level and text:find("^"..LEVEL)) or (crtype and text:find("^"..crtype))) then
-					line:SetFormattedText("%s%s %s", level, classification[c] or "", crtype or "")
+					line:SetFormattedText("|cff%s%s|r%s %s", levelColor, level, classification[c] or "", crtype or "")
 					break
 				end
 			end
@@ -365,15 +386,14 @@ function Tooltip:SetupUnitStyling()
 		local tunit = unit.."target"
 		if(UnitExists(tunit) and unit~="player") then
 			local color = GetColor(tunit)
-			local text = ""
+			local target = ""
 
 			if(UnitName(tunit)==UnitName("player")) then
-				text = "T: > YOU <"
+				target = color.."> YOU <".."|r"
 			else
-				text = "T: "..UnitName(tunit)
+				target = color..UnitName(tunit).."|r"
 			end
-
-			self:AddLine(color..text)
+			self:AddLine("T: "..target)
 		end
 	end
 	GameTooltip:HookScript("OnTooltipSetUnit", OnTooltipSetUnit)
@@ -401,6 +421,9 @@ function Tooltip:OnInitialize()
 	self.db = nibRealUI.db:RegisterNamespace(MODNAME)
 	self.db:RegisterDefaults({
 		profile = {
+			features = {
+				talents = true,
+			},
 			position = {
 				cursor = false,
 				manual = {"BOTTOMRIGHT", UIParent, "BOTTOMRIGHT", -31, 220},

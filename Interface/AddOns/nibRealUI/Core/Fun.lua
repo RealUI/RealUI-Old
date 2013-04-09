@@ -18,6 +18,13 @@ function FindSpellID(SpellName)
 	end)
 end
 
+function nibRealUI:GetResolutionVals()
+	local resStr = GetCVar("gxResolution")
+	local resHeight = tonumber(string.match(resStr, "%d+x(%d+)"))
+	local resWidth = tonumber(string.match(resStr, "(%d+)x%d+"))
+
+	return resWidth, resHeight
+end
 function nibRealUI:DeepCopy(object)
 	local lookup_table = {}
 	local function _copy(object)

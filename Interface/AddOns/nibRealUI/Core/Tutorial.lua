@@ -367,6 +367,19 @@ function nibRealUI:InitTutorial()
 			ToolTipDir = "LEFT",
 			ToolTipText = ToolTipTexts.moactionbars2,
 		})
+		if not hasAdjustedPositions and nibRealUI.db.global.tags.hrOptimized then
+			RealUI_HelpPlate[3].ButtonPos.x = RealUI_HelpPlate[3].ButtonPos.x - 28
+			RealUI_HelpPlate[4].ButtonPos.x = RealUI_HelpPlate[4].ButtonPos.x + 28
+			RealUI_HelpPlate[5].ButtonPos.x = RealUI_HelpPlate[5].ButtonPos.x - 28
+			RealUI_HelpPlate[6].ButtonPos.x = RealUI_HelpPlate[6].ButtonPos.x + 28
+			RealUI_HelpPlate[7].ButtonPos.x = RealUI_HelpPlate[7].ButtonPos.x - 28
+			RealUI_HelpPlate[8].ButtonPos.x = RealUI_HelpPlate[8].ButtonPos.x - 28
+			RealUI_HelpPlate[9].ButtonPos.x = RealUI_HelpPlate[9].ButtonPos.x + 28
+			RealUI_HelpPlate[10].ButtonPos.x = RealUI_HelpPlate[10].ButtonPos.x + 28
+			RealUI_HelpPlate[11].ButtonPos.x = RealUI_HelpPlate[11].ButtonPos.x - 28
+			RealUI_HelpPlate[12].ButtonPos.x = RealUI_HelpPlate[12].ButtonPos.x + 28
+			hasAdjustedPositions = true
+		end
 	end
 	
 	-- MainHelpPlateButton

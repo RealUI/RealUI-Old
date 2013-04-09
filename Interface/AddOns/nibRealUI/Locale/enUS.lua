@@ -12,6 +12,8 @@ L["INSTALL"] = "INSTALL"	-- Note: Install Button isn't very wide, so string shou
 L["RealUI Mini Patch"] = "RealUI Mini Patch"
 L["RealUI's settings have been updated."] = "RealUI's settings have been updated."
 
+L["Large Display optimizations set."] = "Large Display optimizations set."
+
 L["RealUI Layout Resolution"] = "RealUI Layout Resolution"
 L["This character's Layout Resolution needs to be updated to match the global setting."] = "This character's Layout Resolution needs to be updated to match the global setting."
 

@@ -963,7 +963,7 @@ local Points = {}
 local PointsChanged = {}
 local EBPoints = 0	-- Elusive Brew
 
-local HolyPowerBG, HolyPowerSurround
+local HolyPowerTexture
 local SoulShardBG
 
 local PlayerClass
@@ -1118,9 +1118,9 @@ local ebColors = {
 }
 local function SetPointBarTextures(shown, ic, it, tid, i)
 	if tid == "hp" and db[ic].types[tid].bars.custom then
-		PBTex.empty = HolyPowerBG[i]
-		PBTex.full = HolyPowerBG[i]
-		PBTex.surround = HolyPowerSurround[i]
+		PBTex.empty = nil
+		PBTex.full = HolyPowerTexture[i]
+		PBTex.surround = nil
 	else
 		PBTex.empty = BG[ic][tid].bars.empty
 		PBTex.full = BG[ic][tid].bars.full
@@ -1458,6 +1458,7 @@ function PointDisplay:UpdatePosition()
 	for ic,vc in pairs(Types) do
 		for it,vt in ipairs(Types[ic].points) do
 			local tid = Types[ic].points[it].id
+
 			---- BG Panel
 			local Parent = _G.RealUIPositionersCenterAuras
 			
@@ -1515,7 +1516,7 @@ function PointDisplay:UpdatePosition()
 				Frames[ic][tid].bars[i].frame:SetPoint(db[ic].types[tid].position.side, Frames[ic][tid].bgpanel.frame, db[ic].types[tid].position.side, XPos, YPos)
 				
 				Frames[ic][tid].bars[i].frame:SetFrameStrata(db[ic].types[tid].position.framelevel.strata)
-				Frames[ic][tid].bars[i].frame:SetFrameLevel(db[ic].types[tid].position.framelevel.level + 2)
+				Frames[ic][tid].bars[i].frame:SetFrameLevel(db[ic].types[tid].position.framelevel.level + i + 2)
 				Frames[ic][tid].bars[i].frame:SetWidth(db[ic].types[tid].bars.size.width)
 				Frames[ic][tid].bars[i].frame:SetHeight(db[ic].types[tid].bars.size.height)
 			end
@@ -1741,8 +1742,7 @@ function PointDisplay:PLAYER_LOGIN()
 	LSM:Register("background", "Soul_Shard_BG", [[Interface\Addons\nibRealUI\HuD\PointDisplay\Media\SoulShard_BG]])
 	LSM:Register("background", "Soul_Shard_Surround", [[Interface\Addons\nibRealUI\HuD\PointDisplay\Media\SoulShard_Surround]])
 	
-	HolyPowerBG = {[[Interface\Addons\nibRealUI\HuD\PointDisplay\Media\HolyPower1_BG]], [[Interface\Addons\nibRealUI\HuD\PointDisplay\Media\HolyPower2_BG]], [[Interface\Addons\nibRealUI\HuD\PointDisplay\Media\HolyPower3_BG]], [[Interface\Addons\nibRealUI\HuD\PointDisplay\Media\HolyPower4_BG]], [[Interface\Addons\nibRealUI\HuD\PointDisplay\Media\HolyPower5_BG]]}
-	HolyPowerSurround = {[[Interface\Addons\nibRealUI\HuD\PointDisplay\Media\HolyPower1_Surround]], [[Interface\Addons\nibRealUI\HuD\PointDisplay\Media\HolyPower2_Surround]], [[Interface\Addons\nibRealUI\HuD\PointDisplay\Media\HolyPower3_Surround]], [[Interface\Addons\nibRealUI\HuD\PointDisplay\Media\HolyPower4_Surround]], [[Interface\Addons\nibRealUI\HuD\PointDisplay\Media\HolyPower5_Surround]]}
+	HolyPowerTexture = {[[Interface\Addons\nibRealUI\HuD\PointDisplay\Media\HolyPower1]], [[Interface\Addons\nibRealUI\HuD\PointDisplay\Media\HolyPower2]], [[Interface\Addons\nibRealUI\HuD\PointDisplay\Media\HolyPower3]], [[Interface\Addons\nibRealUI\HuD\PointDisplay\Media\HolyPower4]], [[Interface\Addons\nibRealUI\HuD\PointDisplay\Media\HolyPower5]]}
 	
 	-- Get Spell Info
 	-- Death Knight

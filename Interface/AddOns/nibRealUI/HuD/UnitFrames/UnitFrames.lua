@@ -3310,7 +3310,7 @@ local function Shared(self, unit)
 		self.Portrait = Portrait
 			Portrait:SetWidth(26)
 			Portrait:SetHeight(25)
-			Portrait:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", -1, 2)
+			Portrait:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", -1, 1.5)
 			
 		local portraitBG = CreateBD(Portrait)
 			portraitBG:SetFrameStrata("LOW")
@@ -3502,7 +3502,7 @@ function UnitFrames:OnInitialize()
 				font = {
 					standard = false,
 					size = 12,
-					yoffset = -1,
+					yoffset = 0,
 				},
 				bar = {
 					opacity = {

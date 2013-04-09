@@ -5,14 +5,19 @@ if IsAddOnLoaded("Massive") then
 	mass = LibStub:GetLibrary("Massive")
 end
 
+local function GetProfileInfo()
+	local ResProfileTag = (nibRealUI.db.char.resolution == 2) and "-HR" or ""
+	local LayoutProfileTag = (nibRealUI.db.char.layout.current == 2) and "-Healing" or ""
+	local NewProfileRes = "RealUI" .. ResProfileTag
+	local NewProfileLayout = "RealUI" .. ResProfileTag .. LayoutProfileTag
+
+	return ResProfileTag, LayoutProfileTag, NewProfileRes, NewProfileLayout
+end
+
 function nibRealUI:Profiles_SetKeys()
 	-- Refresh Key
 	self.key = string.format("%s - %s", UnitName("player"), GetRealmName())
-	
-	local ResProfileTag = (self.db.char.resolution == 2) and "-HR" or ""
-	local LayoutProfileTag = (self.db.char.layout.current == 2) and "-Healing" or ""
-	local NewProfileRes = "RealUI" .. ResProfileTag
-	local NewProfileLayout = "RealUI" .. ResProfileTag .. LayoutProfileTag
+	local ResProfileTag, LayoutProfileTag, NewProfileRes, NewProfileLayout = GetProfileInfo()
 	
 	-- Addons that just need to be set to RealUI
 	local nonLayoutAddonList = {
@@ -32,26 +37,19 @@ function nibRealUI:Profiles_SetKeys()
 	}
 	
 	-- Set Addon profiles
-	for kn, vn in pairs(nonLayoutAddonList) do
-		if _G[vn] then
-			if _G[vn]["profileKeys"] then 
-				_G[vn]["profileKeys"][self.key] = "RealUI"
-			end
+	local function SetProfileKey(a, p)
+		if _G[a] and _G[a]["profileKeys"] then 
+			_G[a]["profileKeys"][self.key] = p
 		end
+	end
+	for kn, vn in pairs(nonLayoutAddonList) do
+		SetProfileKey(vn, "RealUI")
 	end
 	for kl, vl in pairs(LayoutAddonList) do
-		if _G[vl] then
-			if _G[vl]["profileKeys"] then 
-				_G[vl]["profileKeys"][self.key] = NewProfileLayout
-			end
-		end
+		SetProfileKey(vl, NewProfileLayout)
 	end
 	for kr, vr in pairs(ResAddonList) do
-		if _G[vr] then
-			if _G[vr]["profileKeys"] then 
-				_G[vr]["profileKeys"][self.key] = NewProfileRes
-			end
-		end
+		SetProfileKey(vr, NewProfileRes)
 	end
 	
 	-- MSBT
@@ -63,9 +61,7 @@ function nibRealUI:Profiles_SetKeys()
 end
 
 function nibRealUI:Profiles_SetLayout()
-	local ResProfileTag = (self.db.char.resolution == 2) and "-HR" or ""
-	local LayoutProfileTag = (self.db.char.layout.current == 2) and "-Healing" or ""
-	local NewProfileLayout = "RealUI" .. ResProfileTag .. LayoutProfileTag
+	local _, _, _, NewProfileLayout = GetProfileInfo()
 	
 	local LayoutAddonList = {
 		Bartender4 = LibStub("AceAddon-3.0"):GetAddon("Bartender4", true),

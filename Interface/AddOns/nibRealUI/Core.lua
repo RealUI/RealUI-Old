@@ -7,7 +7,7 @@ _G.RealUI = nibRealUI
 nibRealUI.verinfo = {
 	[1] = 7,
 	[2] = 4,
-	[3] = 4,
+	[3] = 5,
 }
 
 nibRealUI.oocFunctionOrder = {}
@@ -49,6 +49,10 @@ local defaults = {
 			firsttime = true,
 			needtutorial = true,
 			tutorialdone = false,
+			ldOptimized = false,
+		},
+		messages = {
+			ldOptimized = false,
 		},
 		minipatches = {},
 		extrasettings = {
@@ -117,6 +121,12 @@ local defaults = {
 	},
 }
 
+function nibRealUI:SetLDOptimizations()
+	db.positions[2]["HuDWidth"] = 328
+	db.positions[2]["UFHorizontal"] = 10
+	dbg.tags.ldOptimized = true
+end
+
 -- Version info retrieval
 function nibRealUI:GetVerString(...)
 	if ... then
@@ -159,14 +169,8 @@ end
 
 -- Recommended resolution
 function nibRealUI:GetRecommendedResolution()
-	local resStr = GetCVar("gxResolution")
-	local resHeight = tonumber(string.match(resStr, "%d+x(%d+)"))
-	local resWidth = tonumber(string.match(resStr, "(%d+)x%d+"))
-	if resHeight < 900 then
-		return 1
-	else
-		return 2
-	end
+	local resWidth, resHeight = self:GetResolutionVals()
+	return (resHeight < 900) and 1 or 2
 end
 
 -- Resolution Updates
@@ -210,12 +214,14 @@ function nibRealUI:SetLayout()
 	
 	-- HuD Config
 	nibRealUI:GetModule("HuDConfig"):RegisterForUpdate("AB")
+
+	dbc.layout.needchanged = false
 end
 function nibRealUI:UpdateLayout()
 	if InCombatLockdown() then
-		-- Store variable to change layout after combat ends
 		if not self.oocFunctions["SetLayout"] then
-			self.oocFunctions["SetLayout"] = function() nibRealUI:SetLayout() end
+			self:RegisterLockdownUpdate("SetLayout", function() nibRealUI:SetLayout() end)
+			dbc.layout.needchanged = true
 		end
 		nibRealUI:Notification("RealUI", true, L["Layout will change after you leave combat."])
 	else
@@ -243,7 +249,7 @@ function nibRealUI:LockdownUpdates()
 	end
 end
 function nibRealUI:UpdateLockdown(...)
-	self.lockdownTimer = self:ScheduleRepeatingTimer("LockdownUpdates", 0.5)
+	if not self.lockdownTimer then self.lockdownTimer = self:ScheduleRepeatingTimer("LockdownUpdates", 0.5) end
 end
 function nibRealUI:RegisterLockdownUpdate(id, fun, ...)
 	local retVal = ...
@@ -277,8 +283,10 @@ end
 
 function nibRealUI:PLAYER_LOGIN()
 	-- Load LOD AddOns
-	LoadAddOn("alDamageMeter")
-	if alDM_ResetCurrent then alDM_ResetCurrent() end
+	if not IsAddOnLoaded("Skada") then
+		LoadAddOn("alDamageMeter")
+		if alDM_ResetCurrent then alDM_ResetCurrent() end
+	end
 	LoadAddOn("nibIceHUD")
 	
 	-- Load any extra AddOn settings
@@ -288,18 +296,16 @@ function nibRealUI:PLAYER_LOGIN()
 	end
 	
 	-- Check if Installation/Patch is necessary
-	nibRealUI:InstallProcedure()
+	self:InstallProcedure()
 	
 	-- Tutorial
 	if not dbg.tags.tutorialdone and dbg.tags.needtutorial and (nibRealUICharacter.installStage == -1) then
-		nibRealUI:InitTutorial()
+		self:InitTutorial()
 	end
 
 	-- Do we need a Layout change?
 	if dbc.layout.needchanged then
-		if not self.oocFunctions["SetLayout"] then
-			self.oocFunctions["SetLayout"] = function() nibRealUI:SetLayout() end
-		end
+		nibRealUI:UpdateLayout()
 	end
 end
 
@@ -358,10 +364,24 @@ function nibRealUI:OnInitialize()
 	self:RegisterChatCommand("realui", function() nibRealUI:OpenOptions() end)
 	self:RegisterChatCommand("memory", "MemoryDisplay")
 	self:RegisterChatCommand("rl", function() ReloadUI() end)
+
+	-- Synch user's settings
+	if dbg.tags.firsttime then
+		SetCVar("synchronizeSettings", 1)
+		SetCVar("synchronizeConfig", 1)
+		SetCVar("synchronizeBindings", 1)
+		SetCVar("synchronizeMacros", 1)
+	end
 	
 	-- Done
 	print(format("RealUI %s loaded.", nibRealUI:GetVerString(true)))
-	print("|cffFFFFFFType |r|cFFFF8000/hud|r |cffFFFFFFto access the new HuD Configuration utility.|r")
+	if dbg.tags.ldOptimized and not dbg.messages.ldOptimized then
+		print(L["Large Display optimizations set."])
+		dbg.messages.ldOptimized = true
+	end
+	if nibRealUICharacter and nibRealUICharacter.installStage == -1 then
+		print("|cffFFFFFFType |r|cFFFF8000/hud|r |cffFFFFFFto access the new HuD Configuration utility.|r")
+	end
 end
 
 function nibRealUI:GetModuleEnabled(module)

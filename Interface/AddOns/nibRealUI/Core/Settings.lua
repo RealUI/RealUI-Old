@@ -12,7 +12,7 @@ local nibRealUICharacter_defaults = {
 
 -- Minipatch list. These get flagged on a PrimaryInstall as not being required.
 local MiniPatchMajorVer = "74"
-local table_MiniPatches = {4}
+local table_MiniPatches = {4, 5}
 
 local IWTextures = {
 	Logo = [[Interface\AddOns\nibRealUI\Media\Logo.tga]],
@@ -38,8 +38,10 @@ end
 -- CVars
 local function SetDefaultCVars()
 	-- Graphics
-	SetCVar("gxMultisample", 1)
-	RestartGx()
+	if GetCVar("gxMultisample") ~= "1" then
+		SetCVar("gxMultisample", 1)
+		RestartGx()
+	end
 	-- Sound
 	SetCVar("Sound_EnableErrorSpeech", 0)
 	-- Nameplates
@@ -123,7 +125,13 @@ function RealUI_RunStage1()
 		
 		-- Addon Data
 		nibRealUI:LoadAddonData()
-		AuroraConfig = {}
+		AuroraConfig = nil
+
+		-- High-Res optimization
+		local resWidth, resHeight = nibRealUI:GetResolutionVals()
+		if (resWidth >= 1600) and (resHeight >= 1050) then
+			nibRealUI:SetLDOptimizations()
+		end
 	end
 	
 	-- Make Chat windows transparent (again)
@@ -132,6 +140,9 @@ function RealUI_RunStage1()
 	
 	-- Addon Profiles
 	nibRealUI:Profiles_SetKeys()
+
+	-- Bags
+	if cbNivResetNew then cbNivResetNew() end
 end
 
 local function CreateIWTextureFrame(texture, width, height, position, color)
@@ -226,7 +237,7 @@ local function InstallationStage1()
 	---- Set MiniPatch flags
 	dbg.minipatches = {}
 	for k,v in ipairs(table_MiniPatches) do
-		tinsert(dbg.minipatches, v)
+		dbg.minipatches[k] = v
 	end
 	
 	DEFAULT_CHATFRAME_ALPHA = 0
@@ -261,7 +272,7 @@ local function MiniPatchInstallation()
 		for k,v in ipairs(NP) do
 			if v then
 				nibRealUI:MiniPatch(MiniPatchMajorVer.."r"..tostring(table_MiniPatches[k]))
-				tinsert(dbg.minipatches, k)
+				dbg.minipatches[k] = v
 				HasMPatched = true
 			end
 		end

@@ -20,6 +20,10 @@ local WFCollapsed
 
 function HuDConfig:ResetDefaults()
 	ndb.positions = nibRealUI:DeepCopy(nibRealUI.defaultpositions)
+	if nibRealUI.db.global.tags.ldOptimized then
+		nibRealUI:SetLDOptimizations()
+	end
+	
 	nibRealUI:UpdatePositioners()
 	
 	if nibIceHUD then
@@ -70,6 +74,17 @@ function RealUIHuDTestMode(toggle)
 		HuDConfig.options.gridBox:Hide()
 	end
 	RealUIUFBossConfig(toggle, "player")
+
+	-- if toggle then
+	-- 	ExtraActionBarFrame.button:Show()
+	-- 	ExtraActionBarFrame:Show()
+	-- 	ExtraActionBarFrame.outro:Stop()
+	-- 	ExtraActionBarFrame.intro:Play()
+	-- 	if not ExtraActionBarFrame.button.icon:GetTexture() then
+	-- 		ExtraActionBarFrame.button.icon:SetTexture("Interface\\ICONS\\ABILITY_SEAL")
+	-- 		ExtraActionBarFrame.button.icon:Show()
+	-- 	end
+	-- end
 end
 
 function RealUIHuDCloseConfig()
@@ -493,6 +508,7 @@ function HuDConfig:ApplyABConfig()
 			vehicle =	{ x = zero.x + 4,	y = zero.y + 19 },
 			pet1 =		{ x = zero.x + 39,	y = zero.y - 55 },
 			pet2 =		{ x = zero.x + 39,	y = zero.y - 82 },
+			eab =		{ x = zero.x + 140,	y = zero.y - 122},
 		}
 		
 		-- Action Bars
@@ -553,6 +569,19 @@ function HuDConfig:ApplyABConfig()
 				["growVertical"] = "DOWN",
 			}
 		end
+		-- Extra Action Bar
+		if nibRealUI.db.global.tags.ldOptimized and Bartender4DB["namespaces"]["ExtraActionBar"]["profiles"]["RealUI-HR"] then
+			Bartender4DB["namespaces"]["ExtraActionBar"]["profiles"]["RealUI-HR"] = {
+				["position"] = {
+					["y"] = p.eab.y,
+					["x"] = p.eab.x,
+					["point"] = "CENTER",
+					["growHorizontal"] = "RIGHT",
+					["growVertical"] = "DOWN",
+				},
+				["version"] = 3,
+			}
+		end
 		
 		-- Apply profile changes to Bartender bars
 		local Bar4 = LibStub("AceAddon-3.0"):GetAddon("Bartender4", true)
@@ -560,11 +589,13 @@ function HuDConfig:ApplyABConfig()
 		local B4Stance = Bar4:GetModule("StanceBar", true)
 		local B4Vehicle = Bar4:GetModule("Vehicle", true)
 		local B4PetBar = Bar4:GetModule("PetBar", true)
-		
+		local B4EAB = Bar4:GetModule("ExtraActionBar", true)
+
 		if B4Bars then B4Bars:ApplyConfig() end
 		if B4Stance then B4Stance:ApplyConfig() end
 		if B4Vehicle then B4Vehicle:ApplyConfig() end
 		if B4PetBar then B4PetBar:ApplyConfig() end
+		if B4EAB then B4EAB:ApplyConfig() end
 		
 		-- ActionBarExtras
 		if nibRealUI:GetModuleEnabled("ActionBarExtras") then

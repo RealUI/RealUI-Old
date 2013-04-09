@@ -191,9 +191,10 @@ AFKTimer:SetScript("OnUpdate", function(self, elapsed)
 			OpacityLevel = db.general.opacity1
 			AFKLevel = 1
 		end
-		if not( UnitAffectingCombat("player") and db.general.combatwarning ) then
+		if not( UnitAffectingCombat("player") and db.general.combatwarning ) and GetCVar("autoClearAFK") == "1" then
 			if SSFrames.bg:GetAlpha() ~= OpacityLevel then 
 				UIFrameFadeIn(SSFrames.bg, 0.2, SSFrames.bg:GetAlpha(), OpacityLevel)
+				ScreenSaver:ToggleOverlay(true)
 			end
 		end
 		
@@ -230,7 +231,7 @@ end
 
 -- Show/Hide Screen Saver
 function ScreenSaver:ToggleOverlay(val)
-	if val then
+	if val and GetCVar("autoClearAFK") == "1" then
 		if not IsDark then
 			IsDark = true
 			
