@@ -10,7 +10,7 @@ nibRealUI.verinfo = {
 	[3] = 5,
 }
 
-nibRealUI.oocFunctionOrder = {}
+-- nibRealUI.oocFunctionOrder = {}
 nibRealUI.oocFunctions = {}
 
 nibRealUI.defaultpositions = {
@@ -61,21 +61,12 @@ local defaults = {
 		resolution = 1,
 	},
 	char = {
-		installation = {
-			stage = 0,
-			verinfo = {
-				[1] = 0,
-				[2] = 0,
-				[3] = 0,
-			},
-		},
 		layout = {
 			current = 1,
 			needchanged = false,
 			spec = {1, 1},
 		},
-		resolution = 1,	-- So we can check to make sure each Char is on the correct Res
-		cbResetNew = false,	-- Reset New items for cargBags on character's first load
+		resolution = 1,		-- So we can check to make sure each Char is on the correct Res
 	},
 	profile = {
 		modules = {
@@ -94,8 +85,7 @@ local defaults = {
 			textures = {
 				plain = [[Interface\AddOns\nibRealUI\Media\Plain.tga]],
 				plain80 = [[Interface\AddOns\nibRealUI\Media\Plain80.tga]],
-				border = [[Interface\AddOns\nibRealUI\Media\Glow.tga]],
-				background = [[Interface\AddOns\nibRealUI\Media\media\BG1.tga]],
+				border = [[Interface\AddOns\nibRealUI\Media\Plain.tga]],
 			},
 			colors = {
 				red = {0.75, 0.2, 0.2, 1},
@@ -127,6 +117,31 @@ function nibRealUI:SetLDOptimizations()
 	dbg.tags.ldOptimized = true
 end
 
+function nibRealUI:LDOptimizationCheck()
+	local resWidth, resHeight = nibRealUI:GetResolutionVals()
+	if (resWidth >= 1600) and (resHeight >= 1050) and not(dbg.tags.ldOptimized) and (dbc.resolution == 2) then
+		StaticPopupDialogs["PUDRUILDOC"] = {
+			text = "|cff85e0ff"..L["RealUI Large Display Optimizations"].."|r\n\n|cffffffff"..L["RealUI has been optimized for large displays."].."\n\n"..L["Reload UI now to apply these changes?"],
+			button1 = "Yes",
+			button2 = "No",
+			OnAccept = function()
+				local dbp, dp = db.positions, self.defaultpositions
+				if (dbp[2]["HuDWidth"] == dp[2]["HuDWidth"]) and (dbp[2]["UFHorizontal"] == dp[2]["UFHorizontal"]) then
+					nibRealUI:SetLDOptimizations()
+				end
+				dbg.tags.ldOptimized = true
+				self:GetModule("HuDConfig"):RegisterForUpdate("AB")
+				nibRealUI:ReloadUIDialog()
+			end,
+			timeout = 0,
+			whileDead = true,
+			hideOnEscape = false,
+			notClosableByLogout = false,
+		}
+		StaticPopup_Show("PUDRUILDOC")
+	end
+end
+
 -- Version info retrieval
 function nibRealUI:GetVerString(...)
 	if ... then
@@ -136,15 +151,13 @@ function nibRealUI:GetVerString(...)
 	end
 end
 function nibRealUI:GetVerDifference(OldVer, CurVer)
-	local IsNewVer, IsOneMore = false, false
+	local IsNewVer = false
 	
 	if ( (CurVer[1] > OldVer[1]) or (CurVer[2] > OldVer[2]) ) then
 		IsNewVer = true
-	else
-		IsOneMore = true
 	end
 	
-	return IsNewVer, IsOneMore
+	return IsNewVer
 end
 
 -- UI Scaler
@@ -271,10 +284,17 @@ function nibRealUI:UPDATE_PENDING_MAIL()
 	CancelEmote()	-- Cancel Map Holding animation
 end
 
+local lastGarbageCollection = 0
 function nibRealUI:PLAYER_ENTERING_WORLD()
 	nibRealUI:SetChatPosition()
 	nibRealUI:LockdownUpdates()
-	self:ScheduleTimer(function() collectgarbage("collect") end, 1)
+	self:ScheduleTimer(function() 
+		local now = GetTime()
+		if now >= lastGarbageCollection + 600 then
+			collectgarbage("collect")
+			lastGarbageCollection = now
+		end
+	end, 1)
 end
 
 function nibRealUI:UI_SCALE_CHANGED()
@@ -290,16 +310,18 @@ function nibRealUI:PLAYER_LOGIN()
 	LoadAddOn("nibIceHUD")
 	
 	-- Load any extra AddOn settings
-	if IsAddOnLoaded("Skada") and not(dbg.extrasettings.skada) and dbg.tags.tutorialdone then
-		self:LoadSkadaData()
-		self:Notification("Skada detected", true, "Reload UI (/rl) to apply RealUI settings.")
+	self:LoadSkadaData()
+
+	-- Large Display optimization check
+	if (nibRealUICharacter and nibRealUICharacter.installStage == -1) then
+		self:LDOptimizationCheck()
 	end
 	
 	-- Check if Installation/Patch is necessary
 	self:InstallProcedure()
 	
 	-- Tutorial
-	if not dbg.tags.tutorialdone and dbg.tags.needtutorial and (nibRealUICharacter.installStage == -1) then
+	if not dbg.tags.tutorialdone and dbg.tags.needtutorial and (nibRealUICharacter and nibRealUICharacter.installStage == -1) then
 		self:InitTutorial()
 	end
 
@@ -317,7 +339,6 @@ function nibRealUI:ADDON_LOADED(event, addon)
 	PetJournal_LoadUI()
 	
 	-- Remove Interface Options cancel button because it = taint
-	-- Remove the cancel button
 	InterfaceOptionsFrameCancel:Hide()
 	InterfaceOptionsFrameOkay:SetAllPoints(InterfaceOptionsFrameCancel)
 

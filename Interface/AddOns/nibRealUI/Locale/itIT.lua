@@ -19,6 +19,9 @@ L["This character's Layout Resolution needs to be updated to match the global se
 
 L["Reload UI now to apply these changes?"] = "Ricarica adesso la UI per applicare queste modifiche?"
 
+L["RealUI Large Display Optimizations"] = "RealUI Large Display Detected"
+L["RealUI has been optimized for large displays."] =  "You are currently running a very-high resolution. RealUI has been set up to better take advantage of the amount of screen-space available."
+
 L["You need to Reload the UI for changes to take effect. Reload Now?"] = "Devi ricaricare la UI affinché le modifiche siano applicate: vuoi ricaricarla adesso?"
 
 -- Info Line

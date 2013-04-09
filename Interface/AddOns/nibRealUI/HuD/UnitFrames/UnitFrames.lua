@@ -1653,13 +1653,8 @@ function UnitFrames:UpdateUnitBackgroundColor(UnitID)
 			newColorID = "pvpenemy"
 		end
 	else
-		if (UnitIsTapped(Unit) and not(UnitIsTappedByPlayer(Unit))) then
-			bgColor = db.overlay.colors.status.tapped
-			newColorID = "tapped"
-		else
-			bgColor = {0, 0, 0}
-			newColorID = "black"
-		end
+		bgColor = {0, 0, 0}
+		newColorID = "black"
 		if UnitIsNotPvPPlayer(Unit, UFUnit) then
 			UF[UFUnit].endboxtext.text:SetText("")
 		end
@@ -1691,7 +1686,9 @@ function UnitFrames:UpdateEndBox(UnitID)
 			_, uClass = UnitClass(UnitID)
 			cColor = GetClassColor(uClass)
 		else
-			if UnitIsEnemy("player", UnitID) then
+			if (UnitIsTapped(UnitID) and not(UnitIsTappedByPlayer(UnitID))) then
+				cColor = db.overlay.colors.status.tapped
+			elseif UnitIsEnemy("player", UnitID) then
 				cColor = db.overlay.colors.health.hostile
 			elseif UnitCanAttack("player", UnitID) then
 				cColor = db.overlay.colors.health.neutral

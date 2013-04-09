@@ -72,17 +72,27 @@ function Map:Skin()
 		-- Track Quest checkbox
 		F.ReskinCheck(WorldMapTrackQuest)
 		WorldMapTrackQuest:ClearAllPoints()
-		WorldMapTrackQuest:SetPoint("BOTTOMRIGHT", WorldMapPositioningGuide, "BOTTOMRIGHT", -172, -1)
+		WorldMapTrackQuest:SetPoint("BOTTOMRIGHT", WorldMapPositioningGuide, "BOTTOMRIGHT", -162, -1)
 		WorldMapTrackQuestText:ClearAllPoints()
 		WorldMapTrackQuestText:SetPoint("BOTTOMRIGHT", WorldMapTrackQuest, "BOTTOMLEFT", -2, 6.5);
 		WorldMapTrackQuestText:SetFont(unpack(nibRealUI.font.pixel1))
 		WorldMapTrackQuestText:SetTextColor(1, 1, 1)
+
+		-- Show Objectives checkbox
 		WorldMapQuestShowObjectives:ClearAllPoints()
 		WorldMapQuestShowObjectives:SetPoint("BOTTOMRIGHT", WorldMapPositioningGuide, "BOTTOMRIGHT", -22, -1);
 		WorldMapQuestShowObjectivesText:ClearAllPoints()
 		WorldMapQuestShowObjectivesText:SetPoint("BOTTOMRIGHT", WorldMapQuestShowObjectives, "BOTTOMLEFT", -2, 6.5);
 		WorldMapQuestShowObjectivesText:SetFont(unpack(nibRealUI.font.pixel1))
 		WorldMapQuestShowObjectivesText:SetTextColor(1, 1, 1)
+
+		-- Show Digsites checkbox
+		WorldMapShowDigSites:ClearAllPoints()
+		WorldMapShowDigSites:SetPoint("BOTTOMRIGHT", WorldMapPositioningGuide, "BOTTOMRIGHT", -302, -1);
+		WorldMapShowDigSitesText:ClearAllPoints()
+		WorldMapShowDigSitesText:SetPoint("BOTTOMRIGHT", WorldMapShowDigSites, "BOTTOMLEFT", -2, 6.5);
+		WorldMapShowDigSitesText:SetFont(unpack(nibRealUI.font.pixel1))
+		WorldMapShowDigSitesText:SetTextColor(1, 1, 1)
 		
 		-- Top Dropdown Fonts
 		local function SetDropdownHeaderFont(r)

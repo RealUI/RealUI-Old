@@ -47,6 +47,12 @@ local Stats = {
 	[27] = "Spell_Hit",
 	[28] = "MP5",
 	[29] = "Spell_Mastery",
+
+	[30] = "Strength",
+	[31] = "Agility",
+	[32] = "Stamina",
+	[33] = "Intellect",
+	[34] = "Spirit",
 }
 local StatTexts = {
 	[1] = PLAYERSTAT_DEFENSES..": "..STAT_DODGE,
@@ -82,6 +88,12 @@ local StatTexts = {
 	[27] = PLAYERSTAT_SPELL_COMBAT..": "..STAT_HIT_CHANCE,
 	[28] = PLAYERSTAT_SPELL_COMBAT..": "..MANA_REGEN,
 	[29] = PLAYERSTAT_SPELL_COMBAT..": "..STAT_MASTERY,
+
+	[30] = SPELL_STAT1_NAME,
+	[31] = SPELL_STAT2_NAME,
+	[32] = SPELL_STAT3_NAME,
+	[33] = SPELL_STAT4_NAME,
+	[34] = SPELL_STAT5_NAME,
 }
 
 local options
@@ -447,6 +459,34 @@ StatFunc.Spell_Mastery = function()
 	return strform("%.2f%%", Total_SM)
 end
 
+--------------------
+---- Base Stats ----
+--------------------
+StatFunc.Strength = function()
+	local _, effectiveStat = UnitStat("player", 1)
+	return nibRealUI:ReadableNumber(effectiveStat)
+end
+
+StatFunc.Agility = function()
+	local _, effectiveStat = UnitStat("player", 2)
+	return nibRealUI:ReadableNumber(effectiveStat)
+end
+
+StatFunc.Stamina = function()
+	local _, effectiveStat = UnitStat("player", 3)
+	return nibRealUI:ReadableNumber(effectiveStat)
+end
+
+StatFunc.Intellect = function()
+	local _, effectiveStat = UnitStat("player", 4)
+	return nibRealUI:ReadableNumber(effectiveStat)
+end
+
+StatFunc.Spirit = function()
+	local _, effectiveStat = UnitStat("player", 5)
+	return nibRealUI:ReadableNumber(effectiveStat)
+end
+
 
 ------------
 local GetStatText
@@ -564,6 +604,12 @@ local function RefreshStats()
 			Spell_Hit 			= function() return StatFunc.Spell_Hit() end,
 			MP5 				= function() return StatFunc.MP5() end,
 			Spell_Mastery 		= function() return StatFunc.Spell_Mastery() end,
+
+			Strength	 		= function() return StatFunc.Strength() end,
+			Agility 			= function() return StatFunc.Agility() end,
+			Stamina				= function() return StatFunc.Stamina() end,
+			Intellect 			= function() return StatFunc.Intellect() end,
+			Spirit				= function() return StatFunc.Spirit() end,
 		}
 	end
 end

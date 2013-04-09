@@ -367,7 +367,7 @@ function nibRealUI:InitTutorial()
 			ToolTipDir = "LEFT",
 			ToolTipText = ToolTipTexts.moactionbars2,
 		})
-		if not hasAdjustedPositions and nibRealUI.db.global.tags.hrOptimized then
+		if not hasAdjustedPositions and nibRealUI.db.global.tags.ldOptimized then
 			RealUI_HelpPlate[3].ButtonPos.x = RealUI_HelpPlate[3].ButtonPos.x - 28
 			RealUI_HelpPlate[4].ButtonPos.x = RealUI_HelpPlate[4].ButtonPos.x + 28
 			RealUI_HelpPlate[5].ButtonPos.x = RealUI_HelpPlate[5].ButtonPos.x - 28

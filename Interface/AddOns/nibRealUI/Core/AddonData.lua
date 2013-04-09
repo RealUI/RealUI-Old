@@ -14,153 +14,158 @@ nibRealUI.AddOns = {
 }
 
 function nibRealUI:LoadSkadaData()
-	SkadaDB = {
-		["profileKeys"] = {
-			["Real - Zul'jin"] = "RealUI-HR",
-		},
-		["profiles"] = {
-			["RealUI"] = {
-				["modules"] = {
-					["notankwarnings"] = true,
-				},
-				["windows"] = {
-					{
-						["point"] = "BOTTOMRIGHT",
-						["barcolor"] = {
-							["r"] = 0.1058823529411765,
-							["g"] = 0.1058823529411765,
-							["b"] = 0.1058823529411765,
-						},
-						["barfontsize"] = 8,
-						["barslocked"] = true,
-						["barorientation"] = 3,
-						["mode"] = "DPS",
-						["spark"] = false,
-						["bartexture"] = "Plain80",
-						["barwidth"] = 190,
-						["hidden"] = true,
-						["y"] = 20.5,
-						["x"] = 0,
-						["title"] = {
-							["color"] = {
-								["a"] = 0,
+	if IsAddOnLoaded("Skada") and not(nibRealUI.db.global.extrasettings.skada) then
+		SkadaDB = {
+			["profileKeys"] = {
+				["Real - Zul'jin"] = "RealUI-HR",
+			},
+			["profiles"] = {
+				["RealUI"] = {
+					["modules"] = {
+						["notankwarnings"] = true,
+					},
+					["windows"] = {
+						{
+							["point"] = "BOTTOMRIGHT",
+							["barcolor"] = {
 								["r"] = 0.1058823529411765,
 								["g"] = 0.1058823529411765,
-								["b"] = 0.3019607843137255,
+								["b"] = 0.1058823529411765,
 							},
-							["font"] = "pixel_lr_small",
-							["fontsize"] = 8,
-							["texture"] = "Flat",
-						},
-						["classcolorbars"] = false,
-						["barfont"] = "pixel_lr_small",
-						["classcolortext"] = true,
-						["background"] = {
-							["color"] = {
-								["a"] = 0,
-								["b"] = 0.5019607843137255,
+							["barfontsize"] = 8,
+							["barslocked"] = true,
+							["barorientation"] = 3,
+							["mode"] = "DPS",
+							["spark"] = false,
+							["bartexture"] = "Plain80",
+							["barwidth"] = 190,
+							["hidden"] = true,
+							["y"] = 20.5,
+							["x"] = 0,
+							["title"] = {
+								["color"] = {
+									["a"] = 0,
+									["r"] = 0.1058823529411765,
+									["g"] = 0.1058823529411765,
+									["b"] = 0.3019607843137255,
+								},
+								["font"] = "pixel_lr_small",
+								["fontsize"] = 8,
+								["texture"] = "Flat",
 							},
-							["height"] = 160,
-						},
-					}, -- [1]
+							["classcolorbars"] = false,
+							["barfont"] = "pixel_lr_small",
+							["classcolortext"] = true,
+							["background"] = {
+								["color"] = {
+									["a"] = 0,
+									["b"] = 0.5019607843137255,
+								},
+								["height"] = 160,
+							},
+						}, -- [1]
+					},
+					["columns"] = {
+						["Healing_Healing"] = false,
+						["Damage_Damage"] = false,
+					},
+					["hidesolo"] = true,
+					["onlykeepbosses"] = true,
+					["hidedisables"] = false,
+					["icon"] = {
+						["hide"] = true,
+					},
+					["report"] = {
+						["channel"] = "Guild",
+					},
 				},
-				["columns"] = {
-					["Healing_Healing"] = false,
-					["Damage_Damage"] = false,
+				["Default"] = {
+					["modules"] = {
+						["notankwarnings"] = true,
+					},
+					["onlykeepbosses"] = true,
+					["icon"] = {
+						["hide"] = true,
+					},
+					["windows"] = {
+						{
+							["y"] = 175.5,
+							["x"] = 0,
+							["barslocked"] = true,
+							["bartexture"] = "Flat",
+							["set"] = "total",
+							["point"] = "BOTTOMRIGHT",
+						}, -- [1]
+					},
 				},
-				["hidesolo"] = true,
-				["onlykeepbosses"] = true,
-				["hidedisables"] = false,
-				["icon"] = {
-					["hide"] = true,
-				},
-				["report"] = {
-					["channel"] = "Guild",
-				},
-			},
-			["Default"] = {
-				["modules"] = {
-					["notankwarnings"] = true,
-				},
-				["onlykeepbosses"] = true,
-				["icon"] = {
-					["hide"] = true,
-				},
-				["windows"] = {
-					{
-						["y"] = 175.5,
-						["x"] = 0,
-						["barslocked"] = true,
-						["bartexture"] = "Flat",
-						["set"] = "total",
-						["point"] = "BOTTOMRIGHT",
-					}, -- [1]
-				},
-			},
-			["RealUI-HR"] = {
-				["modules"] = {
-					["notankwarnings"] = true,
-				},
-				["windows"] = {
-					{
-						["barheight"] = 16,
-						["barfont"] = "pixel_hr_small",
-						["barcolor"] = {
-							["r"] = 0.1058823529411765,
-							["g"] = 0.1058823529411765,
-							["b"] = 0.1058823529411765,
-						},
-						["barfontsize"] = 8,
-						["barslocked"] = true,
-						["barorientation"] = 3,
-						["mode"] = "DPS",
-						["spark"] = false,
-						["bartexture"] = "Plain80",
-						["barwidth"] = 190,
-						["hidden"] = true,
-						["y"] = 24.5,
-						["x"] = 0,
-						["title"] = {
-							["font"] = "pixel_hr_small",
-							["fontsize"] = 8,
-							["color"] = {
-								["a"] = 0,
+				["RealUI-HR"] = {
+					["modules"] = {
+						["notankwarnings"] = true,
+					},
+					["windows"] = {
+						{
+							["barheight"] = 16,
+							["barfont"] = "pixel_hr_small",
+							["barcolor"] = {
 								["r"] = 0.1058823529411765,
 								["g"] = 0.1058823529411765,
-								["b"] = 0.3019607843137255,
+								["b"] = 0.1058823529411765,
 							},
-							["texture"] = "Flat",
-						},
-						["classcolorbars"] = false,
-						["classcolortext"] = true,
-						["background"] = {
-							["color"] = {
-								["a"] = 0,
-								["b"] = 0.5019607843137255,
+							["barfontsize"] = 8,
+							["barslocked"] = true,
+							["barorientation"] = 3,
+							["mode"] = "DPS",
+							["spark"] = false,
+							["bartexture"] = "Plain80",
+							["barwidth"] = 190,
+							["hidden"] = true,
+							["y"] = 24.5,
+							["x"] = 0,
+							["title"] = {
+								["font"] = "pixel_hr_small",
+								["fontsize"] = 8,
+								["color"] = {
+									["a"] = 0,
+									["r"] = 0.1058823529411765,
+									["g"] = 0.1058823529411765,
+									["b"] = 0.3019607843137255,
+								},
+								["texture"] = "Flat",
 							},
-							["height"] = 160,
-						},
-						["point"] = "BOTTOMRIGHT",
-					}, -- [1]
+							["classcolorbars"] = false,
+							["classcolortext"] = true,
+							["background"] = {
+								["color"] = {
+									["a"] = 0,
+									["b"] = 0.5019607843137255,
+								},
+								["height"] = 160,
+							},
+							["point"] = "BOTTOMRIGHT",
+						}, -- [1]
+					},
+					["icon"] = {
+						["hide"] = true,
+					},
+					["report"] = {
+						["channel"] = "Guild",
+					},
+					["columns"] = {
+						["Healing_Healing"] = false,
+						["Damage_Damage"] = false,
+					},
+					["hidesolo"] = true,
+					["hidedisables"] = false,
+					["onlykeepbosses"] = true,
 				},
-				["icon"] = {
-					["hide"] = true,
-				},
-				["report"] = {
-					["channel"] = "Guild",
-				},
-				["columns"] = {
-					["Healing_Healing"] = false,
-					["Damage_Damage"] = false,
-				},
-				["hidesolo"] = true,
-				["hidedisables"] = false,
-				["onlykeepbosses"] = true,
 			},
-		},
-	}
-	
-	nibRealUI.db.global.extrasettings.skada = true
+		}
+
+		nibRealUI.db.global.extrasettings.skada = true
+		if (nibRealUICharacter and nibRealUICharacter.installStage == -1) then
+			nibRealUI:Notification("Skada detected", true, "Reload UI (/rl) to apply RealUI settings.")
+		end
+	end
 end
 
 
@@ -25518,8 +25523,6 @@ end
 function nibRealUI:LoadSpecificAddOnData(addon)
 	if self["LoadAddOnData_"..addon] then
 		self["LoadAddOnData_"..addon]()
-	else
-		print("Data does not exist for AddOn - "..addon)
+		self:ReloadUIDialog()
 	end
-	self:ReloadUIDialog()
 end

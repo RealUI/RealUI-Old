@@ -12,7 +12,7 @@ local nibRealUICharacter_defaults = {
 
 -- Minipatch list. These get flagged on a PrimaryInstall as not being required.
 local MiniPatchMajorVer = "74"
-local table_MiniPatches = {4, 5}
+local table_MiniPatches = {4}
 
 local IWTextures = {
 	Logo = [[Interface\AddOns\nibRealUI\Media\Logo.tga]],
@@ -75,7 +75,7 @@ local function SetDefaultCVars()
 	SetCVar("UnitNameEnemyGuardianName", 1)			-- Turn on Enemy Pet Names
 	SetCVar("UnitNameEnemyTotemName", 1)			-- Turn on Enemy Totem Names
 	-- Buffs and Debuffs
-	SetCVar("consolidateBuffs", 0)					-- Turn off Consolidated Buffs
+	-- SetCVar("consolidateBuffs", 0)					-- Turn off Consolidated Buffs
 	-- Camera
 	SetCVar("cameraYawSmoothSpeed", 210)
 	SetCVar("cameraView", 1)						-- Camera Stlye
@@ -99,11 +99,16 @@ local function InitialSettings()
 	for i = 1,10 do
 		local cf = _G["ChatFrame"..i]
 		if cf then FCF_SetLocked(cf, 1) end
-    end	
+    end
+
 	-- Set all chat channels to color player names by class
 	for k, v in pairs(CHAT_CONFIG_CHAT_LEFT) do
 		ToggleChatColorNamesByClassGroup(true, v.type)
-	end	
+	end
+	for iCh = 1, 15 do
+		ToggleChatColorNamesByClassGroup(true, "CHANNEL"..iCh)
+	end
+
 	-- Make Chat windows transparent
 	SetChatWindowAlpha(1, 0)
 	SetChatWindowAlpha(2, 0)
@@ -272,7 +277,7 @@ local function MiniPatchInstallation()
 		for k,v in ipairs(NP) do
 			if v then
 				nibRealUI:MiniPatch(MiniPatchMajorVer.."r"..tostring(table_MiniPatches[k]))
-				dbg.minipatches[k] = v
+				dbg.minipatches[k] = table_MiniPatches[k]
 				HasMPatched = true
 			end
 		end
@@ -334,7 +339,7 @@ function nibRealUI:InstallProcedure()
 	---- Version checking
 	local CurVer = nibRealUI.verinfo
 	local OldVer = nibRealUI.verinfo
-	local IsNewVer, IsOneMore = nibRealUI:GetVerDifference(OldVer, CurVer)
+	local IsNewVer = nibRealUI:GetVerDifference(OldVer, CurVer)
 	
 	-- nibRealUIVersion = nibRealUI.verinfo
 	
@@ -353,7 +358,7 @@ function nibRealUI:InstallProcedure()
 	-- Primary Stages
 	if nibRealUICharacter.installStage > -1 then
 		PrimaryInstallation()
-	-- Mini Patch	
+	-- Mini Patch
 	else
 		local MiniPatching = MiniPatchInstallation()
 		
